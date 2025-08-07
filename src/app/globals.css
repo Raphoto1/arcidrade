@@ -3,6 +3,11 @@
   themes: light --default;
 }
 
+@theme inline {
+  --font-oswald: var(--font-oswald);
+  --font-roboto-condensed: var(--font-robotoC)
+}
+
 @utility btn {
   @apply rounded-md;
 }
