@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Roboto_Condensed, Oswald } from "next/font/google";
 import "./globals.css";
 //project imports
 import NavBar from "@/components/nav/NavBar";
+import Footer from "@/components/pieces/Footer";
 
 const robotoCond = Roboto_Condensed({
   variable: "--font-roboto-condensed",
@@ -30,6 +31,7 @@ export default function RootLayout({
       <body className={`${robotoCond.variable} ${oswald.variable} antialiased`}>
         <NavBar />
         {children}
+        <Footer/>
       </body>
     </html>
   );
