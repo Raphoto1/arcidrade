@@ -5,10 +5,14 @@
 
 @theme inline {
   --font-oswald: var(--font-oswald);
-  --font-roboto-condensed: var(--font-robotoC)
+  --font-roboto-condensed: var(--font-robotoC);
 }
 
-
+:root {
+  --main-arci:#384c9b;
+  --orange-arci:#e94936;
+  --soft-arci:#bcceec;
+}
 
 @utility btn {
   @apply rounded-md;
