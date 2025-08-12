@@ -5,7 +5,7 @@ import Image from "next/image";
 export default function InstitutionCard() {
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
-      <div className='topHat bg-[var(--orange-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
+      <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
         <div className='buttons w-15 h-15 ml-2 grid flex-col content-between'>
           <button className='btn btn-xs'>Responsive</button>
           <button className='btn btn-xs'>Responsive</button>
