@@ -17,3 +17,9 @@ export const mainSpecialities:any = [
     {"title":"Medicina Nuclear","image":"https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg"},
     { "title": "Ver Más", "image": "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg" },
 ]
+
+export const carouselHome:any = [
+    { "text": "really motivative text that shoul get over all the image to make a great sell", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
+    { "text": "2really motivative text that shoul get over all the image to make a great sell", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
+    { "text": "3really motivative text that shoul get over all the image to make a great sell", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
+]
