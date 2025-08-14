@@ -12,8 +12,24 @@
   --main-arci:#384c9b;
   --orange-arci:#e94936;
   --soft-arci:#bcceec;
+  --dark-gray:#707070;
 }
 
 @utility btn {
   @apply rounded-md;
+}
+
+label {
+  color: var(--main-arci);
+  font-family: var(--font-robotoC);
+  font-weight: normal;
+}
+
+input {
+  border-color: var(--dark-gray);
+  background-color: whitesmoke;
+  padding: 0.5rem;
+  color: gray;
+  border-radius: 5px;
+  border-width: 0.5px;
 }

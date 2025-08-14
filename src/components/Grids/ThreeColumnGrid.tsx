@@ -3,6 +3,8 @@ import React from 'react'
 //imports project
 
 import InstitutionCard from '../pieces/InstitutionCard'
+import ProfesionalCard from '../pieces/ProfesionalCard'
+//project imports
 
 export default function ThreeColumnGrid() {
   return (
@@ -10,9 +12,9 @@ export default function ThreeColumnGrid() {
       <InstitutionCard />
       <InstitutionCard />
       <InstitutionCard />
-      <InstitutionCard/>
-      <InstitutionCard/>
-      <InstitutionCard/>
+      <ProfesionalCard/>
+      <ProfesionalCard/>
+      <ProfesionalCard/>
     </div>
   )
 }

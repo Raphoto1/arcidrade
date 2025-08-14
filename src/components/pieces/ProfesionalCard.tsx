@@ -27,7 +27,7 @@ export default function InstitutionCard() {
       </div>
 
       <div className='card-body'>
-        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>Name/intitution</h2>
+        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>Name/Profesional</h2>
 
         <p className='description font-roboto-condensed'>A card component has a figure, a body part, and inside body there are title and actions parts</p>
         <div className='flex justify-between card-actions items-end'>
