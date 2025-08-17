@@ -13,3 +13,37 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+enum AreasAvailable {
+  institution
+  profesional
+  manager
+  collab
+  campaign
+}
+
+enum StatusAvailable {
+  pending_invitation
+  invited
+  registered
+  active
+  desactivated
+}
+
+enum SenderNum {
+  victor
+  campaign
+  admin
+}
+
+model Auth {
+  referCode     uuid      @id @default(cuid() @length(5-10))
+  email         email     @unique
+  password      password  
+  area          AreasAvailable
+  status        StatusAvailable    
+  invitation_sender     SenderNum
+  invitation_sender_id      string
+  creation_date     DateTime      @default(now())
+  update_date     DateTime      @updatedAt
+}
