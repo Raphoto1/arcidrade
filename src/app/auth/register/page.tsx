@@ -5,8 +5,8 @@ export default function register() {
     <div>
           register form
           <form action="">
-              <div>
-                  <label htmlFor="invitationCote">Codigo de Invitación</label>
+              <div className='flex'>
+                  <label htmlFor="invitationCode">Codigo de Invitación</label>
                   <input type="text" />
               </div>
               <div>
