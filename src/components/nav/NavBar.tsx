@@ -6,9 +6,9 @@ function NavBar() {
   return (
     <nav className='navbar bg-base-100 shadow-sm'>
       <div className="navbar-start hidden lg:flex">
-        <div className='flex-1 pl-5'>
+        <Link href={'/'} className='flex-1 pl-5'>
           <Image src='/logos/Logo Arcidrade Full.png' alt='Arcidrade Consulting' width={150} height={150} />
-        </div>
+        </Link>
       </div>
       <div className='navbar-center hidden lg:flex'>
         <ul className='menu menu-horizontal px-1 font-oswald font-bold text-base'>
@@ -34,13 +34,13 @@ function NavBar() {
         </ul>
       </div>
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
-        <a className='btn'>Ingresar</a>
+        <Link href={'/auth/login'} className='btn'>Ingresar</Link>
         <a className='btn'>Registrarse</a>
       </div>
       <div className='menuMobile flex-1 navbar-end lg:hidden'>
-        <div className='flex-1 pl-5 lg:hidden navbar-start'>
+        <Link href={'/'} className='flex-1 pl-5 lg:hidden navbar-start'>
           <Image src='/logos/Logo Arcidrade Cond.png' alt='Arcidrade Consulting' width={50} height={50} />
-        </div>
+        </Link>
         <div className='dropdown dropdown-center'>
           <div tabIndex={0} role='button' className='btn btn-ghost lg:hidden'>
             <svg xmlns='http://www.w3.org/2000/svg' className='h-10 w-10' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
@@ -64,7 +64,7 @@ function NavBar() {
               </ul>
             </li>
             <li>
-              <a>Servicios</a>
+              <Link href={'/services'}>Servicios</Link>
             </li>
           </ul>
         </div>

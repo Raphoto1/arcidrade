@@ -4,11 +4,11 @@ import prisma from "@/utils/db";
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { email, area } = body;
+    const { email, area, password } = body;
     console.log(email, area);
     
   // Perform registration logic here
-     const user = await registerUser(email, area);
+     const user = await registerUser(email, area, password);
     console.log("User desde auth", user);
    
   if (!user) {

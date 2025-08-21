@@ -4,7 +4,6 @@ import { NextRequest } from "next/server";
 
 export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
     const id = params.id
-    const response = id
     console.log(id);
     
     // Fetch the invitation details from your database or service

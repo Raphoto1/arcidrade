@@ -39,4 +39,5 @@ enum SenderNum {
   victor
   campaign
   admin
+  external
 }
