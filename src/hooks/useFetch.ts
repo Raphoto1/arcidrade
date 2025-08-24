@@ -1,6 +1,5 @@
 export const useHandleSubmitText = async (data: any, url: string) => {
-    console.log(data);
-    
+    console.log('useHandlesubmittext data',data);
   const response = await fetch(url, {
     method: 'POST',
     headers: {

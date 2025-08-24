@@ -1,14 +1,13 @@
 import { NextResponse } from "next/server";
 import { registerUser } from "@/service/register.service";
-import prisma from "@/utils/db";
 
 export async function POST(request: Request) {
     const body = await request.json();
-    const { email, area, password } = body;
+    const { email, area } = body;
     console.log(email, area);
     
   // Perform registration logic here
-     const user = await registerUser(email, area, password);
+     const user = await registerUser(email, area);
     console.log("User desde auth", user);
    
   if (!user) {
