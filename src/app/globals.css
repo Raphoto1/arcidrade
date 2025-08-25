@@ -22,7 +22,7 @@
 label {
   color: var(--main-arci);
   font-family: var(--font-robotoC);
-  font-weight: normal;
+  font-weight: bold;
 }
 
 input {

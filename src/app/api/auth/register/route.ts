@@ -5,7 +5,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { email, area } = body;
     console.log(email, area);
-    
   // Perform registration logic here
      const user = await registerUser(email, area);
     console.log("User desde auth", user);

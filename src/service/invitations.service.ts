@@ -1,10 +1,11 @@
 import prisma from "@/utils/db";
+import { encrypt } from "@/utils/encrypter";
+
+import { getInvitationByIdDao, getInvitationByEmailDao, completeInvitationDao } from "@/dao/dao";
 
 export const getInvitationById = async (id: string) => {
   try {
-    const chkInvitations = await prisma.auth.findUnique({
-      where: { referCode:id }
-    })
+    const chkInvitations = await getInvitationByIdDao(id)
     return chkInvitations
   } catch (error) {
     console.log('Error al obtener la invitación:', error);
@@ -12,23 +13,22 @@ export const getInvitationById = async (id: string) => {
   }
 }
 
-export const completeInvitation = async (id: string, password: string) => {
+export const getInvitationByEmail = async (email: string) => {
   try {
-    console.log('Completing invitation for ID:', id);
-    console.log('New password:', password);
+    const chkInvitations = await getInvitationByEmailDao(email);
+    return chkInvitations;
+  } catch (error) {
+    console.log('Error al obtener la invitación por email:', error);
+    return null;
+  }
+}
 
-    const updatedUser = await prisma.auth.update({
-      where: { referCode: id },
-      data: {
-        password: password,
-        status: "active"
-      }
-    });
-    console.log('updatePassword desde service invitations', updatedUser);
-
-    return updatedUser;
+export const completeInvitation = async (id: string, email:string, password: string) => {
+  try {
+    const result = await completeInvitationDao(id, email, password);
+    return result;
   } catch (error) {
     console.log('Error al completar la invitación:', error);
-    return null;
+    throw error;
   }
 };

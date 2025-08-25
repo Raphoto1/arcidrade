@@ -35,7 +35,7 @@ function NavBar() {
       </div>
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
         <Link href={'/auth/login'} className='btn'>Ingresar</Link>
-        <a className='btn'>Registrarse</a>
+        <Link href={'/auth/genInvitation'} className='btn'>Registrarse</Link>
       </div>
       <div className='menuMobile flex-1 navbar-end lg:hidden'>
         <Link href={'/'} className='flex-1 pl-5 lg:hidden navbar-start'>

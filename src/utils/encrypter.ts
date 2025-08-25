@@ -1,9 +1,12 @@
 import bcrypt from "bcrypt";
 
 export const encrypt = async (data: string) => {
-    // Implement encryption logic here
+  // Implement encryption logic here
+  console.log('Encrypting data...', data);
   const salt = bcrypt.genSaltSync(10);
   const hash = bcrypt.hashSync(data, salt);
+  console.log('Encrypted data:', hash);
+  
   return hash
 };
 
