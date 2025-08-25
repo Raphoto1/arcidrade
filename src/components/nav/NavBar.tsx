@@ -1,8 +1,14 @@
+
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
-function NavBar() {
+async function NavBar() {
+const session = await getServerSession(authOptions);
+console.log('session:', session);
+
   return (
     <nav className='navbar bg-base-100 shadow-sm'>
       <div className="navbar-start hidden lg:flex">
@@ -36,6 +42,7 @@ function NavBar() {
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
         <Link href={'/auth/login'} className='btn'>Ingresar</Link>
         <Link href={'/auth/genInvitation'} className='btn'>Registrarse</Link>
+        <Link href={'/auth/logOut'} className='btn'>Cerrar sesión</Link>
       </div>
       <div className='menuMobile flex-1 navbar-end lg:hidden'>
         <Link href={'/'} className='flex-1 pl-5 lg:hidden navbar-start'>

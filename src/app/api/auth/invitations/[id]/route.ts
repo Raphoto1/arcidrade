@@ -17,6 +17,8 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     const { id } = await params;
     const body = await request.json();
     const { password, email } = body;
+    console.log('Datos recibidos en la ruta:', { id, email, password });
+
     const updatePassword = await completeInvitation(id, email, password);
     console.log('updatePassword desde route invitations', updatePassword);
     return NextResponse.json({ message: 'Invitación procesada', updatePassword }, { status: 201 });

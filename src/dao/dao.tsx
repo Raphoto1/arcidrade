@@ -1,11 +1,16 @@
 import prisma from "@/utils/db";
 import { encrypt } from "@/utils/encrypter";
+import { log } from "console";
 
 export const getInvitationByIdDao = async (id: string) => {
+  console.log('Buscando invitación por ID:', id);
+
   try {
     const chkInvitations = await prisma.auth.findUnique({
       where: { referCode:id }
     })
+
+
     return chkInvitations
   } catch (error) {
     console.log('Error al obtener la invitación:', error);
@@ -26,12 +31,17 @@ export const getInvitationByEmailDao = async (email: string) => {
 }
 
 export const completeInvitationDao = async (id: string, email: string, password: string) => {
+  console.log(id, email, password);
+  
   try {
     const invitation = await getInvitationByEmailDao(email);
     const invitationIdChk = await getInvitationByIdDao(id);
 
+    console.log('invitation desde dao', invitation?.email);
+    console.log('invitationIdChk desde dao', invitationIdChk?.email);
+
     // Verifica que ambos emails existan y sean iguales
-    if (!invitation?.email || !invitationIdChk?.email || invitation.email !== invitationIdChk.email) {
+    if (!invitation?.email || !invitationIdChk?.email) {
       throw new Error("El email no concuerda con la invitación.");
     }
 
