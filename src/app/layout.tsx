@@ -5,6 +5,7 @@ import "./globals.css";
 //project imports
 import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/pieces/Footer";
+import GlobalContext from "@/context/GlobalContext";
 
 const robotoCond = Roboto_Condensed({
   variable: "--font-roboto-condensed",
@@ -13,7 +14,7 @@ const robotoCond = Roboto_Condensed({
 
 const oswald = Oswald({
   variable: "--font-oswald",
-  subsets: ["latin"]
+  subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
@@ -29,9 +30,11 @@ export default function RootLayout({
   return (
     <html lang='es'>
       <body className={`${robotoCond.variable} ${oswald.variable} antialiased`}>
-        <NavBar />
-        {children}
-        <Footer/>
+        <GlobalContext>
+          <NavBar />
+          {children}
+          <Footer />
+        </GlobalContext>
       </body>
     </html>
   );

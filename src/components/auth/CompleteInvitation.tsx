@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useChkInvitation, useInvitation } from "@/hooks/useInvitation";
+import { signIn } from "next-auth/react";
 
 export default function CompleteInvitation(idIn:any) {
   const router = useRouter();
@@ -26,12 +27,18 @@ export default function CompleteInvitation(idIn:any) {
           const response = await useInvitation(data, id);
           console.log(response);
       alert('Registrado Satisfactoriamente');
-      router.push('/auth/signin');
-        } catch (error) {
-          console.error('Error using invitation:', error);
-          alert('Email Incorrecto para esta invitación');
-        }
-      };
+      const result = signIn('credentials', {
+        email: data.email,
+        password: data.password,
+      });
+    if (result) {
+        router.push('/platform');
+      }
+    } catch (error) {
+      console.error('Error using invitation:', error);
+      alert('Email Incorrecto para esta invitación');
+    }
+  };
   return (
     <div className="flex w-full justify-center items-center">
        <div className='flex justify-center items-center h-1/2 p-2 min-w-sm md:min-w-xl'>

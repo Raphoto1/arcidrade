@@ -6,11 +6,11 @@ import { useChkInvitation, useInvitation } from "@/hooks/useInvitation";
 import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
-  const router = Router();
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const form = e.currentTarget;
-    const formData = new FormData(form);
+    const formData = new FormData(form as HTMLFormElement);
     const data: Record<string, any> = {};
     formData.forEach((value, key) => {
       data[key] = value;
@@ -21,7 +21,6 @@ export default function LoginForm() {
       alert("Credenciales inválidas");
     } else {
       redirect("/platform");
-      router.refresh();
     }
   };
   return (
