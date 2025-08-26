@@ -3,7 +3,7 @@ import { useHandleSubmitText } from "@/hooks/useFetch";
 
 export default function GenerateInvitation() {
   const options = [
-    { value: "instition", label: "Institución" },
+    { value: "institution", label: "Institución" },
     { value: "profesional", label: "Profesional" },
     { value: "manager", label: "Reclutador" },
   ];
@@ -20,10 +20,10 @@ export default function GenerateInvitation() {
     try {
       const response = await useHandleSubmitText(data, "/api/auth/register");
       console.log(response);
-      alert("Invitation generated successfully");
+      alert("Invitación generada satisfactoriamente");
     } catch (error) {
-      console.error("Error generating invitation:", error);
-      alert("Failed to generate invitation");
+      console.error("Creación de Invitacion Fallida, intente con otro Email", error);
+      alert("Creación de Invitacion Fallida, intente con otro Email");
     }
   };
   return (

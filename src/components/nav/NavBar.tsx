@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
@@ -6,19 +6,19 @@ import { useSession } from "next-auth/react";
 
 function NavBar() {
   const { data: session } = useSession();
-  console.log('session de nav',session);
+  console.log("session de nav", session);
 
   return (
     <nav className='navbar bg-base-100 shadow-sm'>
-      <div className="navbar-start hidden lg:flex">
-        <Link href={'/'} className='flex-1 pl-5'>
+      <div className='navbar-start hidden lg:flex'>
+        <Link href={"/"} className='flex-1 pl-5'>
           <Image src='/logos/Logo Arcidrade Full.png' alt='Arcidrade Consulting' width={150} height={150} />
         </Link>
       </div>
       <div className='navbar-center hidden lg:flex'>
         <ul className='menu menu-horizontal px-1 font-oswald font-bold text-base'>
           <li>
-            <a >Acerca de nosotros</a>
+            <a>Acerca de nosotros</a>
           </li>
           <li>
             <details>
@@ -39,12 +39,28 @@ function NavBar() {
         </ul>
       </div>
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
-        <Link href={'/auth/login'} className='btn'>Ingresar</Link>
-        <Link href={'/auth/genInvitation'} className='btn'>Registrarse</Link>
-        <Link href={'/auth/logOut'} className='btn'>Cerrar sesión</Link>
+        {session ? (
+          <div className="flex gap-2">
+            <Link href={"/platform"} className='btn'>
+              Plataforma
+            </Link>
+            <Link href={"/auth/logOut"} className='btn'>
+              Cerrar sesión
+            </Link>
+          </div>
+        ) : (
+          <div className="flex gap-2">
+            <Link href={"/auth/login"} className='btn'>
+              Ingresar
+            </Link>
+            <Link href={"/auth/genInvitation"} className='btn'>
+              Registrarse
+            </Link>{" "}
+          </div>
+        )}
       </div>
       <div className='menuMobile flex-1 navbar-end lg:hidden'>
-        <Link href={'/'} className='flex-1 pl-5 lg:hidden navbar-start'>
+        <Link href={"/"} className='flex-1 pl-5 lg:hidden navbar-start'>
           <Image src='/logos/Logo Arcidrade Cond.png' alt='Arcidrade Consulting' width={50} height={50} />
         </Link>
         <div className='dropdown dropdown-center'>
@@ -70,7 +86,7 @@ function NavBar() {
               </ul>
             </li>
             <li>
-              <Link href={'/services'}>Servicios</Link>
+              <Link href={"/services"}>Servicios</Link>
             </li>
           </ul>
         </div>

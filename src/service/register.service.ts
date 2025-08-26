@@ -10,7 +10,6 @@ enum area {
 }
 
 export async function registerUser(email: string, area: string, password?: string, invitation_sender?:string, invitation_sender_id?:string) {
-  console.log("Registering user:", email, area);
   // revisar el sender para saber si es un extender
   if (invitation_sender && invitation_sender_id === '' || null) {
     invitation_sender = 'external'
@@ -29,13 +28,13 @@ export async function registerUser(email: string, area: string, password?: strin
         invitation_sender_id: invitation_sender_id || 'external', // O el id real del usuario que invita
       },
     });
-    console.log("User creado:", user);
+    console.log("Invitación Enviada:", user);
     if (!user) {
       return null;
     }
-    return true;
+    return user;
   } catch (error) {
-    console.error("Error registering user:", error);
+    console.error("Error Al Registrar Usuario, intente con otro Email", error);
     return null;
   }
 }
