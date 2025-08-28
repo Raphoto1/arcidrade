@@ -6,21 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-model Auth {
-  referCode            String          @id @default(cuid())
-  email                String          @unique
-  password             String
-  area                 AreasAvailable
-  status               StatusAvailable
-  invitation_sender    SenderNum
-  invitation_sender_id String
-  creation_date        DateTime        @default(now())
-  update_date          DateTime        @updatedAt
-
-  profesional_data     Profesional_data[]
-}
-
+// Enums
 enum AreasAvailable {
   institution
   profesional
@@ -44,6 +30,34 @@ enum SenderNum {
   external
 }
 
+enum Sub_area {
+  doctor
+  nurse
+}
+//auth user Id_______________________________________________
+model Auth {
+  referCode            String          @id @default(cuid())
+  email                String          @unique
+  password             String
+  area                 AreasAvailable
+  status               StatusAvailable
+  invitation_sender    SenderNum
+  invitation_sender_id String
+  creation_date        DateTime        @default(now())
+  update_date          DateTime        @updatedAt
+
+  profesional_data           Profesional_data[]
+  main_study                 Main_study[]
+  study_specialization       Study_specialization[]
+  study_speciality_favorite  Study_speciality_favorite[]
+  profesional_certifications  Profesional_certifications[]
+  experience                 Experience[]
+  institution_data           Institution_Data[]
+  institution_specialization  Institution_specialization[]
+  institution_certifications   Institution_Certifications[]
+  goals                        Goals[]
+}
+//profesional_________________________________________________
 model Profesional_data {
   id          Int      @id @default(autoincrement())
   user_id     String
@@ -59,6 +73,147 @@ model Profesional_data {
   local_id    String
   cv_file     String
   cv_link     String
+  avatar      String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Main_study {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  status      String
+  institution String
+  country     String
+  start_date  DateTime
+  end_date    DateTime
+  description String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  file        String
+  link        String
+  sub_area    Sub_area
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Study_specialization {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  status      String
+  institution String
+  country     String
+  start_date  DateTime
+  end_date    DateTime
+  description String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  file        String
+  link        String
+  sub_area    Sub_area
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Study_speciality_favorite {
+  id                  Int     @id @default(autoincrement())
+  user_id             String
+  study_speciality_id Int
+  study_fav           Boolean @default(false)
+  auth                Auth    @relation(fields: [user_id], references: [referCode])
+}
+
+model Profesional_certifications {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  institution String
+  country     String
+  status      String
+  start_date  DateTime
+  end_date    DateTime
+  description String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  file        String
+  link        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Experience {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  institution String
+  country     String
+  state       String
+  city        String
+  status      String
+  start_date  DateTime
+  end_date    DateTime
+  description String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  file        String
+  link        String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+//institutions_________________________________________________
+model Institution_Data {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  fake_name   String
+  name        String
+  main_specialty String
+  country    String
+  state      String
+  city       String
+  avatar     String
+  established DateTime
+  website     String
+  phone       String
+  status      String
+  auth        Auth    @relation(fields: [user_id], references: [referCode])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Institution_specialization {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  status      String
+  description String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Institution_Certifications {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  institution String
+  country     String
+  status      String
+  year        Int
+  description String
+  link        String
+  file        String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Goals {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  title       String
+  description String
+  status      String
+  year        Int
+  file        String
+  link        String
   auth        Auth     @relation(fields: [user_id], references: [referCode])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
