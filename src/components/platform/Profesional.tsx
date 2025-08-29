@@ -1,9 +1,11 @@
 import React from 'react'
 
+import HeroHeader from './pieces/HeroHeader'
+
 export default function Profesional() {
   return (
     <div>
-      <h1>Bienvenido a la sección Profesional</h1>
+      <HeroHeader/>
     </div>
   )
 }

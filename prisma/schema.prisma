@@ -56,6 +56,8 @@ model Auth {
   institution_specialization  Institution_specialization[]
   institution_certifications   Institution_Certifications[]
   goals                        Goals[]
+  campaign_data               Campaign_data[]
+  leads_send                  Leads_send[]
 }
 //profesional_________________________________________________
 model Profesional_data {
@@ -217,4 +219,36 @@ model Goals {
   auth        Auth     @relation(fields: [user_id], references: [referCode])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
+}
+
+//campaign___________________________________________________
+model Campaign_data {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  name       String
+  last_name       String
+  company       String
+  role         String
+  description String
+  status      String
+  country     String
+  state       String
+  city        String
+  file        String
+  link        String
+  avatar      String
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model Leads_send {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  campaign_id String
+  email       String
+  status      String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  auth        Auth     @relation(fields: [user_id], references: [referCode])
 }
