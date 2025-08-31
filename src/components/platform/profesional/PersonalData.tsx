@@ -4,7 +4,7 @@ import { IoDocumentAttachOutline } from "react-icons/io5";
 
 export default function PersonalData() {
   return (
-      <div className='flex-col justify-start h-full bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center'>
+      <div className='flex-col justify-start md:h-3/4 bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center'>
           <div className="pb-2">
               <h1 className="text-2xl fontArci text-center">Curriculum</h1>
           </div>
