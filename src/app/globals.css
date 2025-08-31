@@ -33,3 +33,11 @@ input {
   border-radius: 5px;
   border-width: 0.5px;
 }
+
+.dataSpaceTitle {
+  font-family: var(--font-oswald);
+}
+
+.fontArci{
+  font-family: var(--font-oswald);
+}
