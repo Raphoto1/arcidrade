@@ -13,15 +13,15 @@ export default function page() {
   return (
     <div>
       { 
-      session.user.area === 'institution' ? (
+      session?.user.area === 'institution' ? (
         <Institution />
-      ) : session.user.area === 'profesional' ? (
+      ) : session?.user.area === 'profesional' ? (
         <Profesional />
       ) : session.user.area === 'manager' ? (
         <Manager />
-      ) : session.user.area === 'campaign' ? (
+      ) : session?.user.area === 'campaign' ? (
         <Campaign />
-      ) : session.user.area === 'victor' ? (
+      ) : session?.user.area === 'victor' ? (
         <Victor />
       ) : (
         <div>No component found for this user area</div>

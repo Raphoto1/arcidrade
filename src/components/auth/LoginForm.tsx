@@ -1,11 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
 import { redirect } from "next/navigation";
-import Router from "next/router";
-import { useChkInvitation, useInvitation } from "@/hooks/useInvitation";
 import { signIn } from "next-auth/react";
+import React, { useState } from "react";
+
+import Loading from "@/app/auth/loading";
 
 export default function LoginForm() {
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -15,16 +16,20 @@ export default function LoginForm() {
     formData.forEach((value, key) => {
       data[key] = value;
     });
+    setLoading(true);
     const response = await signIn("credentials", { ...data, redirect: false });
     console.log("respuesta del login:", response);
     if (response?.error) {
+      setLoading(false);
       alert("Credenciales inválidas");
     } else {
+      setLoading(false);
       redirect("/platform");
     }
   };
   return (
     <div className='flex w-full justify-center items-center'>
+      {loading && <Loading />}
       <div className='flex justify-center items-center h-1/2 p-2 min-w-sm md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
           <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Entrar a Arcidrade</h2>

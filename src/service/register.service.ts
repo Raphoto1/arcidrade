@@ -9,8 +9,10 @@ enum area {
   campaign,
 }
 
-export async function registerUser(email: string, area: string, password?: string, invitation_sender?:string, invitation_sender_id?:string) {
+export async function registerUser(email: string, area: string, invitation_sender?:string, invitation_sender_id?:string) {
   // revisar el sender para saber si es un extender
+  console.log("Invitación enviada desde:", invitation_sender, invitation_sender_id);
+
   if (invitation_sender && invitation_sender_id === '' || null) {
     invitation_sender = 'external'
     invitation_sender_id = 'external'
