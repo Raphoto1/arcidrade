@@ -20,8 +20,9 @@
     ],
     "paths": {
       "@/*": ["./src/*"]
-    }
+    },
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/auth/invitations/[id]/route.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/auth/invitations/[id]/route.js", "./src/types", "src/app/api/auth/[...nextauth]/route.ts", "src/utils/authOptions.js"],
   "exclude": ["node_modules"]
 }

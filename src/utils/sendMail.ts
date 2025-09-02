@@ -12,9 +12,9 @@ const SubjectInvitation = "Le han invitado a ARCIDRADE";
 
 
 const transporter = nodemailer.createTransport({
-    service: "hostinger",
+
     host: SMTP_SERVER_HOST,
-    port: MAIL_PORT,
+    port: Number(MAIL_PORT),
     auth: {
         user: NO_REPLY_MAIL,
         pass: NO_REPLY_MAIL_PASSWORD
@@ -106,30 +106,4 @@ export async function sendInvitationMail({
   console.log('Message Sent', info.messageId);
   console.log('Mail sent to', SITE_MAIL_RECIEVER);
   return info;
-}
-
-export async function contactMail({
-  email,
-  name,
-  message,
-}: {
-  email: string;
-  name: string;
-  message: string;
-}) {
-  const subject = `New contact form submission from ${name}`;
-  const html = `
-    <p>You have a new contact form submission:</p>
-    <ul>
-      <li><strong>Name:</strong> ${name}</li>
-      <li><strong>Email:</strong> ${email}</li>
-      <li><strong>Message:</strong> ${message}</li>
-    </ul>
-  `;
-  return sendMail({
-    email: NO_REPLY_MAIL,
-    subject,
-    text: message,
-    html,
-  });
 }

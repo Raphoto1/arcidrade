@@ -8,24 +8,29 @@ import Manager from '@/components/platform/Manager';
 import Campaign from '@/components/platform/Campaign';
 import Victor from '@/components/platform/Victor';
 
-export default function page() {
-  const { data: session } = useSession();
-  return (
-    <div>
-      { 
-      session?.user.area === 'institution' ? (
-        <Institution />
-      ) : session?.user.area === 'profesional' ? (
-        <Profesional />
-      ) : session.user.area === 'manager' ? (
-        <Manager />
-      ) : session?.user.area === 'campaign' ? (
-        <Campaign />
-      ) : session?.user.area === 'victor' ? (
-        <Victor />
-      ) : (
-        <div>No component found for this user area</div>
-      ) }
-    </div>
-  )
+export default function Page() {
+  const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    return <div>Cargando sesión...</div>;
+  }
+
+  if (!session?.user?.area) {
+    return <div>Sesión no válida o usuario sin área definida</div>;
+  }
+
+  switch (session.user.area) {
+    case 'institution':
+      return <Institution />;
+    case 'profesional':
+      return <Profesional />;
+    case 'manager':
+      return <Manager />;
+    case 'campaign':
+      return <Campaign />;
+    case 'victor':
+      return <Victor />;
+    default:
+      return <div>No component found for this user area</div>;
+  }
 }
