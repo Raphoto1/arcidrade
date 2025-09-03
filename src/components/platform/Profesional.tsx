@@ -2,13 +2,15 @@ import React from 'react'
 
 import HeroHeader from './pieces/HeroHeader'
 import ManageGrid from './profesional/ManageGrid'
-import ThreeColumnGrid from '../Grids/ThreeColumnGrid'
+import MyAplications from './profesional/MyAplications'
+import Offers from './profesional/Offers'
 export default function Profesional() {
   return (
-    <div>
+    <div className=''>
       <HeroHeader />
       <ManageGrid />
-      <ThreeColumnGrid />
+      <MyAplications />
+      <Offers />
     </div>
   )
 }

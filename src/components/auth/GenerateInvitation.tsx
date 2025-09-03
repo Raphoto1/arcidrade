@@ -24,7 +24,7 @@ console.log(session);
     });
     data.invitation_sender = session?.user.area || '';
     data.invitation_sender_id = session?.user.referCode || '';
-
+    data.invitation_sender_role = session?.user.area || '';
     try {
       setIsLoading(true);
       const response = await useHandleSubmitText(data, "/api/auth/register");

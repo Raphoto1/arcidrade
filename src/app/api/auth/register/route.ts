@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
-import { registerUser } from "@/service/register.service";
-import {sendInvitationMail} from "@/utils/sendMail";
+import { registerUser, registerLeads } from "@/service/register.service";
+import { sendInvitationMail } from "@/utils/sendMail";
 
 export async function POST(request: Request) {
   const body = await request.json();
-  const { email, area, invitation_sender, invitation_sender_id } = body;
+  const { email, area, invitation_sender, invitation_sender_id, invitation_sender_role } = body;
   console.log(email, area, invitation_sender);
   // Perform registration logic here
   const user = await registerUser(email, area, invitation_sender, invitation_sender_id);
@@ -14,10 +14,12 @@ export async function POST(request: Request) {
   } else {
     const emailToSend = {
       sendTo: user.email,
-      referCode: user.referCode
-    }
+      referCode: user.referCode,
+    };
     await sendInvitationMail(emailToSend);
-
+    if (invitation_sender_role === "campaign") {
+      const lead = await registerLeads(invitation_sender_id, user.email);
+    }
     return NextResponse.json({ message: "Invitación enviada satisfactoriamente" }, { status: 201 });
   }
 }
