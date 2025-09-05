@@ -34,6 +34,16 @@ input {
   border-width: 0.5px;
 }
 
+.input{
+  border-color: var(--dark-gray);
+  background-color: whitesmoke;
+  padding: 0.5rem;
+  color: gray;
+  border-radius: 5px;
+  border-width: 0.5px;
+
+}
+
 .dataSpaceTitle {
   font-family: var(--font-oswald);
 }

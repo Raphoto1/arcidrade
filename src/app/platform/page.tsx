@@ -2,8 +2,8 @@
 import React from 'react'
 import { useSession } from "next-auth/react";
 
-import Institution from '@/components/platform/Institution'
-import Profesional from '@/components/platform/Profesional'
+import InstitutionMain from '@/components/platform/institution/InstitutionMain'
+import Profesional from '@/components/platform/profesional/Profesional'
 import Manager from '@/components/platform/Manager';
 import Campaign from '@/components/platform/Campaign';
 import Victor from '@/components/platform/Victor';
@@ -21,7 +21,7 @@ export default function Page() {
 
   switch (session.user.area) {
     case 'institution':
-      return <Institution />;
+      return <InstitutionMain />;
     case 'profesional':
       return <Profesional />;
     case 'manager':

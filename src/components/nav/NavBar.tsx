@@ -6,7 +6,6 @@ import { useSession } from "next-auth/react";
 
 function NavBar() {
   const { data: session } = useSession();
-  console.log("session de nav", session);
 
   return (
     <nav className='navbar bg-base-100 shadow-sm'>
@@ -18,7 +17,7 @@ function NavBar() {
       <div className='navbar-center hidden lg:flex'>
         <ul className='menu menu-horizontal px-1 font-oswald font-bold text-base'>
           <li>
-            <a>Acerca de nosotros</a>
+            <Link href={"/about"}>Acerca de nosotros</Link>
           </li>
           <li>
             <details>
@@ -40,7 +39,7 @@ function NavBar() {
       </div>
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
         {session ? (
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Link href={"/platform"} className='btn'>
               Plataforma
             </Link>
@@ -49,7 +48,7 @@ function NavBar() {
             </Link>
           </div>
         ) : (
-          <div className="flex gap-2">
+          <div className='flex gap-2'>
             <Link href={"/auth/login"} className='btn'>
               Ingresar
             </Link>
@@ -88,6 +87,25 @@ function NavBar() {
             <li>
               <Link href={"/services"}>Servicios</Link>
             </li>
+            {session ? (
+              <ul>
+                <li>
+                  <Link href={"/platform"}>Plataforma</Link>
+                </li>
+                <li>
+                  <Link href={"/auth/logOut"}>Cerrar Sesión</Link>
+                </li>
+              </ul>
+            ) : (
+              <ul>
+                <li>
+                  <Link href={"/auth/login"}>Iniciar sesión</Link>
+                </li>
+                <li>
+                  <Link href={"/auth/genInvitation"}>Registrarse</Link>
+                </li>
+              </ul>
+            )}
           </ul>
         </div>
       </div>
