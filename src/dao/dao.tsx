@@ -67,14 +67,18 @@ export const completeInvitationDao = async (id: string, email: string, password:
 // Platform - Profesional_________________________________________________________________
 export const getProfesionalDataByRefferCodeDao = async (user_id: string) => {
   try {
-    const profesionalData = await prisma.profesional_data.findUnique({
-      where: { user_id: user_id },
+    const profesionalData = await prisma.profesional_data.findFirst({
+      where: { user_id },
     });
     return profesionalData;
   } catch (error) {
     console.log("error de Profesional Data By Reffer Code Dao", error);
   }
 };
+// agregar info al profesional
+export const createProfesionalDataDao = async (user_id: string) => {
+  
+}
 // actualizar estado de profesional
 
 export const updateProfesionalStatus = async (id: string, status: StatusAvailable) => {

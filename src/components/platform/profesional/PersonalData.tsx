@@ -1,9 +1,9 @@
 import React from "react";
 
 import { IoDocumentAttachOutline } from "react-icons/io5";
-import ProfesionalDataForm from "../../modals/platform/profesional/ProfesionalDataForm";
 import ModalForForm from "../../modals/ModalForForms";
-import ProfesionalProfileForm from "../../forms/platform/profesional/ProfesionalProfileForm";
+import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/ProfesionalProfileHookForm";
+
 
 export default function PersonalData() {
   return (
@@ -73,7 +73,7 @@ export default function PersonalData() {
               <div className="controles justify-end flex gap-2 mt-4">
           <button className="btn bg-[var(--soft-arci)] h-7">Cambiar contraseña</button>
           <ModalForForm title="Modificar">
-            <ProfesionalProfileForm />
+<ProfesionalProfileHookForm />
           </ModalForForm>
               </div>
       </div>

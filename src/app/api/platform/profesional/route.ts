@@ -12,7 +12,8 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
     try {
     const body = await request.json();
-    console.log(body);
+      console.log(body);
+      //distribuir la data en las tablas, ajustar status 
     return NextResponse.json({ message: "Profesional API is working!" });
   } catch (error) {
     console.error("Error in Profesional API:", error);
