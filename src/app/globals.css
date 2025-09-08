@@ -51,3 +51,7 @@ input {
 .fontArci{
   font-family: var(--font-oswald);
 }
+
+.fontRoboto{
+  font-family: var(--font-robotoC);
+}

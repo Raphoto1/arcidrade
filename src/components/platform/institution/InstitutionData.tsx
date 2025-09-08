@@ -3,28 +3,12 @@ import React from "react";
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import ModalForForm from "../../modals/ModalForForms";
 import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/ProfesionalProfileHookForm";
-import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
 
-export default function PersonalData() {
+export default function InstitutionData() {
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:h-auto'>
       <div className='pb-2'>
-        <h1 className='text-2xl fontArci text-center'>Curriculum</h1>
-      </div>
-      <div className='fileSpace bg-gray-50 w-full rounded-sm p-2 grid grid-cols-3 gap-2 shadow-xl'>
-        <div className='flex max-w-xs flex-shrink-0 justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
-          <IoDocumentAttachOutline size={36} />
-        </div>
-        <div>
-          <span>Archivo:</span>
-          <p>Nombre de archivo</p>
-        </div>
-        <div className='controls grid'>
-          <button className='btn bg-[var(--orange-arci)] h-7 w-20 text-white'>Eliminar</button>
-          <ModalForForm title='Modificar'>
-            <FileCvForm />
-           </ModalForForm>
-        </div>
+        <h1 className='text-2xl fontArci text-center'>Información General</h1>
       </div>
       <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
         <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>

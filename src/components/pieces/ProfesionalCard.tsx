@@ -2,7 +2,7 @@ import React from "react";
 import { CiMedal } from "react-icons/ci";
 import Image from "next/image";
 
-export default function InstitutionCard() {
+export default function ProfesionalCard() {
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
       <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
