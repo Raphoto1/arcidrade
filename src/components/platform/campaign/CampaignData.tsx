@@ -18,7 +18,11 @@ export default function InstitutionData() {
             <p className='text-(--main-arci)'>Juan Pérez</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='text-light'>Fecha de Fundación</h3>
+            <h3 className='font-light'>Apellido</h3>
+            <p className='text-(--main-arci)'>Juan Pérez</p>
+          </div>
+          <div className='flex justify-between'>
+            <h3 className='text-light'>Fecha de Nacimiento</h3>
             <p className='text-(--main-arci)'>30/06/1987</p>
           </div>
           <div className='flex justify-between'>
@@ -26,7 +30,7 @@ export default function InstitutionData() {
             <p className='text-(--main-arci)'>juan.perez@example.com</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Numero de Contacto</h3>
+            <h3 className='font-light'>Campaña</h3>
             <p className='text-(--main-arci)'>123-456-7890</p>
           </div>
           <div className='flex justify-between'>
@@ -36,14 +40,6 @@ export default function InstitutionData() {
           <div className='flex justify-between'>
             <h3 className='font-light'>Ciudad</h3>
             <p className='text-(--main-arci)'>Guanajuato</p>
-          </div>
-          <div className='flex justify-between'>
-            <h3 className='font-light'>Especialización</h3>
-            <p className='text-(--main-arci)'>Medicina Nuclear</p>
-          </div>
-          <div className='flex justify-between'>
-            <h3 className='font-light'>NIF</h3>
-            <p className='text-(--main-arci)'>12345678</p>
           </div>
         </div>
         <div className='controles justify-end flex gap-2 mt-4'>

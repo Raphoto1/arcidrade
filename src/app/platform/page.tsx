@@ -5,8 +5,8 @@ import { useSession } from "next-auth/react";
 import InstitutionMain from '@/components/platform/institution/InstitutionMain'
 import Profesional from '@/components/platform/profesional/Profesional'
 import Manager from '@/components/platform/Manager';
-import Campaign from '@/components/platform/Campaign';
-import Victor from '@/components/platform/Victor';
+import Campaign from '@/components/platform/campaign/Campaign';
+import Victor from '@/components/platform/Victor/Victor';
 
 export default function Page() {
   const { data: session, status } = useSession();

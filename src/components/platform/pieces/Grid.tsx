@@ -1,7 +1,5 @@
 import React from "react";
 
-import InstitutionCard from "../../pieces/InstitutionCard";
-
 export default function Grid({children}: any) {
   return (
     <div className='flex justify-center'>

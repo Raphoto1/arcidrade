@@ -13,6 +13,7 @@ enum AreasAvailable {
   manager
   collab
   campaign
+  victor
 }
 
 enum StatusAvailable {
