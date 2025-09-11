@@ -7,8 +7,8 @@ import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
 
 export default function PersonalData() {
   return (
-    <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:h-auto'>
-      <div className='pb-2'>
+    <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:h-auto'>
+      <div className='pb-1'>
         <h1 className='text-2xl fontArci text-center'>Curriculum</h1>
       </div>
       <div className='fileSpace bg-gray-50 w-full rounded-sm p-2 grid grid-cols-3 gap-2 shadow-xl'>

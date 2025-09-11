@@ -2,9 +2,9 @@ import React from "react";
 import Image from "next/image";
 
 import ModalForPreview from "@/components/modals/ModalForPreview";
-import ProfesionalDetail from "./ProfesionalDetail";
-import ProfesionalDetailFull from "./ProfesionalDetailFull";
-export default function HeroHeader() {
+import InstitutionDetail from "./institutionDetail";
+import InstitutionDetailFull from "./InstitutionDetailFull";
+export default function HeroHeaderInstitution() {
   //AJUSTAR IMAGEN DE FONDO Y ALINEADO EN MD
   return (
     <div className='relative w-full md:h-[320px] overflow-hidden'>
@@ -33,7 +33,7 @@ export default function HeroHeader() {
               alt='fillImage'
             />
           </div>
-          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2'>Nombre de Medico con Apellido</h2>
+          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2'>Nombre de Hospital</h2>
         </div>
         <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3'>
           <h3 className='text-xl font-bold font-var(--font-oswald)'>Presentación</h3>
@@ -51,13 +51,11 @@ export default function HeroHeader() {
       <div className='options grid justify-center relative z-10'>
         <h3 className='text-xl text-center'>titulo de carrera</h3>
         <div className="flex">
-          <button className='btn bg-[var(--main-arci)] text-white'>Buscando Ofertas</button>
-          <button className='btn bg-[var(--main-arci)] text-white'>Disponible Para trabajar</button>
           <ModalForPreview title={"Preview"}>
-            <ProfesionalDetail />
+            <InstitutionDetail />
           </ModalForPreview>
           <ModalForPreview title={"Preview Full"}>
-            <ProfesionalDetailFull />
+            <InstitutionDetailFull />
           </ModalForPreview>
         </div>
       </div>
