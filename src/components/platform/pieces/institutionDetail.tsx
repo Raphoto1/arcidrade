@@ -79,7 +79,7 @@ export default function institutionDetail() {
           </div>
         </div>
       </div>
-            <div className='Der flex w-full bg-gray-200 rounded-sm z-10'>
+      <div className='Der flex w-full bg-gray-200 rounded-sm z-10'>
         <div className=' p-2 rounded-sm z-10 md:w-full'>
           <h1 className='text-2xl fontArci'>Procesos Disponibles</h1>
           <div className='bg-white rounded-md p-1 justify-center text-center mt-2'>

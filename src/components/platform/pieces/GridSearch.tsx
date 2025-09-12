@@ -11,7 +11,7 @@ export default function GridSearch() {
           <input type="text" placeholder="Buscar ofertas..." className="p-2 border border-gray-300 rounded-md mr-2" />
           <ImSearch size={30}/>
       </div>
-        <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-4 md:justify-center md:align-middle md:items-center'>
+        <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
           <InstitutionCard />
           <InstitutionCard />
           <InstitutionCard />

@@ -98,7 +98,7 @@ export default function InstitutionDetailFull() {
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci'>Certificaciones</h1>
 
-        <div className='bg-white rounded-md p-1'>
+        <div className='bg-white rounded-md p-1 mt-2'>
           <div className='flex justify-between'>
             <div>
               <h3 className='fontArci text-[var(--main-arci)]'>Best place to work</h3>
