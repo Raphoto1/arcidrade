@@ -9,7 +9,7 @@ export default function ActiveProcess() {
   return (
     <div className='grid grid-cols-1 w- p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <div className='grid justify-center align-middle pb-2'>
-        <ModalForPreview title={'Crear Proceso'}>
+        <ModalForPreview title={'Crear Proceso Muestra Preview'}>
           <Process />
         </ModalForPreview>
       </div>

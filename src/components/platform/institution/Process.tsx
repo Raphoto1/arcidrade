@@ -21,22 +21,22 @@ export default function Process() {
             <div className='flex w-full flex-col md:flex-row gap-2'>
               <div className='cube1 md:w-1/3 bg-white rounded-md px-1'>
                 <p className='text-success text-end'>Activo</p>
-                <div className='flex justify-between'>
+                <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Area:</h4>
                   <p className='text-md text-[var(--main-arci)]'>Medico</p>
                 </div>
-                <div className='flex justify-between'>
+                <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidad Principal:</h4>
                   <p className='text-md text-[var(--main-arci)]'>Cirujano</p>
                 </div>
-                <div className='flex justify-between'>
+                <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidades Secundarias:</h4>
                   <div>
                     <p className='text-md text-[var(--main-arci)]'>Pediatra</p>
                     <p className='text-md text-[var(--main-arci)]'>Oncologo</p>
                   </div>
                 </div>
-                <div className='flex justify-between'>
+                <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Status:</h4>
                   <p className='text-md text-[var(--main-arci)]'>Graduado</p>
                 </div>
@@ -67,9 +67,9 @@ export default function Process() {
           </div>
 
           <div className='flex flex-col gap-2 h-auto'>
-                    <ModalForPreviewBtnLong title={'Buscar Candidatos'}>
-                      <SearchCandidates />
-                    </ModalForPreviewBtnLong>
+            <ModalForPreviewBtnLong title={"Buscar Candidatos Muestra Preview"}>
+              <SearchCandidates />
+            </ModalForPreviewBtnLong>
             <button className='btn bg-[var(--orange-arci)] text-sm h-auto'>Archivar Procesos</button>
             <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
             <button className='btn bg-warning h-auto text-sm'>Pausar Proceso</button>
@@ -79,7 +79,7 @@ export default function Process() {
         </div>
       </div>
       <div className='w-full pt-2'>
-        <h2 className='text-xl font-bold text-[var(--main-arci)]'>Seleccionados</h2>
+        <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados</h2>
         <Grid>
           <ProfesionalCard />
           <ProfesionalCard />
@@ -87,7 +87,7 @@ export default function Process() {
         </Grid>
       </div>
       <div className='w-full pt-2'>
-        <h2 className='text-xl font-bold text-[var(--main-arci)]'>Seleccionados Arcidrade</h2>
+        <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
         <Grid>
           <ProfesionalCard />
           <ProfesionalCard />
