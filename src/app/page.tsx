@@ -12,6 +12,15 @@ import ThreeColumnGrid from "@/components/Grids/ThreeColumnGrid";
 export default function Home() {
   return (
     <main className="flex flex-col items-center gap- min-h-screen justify-center">
+      <div>
+        Usuarios Para prueba
+        <div>
+
+          <p>Institution: rafa@creativerafa.com pass:12345</p>
+          <p>Profesional: rrhhmmtt@gmail.com pass:12345</p>
+          <p>admin: sdsQ@huss.com pass:12345</p>
+        </div>
+      </div>
       <Carrousel />
       <Steps />
       <GridHomeWindows />

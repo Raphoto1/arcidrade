@@ -24,10 +24,10 @@ function NavBar() {
               <summary>Ofertas</summary>
               <ul className='p-2'>
                 <li>
-                  <a>Instituciones</a>
+                  <Link href={"/offers/Institutions"}>Instituciones</Link>
                 </li>
                 <li>
-                  <a>Profesionales</a>
+                  <Link href={"/offers/Profesionals"}>Profesionales</Link>
                 </li>
               </ul>
             </details>
@@ -77,10 +77,10 @@ function NavBar() {
               <a>Ofertas</a>
               <ul className='p-2'>
                 <li>
-                  <a>Instituciones</a>
+                  <Link href={"/offers/Institutions"}>Instituciones</Link>
                 </li>
                 <li>
-                  <a>Profesionales</a>
+                  <Link href={"/offers/Profesionals"}>Profesionales</Link>
                 </li>
               </ul>
             </li>
