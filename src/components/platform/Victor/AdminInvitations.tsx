@@ -1,10 +1,5 @@
 import React from "react";
 
-import ProcessPill from "./pieces/adminProcess/ProcessPill";
-import PendingProcess from "./pieces/adminProcess/PendingProcess";
-import PendingProcessArci from "./pieces/adminProcess/PendingProcessArci";
-import ActiveProcess from "./pieces/adminProcess/ActiveProcess";
-import ArchivedProcess from "./pieces/adminProcess/ArchivedProcess";
 import SentInvitations from "./pieces/adminInvitations/SentInvitations";
 import ArchivedInvitations from "./pieces/adminInvitations/ArchivedInvitations";
 
