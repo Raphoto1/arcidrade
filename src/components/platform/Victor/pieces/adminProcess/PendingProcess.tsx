@@ -1,6 +1,8 @@
 import React from "react";
 
 import ProcessPill from "./ProcessPill";
+import ModalForPreview from "@/components/modals/ModalForPreview";
+import AdminPendingProcess from "./AdminPendingProcess";
 
 export default function PendingProcess() {
   return (
@@ -10,6 +12,11 @@ export default function PendingProcess() {
       </div>
       <div>
         <ProcessPill />
+      </div>
+      <div className="flex justify-center pt-2">
+        <ModalForPreview title='Administrar Procesos'>
+          <AdminPendingProcess />
+        </ModalForPreview>
       </div>
     </div>
   );
