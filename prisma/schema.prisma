@@ -64,19 +64,19 @@ model Auth {
 model Profesional_data {
   id          Int      @id @default(autoincrement())
   user_id     String
-  fake_name   String
+  fake_name   String?
   name        String
-  last_name   String
-  phone       String
-  birth_date  DateTime
-  description String
-  country     String
-  state       String
-  city        String
-  local_id    String
-  cv_file     String
-  cv_link     String
-  avatar      String
+  last_name   String?
+  phone       String?
+  birth_date  DateTime?
+  description String?
+  country     String?
+  state       String?
+  city        String?
+  local_id    String?
+  cv_file     String?
+  cv_link     String?
+  avatar      String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt

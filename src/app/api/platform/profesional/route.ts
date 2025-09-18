@@ -1,3 +1,4 @@
+import { createUserData } from "@/controller/userData.controller";
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
@@ -10,9 +11,12 @@ export const GET = async (request: Request) => {
 }
 
 export const POST = async (request: Request) => {
-    try {
+  try {
     const body = await request.json();
-      console.log(body);
+    console.log(body);
+    const response = await createUserData(body);
+    console.log(response);
+    
       //distribuir la data en las tablas, ajustar status 
     return NextResponse.json({ message: "Profesional API is working!" });
   } catch (error) {

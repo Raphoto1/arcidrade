@@ -9,7 +9,11 @@ import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 
 export default function ProfesionalProfileHookForm() {
-  const { register, handleSubmit, formState:{errors} } = useForm();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
   const { data: session } = useSession();
 
   const [email, setEmail] = useState(session?.user.email);
@@ -53,18 +57,18 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const handleStudyCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log(e.target.value);
-    setStudyCountry(e.target.value);
+    console.log('study country selected',e.target.value);
+    const countryName = e.target.value
+    setStudyCountry(countryName);
   };
-    
-    const onSubmit = handleSubmit( async (data) => {
-        console.log(data);
-        const response = await useHandleSubmitText(data, '/api/platform/profesional')
-        console.log(response);
-        
-    })
-    
-      useEffect(() => {
+
+  const onSubmit = handleSubmit(async (data) => {
+    console.log(data);
+    const response = await useHandleSubmitText(data, "/api/platform/profesional");
+    console.log(response);
+  });
+
+  useEffect(() => {
     //set de cities
     const countryData = Country.getAllCountries();
     setCountryList(countryData);
@@ -75,22 +79,19 @@ export default function ProfesionalProfileHookForm() {
       <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
           <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Datos Personales</h2>
-          <form
-            onSubmit={onSubmit}
-            className='form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full'>
+          <form onSubmit={onSubmit} className='form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full'>
             <div className='block'>
               <label htmlFor='name' className='block'>
                 Nombre/s
               </label>
-              <input type='text' className='w-xs' {...register("name", {required:true})} />
-                      </div>
-                      {errors.name && <span>Nombre es Requerido</span>}
+              <input type='text' className='w-xs' {...register("name", { required: true })} />
+            </div>
+            {errors.name && <span>Nombre es Requerido</span>}
             <div>
               <label htmlFor='last_name' className='block'>
                 Apellido/s
               </label>
-                          <input type='text' {...register("last_name")} className='w-xs' />
-                          
+              <input type='text' {...register("last_name")} className='w-xs' />
             </div>
             <div>
               <label htmlFor='birthDate' className='block'>
@@ -151,7 +152,12 @@ export default function ProfesionalProfileHookForm() {
               <label htmlFor='city' className='block'>
                 Ciudad de Nacionalidad
               </label>
-              <select id='city' {...register("city")} value={citySelected} onChange={handleCityChange} className='select select-bordered w-full max-w-xs mb-2 input'>
+              <select
+                id='city'
+                {...register("city")}
+                value={citySelected}
+                onChange={handleCityChange}
+                className='select select-bordered w-full max-w-xs mb-2 input'>
                 <option value=''>Seleccione Una Ciudad</option>
                 {cityList.map((city, index) => (
                   <option key={index} value={city.name as string}>
@@ -167,18 +173,19 @@ export default function ProfesionalProfileHookForm() {
               <input type='text' {...register("title")} className='w-xs' />
             </div>
             <div>
-              <label htmlFor='titleCountry' className='block'>
+              <label htmlFor='studyCountry' className='block'>
                 Pais del estudio Principal
               </label>
               <select
                 id='studyCountry'
+                {...register('studyCountry')}
                 name='studyCountry'
                 value={studyCountry}
                 onChange={handleStudyCountryChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
                 <option value=''>Seleccione Un Pais</option>
                 {countryList.map((country, index) => (
-                  <option key={index} value={country.isoCode as string}>
+                  <option key={index} value={country.name as string}>
                     {country.name as string}
                   </option>
                 ))}
