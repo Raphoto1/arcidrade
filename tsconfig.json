@@ -19,7 +19,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@backendTypes/*": ["./src/types/backendTypes/*"],
+
     },
     "typeRoots": ["./node_modules/@types", "./src/types"]
   },

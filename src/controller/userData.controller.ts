@@ -4,11 +4,10 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 // my imports
 import { createUserDataService, createUserDataMainStudy } from "@/service/userData.service";
-//types
-import type { UserDataCatch } from "@/types/backendTypes/userDataCatchType";
-import type { Profesional_data } from "@prisma/client";
 
-export const createUserData = async (data: UserDataCatch) => {
+
+
+export const createUserData = async (data: any) => {
   //se extrae el session
   const session = await getServerSession(authOptions);
   //se revisa si es profesional o institution
@@ -59,7 +58,7 @@ export const createUserData = async (data: UserDataCatch) => {
   return data;
 };
 
-export const updateUserData = async (data: UserDataCatch) => {
+export const updateUserData = async (data: any) => {
   console.log("actualizo");
 };
 
