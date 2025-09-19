@@ -5,7 +5,6 @@ import { StatusAvailable } from "@prisma/client";
 // auth
 export const getInvitationByIdDao = async (id: string) => {
   console.log("Buscando invitación por ID:", id);
-
   try {
     const chkInvitations = await prisma.auth.findUnique({
       where: { referCode: id },
@@ -17,7 +16,6 @@ export const getInvitationByIdDao = async (id: string) => {
     return null;
   }
 };
-
 export const getInvitationByEmailDao = async (email: string) => {
   try {
     const chkInvitations = await prisma.auth.findUnique({
@@ -29,7 +27,6 @@ export const getInvitationByEmailDao = async (email: string) => {
     return null;
   }
 };
-
 export const completeInvitationDao = async (id: string, email: string, password: string) => {
   console.log(id, email, password);
 
@@ -65,7 +62,7 @@ export const completeInvitationDao = async (id: string, email: string, password:
 // Platform - Institution
 
 // Platform - Profesional_________________________________________________________________
-export const getProfesionalDataByRefferCodeDao = async (user_id: string) => {
+export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefined) => {
   try {
     const profesionalData = await prisma.profesional_data.findFirst({
       where: { user_id },
@@ -76,11 +73,27 @@ export const getProfesionalDataByRefferCodeDao = async (user_id: string) => {
   }
 };
 // agregar info al profesional
-export const createProfesionalDataDao = async (user_id: string) => {
-  
-}
+export const createProfesionalDataDao = async (data: any | undefined) => {
+  try {
+    const result = await prisma.profesional_data.create({
+      data: data,
+    });
+    return result
+  } catch (error) {
+    throw new Error('Error al crear profesional data')
+  }
+};
+//actualizar  info al profesional
+export const updateProfesionalDataDao = async (data: any, user_id: string | undefined) => {
+  console.log("se actualiza dao");
+  const updateInfo = await prisma.profesional_data.updateManyAndReturn({
+    where: { user_id: user_id },
+    data: data,
+  });
+  console.log("update Info", updateInfo);
+  return updateInfo;
+};
 // actualizar estado de profesional
-
 export const updateProfesionalStatus = async (id: string, status: StatusAvailable) => {
   try {
     const statusUpdate = await prisma.auth.update({
@@ -94,3 +107,44 @@ export const updateProfesionalStatus = async (id: string, status: StatusAvailabl
     throw error; // Propaga el error para manejarlo en el endpoint
   }
 };
+//obtener main_study profesional
+export const getProfesionalMainStudyDao = async (user_id: string | undefined) => {
+  try {
+    const mainStudy = await prisma.main_study.findFirst({
+      where: { user_id },
+    });
+    return mainStudy;
+  } catch (error) {
+    throw new Error("Error al obtener el estudio principal del profesional:");
+  }
+};
+//crear main_study profesional
+export const createProfesionalMainStudyDao = async (data: any) => {
+  try {
+    const result = prisma.main_study.create({
+      data:data
+    })
+    console.log(result);
+    return result
+    
+  } catch (error) {
+    console.error(error);
+    
+    throw new Error('Error al crear el estudio Principal')
+  }
+}
+//actualizar main_study profesional
+export const updateProfesionalMainStudyDao = async (data: any, user_id: string | undefined) => {
+  try {
+    const studyUpdate = await prisma.main_study.update({
+      where: { user_id: user_id },
+      data:data
+    })
+
+    return studyUpdate
+  } catch (error) {
+    console.error(error);
+    
+    throw new Error('Error al actualizar main study')
+  }
+}

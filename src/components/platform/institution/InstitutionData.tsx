@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { IoDocumentAttachOutline } from "react-icons/io5";
 import ModalForForm from "../../modals/ModalForForms";
 import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/ProfesionalProfileHookForm";
 
 export default function InstitutionData() {
+
+
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:h-auto'>
       <div className='pb-2'>

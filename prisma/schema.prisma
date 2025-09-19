@@ -6,6 +6,7 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
 // Enums
 enum AreasAvailable {
   institution
@@ -35,6 +36,7 @@ enum Sub_area {
   doctor
   nurse
 }
+
 //auth user Id_______________________________________________
 model Auth {
   referCode            String          @id @default(cuid())
@@ -51,19 +53,20 @@ model Auth {
   main_study                 Main_study[]
   study_specialization       Study_specialization[]
   study_speciality_favorite  Study_speciality_favorite[]
-  profesional_certifications  Profesional_certifications[]
+  profesional_certifications Profesional_certifications[]
   experience                 Experience[]
   institution_data           Institution_Data[]
-  institution_specialization  Institution_specialization[]
-  institution_certifications   Institution_Certifications[]
-  goals                        Goals[]
-  campaign_data               Campaign_data[]
-  leads_send                  Leads_send[]
+  institution_specialization Institution_specialization[]
+  institution_certifications Institution_Certifications[]
+  goals                      Goals[]
+  campaign_data              Campaign_data[]
+  leads_send                 Leads_send[]
 }
+
 //profesional_________________________________________________
 model Profesional_data {
-  id          Int      @id @default(autoincrement())
-  user_id     String
+  id          Int       @id @default(autoincrement())
+  user_id     String    @unique
   fake_name   String?
   name        String
   last_name   String?
@@ -77,25 +80,25 @@ model Profesional_data {
   cv_file     String?
   cv_link     String?
   avatar      String?
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 }
 
 model Main_study {
   id          Int      @id @default(autoincrement())
-  user_id     String
+  user_id     String   @unique
   title       String
   status      String
   institution String
   country     String
-  start_date  DateTime
-  end_date    DateTime
-  description String
+  start_date  DateTime?
+  end_date    DateTime?
+  description String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])
-  file        String
-  link        String
-  sub_area    Sub_area
+  file        String?
+  link        String?
+  sub_area    Sub_area?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }
@@ -161,24 +164,25 @@ model Experience {
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }
+
 //institutions_________________________________________________
 model Institution_Data {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  fake_name   String
-  name        String
+  id             Int      @id @default(autoincrement())
+  user_id        String
+  fake_name      String
+  name           String
   main_specialty String
-  country    String
-  state      String
-  city       String
-  avatar     String
-  established DateTime
-  website     String
-  phone       String
-  status      String
-  auth        Auth    @relation(fields: [user_id], references: [referCode])
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  country        String
+  state          String
+  city           String
+  avatar         String
+  established    DateTime
+  website        String
+  phone          String
+  status         String
+  auth           Auth     @relation(fields: [user_id], references: [referCode])
+  created_at     DateTime @default(now())
+  updated_at     DateTime @updatedAt
 }
 
 model Institution_specialization {
@@ -226,10 +230,10 @@ model Goals {
 model Campaign_data {
   id          Int      @id @default(autoincrement())
   user_id     String
-  name       String
-  last_name       String
-  company       String
-  role         String
+  name        String
+  last_name   String
+  company     String
+  role        String
   description String
   status      String
   country     String

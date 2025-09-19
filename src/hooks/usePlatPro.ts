@@ -1,5 +1,6 @@
-export const useProfesional = async (id:string) => {
-    const response = await fetch(`/api/platform/profesional/${id}`);
+export const useProfesional = async () => {
+    const response = await fetch(`/api/platform/profesional/`);
     const data = await response.json();
+    console.log('useProfesional: ',data.payload); 
     return data;
 }
