@@ -70,6 +70,7 @@ export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefi
     return profesionalData;
   } catch (error) {
     console.log("error de Profesional Data By Reffer Code Dao", error);
+    throw new Error("Error al obtener el estudio principal del profesional:");
   }
 };
 // agregar info al profesional

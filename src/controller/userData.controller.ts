@@ -2,10 +2,10 @@
 import { fakerES as faker } from "@faker-js/faker";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
+import { Main_study, Profesional_data } from "@prisma/client";
+
 // my imports
-import { createUserDataService, createUserDataMainStudy } from "@/service/userData.service";
-
-
+import { createUserDataService, createUserDataMainStudy, getUserDataService, getMainStudyService } from "@/service/userData.service";
 
 export const createUserData = async (data: any) => {
   //se extrae el session
@@ -38,12 +38,12 @@ export const createUserData = async (data: any) => {
         const resultUserData = await createUserDataService(profesionalDataPack);
         const resultMainStudy = await createUserDataMainStudy(profesionalMainStudyPack);
         console.log(resultMainStudy);
-        
+
         return true;
       } catch (error) {
         console.error(error);
-        
-        throw new Error('error en userdatacontroller');
+
+        throw new Error("error en userdatacontroller");
       }
       break;
     case "institution":
@@ -62,10 +62,21 @@ export const updateUserData = async (data: any) => {
   console.log("actualizo");
 };
 
-export const getUserData = async () => {
-  const userData = {
-    name: 'rafa',
-    last_name:'test'
-  }
-  return userData
-}
+type UserDataFiltered = Omit<Profesional_data, "id" | "user_id">;
+type UserMainStudyFiltered = Omit<Main_study, "id" | "user_id">;
+
+export const getUserData = async (): Promise<[UserDataFiltered, UserMainStudyFiltered]> => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user.id) throw new Error("Sesión inválida");
+
+  const userData = await getUserDataService(session.user.id);
+  const userMainStudy = await getMainStudyService(session.user.id);
+
+  if (!userData) throw new Error("No se encontró información del profesional");
+  if (!userMainStudy) throw new Error("No se encontró información del estudio principal");
+
+  const { id: _, user_id: __, ...userDataFiltered } = userData;
+  const { id: ___, user_id: ____, ...userMainStudyFiltered } = userMainStudy;
+
+  return [userDataFiltered ?? null, userMainStudyFiltered ?? null];
+};

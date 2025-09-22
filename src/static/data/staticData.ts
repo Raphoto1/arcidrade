@@ -25,7 +25,7 @@ export const carouselHome:any = [
 ]
 
 export const optionsTitleStatus = [
-    { value: "onGoing", label: "En Proceso" },
+    { value: "inProcess", label: "En Proceso" },
     { value: "graduated", label: "Graduado" },
   ];
 

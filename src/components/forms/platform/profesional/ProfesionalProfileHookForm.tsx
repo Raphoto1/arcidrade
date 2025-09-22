@@ -7,18 +7,70 @@ import { ICountry, IState, ICity } from "country-state-city";
 
 import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
+import { useProfesional } from "@/hooks/usePlatPro";
+import { useModal } from "@/context/ModalContext";
+
+interface IProfesional {
+  name: string;
+  last_name: string | null;
+  birth_date: Date | null;
+  email: string;
+  phone: string | null;
+  country: string;
+  state: string;
+  city: string;
+  title: string;
+  studyCountry: string;
+  titleInstitution: string;
+  titleStatus: string;
+}
+
+interface IFormData {
+  name: string;
+  last_name: string | null;
+  birth_date: Date | null;
+  email: string;
+  phone: string | null;
+  country: string;
+  state: string;
+  city: string;
+  title: string;
+  studyCountry: string;
+  titleInstitution: string;
+  titleStatus: string;
+}
 
 export default function ProfesionalProfileHookForm() {
+  const { closeModal } = useModal();
+  const { data: session } = useSession();
+  const { data, error, isLoading } = useProfesional();
+
+  const fecha = new Date(data?.payload[0].birth_date);
+  const fechaFormateada2 = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
+
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm();
-  const { data: session } = useSession();
+  } = useForm({
+    defaultValues: {
+      name: data?.payload[0].name,
+      last_name: data?.payload[0].last_name,
+      birthDate: data?.payload[0].birth_date,
+      email: session?.user.email,
+      phone: data?.payload[0].phone,
+      country: data?.payload[0].country,
+      state: data?.payload[0].state,
+      city: data?.payload[0].city,
+      title: data?.payload[1].title,
+      studyCountry: data?.payload[1].country,
+      titleInstitution: data?.payload[1].institution,
+      titleStatus: data?.payload[1].status,
+    },
+  });
 
   const [email, setEmail] = useState(session?.user.email);
-
-  const [statusSelected, setStatusSelected] = useState<string>("");
+  const [statusSelected, setStatusSelected] = useState<string>(`${data?.payload[1].status}`);
   const [countrySelected, setCountrySelected] = useState<string>("");
   const [stateSelected, setStateSelected] = useState<string>("seleccione un Pais");
   const [citySelected, setCitySelected] = useState<string>("Seleccione un Estado");
@@ -57,8 +109,8 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const handleStudyCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log('study country selected',e.target.value);
-    const countryName = e.target.value
+    console.log("study country selected", e.target.value);
+    const countryName = e.target.value;
     setStudyCountry(countryName);
   };
 
@@ -97,13 +149,15 @@ export default function ProfesionalProfileHookForm() {
               <label htmlFor='birthDate' className='block'>
                 Fecha de nacimiento
               </label>
+              {data?.payload[0].birth_date ? <span>Fecha Registrada: {fechaFormateada2}</span> : null}
+
               <input type='date' {...register("birthDate")} className='w-xs' />
             </div>
             <div>
               <label htmlFor='email' className='block'>
                 Email
               </label>
-              <input type='email' {...register("email")} className='w-xs' value={email} disabled />
+              <input type='email' {...register("email")} className='w-xs' disabled />
             </div>
             <div>
               <label htmlFor='phone' className='block'>
@@ -178,7 +232,7 @@ export default function ProfesionalProfileHookForm() {
               </label>
               <select
                 id='studyCountry'
-                {...register('studyCountry')}
+                {...register("studyCountry")}
                 name='studyCountry'
                 value={studyCountry}
                 onChange={handleStudyCountryChange}
@@ -218,9 +272,13 @@ export default function ProfesionalProfileHookForm() {
               <button className='btn bg-[var(--soft-arci)]' type='submit'>
                 Confirmar datos personales
               </button>
-              <button className='btn btn-wide bg-[var(--orange-arci)]'>Cancelar</button>
             </div>
           </form>
+          <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
+            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal}>
+              Cancelar
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -10,11 +10,11 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { createProfesionalDataDao } from "@/dao/dao";
 
-export const getUserDataService = async (id: string | undefined) => {
-  //retorna la data segun el userId
-  const response = await getProfesionalDataByRefferCodeDao(id);
-  return response;
+export const getUserDataService = async (id?: string|null) => {
+  if (!id) return null;
+  return await getProfesionalDataByRefferCodeDao(id);
 };
+
 
 export const getMainStudyService = async (id: string | undefined) => {
   const response = getProfesionalMainStudyDao(id);
