@@ -38,6 +38,13 @@ export const createUserDataService = async (data?: any) => {
   }
 };
 
+export const updateUserDataService = async (data?: any) => {
+  const session = await getServerSession(authOptions);
+  const id = session?.user.id;
+  const result = await updateProfesionalDataDao(data, id);
+  return result;
+}
+
 export const createUserDataMainStudy = async (data: any) => {
   // crear MainStudy
   console.log("data main study pack en service", data);

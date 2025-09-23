@@ -1,7 +1,7 @@
 import useSWR from "swr";
 
 type ProfesionalResponse = {
-  payload: any; // Puedes reemplazar `any` por un tipo más preciso si tienes el modelo
+  payload: any; // Idealmente reemplazar con un tipo más preciso
 };
 
 const fetcher = async (url: string): Promise<ProfesionalResponse> => {
@@ -11,11 +11,14 @@ const fetcher = async (url: string): Promise<ProfesionalResponse> => {
 };
 
 export const useProfesional = () => {
-  const { data, error, isLoading } = useSWR<ProfesionalResponse>(
-    "/api/platform/profesional/",
-    fetcher
-  );
+  const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ProfesionalResponse>("/api/platform/profesional/", fetcher);
 
-  return { data, error, isLoading };
+  return { data, error, isLoading, mutate };
 };
+
 

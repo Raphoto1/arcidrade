@@ -5,7 +5,8 @@ import { authOptions } from "@/utils/authOptions";
 import { Main_study, Profesional_data } from "@prisma/client";
 
 // my imports
-import { createUserDataService, createUserDataMainStudy, getUserDataService, getMainStudyService } from "@/service/userData.service";
+import { createUserDataService, createUserDataMainStudy, getUserDataService, getMainStudyService, updateUserDataService } from "@/service/userData.service";
+import { deleteFileService, uploadFileService } from "@/service/File.service";
 
 export const createUserData = async (data: any) => {
   //se extrae el session
@@ -60,6 +61,12 @@ export const createUserData = async (data: any) => {
 
 export const updateUserData = async (data: any) => {
   console.log("actualizo");
+  try {
+    const result = updateUserDataService(data);
+    return result;
+  } catch (error) {
+    throw new Error("error actualizando");
+  }
 };
 
 type UserDataFiltered = Omit<Profesional_data, "id" | "user_id">;
@@ -79,4 +86,62 @@ export const getUserData = async (): Promise<[UserDataFiltered, UserMainStudyFil
   const { id: ___, user_id: ____, ...userMainStudyFiltered } = userMainStudy;
 
   return [userDataFiltered ?? null, userMainStudyFiltered ?? null];
+};
+
+export const uploadUserCv = async (file: File) => {
+  try {
+    const session = await getServerSession(authOptions);
+    let userId = session?.user.id;
+    const chkUserCvFile = await getUserData();
+    if (chkUserCvFile[0].cv_file) {
+      const deleteFile = await deleteFileService(chkUserCvFile[0].cv_file);
+    }
+    if (!session) {
+      userId = "error";
+    }
+    const uploadResult = await uploadFileService(file, `cv`, userId);
+    //obtengo la url del archivo y la cargo a la db
+    const cvUrl = await uploadResult?.url;
+    const dbUpdate = await updateUserData({ cv_file: cvUrl });
+    return dbUpdate;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir archivo");
+  }
+};
+
+export const uploadUserCvLink = async (link: any) => {
+  try {
+    const chkUserCvFile = await getUserData();
+    console.log("chkUserCvFile", chkUserCvFile[0].cv_file);
+    if (chkUserCvFile[0].cv_file) {
+      console.log("elimino el archivo");
+      const deleteFile = await deleteFileService(chkUserCvFile[0].cv_file);
+      console.log("deletefileService desde controller", deleteFile);
+    }
+    const dbUpdate = await updateUserData({ cv_link: link, cv_file: null });
+    //limpiar file si existe
+    return dbUpdate;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir Link");
+  }
+};
+
+export const deleteCv = async () => {
+  try {
+    const chkUserCvFile = await getUserData();
+    console.log("chkUserCvFile", chkUserCvFile[0].cv_file);
+    if (chkUserCvFile[0].cv_file) {
+      console.log("elimino el archivo");
+      const deleteFile = await deleteFileService(chkUserCvFile[0].cv_file);
+      console.log("deletefileService desde controller", deleteFile);
+    }
+    const dbUpdate = await updateUserData({ cv_link: null, cv_file: null });
+    //limpiar file si existe
+    return dbUpdate;
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
 };

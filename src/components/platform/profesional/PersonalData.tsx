@@ -4,16 +4,19 @@ import { IoDocumentAttachOutline } from "react-icons/io5";
 import { useSession } from "next-auth/react";
 import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
+import Link from "next/link";
 //immports propios
 import ModalForForm from "../../modals/ModalForForms";
+import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/ProfesionalProfileHookForm";
+import ConfirmDeleteCvForm from "@/components/forms/platform/profesional/ConfirmDeleteCvForm";
 import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
 import { useProfesional } from "@/hooks/usePlatPro";
 
 export default function PersonalData() {
   const { data, error, isLoading } = useProfesional();
   const { data: session } = useSession();
-
+  //loaders
   if (isLoading) {
     return <div>Cargando... datos</div>;
   }
@@ -22,15 +25,13 @@ export default function PersonalData() {
     console.error(error);
     return <div>Error cargando datos</div>;
   }
-
-  console.log(data?.payload[0].name);
+  //cv link o cv file
+  console.log("cv link en front", data?.payload[0].cv_link);
   //adjust birthdate
   const fecha = new Date(data?.payload[0].birth_date);
   const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
-  console.log(fechaFormateada);
   //adjust country
   const countryName: ICountry | undefined = Country.getCountryByCode(data?.payload[0].country);
-  console.log(countryName);
   //adjust status
   const handleStatusName = (status: string | undefined) => {
     if (status === "inProcess") {
@@ -41,7 +42,7 @@ export default function PersonalData() {
       return "No Registrado";
     }
   };
-  
+
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:h-auto'>
       <div className='pb-1'>
@@ -52,11 +53,29 @@ export default function PersonalData() {
           <IoDocumentAttachOutline size={36} />
         </div>
         <div>
-          <span>Archivo:</span>
-          <p>Nombre de archivo</p>
+          {data?.payload[0].cv_link ? (
+            <div className='flex flex-col'>
+              <span>Link</span>
+              <a className='link text-blue-300' href={data?.payload[0].cv_link} target='_blank'>
+                Previsualizar
+              </a>
+            </div>
+          ) : data?.payload[0].cv_file ? (
+            <div className='flex flex-col'>
+              <span>Archivo</span>
+              <a className='link text-blue-300' href={data?.payload[0].cv_file} target='_blank'>
+                Previsualizar
+              </a>
+            </div>
+          ) : (
+            <span>Aún no existe CV registrada.</span>
+          )}
         </div>
         <div className='controls grid'>
-          <button className='btn bg-[var(--orange-arci)] h-7 w-20 text-white'>Eliminar</button>
+          <ModalForFormsRedBtn title='Eliminar'>
+            <ConfirmDeleteCvForm />
+          </ModalForFormsRedBtn>
+
           <ModalForForm title='Modificar'>
             <FileCvForm />
           </ModalForForm>

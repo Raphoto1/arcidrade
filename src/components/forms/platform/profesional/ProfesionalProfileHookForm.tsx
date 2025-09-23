@@ -43,7 +43,7 @@ interface IFormData {
 export default function ProfesionalProfileHookForm() {
   const { closeModal } = useModal();
   const { data: session } = useSession();
-  const { data, error, isLoading } = useProfesional();
+  const { data, error, isLoading, mutate } = useProfesional();
 
   const fecha = new Date(data?.payload[0].birth_date);
   const fechaFormateada2 = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -115,9 +115,12 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    console.log(data);
     const response = await useHandleSubmitText(data, "/api/platform/profesional");
-    console.log(response);
+    console.log('response form', response);
+    if (response.ok) {
+      mutate();
+      closeModal()
+    }
   });
 
   useEffect(() => {
