@@ -5,7 +5,16 @@ import { authOptions } from "@/utils/authOptions";
 import { Main_study, Profesional_data } from "@prisma/client";
 
 // my imports
-import { createUserDataService, createUserDataMainStudy, getUserDataService, getMainStudyService, updateUserDataService } from "@/service/userData.service";
+import {
+  createUserDataService,
+  createUserDataMainStudy,
+  getUserDataService,
+  getMainStudyService,
+  updateUserDataService,
+  createUserSpecialityService,
+  getUserSpecialitiesService,
+  deleteUserSpecialityService
+} from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 
 export const createUserData = async (data: any) => {
@@ -38,8 +47,6 @@ export const createUserData = async (data: any) => {
         //se envian los paquetes al service
         const resultUserData = await createUserDataService(profesionalDataPack);
         const resultMainStudy = await createUserDataMainStudy(profesionalMainStudyPack);
-        console.log(resultMainStudy);
-
         return true;
       } catch (error) {
         console.error(error);
@@ -145,3 +152,71 @@ export const deleteCv = async () => {
     throw new Error();
   }
 };
+
+export const uploadUserAvatar = async (file: File) => {
+  try {
+    const session = await getServerSession(authOptions);
+    let userId = session?.user.id;
+    const chkUserAvatar = await getUserData();
+    if (chkUserAvatar[0].avatar) {
+      const deleteFile = await deleteFileService(chkUserAvatar[0].avatar);
+    }
+    if (!session) {
+      userId = "error";
+    }
+    const uploadResult = await uploadFileService(file, `avatar`, userId);
+    //obtengo la url del archivo y la cargo a la db
+    const avatarUrl = await uploadResult?.url;
+    console.log(avatarUrl);
+
+    const dbUpdate = await updateUserData({ avatar: avatarUrl });
+    return dbUpdate;
+  } catch (error) {
+    console.error(error);
+    throw new Error();
+  }
+};
+
+export const createSpeciality = async (data: any) => {
+  try {
+    console.log("data en controller", data);
+//se crea pack
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    //ajuste de fecha endDate
+    let endDateFix = data.endDate
+    if (endDateFix === '') {
+      endDateFix =null
+    } else {
+       endDateFix = new Date(data.endDate)
+    }
+    const specialPack = {
+      user_id: userId,
+      institution: data.titleInstitution,
+      title: data.title,
+      title_category: data.title_category,
+      status: data.titleStatus,
+      country: data.country,
+      start_date: new Date(data.startDate),
+      end_date: endDateFix,
+    };
+    const create = await createUserSpecialityService(specialPack);
+    return create;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error en controller");
+  }
+};
+
+export const getUserSpecialities = async () => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user.id) throw new Error("Sesión inválida");
+  const userId = session?.user.id;
+  const response = await getUserSpecialitiesService(userId);
+  return response
+}
+
+export const deleteUserSpecialitie = async (id: number) => {
+  const result = await deleteUserSpecialityService(id)
+  return result
+}

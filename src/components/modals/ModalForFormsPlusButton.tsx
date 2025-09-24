@@ -1,13 +1,15 @@
 "use client";
 import React, { useRef } from "react";
 import { ModalContext } from "@context/ModalContext";
+import { FaPlusCircle } from "react-icons/fa";
+import { CiCirclePlus } from "react-icons/ci";
 
 interface ModalProps {
   title?: string;
   children: React.ReactNode;
 }
 
-export default function ModalForFormsRedBtn({ children, title }: ModalProps) {
+export default function ModalForFormsPlusButton({ children, title }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const openModal = () => modalRef.current?.showModal();
@@ -16,8 +18,8 @@ export default function ModalForFormsRedBtn({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-[var(--orange-arci)] h-7 w-full text-white' onClick={openModal}>
-          {title}
+        <button className='h-12 w-12 bg-gray-600 rounded-full flex justify-center align-middle items-center cursor-pointer hover:bg-gray-300' onClick={openModal}>
+          <CiCirclePlus size={34} color="white"/>
         </button>
       )}
       <dialog ref={modalRef} className='modal modal-middle sm:modal-middle' aria-labelledby='modal-title'>

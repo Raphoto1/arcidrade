@@ -8,19 +8,19 @@ function NavBar() {
   const { data: session } = useSession();
 
   return (
-    <nav className='navbar bg-base-100 shadow-sm'>
+    <nav className='navbar bg-base-100 shadow-sm z-30'>
       <div className='navbar-start hidden lg:flex'>
         <Link href={"/"} className='flex-1 pl-5'>
           <Image src='/logos/Logo Arcidrade Full.png' alt='Arcidrade Consulting' width={150} height={150} />
         </Link>
       </div>
       <div className='navbar-center hidden lg:flex'>
-        <ul className='menu menu-horizontal px-1 font-oswald font-bold text-base'>
+        <ul className='menu menu-horizontal px-1 font-oswald font-bold text-base z-30'>
           <li>
             <Link href={"/about"}>Acerca de nosotros</Link>
           </li>
           <li>
-            <details>
+            <details className="z-30">
               <summary>Ofertas</summary>
               <ul className='p-2'>
                 <li>
@@ -58,6 +58,7 @@ function NavBar() {
           </div>
         )}
       </div>
+      {/* menu mobile*/}
       <div className='menuMobile flex-1 navbar-end lg:hidden'>
         <Link href={"/"} className='flex-1 pl-5 lg:hidden navbar-start'>
           <Image src='/logos/Logo Arcidrade Cond.png' alt='Arcidrade Consulting' width={50} height={50} />

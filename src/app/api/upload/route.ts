@@ -8,11 +8,6 @@ export async function POST(req: NextRequest): Promise<NextResponse> {
   if (!filename) {
     return NextResponse.json({ error: 'Missing filename' }, { status: 400 })
   }
-
-/*     const blob = await put(`uploads/${userId}/${file.name}`, req.body!, {
-  access: 'public',
-  contentType,
-}) */
     
   const blob = await put(filename, req.body!, {
     access: 'public',

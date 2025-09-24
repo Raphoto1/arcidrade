@@ -86,8 +86,8 @@ model Profesional_data {
 }
 
 model Main_study {
-  id          Int      @id @default(autoincrement())
-  user_id     String   @unique
+  id          Int       @id @default(autoincrement())
+  user_id     String    @unique
   title       String
   status      String
   institution String
@@ -95,30 +95,31 @@ model Main_study {
   start_date  DateTime?
   end_date    DateTime?
   description String?
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode])
   file        String?
   link        String?
   sub_area    Sub_area?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 }
 
 model Study_specialization {
-  id          Int      @id @default(autoincrement())
-  user_id     String
-  title       String
-  status      String
-  institution String
-  country     String
-  start_date  DateTime
-  end_date    DateTime
-  description String
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
-  file        String
-  link        String
-  sub_area    Sub_area
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  id             Int       @id @default(autoincrement())
+  user_id        String
+  title          String
+  title_category String
+  status         String
+  institution    String
+  country        String
+  start_date     DateTime
+  end_date       DateTime?
+  description    String?
+  auth           Auth      @relation(fields: [user_id], references: [referCode])
+  file           String?
+  link           String?
+  sub_area       Sub_area?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
 }
 
 model Study_speciality_favorite {

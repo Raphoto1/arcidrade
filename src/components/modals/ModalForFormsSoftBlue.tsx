@@ -7,7 +7,7 @@ interface ModalProps {
   children: React.ReactNode;
 }
 
-export default function ModalForFormsRedBtn({ children, title }: ModalProps) {
+export default function ModalForFormsSoftBlue({ children, title }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const openModal = () => modalRef.current?.showModal();
@@ -16,7 +16,7 @@ export default function ModalForFormsRedBtn({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-[var(--orange-arci)] h-7 w-full text-white' onClick={openModal}>
+        <button className='btn bg-[var(--soft-arci)] h-7 w-20' onClick={openModal}>
           {title}
         </button>
       )}

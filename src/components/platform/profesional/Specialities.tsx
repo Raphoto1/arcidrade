@@ -1,19 +1,34 @@
 import React from "react";
 
 import Speciality from "../pieces/Speciality";
+import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
+import ProfesionalSpecialityForm from "@/components/forms/platform/profesional/ProfesionalSpecialityForm";
+import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function Specialities() {
+  const { data, error, isLoading } = useProfesionalSpecialities();
+  console.log("specialities", data?.payload);
+  const specialitiesList = data?.payload;
+
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:gap-4 md:h-auto'>
       <div className='pb-1'>
         <h1 className='text-2xl fontArci text-center'>Especialidades</h1>
       </div>
-      <div className="max-h-110 overflow-auto">
+      <div className='max-h-110 overflow-auto'>
+        {specialitiesList?.map((item:any, index:number) => (
+          
+          <Speciality key={item.id} id={item.id} title={item.title} title_category={item.title_category} institution={item.institution} end_date={item.end_date } />
+          
+        ))}
         <Speciality />
-        <Speciality />
-        <Speciality />
-        <Speciality />
-        <Speciality />
+      </div>
+      <div className='m-1 flex justify-center items-center gap-1'>
+        <div className='flex justify-center'>
+          <ModalForFormsPlusButton title='Agregar Especialidad'>
+            <ProfesionalSpecialityForm />
+          </ModalForFormsPlusButton>
+        </div>
       </div>
     </div>
   );

@@ -7,6 +7,7 @@ const nextConfig: NextConfig = {
       new URL("https://images.pexels.com/photos/**"),
       new URL("https://img.daisyui.com/**"),
       new URL("https://my-store-id.public.blob.vercel-storage.com/**"),
+      { hostname: "*.public.blob.vercel-storage.com" }
     ],
   },
 };
