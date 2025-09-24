@@ -8,6 +8,7 @@ import Link from "next/link";
 //immports propios
 import ModalForForm from "../../modals/ModalForForms";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
+import ModalForFormsSoftBlue from "@/components/modals/ModalForFormsSoftBlue";
 import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/ProfesionalProfileHookForm";
 import ConfirmDeleteCvForm from "@/components/forms/platform/profesional/ConfirmDeleteCvForm";
 import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
@@ -76,9 +77,9 @@ export default function PersonalData() {
             <ConfirmDeleteCvForm />
           </ModalForFormsRedBtn>
 
-          <ModalForForm title='Modificar'>
+          <ModalForFormsSoftBlue title='Modificar'>
             <FileCvForm />
-          </ModalForForm>
+          </ModalForFormsSoftBlue>
         </div>
       </div>
       <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>

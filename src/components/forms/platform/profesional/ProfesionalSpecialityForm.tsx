@@ -7,17 +7,13 @@ import { ICountry, IState, ICity } from "country-state-city";
 
 import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
-import { useProfesional } from "@/hooks/usePlatPro";
+import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
 import { medicalOptions } from "@/static/data/staticData";
 
 export default function ProfesionalSpecialityForm() {
   const { closeModal } = useModal();
-  const { data: session } = useSession();
-  const { data, error, isLoading, mutate } = useProfesional();
-
-  const fecha = new Date(data?.payload[0].birth_date);
-  
+  const { mutate } = useProfesionalSpecialities();
 
   const {
     register,
@@ -25,8 +21,8 @@ export default function ProfesionalSpecialityForm() {
     formState: { errors },
   } = useForm();
 
-  const [titleCategorySelected, setTitleCategorySelected] = useState<string>('');
-  const [statusSelected, setStatusSelected] = useState<string>("")
+  const [titleCategorySelected, setTitleCategorySelected] = useState<string>("");
+  const [statusSelected, setStatusSelected] = useState<string>("");
   const [countrySelected, setCountrySelected] = useState<string>("");
 
   const [countryList, setCountryList] = useState<ICountry[]>([]);
@@ -37,7 +33,7 @@ export default function ProfesionalSpecialityForm() {
     setTitleCategorySelected(e.target.value);
   };
 
-    const handleStatusSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
+  const handleStatusSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusSelected(e.target.value);
   };
 
@@ -49,10 +45,10 @@ export default function ProfesionalSpecialityForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await useHandleSubmitText(data, "/api/platform/profesional/speciality/");
-    console.log('response form', response);
+    console.log("response form", response);
     if (response.ok) {
       mutate();
-      closeModal()
+      closeModal();
     }
   });
 
@@ -84,7 +80,7 @@ export default function ProfesionalSpecialityForm() {
                 onChange={handleTitleCategorySelected}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
                 <option value=''>Seleccione Una Especialidad</option>
-                {medicalOptions.map((speciality:any, index:number) => (
+                {medicalOptions.map((speciality: any, index: number) => (
                   <option key={index} value={speciality.name as string}>
                     {speciality.name as string}
                   </option>
@@ -92,7 +88,7 @@ export default function ProfesionalSpecialityForm() {
               </select>
             </div>
             {errors.name && <span>Nombre es Requerido</span>}
-                        <div>
+            <div>
               <label htmlFor='titleStatus' className='block'>
                 Estado del titulo
               </label>

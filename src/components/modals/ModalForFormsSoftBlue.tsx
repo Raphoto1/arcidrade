@@ -16,7 +16,7 @@ export default function ModalForFormsSoftBlue({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-[var(--soft-arci)] h-7 w-20' onClick={openModal}>
+        <button className='btn bg-[var(--soft-arci)] h-auto w-auto p-1 min-w-full' onClick={openModal}>
           {title}
         </button>
       )}

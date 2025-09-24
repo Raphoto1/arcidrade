@@ -10,6 +10,8 @@ import {
   getUserSpecializationsDao,
   getUserSpecializationByIdDao,
   deleteSpecializationByIdDao,
+  updateSpecializationByIdDao,
+  getFavoriteSpecializationBySpecializationIdDao,
 } from "@/dao/dao";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
@@ -89,10 +91,31 @@ export const deleteUserSpecialityService = async (id: number) => {
   const userId = session?.user.id;
   const chk = await getUserSpecializationByIdDao(id);
   if (chk) {
-    const result = chk.user_id == userId ? await deleteSpecializationByIdDao(id) : console.error('Intruso');
-    return result
+    const result = chk.user_id == userId ? await deleteSpecializationByIdDao(id) : console.error("Intruso");
+    return result;
   } else {
-    console.error('intento de Intruso');
-    throw new Error('Unauthorized');
+    console.error("intento de Intruso");
+    throw new Error("Unauthorized");
   }
+};
+
+export const getSpecialityService = async (id: number) => {
+  const result = getUserSpecializationByIdDao(id);
+  return result;
+};
+
+export const updateUserSpecializationService = async (id: number, data: any) => {
+  const result = await updateSpecializationByIdDao(id, data);
+  return result;
+};
+//DESARROLLO FUTURO
+export const makeFavoriteSpecialityService = async (userId: string | undefined, specialityId: number) => {
+  //revisar si ya hay algun favorito con el id del study specialization
+  const chk = await getFavoriteSpecializationBySpecializationIdDao(specialityId);
+  if (chk) {
+    console.log("actualizo favorito");
+  } else {
+    console.log("creo favorito");
+  }
+  return userId;
 };

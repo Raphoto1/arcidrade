@@ -11,7 +11,7 @@ export const useHandleSubmitText = async (data: any, url: string) => {
       throw new Error('Error en la peticion o la informacion proporcionada');
     }
     const result = await response.json();
-    console.log(response);
+    console.log(result);
     
     return response
     

@@ -16,7 +16,7 @@ export default function ModalForFormsRedBtn({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-[var(--orange-arci)] h-7 w-full text-white' onClick={openModal}>
+        <button className='btn bg-[var(--orange-arci)] h-auto p-1 w-full text-white' onClick={openModal}>
           {title}
         </button>
       )}

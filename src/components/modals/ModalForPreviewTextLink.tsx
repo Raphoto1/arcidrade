@@ -14,7 +14,7 @@ export default function ModalForPreviewTextLink({ children, title }: { title?: s
 
   return (
     <div>
-      <button className='text-sm text-main' onClick={openModal}>
+      <button className='text-sm text-main link text-blue-300' onClick={openModal}>
         {title || null}
       </button>
       <dialog ref={modalRef} className='modal modal-middle overflow-y-auto h-full md:w-full'>

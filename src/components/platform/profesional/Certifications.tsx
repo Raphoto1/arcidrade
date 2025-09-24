@@ -1,4 +1,6 @@
+import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton"
 import Certificate from "../pieces/Certificate"
+ModalForFormsPlusButton
 
 export default function Certifications() {
   return (
@@ -13,6 +15,13 @@ export default function Certifications() {
         <Certificate />
         <Certificate/>
       </div>
+      <div className='m-1 flex justify-center items-center gap-1'>
+              <div className='flex justify-center'>
+                <ModalForFormsPlusButton title='Agregar Certificacion'>
+
+                </ModalForFormsPlusButton>
+              </div>
+            </div>
     </div>
   )
 }

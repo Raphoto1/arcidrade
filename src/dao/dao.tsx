@@ -151,7 +151,7 @@ export const updateProfesionalMainStudyDao = async (data: any, user_id: string |
 
 export const createUserSpecializationDao = async (data: any) => {
   try {
-    const result = prisma.study_specialization.create({
+    const result = await prisma.study_specialization.create({
       data: data,
     });
     console.log("result de dao specialization", result);
@@ -188,8 +188,6 @@ export const getUserSpecializationByIdDao = async (id: number) => {
         id,
       },
     });
-    console.log("encuentro spe con id", result);
-
     return result;
   } catch (error) {
     console.error(error);
@@ -202,9 +200,46 @@ export const deleteSpecializationByIdDao = async (id: number) => {
     const result = await prisma.study_specialization.delete({
       where: { id },
     });
-    return result
+    return result;
   } catch (error) {
     console.error(error);
     throw new Error("error dao");
   }
 };
+
+export const updateSpecializationByIdDao = async (id: number, data: any) => {
+  try {
+    const result = await prisma.study_specialization.update({
+      where: { id: id },
+      data: data,
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+//DESARROLLO FUTURO
+export const getFavoriteSpecializationBySpecializationIdDao = async (specializationId: number) => {
+  try {
+    const result = await prisma.study_speciality_favorite.findFirst({
+      where:{study_speciality_id:specializationId}
+    })
+    return result
+  } catch (error) {
+        console.error(error);
+    throw new Error("error dao");
+  }
+}
+//DESARROLLO FUTURO
+export const CreateFavoriteSpecializationByIdDao = async (id: number, data: any) => {
+  try {
+    const result = await prisma.study_speciality_favorite.create({
+      data:data
+    })
+    return result
+  } catch (error) {
+        console.error(error);
+    throw new Error("error dao");
+  }
+}

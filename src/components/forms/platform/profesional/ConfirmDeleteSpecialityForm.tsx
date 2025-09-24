@@ -1,9 +1,9 @@
 import React from "react";
 import { useModal } from "@/context/ModalContext";
-import { useProfesional } from "@/hooks/usePlatPro";
+import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function ConfirmDeleteSpecialityForm(id: any) {
-  const { mutate } = useProfesional();
+  const { mutate } = useProfesionalSpecialities();
   const { closeModal } = useModal();
 
   const path = `/api/platform/profesional/speciality/${id.id}`;

@@ -31,3 +31,14 @@ export const useProfesionalSpecialities = () => {
 
   return { data, error, isLoading, mutate };
 }
+
+export const useProfesionalSpeciality = (id:number) => {
+    const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ProfesionalResponse>(`/api/platform/profesional/speciality/${id}`, fetcher);
+
+  return { data, error, isLoading, mutate };
+}

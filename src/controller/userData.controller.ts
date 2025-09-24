@@ -13,7 +13,10 @@ import {
   updateUserDataService,
   createUserSpecialityService,
   getUserSpecialitiesService,
-  deleteUserSpecialityService
+  deleteUserSpecialityService,
+  getSpecialityService,
+  updateUserSpecializationService,
+  makeFavoriteSpecialityService
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 
@@ -180,15 +183,15 @@ export const uploadUserAvatar = async (file: File) => {
 export const createSpeciality = async (data: any) => {
   try {
     console.log("data en controller", data);
-//se crea pack
+    //se crea pack
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     //ajuste de fecha endDate
-    let endDateFix = data.endDate
-    if (endDateFix === '') {
-      endDateFix =null
+    let endDateFix = data.endDate;
+    if (endDateFix === "") {
+      endDateFix = null;
     } else {
-       endDateFix = new Date(data.endDate)
+      endDateFix = new Date(data.endDate);
     }
     const specialPack = {
       user_id: userId,
@@ -213,10 +216,93 @@ export const getUserSpecialities = async () => {
   if (!session?.user.id) throw new Error("Sesión inválida");
   const userId = session?.user.id;
   const response = await getUserSpecialitiesService(userId);
-  return response
-}
+  return response;
+};
+
+export const getSpeciality = async (id: number) => {
+  try {
+    const chk = getSpecialityService(id);
+    return chk;
+  } catch (error) {
+    throw new Error("no existe la speci");
+  }
+};
 
 export const deleteUserSpecialitie = async (id: number) => {
-  const result = await deleteUserSpecialityService(id)
+  //revisar si hay archivos para eliminarlos
+  const chkFiles = await getSpeciality(id);
+  if (chkFiles?.file) {
+    const deleteFiles = await deleteFileService(chkFiles.file)
+  }
+  const result = await deleteUserSpecialityService(id);
+  return result;
+};
+
+export const updateSpecialization = async (id: number, data: any) => {
+  try {
+    const result = updateUserSpecializationService(id, data);
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al actualizar spe");
+  }
+};
+
+export const uploadSpecialityLink = async (id: number, link: any) => {
+  try {
+    const chk = await getSpecialityService(id);
+    console.log("espe encontrada en controller", chk);
+    if (chk?.file) {
+      console.log("ya existe un archivo y se borra el registro y archivo");
+      const deleteFile = await deleteFileService(chk?.file);
+      console.log("deletefileService desde controller", deleteFile);
+      console.log("se agrega a db");
+      const updatePack = { link: link, file: null };
+      const updateResult = await updateUserSpecializationService(id, updatePack);
+      return updateResult;
+    } else {
+      console.log("se agrega a db");
+      const updatePack = { link: link };
+      const updateResult = await updateUserSpecializationService(id, updatePack);
+      console.log("update Result", updateResult);
+      return updateResult;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir Link");
+  }
+};
+
+export const uploadUserSpecialityFile = async (id: number, file: File) => {
+  try {
+    console.log("entro a upload spefile");
+
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    const chk = await getSpecialityService(id);
+    if (chk?.file) {
+      console.log("si hay archivo y se borra");
+      const deleteOld = await deleteFileService(chk?.file);
+      console.log(deleteOld);
+      const uploadNewFile = await uploadFileService(file, "specialization", userId);
+      const uploadUrl = uploadNewFile.url;
+      const updateDb = await updateUserSpecializationService(id, { file: uploadUrl });
+      return updateDb;
+    }
+    const uploadNewFile = await uploadFileService(file, "specialization", userId);
+    const uploadUrl = uploadNewFile.url;
+    const updateDb = await updateUserSpecializationService(id, { file: uploadUrl });
+    return updateDb;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir archivo");
+  }
+};
+//DESARROLLO FUTURO
+export const makeFavoriteSpeciality = async (study_speciality_id: number) => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id
+  //revisar si ya hay algun favorito con el id del study specialization
+  const result = await makeFavoriteSpecialityService(userId, study_speciality_id);
   return result
 }

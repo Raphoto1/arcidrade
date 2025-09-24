@@ -125,7 +125,7 @@ model Study_specialization {
 model Study_speciality_favorite {
   id                  Int     @id @default(autoincrement())
   user_id             String
-  study_speciality_id Int
+  study_speciality_id Int     @unique
   study_fav           Boolean @default(false)
   auth                Auth    @relation(fields: [user_id], references: [referCode])
 }

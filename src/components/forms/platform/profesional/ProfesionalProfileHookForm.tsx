@@ -70,7 +70,7 @@ export default function ProfesionalProfileHookForm() {
   });
 
   const [email, setEmail] = useState(session?.user.email);
-  const [statusSelected, setStatusSelected] = useState<string>(`${data?.payload[1].status}`);
+  const [statusSelected, setStatusSelected] = useState<string>(``);
   const [countrySelected, setCountrySelected] = useState<string>("");
   const [stateSelected, setStateSelected] = useState<string>("seleccione un Pais");
   const [citySelected, setCitySelected] = useState<string>("Seleccione un Estado");
@@ -195,7 +195,6 @@ export default function ProfesionalProfileHookForm() {
                 {...register("state")}
                 value={stateSelected}
                 onChange={handleStateChange}
-                defaultValue={0}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
                 <option value=''>Seleccione Un Estado</option>
                 {stateList.map((state, index) => (

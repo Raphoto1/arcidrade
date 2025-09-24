@@ -15,13 +15,17 @@ export default function Specialities() {
       <div className='pb-1'>
         <h1 className='text-2xl fontArci text-center'>Especialidades</h1>
       </div>
-      <div className='max-h-110 overflow-auto'>
-        {specialitiesList?.map((item:any, index:number) => (
-          
-          <Speciality key={item.id} id={item.id} title={item.title} title_category={item.title_category} institution={item.institution} end_date={item.end_date } />
-          
+      <div className='max-h-110 overflow-y-auto overflow-x-clip'>
+        {specialitiesList?.map((item: any, index: number) => (
+          <Speciality
+            key={item.id}
+            id={item.id}
+            title={item.title}
+            title_category={item.title_category}
+            institution={item.institution}
+            end_date={item.end_date}
+          />
         ))}
-        <Speciality />
       </div>
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
