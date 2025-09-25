@@ -12,10 +12,17 @@ import {
   deleteSpecializationByIdDao,
   updateSpecializationByIdDao,
   getFavoriteSpecializationBySpecializationIdDao,
+  getCertificationsByUserIdDao,
+  getCertificationByTitleDao,
+  createUserCertificationDao,
+  getCertificationByIdDao,
+  updateCertificationByIdDao,
+  deleteUserCertificationByIdDao,
 } from "@/dao/dao";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { createProfesionalDataDao } from "@/dao/dao";
+import { getCertificationById } from "@/controller/userData.controller";
 
 export const getUserDataService = async (id?: string | null) => {
   if (!id) return null;
@@ -68,10 +75,12 @@ export const createUserDataMainStudy = async (data: any) => {
     return result;
   }
 };
-
+//speciality
 export const createUserSpecialityService = async (data: any) => {
-  //revisar que no este creada previamente
-  const chk = await getUserSpecializationByTitle(data.title);
+  //revisar que no este creada previamente para ese usuario
+  const session = await getServerSession(authOptions);
+  const id = session?.user.id;
+  const chk = await getUserSpecializationByTitle(id, data.title);
 
   if (!chk) {
     const createSpeciality = await createUserSpecializationDao(data);
@@ -118,4 +127,42 @@ export const makeFavoriteSpecialityService = async (userId: string | undefined, 
     console.log("creo favorito");
   }
   return userId;
+};
+//certifications
+export const getUserCertificationsService = async (userId: string | undefined) => {
+  const result = await getCertificationsByUserIdDao(userId);
+  return result;
+};
+
+export const getUserCertificationByTitleService = async (userId: string | undefined, title: string | undefined) => {
+  const result = await getCertificationByTitleDao(userId, title);
+  return result
+};
+
+export const getCertificationByIdService = async (id: number | undefined) => {
+  const result = await getCertificationByIdDao(id)
+return result
+}
+
+export const createUserCertificationService = async (userId: string | undefined, data: any) => {
+  const chk = await getUserCertificationByTitleService(userId, data.title);
+  console.log(chk);
+  if (chk?.title == data.title) {
+    console.log("ya existe no se crea");
+    throw new Error("ta existe esta certificación");
+  } else {
+    console.log("se crea");
+    const result = createUserCertificationDao(data);
+    return result
+  };
+};
+
+export const updateUserCertificationService = async (id: number|undefined, data: any|undefined) => {
+  const result = await updateCertificationByIdDao(id, data);
+  return result
+}
+
+export const deleteUserCertificationService = async (id: number) => {
+  const result = await deleteUserCertificationByIdDao(id);
+  return result
 };

@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
-import { useProfesional, useProfesionalSpecialities } from "@/hooks/usePlatPro";
+import { useProfesional, useProfesionalCertifications, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
-export default function FileSpecialityForm(id: any) {
-  const { mutate } = useProfesionalSpecialities();
+export default function FileCertificationForm(id: any) {
+  const { mutate } = useProfesionalCertifications();
   const { closeModal } = useModal();
-  const path = `/api/platform/upload/specialization/${id.id}`
+  const path = `/api/platform/upload/certification/${id.id}`
   const [type, setType] = useState("archivo"); // Inicializa el tipo como archivo
   const {
     register,
@@ -38,7 +38,7 @@ export default function FileSpecialityForm(id: any) {
     <div className='flex w-full justify-center items-center'>
       <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Respaldo Especialidad</h2>
+          <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Respaldo Certificación</h2>
           <form onSubmit={onSubmit} className='form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full'>
             <div className='grid gap-2 mt-5 items-center align-middle'>
               <label>¿Qué desea subir?</label>

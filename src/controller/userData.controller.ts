@@ -16,7 +16,12 @@ import {
   deleteUserSpecialityService,
   getSpecialityService,
   updateUserSpecializationService,
-  makeFavoriteSpecialityService
+  makeFavoriteSpecialityService,
+  getUserCertificationsService,
+  createUserCertificationService,
+  getCertificationByIdService,
+  updateUserCertificationService,
+  deleteUserCertificationService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 
@@ -232,7 +237,7 @@ export const deleteUserSpecialitie = async (id: number) => {
   //revisar si hay archivos para eliminarlos
   const chkFiles = await getSpeciality(id);
   if (chkFiles?.file) {
-    const deleteFiles = await deleteFileService(chkFiles.file)
+    const deleteFiles = await deleteFileService(chkFiles.file);
   }
   const result = await deleteUserSpecialityService(id);
   return result;
@@ -250,21 +255,17 @@ export const updateSpecialization = async (id: number, data: any) => {
 
 export const uploadSpecialityLink = async (id: number, link: any) => {
   try {
+    //verificar si ya existe un archivo y se bor
     const chk = await getSpecialityService(id);
-    console.log("espe encontrada en controller", chk);
     if (chk?.file) {
-      console.log("ya existe un archivo y se borra el registro y archivo");
       const deleteFile = await deleteFileService(chk?.file);
-      console.log("deletefileService desde controller", deleteFile);
-      console.log("se agrega a db");
       const updatePack = { link: link, file: null };
       const updateResult = await updateUserSpecializationService(id, updatePack);
       return updateResult;
     } else {
-      console.log("se agrega a db");
       const updatePack = { link: link };
       const updateResult = await updateUserSpecializationService(id, updatePack);
-      console.log("update Result", updateResult);
+
       return updateResult;
     }
   } catch (error) {
@@ -301,8 +302,160 @@ export const uploadUserSpecialityFile = async (id: number, file: File) => {
 //DESARROLLO FUTURO
 export const makeFavoriteSpeciality = async (study_speciality_id: number) => {
   const session = await getServerSession(authOptions);
-  const userId = session?.user.id
+  const userId = session?.user.id;
   //revisar si ya hay algun favorito con el id del study specialization
   const result = await makeFavoriteSpecialityService(userId, study_speciality_id);
-  return result
-}
+  return result;
+};
+
+export const getUserCertifications = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    //se envia a service
+    const certificates = await getUserCertificationsService(userId);
+    return certificates;
+  } catch (error) {
+    console.log("Error al obtener certificaciones", error);
+    throw new Error();
+  }
+};
+
+export const createUserCertification = async (data: any) => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    let endDateFix = data.endDate;
+    if (endDateFix === "") {
+      endDateFix = null;
+    } else {
+      endDateFix = new Date(data.endDate);
+    }
+    //se normaliza la info
+    const certPack = {
+      user_id: userId,
+      title: data.title,
+      status: data.titleStatus,
+      start_date: new Date(data.startDate),
+      end_date: endDateFix,
+      country: data.country,
+      institution: data.titleInstitution,
+      description: data.description,
+    };
+    //se envia a service
+    const result = await createUserCertificationService(userId, certPack);
+    return result;
+  } catch (error) {
+    console.log("Error al obtener certificaciones", error);
+    throw new Error();
+  }
+};
+
+export const getCertificationById = async (id: number) => {
+  try {
+    const certificate = await getCertificationByIdService(id);
+    return certificate;
+  } catch (error) {
+    console.log("Error al obtener certificaciones", error);
+    throw new Error();
+  }
+};
+
+export const updateCertification = async (id: number, data: any) => {
+  try {
+    console.log("data en controller cert", data);
+    //normalizar la info
+    //aajuste de enddate
+    let endDateFix = data.endDate;
+    if (endDateFix === "") {
+      endDateFix = null;
+    } else {
+      endDateFix = new Date(data.endDate);
+    }
+    //ajuste de startdate
+    let startDateFix = data.startDate;
+    if (startDateFix === "") {
+      startDateFix = null;
+    } else {
+      startDateFix = new Date(data.startDate);
+    }
+    const specialPack = {
+      institution: data.titleInstitution,
+      title: data.title,
+      status: data.titleStatus,
+      country: data.country,
+      start_date: startDateFix,
+      end_date: endDateFix,
+      description: data.description,
+    };
+    const update = await updateUserCertificationService(id, specialPack);
+    console.log("update de cert", update);
+
+    return update;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al Actualizar");
+  }
+};
+
+//ppendiente
+export const deleteUserCertification = async (id: number) => {
+  //revisar si hay archivos para eliminarlos
+  const chkFiles = await getCertificationById(id);
+  if (chkFiles?.file) {
+    const deleteFiles = await deleteFileService(chkFiles.file);
+    const deleteCert = await deleteUserCertificationService(id);
+    return deleteCert;
+  } else {
+    const result = await deleteUserCertificationService(id);
+    return result;
+  }
+};
+
+export const uploadUserCertificationLink = async (id: number, link: any) => {
+  try {
+    //verificar si ya existe un archivo y se borra
+    const chk = await getCertificationById(id);
+    if (chk?.file) {
+      //si existe se borra el archivo antiguo
+      const deleteFile = await deleteFileService(chk?.file);
+      //se agrega la nueva info
+      const updatePack = {
+        link: link,
+        file: null,
+      };
+      const updateDb = await updateUserCertificationService(id, updatePack);
+      return updateDb;
+    } else {
+      const updateDb = await updateUserCertificationService(id, { link: link });
+      return updateDb;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir Link");
+  }
+};
+
+export const uploadUserCertificationFile = async (id: number, file: any) => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
+  //verificar si ya existe un archivo y se borra
+  const chk = await getCertificationById(id);
+  if (chk?.link) {
+    //se elimina el link y se agrega el archivo
+    const uploadFile = await uploadFileService(file, "certification", userId);
+    const updatePack = { link: null, file: uploadFile.url };
+    const updateDb = await updateUserCertificationService(id, updatePack);
+    return updateDb;
+  } else if (chk?.file) {
+    //se elimina el archivo y se agrega el nuevo archivo
+    const deleteBlob = await deleteFileService(chk.file);
+    const uploadFile = await uploadFileService(file, "certification", userId);
+    const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
+    return updateDb;
+  } else {
+    const uploadFile = await uploadFileService(file, "certification", userId);
+    const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
+    return updateDb;
+  }
+};

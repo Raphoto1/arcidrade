@@ -24,6 +24,8 @@ export default function Specialities() {
             title_category={item.title_category}
             institution={item.institution}
             end_date={item.end_date}
+            link={item.link}
+            file={item.file}
           />
         ))}
       </div>

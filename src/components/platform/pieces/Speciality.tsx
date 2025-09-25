@@ -51,8 +51,14 @@ export default function Speciality(props: any) {
           <p className='text-sm text-gray-800'>{props.title_category || "Categoría Universidad"}</p>
           <span className='text-sm text-gray-600 block'>{props.institution || "Universidad Grande"}</span>
           <p className='font-light'>{endDate || "No Finalizado"}</p>
-          <h4 className='mt-2 font-semibold'>Archivo</h4>
-          <p className='text-sm text-gray-700'>documento.pdf</p>
+          {props.link?<div className="m-0 p-0">
+            <h4 className='mt-2 font-semibold'>Link</h4>
+            <a href={props.link} target="_blank" className='text-sm text-gray-700'>preview</a>
+          </div> : null}
+          {props.file?<div>
+            <h4 className='mt-2 font-semibold'>Archivo</h4>
+            <a href={props.file} target="_blank" className='text-sm text-gray-700'>preview</a>
+          </div>:null}
         </div>
 
         {/* Controles */}

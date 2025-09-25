@@ -161,9 +161,9 @@ export const createUserSpecializationDao = async (data: any) => {
   }
 };
 
-export const getUserSpecializationByTitle = async (title: string) => {
+export const getUserSpecializationByTitle = async (userId: string | undefined, title: string) => {
   try {
-    const result = await prisma.study_specialization.findFirst({ where: { title: title } });
+    const result = await prisma.study_specialization.findFirst({ where: { user_id: userId, title: title } });
     return result;
   } catch (error) {
     console.error(error);
@@ -223,7 +223,56 @@ export const updateSpecializationByIdDao = async (id: number, data: any) => {
 export const getFavoriteSpecializationBySpecializationIdDao = async (specializationId: number) => {
   try {
     const result = await prisma.study_speciality_favorite.findFirst({
-      where:{study_speciality_id:specializationId}
+      where: { study_speciality_id: specializationId },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+//DESARROLLO FUTURO
+export const CreateFavoriteSpecializationByIdDao = async (id: number, data: any) => {
+  try {
+    const result = await prisma.study_speciality_favorite.create({
+      data: data,
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+//certifications
+export const getCertificationsByUserIdDao = async (userId: string | undefined) => {
+  try {
+    const result = await prisma.profesional_certifications.findMany({
+      where: { user_id: userId },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const getCertificationByTitleDao = async (userId: string | undefined, title: string | undefined) => {
+  try {
+    const result = await prisma.profesional_certifications.findFirst({
+      where: { user_id: userId, title: title },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const getCertificationByIdDao = async (id: number | undefined) => { 
+  try {
+    const result = await prisma.profesional_certifications.findFirst({
+      where:{id:id}
     })
     return result
   } catch (error) {
@@ -231,12 +280,37 @@ export const getFavoriteSpecializationBySpecializationIdDao = async (specializat
     throw new Error("error dao");
   }
 }
-//DESARROLLO FUTURO
-export const CreateFavoriteSpecializationByIdDao = async (id: number, data: any) => {
+
+export const createUserCertificationDao = async ( data: any) => { 
+try {
+  const result = await prisma.profesional_certifications.create({
+    data
+  })
+  return result
+} catch (error) {
+      console.error(error);
+    throw new Error("error dao");
+}
+}
+
+export const updateCertificationByIdDao = async (id:number|undefined,data: any) => {
   try {
-    const result = await prisma.study_speciality_favorite.create({
+    const result = await prisma.profesional_certifications.update({
+      where: { id: id },
       data:data
     })
+    return result
+  } catch (error) {
+          console.error(error);
+    throw new Error("error dao");
+  }
+}
+
+export const deleteUserCertificationByIdDao = async (id: number | undefined) => { 
+  try {
+    const result = await prisma.profesional_certifications.delete({
+      where: { id: id }
+    });
     return result
   } catch (error) {
         console.error(error);

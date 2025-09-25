@@ -138,11 +138,11 @@ model Profesional_certifications {
   country     String
   status      String
   start_date  DateTime
-  end_date    DateTime
-  description String
+  end_date    DateTime?
+  description String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])
-  file        String
-  link        String
+  file        String?
+  link        String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }

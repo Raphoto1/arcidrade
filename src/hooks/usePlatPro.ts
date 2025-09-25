@@ -42,3 +42,25 @@ export const useProfesionalSpeciality = (id:number) => {
 
   return { data, error, isLoading, mutate };
 }
+
+export const useProfesionalCertifications = () => {
+    const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ProfesionalResponse>("/api/platform/profesional/certification", fetcher);
+
+  return { data, error, isLoading, mutate };
+}
+
+export const useProfesionalCertification = (id:number) => {
+    const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ProfesionalResponse>(`/api/platform/profesional/certification/${id}`, fetcher);
+
+  return { data, error, isLoading, mutate };
+}

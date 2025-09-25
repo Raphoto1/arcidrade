@@ -6,12 +6,13 @@ import { ICountry } from "country-state-city";
 
 import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
-import { useProfesionalCertifications } from "@/hooks/usePlatPro";
+import { useProfesionalCertification, useProfesionalCertifications } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
 
-export default function ProfesionalCertificationForm() {
+export default function ProfesionalCertificationUpdateForm({ id }: { id: number }) {
   const { closeModal } = useModal();
-  const { mutate } = useProfesionalCertifications();
+  const { data, error, isLoading, mutate } = useProfesionalCertification(id);
+  const {mutate:mutate2} = useProfesionalCertifications()
 
   const [countryList, setCountryList] = useState<ICountry[]>([]);
   const [statusSelected, setStatusSelected] = useState("");
@@ -20,9 +21,31 @@ export default function ProfesionalCertificationForm() {
   const {
     register,
     handleSubmit,
+    reset,
     getValues,
     formState: { errors },
   } = useForm();
+
+  useEffect(() => {
+    if (data?.payload) {
+      reset({
+        title: data.payload.title,
+        titleStatus: data.payload.status,
+        startDate: data.payload.start_date
+          ? new Date(data.payload.start_date).toISOString().split("T")[0]
+          : "",
+        endDate: data.payload.end_date
+          ? new Date(data.payload.end_date).toISOString().split("T")[0]
+          : "",
+        country: data.payload.country,
+        titleInstitution: data.payload.institution,
+        description: data.payload.description ?? "",
+      });
+
+      setStatusSelected(data.payload.status);
+      setStudyCountry(data.payload.country);
+    }
+  }, [data, reset]);
 
   useEffect(() => {
     const countryData = Country.getAllCountries();
@@ -37,25 +60,25 @@ export default function ProfesionalCertificationForm() {
     setStudyCountry(e.target.value);
   };
 
-  const onSubmit = handleSubmit(async (formData) => {
-    const payload = {
-      ...formData,
-      startDate: formData.startDate || "",
-      endDate: formData.endDate || "",
-    };
+  const path = `/api/platform/profesional/certification/${id}`;
 
-    const response = await useHandleSubmitText(payload, "/api/platform/profesional/certification/");
+  const onSubmit = handleSubmit(async (formData) => {
+    const response = await useHandleSubmitText(formData, path);
     if (response.ok) {
       mutate();
+      mutate2();
       closeModal();
     }
   });
+
+  if (isLoading) return <p>Cargando datos...</p>;
+  if (error) return <p>Error al cargar el certificado.</p>;
 
   return (
     <div className="flex w-full justify-center items-center">
       <div className="flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl">
         <div className="flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center">
-          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Certificado</h2>
+          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Actualizar Certificado</h2>
 
           <form onSubmit={onSubmit} className="form justify-center align-middle pl-2 min-w-full grid gap-4 mt-4">
             <div>
@@ -157,7 +180,7 @@ export default function ProfesionalCertificationForm() {
             </div>
 
             <div className="flex justify-center gap-4 mt-6">
-              <button type="submit" className="btn bg-[var(--soft-arci)]">Confirmar Certificado</button>
+              <button type="submit" className="btn bg-[var(--soft-arci)]">Actualizar Certificado</button>
               <button type="button" className="btn bg-[var(--orange-arci)]" onClick={closeModal}>Cancelar</button>
             </div>
           </form>
