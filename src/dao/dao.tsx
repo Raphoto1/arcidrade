@@ -269,11 +269,94 @@ export const getCertificationByTitleDao = async (userId: string | undefined, tit
   }
 };
 
-export const getCertificationByIdDao = async (id: number | undefined) => { 
+export const getCertificationByIdDao = async (id: number | undefined) => {
   try {
     const result = await prisma.profesional_certifications.findFirst({
-      where:{id:id}
-    })
+      where: { id: id },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const createUserCertificationDao = async (data: any) => {
+  try {
+    const result = await prisma.profesional_certifications.create({
+      data,
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const updateCertificationByIdDao = async (id: number | undefined, data: any) => {
+  try {
+    const result = await prisma.profesional_certifications.update({
+      where: { id: id },
+      data: data,
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const deleteUserCertificationByIdDao = async (id: number | undefined) => {
+  try {
+    const result = await prisma.profesional_certifications.delete({
+      where: { id: id },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+//experience
+export const getUserExperiencesByUserIdDao = async (userId: string | undefined) => {
+  try {
+    const result = await prisma.experience.findMany({
+      where: { user_id: userId },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const createUserExperienceDao = async (data: any) => {
+  try {
+    const result = await prisma.experience.create({
+      data,
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const deleteUserExperienceByIdDao = async (id: number | undefined) => {
+  try {
+    const result = await prisma.experience.delete({
+      where: { id: id },
+    });
+    return result;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error dao");
+  }
+};
+
+export const getUserExperienceByIdDao = async (id: number | undefined) => {
+  try {
+    const result = await prisma.experience.findFirst({ where: { id: id } })
     return result
   } catch (error) {
         console.error(error);
@@ -281,36 +364,12 @@ export const getCertificationByIdDao = async (id: number | undefined) => {
   }
 }
 
-export const createUserCertificationDao = async ( data: any) => { 
-try {
-  const result = await prisma.profesional_certifications.create({
-    data
-  })
-  return result
-} catch (error) {
-      console.error(error);
-    throw new Error("error dao");
-}
-}
-
-export const updateCertificationByIdDao = async (id:number|undefined,data: any) => {
+export const updateUserExperienceByIdDao = async (id: number | undefined, data: any) => { 
   try {
-    const result = await prisma.profesional_certifications.update({
-      where: { id: id },
-      data:data
+    const result = await prisma.experience.update({
+      where:{id:id},
+      data
     })
-    return result
-  } catch (error) {
-          console.error(error);
-    throw new Error("error dao");
-  }
-}
-
-export const deleteUserCertificationByIdDao = async (id: number | undefined) => { 
-  try {
-    const result = await prisma.profesional_certifications.delete({
-      where: { id: id }
-    });
     return result
   } catch (error) {
         console.error(error);

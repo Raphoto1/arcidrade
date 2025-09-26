@@ -10,36 +10,6 @@ import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesional } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
 
-interface IProfesional {
-  name: string;
-  last_name: string | null;
-  birth_date: Date | null;
-  email: string;
-  phone: string | null;
-  country: string;
-  state: string;
-  city: string;
-  title: string;
-  studyCountry: string;
-  titleInstitution: string;
-  titleStatus: string;
-}
-
-interface IFormData {
-  name: string;
-  last_name: string | null;
-  birth_date: Date | null;
-  email: string;
-  phone: string | null;
-  country: string;
-  state: string;
-  city: string;
-  title: string;
-  studyCountry: string;
-  titleInstitution: string;
-  titleStatus: string;
-}
-
 export default function ProfesionalProfileHookForm() {
   const { closeModal } = useModal();
   const { data: session } = useSession();
@@ -116,10 +86,10 @@ export default function ProfesionalProfileHookForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await useHandleSubmitText(data, "/api/platform/profesional");
-    console.log('response form', response);
+    console.log("response form", response);
     if (response.ok) {
       mutate();
-      closeModal()
+      closeModal();
     }
   });
 

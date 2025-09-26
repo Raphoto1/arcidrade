@@ -1,15 +1,13 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
-import { Country, State, City } from "country-state-city";
-import { ICountry, IState, ICity } from "country-state-city";
+import { Country } from "country-state-city";
+import { ICountry } from "country-state-city";
 
-import { optionsTitleStatus } from "@/static/data/staticData";
+import { optionsTitleStatus, medicalOptions } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
-import { medicalOptions } from "@/static/data/staticData";
 
 export default function ProfesionalSpecialityForm() {
   const { closeModal } = useModal();
@@ -18,16 +16,19 @@ export default function ProfesionalSpecialityForm() {
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm();
 
-  const [titleCategorySelected, setTitleCategorySelected] = useState<string>("");
-  const [statusSelected, setStatusSelected] = useState<string>("");
-  const [countrySelected, setCountrySelected] = useState<string>("");
-
+  const [titleCategorySelected, setTitleCategorySelected] = useState("");
+  const [statusSelected, setStatusSelected] = useState("");
+  const [studyCountry, setStudyCountry] = useState("");
   const [countryList, setCountryList] = useState<ICountry[]>([]);
 
-  const [studyCountry, setStudyCountry] = useState("");
+  useEffect(() => {
+    const countryData = Country.getAllCountries();
+    setCountryList(countryData);
+  }, []);
 
   const handleTitleCategorySelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setTitleCategorySelected(e.target.value);
@@ -38,121 +39,140 @@ export default function ProfesionalSpecialityForm() {
   };
 
   const handleStudyCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("study country selected", e.target.value);
-    const countryName = e.target.value;
-    setStudyCountry(countryName);
+    setStudyCountry(e.target.value);
   };
 
-  const onSubmit = handleSubmit(async (data) => {
-    const response = await useHandleSubmitText(data, "/api/platform/profesional/speciality/");
-    console.log("response form", response);
+  const onSubmit = handleSubmit(async (formData) => {
+    const payload = {
+      ...formData,
+      startDate: formData.startDate || "",
+      endDate: formData.endDate || "",
+    };
+
+    const response = await useHandleSubmitText(payload, "/api/platform/profesional/speciality/");
     if (response.ok) {
       mutate();
       closeModal();
     }
   });
 
-  useEffect(() => {
-    //set de cities
-    const countryData = Country.getAllCountries();
-    setCountryList(countryData);
-  }, []);
-
   return (
-    <div className='flex w-full justify-center items-center'>
-      <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
-        <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Especialidad</h2>
-          <form onSubmit={onSubmit} className='form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full'>
+    <div className="flex w-full justify-center items-center">
+      <div className="flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl">
+        <div className="flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center">
+          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Especialidad</h2>
+
+          <form onSubmit={onSubmit} className="form justify-center align-middle pl-2 min-w-full grid gap-4 mt-4">
             <div>
-              <label htmlFor='title' className='block'>
-                Título Especialidad
-              </label>
-              <input type='text' {...register("title")} className='w-xs' />
+              <label htmlFor="title" className="block font-semibold mb-1">Título Especialidad</label>
+              <input
+                type="text"
+                {...register("title", { required: "Este campo es obligatorio" })}
+                className="input input-bordered w-full"
+              />
+              {errors.title?.message && (
+                <span className="text-xs text-red-500">{String(errors.title.message)}</span>
+              )}
             </div>
+
             <div>
-              <label htmlFor='titleCategory' className='block'>
-                Categoria más Cercana de Especialidad
-              </label>
+              <label htmlFor="title_category" className="block font-semibold mb-1">Categoría más cercana</label>
               <select
-                {...register("title_category", { required: true })}
+                {...register("title_category", { required: "Este campo es obligatorio" })}
                 value={titleCategorySelected}
                 onChange={handleTitleCategorySelected}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Una Especialidad</option>
+                className="select select-bordered w-full"
+              >
+                <option value="">Seleccione una especialidad</option>
                 {medicalOptions.map((speciality: any, index: number) => (
-                  <option key={index} value={speciality.name as string}>
-                    {speciality.name as string}
-                  </option>
+                  <option key={index} value={speciality.name}>{speciality.name}</option>
                 ))}
               </select>
+              {errors.title_category?.message && (
+                <span className="text-xs text-red-500">{String(errors.title_category.message)}</span>
+              )}
             </div>
-            {errors.name && <span>Nombre es Requerido</span>}
+
             <div>
-              <label htmlFor='titleStatus' className='block'>
-                Estado del titulo
-              </label>
+              <label htmlFor="titleStatus" className="block font-semibold mb-1">Estado del título</label>
               <select
                 {...register("titleStatus")}
                 value={statusSelected}
                 onChange={handleStatusSelected}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Un Status</option>
+                className="select select-bordered w-full"
+              >
+                <option value="">Seleccione un estado</option>
                 {optionsTitleStatus.map((status, index) => (
-                  <option key={index} value={status.value as string}>
-                    {status.label as string}
-                  </option>
+                  <option key={index} value={status.value}>{status.label}</option>
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor='startDate' className='block'>
-                Fecha de Inicio
-              </label>
-              <input type='date' {...register("startDate")} className='w-xs' />
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="startDate" className="block font-semibold mb-1">Fecha de inicio</label>
+                <input
+                  type="date"
+                  {...register("startDate")}
+                  className="input input-bordered w-full"
+                />
+              </div>
+              <div>
+                <label htmlFor="endDate" className="block font-semibold mb-1">Fecha de finalización</label>
+                <input
+                  type="date"
+                  {...register("endDate", {
+                    validate: (value) => {
+                      if (!value) return true;
+                      const start = new Date(getValues("startDate"));
+                      const end = new Date(value);
+                      return end >= start || "La fecha de finalización no puede ser menor que la de inicio";
+                    },
+                  })}
+                  className="input input-bordered w-full"
+                />
+                {errors.endDate?.message && (
+                  <span className="text-xs text-red-500">{String(errors.endDate.message)}</span>
+                )}
+              </div>
             </div>
+
             <div>
-              <label htmlFor='endDate' className='block'>
-                Fecha de Finalización
-              </label>
-              <input type='date' {...register("endDate")} className='w-xs' />
-            </div>
-            <div>
-              <label htmlFor='studyCountry' className='block'>
-                País de expedición del título
-              </label>
+              <label htmlFor="country" className="block font-semibold mb-1">País de expedición</label>
               <select
-                id='country'
-                {...register("country")}
-                name='country'
+                id="country"
+                {...register("country", { required: "Este campo es obligatorio" })}
                 value={studyCountry}
                 onChange={handleStudyCountryChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Un Pais</option>
+                className="select select-bordered w-full"
+              >
+                <option value="">Seleccione un país</option>
                 {countryList.map((country, index) => (
-                  <option key={index} value={country.name as string}>
-                    {country.name as string}
-                  </option>
+                  <option key={index} value={country.name}>{country.name}</option>
                 ))}
               </select>
+              {errors.country?.message && (
+                <span className="text-xs text-red-500">{String(errors.country.message)}</span>
+              )}
             </div>
+
             <div>
-              <label htmlFor='titleInstitution' className='block'>
-                Institucion que otorga el titulo
-              </label>
-              <input type='text' {...register("titleInstitution")} className='w-xs' />
+              <label htmlFor="titleInstitution" className="block font-semibold mb-1">Institución otorgante</label>
+              <input
+                type="text"
+                {...register("titleInstitution", { required: "Este campo es obligatorio" })}
+                className="input input-bordered w-full"
+              />
+              {errors.titleInstitution?.message && (
+                <span className="text-xs text-red-500">{String(errors.titleInstitution.message)}</span>
+              )}
             </div>
-            <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-              <button className='btn bg-[var(--soft-arci)]' type='submit'>
-                Confirmar Especialidad
-              </button>
+
+            <div className="flex justify-center gap-4 mt-6">
+              <button type="submit" className="btn bg-[var(--soft-arci)]">Confirmar Especialidad</button>
+              <button type="button" className="btn bg-[var(--orange-arci)]" onClick={closeModal}>Cancelar</button>
             </div>
           </form>
-          <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal}>
-              Cancelar
-            </button>
-          </div>
         </div>
       </div>
     </div>

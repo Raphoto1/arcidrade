@@ -9,9 +9,9 @@ import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalCertification, useProfesionalCertifications } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
 
-export default function ProfesionalCertificationUpdateForm({ id }: { id: number }) {
+export default function ProfesionalCertificationUpdateForm(props:any) {
   const { closeModal } = useModal();
-  const { data, error, isLoading, mutate } = useProfesionalCertification(id);
+  const { data, error, isLoading, mutate } = useProfesionalCertification(props.id);
   const {mutate:mutate2} = useProfesionalCertifications()
 
   const [countryList, setCountryList] = useState<ICountry[]>([]);
@@ -60,7 +60,7 @@ export default function ProfesionalCertificationUpdateForm({ id }: { id: number 
     setStudyCountry(e.target.value);
   };
 
-  const path = `/api/platform/profesional/certification/${id}`;
+  const path = `/api/platform/profesional/certification/${props.id}`;
 
   const onSubmit = handleSubmit(async (formData) => {
     const response = await useHandleSubmitText(formData, path);

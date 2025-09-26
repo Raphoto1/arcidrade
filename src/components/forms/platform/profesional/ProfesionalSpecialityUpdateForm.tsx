@@ -83,7 +83,6 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
       <div className="flex justify-center items-center h-1/2 p-2 min-w-xl">
         <div className="flex flex-col justify-start h-full bg-gray-200 w-2/3 items-center rounded-sm p-4 md:justify-center">
           <h2 className="text-2xl text-start font-[var(--font-oswald)]">Especialidad</h2>
-          <span className="text-sm text-gray-600 mb-2">ID: {data?.payload.id}</span>
 
           <form onSubmit={onSubmit} className="w-full grid gap-4 mt-4">
             <div>

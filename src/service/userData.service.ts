@@ -18,6 +18,11 @@ import {
   getCertificationByIdDao,
   updateCertificationByIdDao,
   deleteUserCertificationByIdDao,
+  getUserExperiencesByUserIdDao,
+  createUserExperienceDao,
+  deleteUserExperienceByIdDao,
+  getUserExperienceByIdDao,
+  updateUserExperienceByIdDao,
 } from "@/dao/dao";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
@@ -136,13 +141,13 @@ export const getUserCertificationsService = async (userId: string | undefined) =
 
 export const getUserCertificationByTitleService = async (userId: string | undefined, title: string | undefined) => {
   const result = await getCertificationByTitleDao(userId, title);
-  return result
+  return result;
 };
 
 export const getCertificationByIdService = async (id: number | undefined) => {
-  const result = await getCertificationByIdDao(id)
-return result
-}
+  const result = await getCertificationByIdDao(id);
+  return result;
+};
 
 export const createUserCertificationService = async (userId: string | undefined, data: any) => {
   const chk = await getUserCertificationByTitleService(userId, data.title);
@@ -153,16 +158,41 @@ export const createUserCertificationService = async (userId: string | undefined,
   } else {
     console.log("se crea");
     const result = createUserCertificationDao(data);
-    return result
-  };
+    return result;
+  }
 };
 
-export const updateUserCertificationService = async (id: number|undefined, data: any|undefined) => {
+export const updateUserCertificationService = async (id: number | undefined, data: any | undefined) => {
   const result = await updateCertificationByIdDao(id, data);
-  return result
-}
+  return result;
+};
 
 export const deleteUserCertificationService = async (id: number) => {
   const result = await deleteUserCertificationByIdDao(id);
-  return result
+  return result;
 };
+//experience
+export const getUserExperiencesService = async (userId: string | undefined) => {
+  const result = await getUserExperiencesByUserIdDao(userId);
+  return result;
+};
+
+export const createUserExperienceService = async (data: any) => {
+  const result = await createUserExperienceDao(data);
+  return result;
+};
+
+export const deleteUserExperienceService = async (id: number) => {
+  const result = await deleteUserExperienceByIdDao(id);
+  return result;
+};
+
+export const getUserExperienceByIdService = async (id: number | undefined) => {
+  const result = await getUserExperienceByIdDao(id);
+  return result;
+};
+
+export const updateUserExperienceService = async (id: number, data:any) => { 
+  const result = await updateUserExperienceByIdDao(id, data);
+  return result
+}

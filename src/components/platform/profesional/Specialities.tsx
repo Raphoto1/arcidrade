@@ -7,7 +7,6 @@ import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function Specialities() {
   const { data, error, isLoading } = useProfesionalSpecialities();
-  console.log("specialities", data?.payload);
   const specialitiesList = data?.payload;
 
   return (

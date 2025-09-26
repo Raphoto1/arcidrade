@@ -64,3 +64,25 @@ export const useProfesionalCertification = (id:number) => {
 
   return { data, error, isLoading, mutate };
 }
+
+export const useProfesionalExperiences = () => {
+    const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ProfesionalResponse>("/api/platform/profesional/experience", fetcher);
+
+  return { data, error, isLoading, mutate };
+}
+
+export const useProfesionalExperience = (id:number) => {
+    const {
+    data,
+    error,
+    isLoading,
+    mutate,
+  } = useSWR<ProfesionalResponse>(`/api/platform/profesional/experience/${id}`, fetcher);
+
+  return { data, error, isLoading, mutate };
+}

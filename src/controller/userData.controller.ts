@@ -22,9 +22,14 @@ import {
   getCertificationByIdService,
   updateUserCertificationService,
   deleteUserCertificationService,
+  getUserExperiencesService,
+  createUserExperienceService,
+  getUserExperienceByIdService,
+  deleteUserExperienceService,
+  updateUserExperienceService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
-
+//user__________________________________________________________________________________
 export const createUserData = async (data: any) => {
   //se extrae el session
   const session = await getServerSession(authOptions);
@@ -184,7 +189,7 @@ export const uploadUserAvatar = async (file: File) => {
     throw new Error();
   }
 };
-
+//speciality_______________________________________________________________________________________
 export const createSpeciality = async (data: any) => {
   try {
     console.log("data en controller", data);
@@ -307,7 +312,7 @@ export const makeFavoriteSpeciality = async (study_speciality_id: number) => {
   const result = await makeFavoriteSpecialityService(userId, study_speciality_id);
   return result;
 };
-
+//certifications____________________________________________________________________________
 export const getUserCertifications = async () => {
   try {
     const session = await getServerSession(authOptions);
@@ -398,7 +403,6 @@ export const updateCertification = async (id: number, data: any) => {
   }
 };
 
-//ppendiente
 export const deleteUserCertification = async (id: number) => {
   //revisar si hay archivos para eliminarlos
   const chkFiles = await getCertificationById(id);
@@ -459,3 +463,155 @@ export const uploadUserCertificationFile = async (id: number, file: any) => {
     return updateDb;
   }
 };
+//experience___________________________________________________________________________________
+export const getUserExperiences = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    const response = await getUserExperiencesService(userId);
+    return response;
+  } catch (error) {
+    console.log("Error al obtener Experiencia", error);
+    throw new Error();
+  }
+};
+
+export const getUserExperienceById = async (id: number) => {
+  try {
+    const result = await getUserExperienceByIdService(id);
+    return result;
+  } catch (error) {
+    console.log("Error al obtener certificaciones", error);
+    throw new Error();
+  }
+};
+
+export const createUserExperience = async (data: any) => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    //ajuste de fecha endDate
+    let endDateFix = data.endDate;
+    if (endDateFix === "") {
+      endDateFix = null;
+    } else {
+      endDateFix = new Date(data.endDate);
+    }
+    const userPack = {
+      user_id: userId,
+      title: data.title,
+      institution: data.institution,
+      start_date: new Date(data.startDate),
+      end_date: endDateFix,
+      country: data.country,
+      state: data.state,
+      city: data.city,
+      description: data.description,
+    };
+    const response = await createUserExperienceService(userPack);
+    return response;
+  } catch (error) {
+    console.log("Error al crear Experiencia", error);
+    throw new Error();
+  }
+};
+
+export const deleteUserExperience = async (id: number) => {
+  try {
+    const chk = await getUserExperienceByIdService(id);
+    if (chk?.file) {
+      const deleteFile = await deleteFileService(chk.file);
+      const deleteUser = await deleteUserExperienceService(id);
+      return deleteUser;
+    } else {
+      const deleteUser = await deleteUserExperienceService(id);
+      return deleteUser;
+    }
+  } catch (error) {
+    console.log("Error al obtener certificaciones", error);
+    throw new Error();
+  }
+};
+
+export const updateUserExperience = async (id: number, data: any) => {
+  try {
+    //normalizar la info
+    //aajuste de enddate
+    let endDateFix = data.endDate;
+    if (endDateFix === "") {
+      endDateFix = null;
+    } else {
+      endDateFix = new Date(data.endDate);
+    }
+    //ajuste de startdate
+    let startDateFix = data.startDate;
+    if (startDateFix === "") {
+      startDateFix = null;
+    } else {
+      startDateFix = new Date(data.startDate);
+    }
+    const specialPack = {
+      institution: data.titleInstitution,
+      title: data.title,
+      country: data.country,
+      state: data.state,
+      city: data.city,
+      start_date: startDateFix,
+      end_date: endDateFix,
+      description: data.description,
+    };
+    const response = await updateUserExperienceService(id, specialPack);
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al Actualizar");
+  }
+};
+
+export const uploadUserExperienceLink = async (id: number, link: any) => {
+    try {
+    //verificar si ya existe un archivo y se borra
+      const chk = await getUserExperienceByIdService(id);
+    if (chk?.file) {
+      //si existe se borra el archivo antiguo
+      const deleteFile = await deleteFileService(chk?.file);
+      //se agrega la nueva info
+      const updatePack = {
+        link: link,
+        file: null,
+      };
+      const updateDb = await updateUserExperienceService(id, updatePack);
+      return updateDb;
+    } else {
+      const updateDb = await updateUserExperienceService(id, { link: link });
+      return updateDb;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir Link");
+  }
+}
+
+export const uploadUserExperienceFile = async (id: number, file: any) => {
+   const session = await getServerSession(authOptions);
+  const userId = session?.user.id;
+  //verificar si ya existe un archivo y se borra
+  const chk = await getUserExperienceByIdService(id);
+  if (chk?.link) {
+    //se elimina el link y se agrega el archivo
+    const uploadFile = await uploadFileService(file, "experience", userId);
+    const updatePack = { link: null, file: uploadFile.url };
+    const updateDb = await updateUserExperienceService(id, updatePack);
+    return updateDb;
+  } else if (chk?.file) {
+    //se elimina el archivo y se agrega el nuevo archivo
+    const deleteBlob = await deleteFileService(chk.file);
+    const uploadFile = await uploadFileService(file, "experience", userId);
+    const updateDb = await updateUserExperienceService(id, { file: uploadFile.url });
+    return updateDb;
+  } else {
+    const uploadFile = await uploadFileService(file, "experience", userId);
+    const updateDb = await updateUserExperienceService(id, { file: uploadFile.url });
+    return updateDb;
+  }
+}

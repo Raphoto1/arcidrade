@@ -118,6 +118,7 @@ model Study_specialization {
   file           String?
   link           String?
   sub_area       Sub_area?
+  is_main        Boolean @default(false)
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
 }
@@ -131,7 +132,7 @@ model Study_speciality_favorite {
 }
 
 model Profesional_certifications {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   user_id     String
   title       String
   institution String
@@ -140,30 +141,30 @@ model Profesional_certifications {
   start_date  DateTime
   end_date    DateTime?
   description String?
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode])
   file        String?
   link        String?
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 }
 
 model Experience {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   user_id     String
   title       String
   institution String
   country     String
-  state       String
-  city        String
-  status      String
-  start_date  DateTime
-  end_date    DateTime
-  description String
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
-  file        String
-  link        String
-  created_at  DateTime @default(now())
-  updated_at  DateTime @updatedAt
+  state       String?
+  city        String?
+  status      String?
+  start_date  DateTime?
+  end_date    DateTime?
+  description String?
+  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  file        String?
+  link        String?
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt
 }
 
 //institutions_________________________________________________
