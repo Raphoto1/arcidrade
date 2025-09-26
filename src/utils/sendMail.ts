@@ -1,5 +1,5 @@
-'use server';
-import nodemailer from 'nodemailer';
+"use server";
+import nodemailer from "nodemailer";
 const SMTP_SERVER_HOST = process.env.SMTP_SERVER_HOST;
 const SMTP_SERVER_USERNAME = process.env.SMTP_SERVER_USERNAME;
 const SMTP_SERVER_PASSWORD = process.env.SMTP_SERVER_PASSWORD;
@@ -10,43 +10,35 @@ const MAIL_PORT = process.env.MAIL_PORT;
 
 const SubjectInvitation = "Le han invitado a ARCIDRADE";
 
-
 const transporter = nodemailer.createTransport({
-
-    host: SMTP_SERVER_HOST,
-    port: Number(MAIL_PORT),
-    auth: {
-        user: NO_REPLY_MAIL,
-        pass: NO_REPLY_MAIL_PASSWORD
-    },
-    secure: true,
-    tls: {
-        ciphers:"SSLv3"
-    },
-    requireTLS: true,
-    debug: true,
-    connectionTimeout:10000,
+  host: SMTP_SERVER_HOST,
+  port: Number(MAIL_PORT),
+  auth: {
+    user: NO_REPLY_MAIL,
+    pass: NO_REPLY_MAIL_PASSWORD,
+  },
+  secure: true,
+  tls: {
+    ciphers: "SSLv3",
+  },
+  requireTLS: true,
+  debug: true,
+  connectionTimeout: 10000,
 });
 
-export async function sendInvitationMail({
-  sendTo,
-  referCode,
-}: {
-  sendTo?: string;
-  referCode: string;
-}) {
+export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: string; referCode: string }) {
   try {
     const isVerified = await transporter.verify();
   } catch (error) {
-    console.error('Something Went Wrong', SMTP_SERVER_USERNAME, SMTP_SERVER_PASSWORD, error);
+    console.error("Something Went Wrong", error);
     return;
   }
   const info = await transporter.sendMail({
     from: NO_REPLY_MAIL,
-    to: sendTo ,
+    to: sendTo,
     subject: SubjectInvitation,
     text: `Con este Link podras continuar con tu registro`,
-        html: `<!DOCTYPE html>
+    html: `<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -101,9 +93,7 @@ export async function sendInvitationMail({
         </div>
     </div>
 </body>
-</html>`
+</html>`,
   });
-  console.log('Message Sent', info.messageId);
-  console.log('Mail sent to', SITE_MAIL_RECIEVER);
   return info;
 }

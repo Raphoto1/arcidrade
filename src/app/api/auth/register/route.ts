@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { registerUser, registerLeads } from "@/service/register.service";
+import { registerUser, registerLeads, failedMail } from "@/service/register.service";
 import { sendInvitationMail } from "@/utils/sendMail";
 
 export async function POST(request: Request) {
@@ -16,7 +16,12 @@ export async function POST(request: Request) {
       sendTo: user.email,
       referCode: user.referCode,
     };
-    await sendInvitationMail(emailToSend);
+    const emailSent = await sendInvitationMail(emailToSend);
+    if (!emailSent) {
+      console.log('no se enviia mail');
+      const failMail = await failedMail(email, user.referCode);
+      console.error('failMail', failMail);
+    }
     if (invitation_sender_role === "campaign") {
       const lead = await registerLeads(invitation_sender_id, user.email);
     }

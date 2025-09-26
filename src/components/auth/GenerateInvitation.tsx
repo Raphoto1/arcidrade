@@ -10,9 +10,8 @@ export default function GenerateInvitation() {
   const options = [
     { value: "institution", label: "Institución" },
     { value: "profesional", label: "Profesional" },
-    { value: "manager", label: "Reclutador" },
+    // { value: "manager", label: "Reclutador" },
   ];
-console.log(session);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -28,9 +27,8 @@ console.log(session);
     try {
       setIsLoading(true);
       const response = await useHandleSubmitText(data, "/api/auth/register");
-      console.log(response);
       setIsLoading(false);
-      alert("Invitación generada satisfactoriamente");
+      alert("Invitación generada satisfactoriamente, por favor revise su correo y siga las Instrucciones");
       router.refresh()
     } catch (error) {
       console.error("Creación de Invitacion Fallida, intente con otro Email", error);
@@ -46,7 +44,7 @@ console.log(session);
       {isLoading && <Loading />}
       <div className='flex-col justify-center h-full bg-gray-200 w-full align-middle items-center rounded-sm p-4'>
         { session?.user.email ?<div><h1>Correo Autorizado para Enviar Invitación</h1><span>{session.user.email}</span></div> : null }
-        <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Generate Invitation</h2>
+        <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Generar Invitación</h2>
         <form onSubmit={handleSubmit} className='form justify-center align-middle'>
           <div className="md:grid md:w-full md:h-full grid">
             <label htmlFor='email' className="font-">Email</label>

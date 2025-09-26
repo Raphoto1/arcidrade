@@ -1,7 +1,0 @@
--- AlterTable
-ALTER TABLE "public"."Main_study" ALTER COLUMN "start_date" DROP NOT NULL,
-ALTER COLUMN "end_date" DROP NOT NULL,
-ALTER COLUMN "description" DROP NOT NULL,
-ALTER COLUMN "file" DROP NOT NULL,
-ALTER COLUMN "link" DROP NOT NULL,
-ALTER COLUMN "sub_area" DROP NOT NULL;

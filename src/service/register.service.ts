@@ -12,12 +12,10 @@ enum area {
 export async function registerUser(email: string, area: string, invitation_sender?: string, invitation_sender_id?: string) {
   // revisar el sender para saber si es un extender
   console.log("Invitación enviada desde:", invitation_sender, invitation_sender_id);
-
   if ((invitation_sender && invitation_sender_id === "") || null) {
     invitation_sender = "external";
     invitation_sender_id = "external";
   }
-
   // encryptar pass
   try {
     const user = await prisma.auth.create({
@@ -37,6 +35,17 @@ export async function registerUser(email: string, area: string, invitation_sende
     return user;
   } catch (error) {
     console.error("Error Al Registrar Usuario, intente con otro Email", error);
+    return null;
+  }
+}
+
+export async function failedMail(email: string, userId: string) {
+  try {
+    const response = await prisma.fail_mail.create({
+      data: { email: email, user_id: userId }
+    })
+  } catch (error) {
+    console.error("Error Al Registrar Usuario", error);
     return null;
   }
 }

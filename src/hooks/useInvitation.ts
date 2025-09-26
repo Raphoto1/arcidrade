@@ -19,8 +19,6 @@ export const useChkInvitation = async (id: string) => {
 // id para test cmekeqy4d0000pg8r3xz08x8l
 // generar password segun la invitacion
 export const useInvitation = async (form: any, id: string) => {
-  console.log('Datos recibidos en useInvitation:', { form, id });
-
   try {
     const result = await useHandleSubmitText(form, `/api/auth/invitations/${id}`);
     console.log(result);

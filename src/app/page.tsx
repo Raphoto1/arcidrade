@@ -10,6 +10,7 @@ import BrColors from "@/components/pieces/BrColors";
 import ThreeColumnGrid from "@/components/Grids/ThreeColumnGrid";
 
 export default function Home() {
+
   return (
     <main className="flex flex-col items-center gap- min-h-screen justify-center">
       <div>

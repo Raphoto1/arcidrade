@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
@@ -61,6 +62,17 @@ model Auth {
   goals                      Goals[]
   campaign_data              Campaign_data[]
   leads_send                 Leads_send[]
+  fail_mail                  fail_mail[]
+}
+
+//fallas de envio de correo
+model fail_mail {
+  id         Int      @id @default(autoincrement())
+  email      String   @unique
+  user_id    String   @unique
+  auth       Auth     @relation(fields: [user_id], references: [referCode])
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
 
 //profesional_________________________________________________
@@ -118,7 +130,7 @@ model Study_specialization {
   file           String?
   link           String?
   sub_area       Sub_area?
-  is_main        Boolean @default(false)
+  is_main        Boolean   @default(false)
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
 }
