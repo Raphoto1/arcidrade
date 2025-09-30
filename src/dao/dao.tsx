@@ -62,6 +62,28 @@ export const completeInvitationDao = async (id: string, email: string, password:
 // Platform - Institution
 
 // Platform - Profesional_________________________________________________________________
+export const getProfesionalFullByIdDao = async (user_id: string | undefined) => {
+  try {
+    const fullUser = await prisma.auth.findFirst({
+      where: { referCode: user_id },
+      include: {
+        profesional_data: true,
+        main_study: true,
+        study_specialization: true,
+        profesional_certifications: true,
+        experience: true,
+      },
+    });
+    if (fullUser) {
+      const { password, ...safeUser } = fullUser;
+      return safeUser;
+    }
+  } catch (error) {
+        console.log("error de Profesional data full", error);
+    throw new Error("Error al obtener profesional full");
+  }
+};
+
 export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefined) => {
   try {
     const profesionalData = await prisma.profesional_data.findFirst({
@@ -109,7 +131,7 @@ export const updateProfesionalStatus = async (id: string, status: StatusAvailabl
   }
 };
 //obtener main_study profesional
-export const getProfesionalMainStudyDao = async (user_id: string | undefined ) => {
+export const getProfesionalMainStudyDao = async (user_id: string | undefined) => {
   try {
     const mainStudy = await prisma.main_study.findFirst({
       where: { user_id },
@@ -356,23 +378,23 @@ export const deleteUserExperienceByIdDao = async (id: number | undefined) => {
 
 export const getUserExperienceByIdDao = async (id: number | undefined) => {
   try {
-    const result = await prisma.experience.findFirst({ where: { id: id } })
-    return result
+    const result = await prisma.experience.findFirst({ where: { id: id } });
+    return result;
   } catch (error) {
-        console.error(error);
+    console.error(error);
     throw new Error("error dao");
   }
-}
+};
 
-export const updateUserExperienceByIdDao = async (id: number | undefined, data: any) => { 
+export const updateUserExperienceByIdDao = async (id: number | undefined, data: any) => {
   try {
     const result = await prisma.experience.update({
-      where:{id:id},
-      data
-    })
-    return result
+      where: { id: id },
+      data,
+    });
+    return result;
   } catch (error) {
-        console.error(error);
+    console.error(error);
     throw new Error("error dao");
   }
-}
+};

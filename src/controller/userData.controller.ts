@@ -27,6 +27,7 @@ import {
   getUserExperienceByIdService,
   deleteUserExperienceService,
   updateUserExperienceService,
+  getUserFullByIdService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 import { updateProfesionalMainStudyDao } from "@/dao/dao";
@@ -109,6 +110,19 @@ export const getUserData = async (): Promise<any> => {
   } else {
     const sendPack = [userData ?? null, userMainStudy ?? null];
     return sendPack;
+  }
+};
+
+export const getUserFull = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+    if (!session?.user.id) throw new Error("Sesión inválida");
+    const userId = session?.user.id;
+    const fullData = await getUserFullByIdService(userId);
+    return fullData
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir archivo");
   }
 };
 

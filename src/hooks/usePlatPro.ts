@@ -18,6 +18,11 @@ export const useProfesional = () => {
   return { data, error, isLoading, mutate };
 };
 
+export const useProfesionalFull = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/complete", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
 export const useProfesionalSpecialities = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/speciality", fetcher);
 

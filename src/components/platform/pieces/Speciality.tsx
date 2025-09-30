@@ -57,7 +57,7 @@ export default function Speciality(props: any) {
           </div> : null}
           {props.file?<div>
             <h4 className='mt-2 font-semibold'>Archivo</h4>
-            <a href={props.file} target="_blank" className='text-sm text-gray-700'>preview</a>
+            <a href={props.file} target="_blank" className='text-sm text-gray-700 link'>preview</a>
           </div>:null}
         </div>
 

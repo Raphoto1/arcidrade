@@ -23,6 +23,7 @@ import {
   deleteUserExperienceByIdDao,
   getUserExperienceByIdDao,
   updateUserExperienceByIdDao,
+  getProfesionalFullByIdDao,
 } from "@/dao/dao";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
@@ -32,6 +33,12 @@ import { getCertificationById } from "@/controller/userData.controller";
 export const getUserDataService = async (id?: string | null) => {
   if (!id) return null;
   return await getProfesionalDataByRefferCodeDao(id);
+};
+
+export const getUserFullByIdService = async (id?: string | null) => {
+  if (!id) return null;
+  const response = await getProfesionalFullByIdDao(id);
+  return response;
 };
 
 export const getMainStudyService = async (id: string | undefined) => {
@@ -190,7 +197,7 @@ export const getUserExperienceByIdService = async (id: number | undefined) => {
   return result;
 };
 
-export const updateUserExperienceService = async (id: number, data:any) => { 
+export const updateUserExperienceService = async (id: number, data: any) => {
   const result = await updateUserExperienceByIdDao(id, data);
-  return result
-}
+  return result;
+};
