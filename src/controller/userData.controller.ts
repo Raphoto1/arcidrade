@@ -229,6 +229,25 @@ export const uploadUserMainStudyFile = async (file: File) => {
   }
 };
 
+export const deleteUserMainStudy = async () => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    const chkMainStudy = await getMainStudyService(userId);
+    if (chkMainStudy?.file) {
+      const deleteFile = await deleteFileService(chkMainStudy?.file);
+      const updateDb = await updateProfesionalMainStudyDao({ file: null }, userId);
+      return updateDb;
+    } else {
+      const updateDb = await updateProfesionalMainStudyDao({ link: null }, userId);
+      return updateDb;
+    }
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al Borrar Main");
+  }
+};
+
 export const uploadUserAvatar = async (file: File) => {
   try {
     const session = await getServerSession(authOptions);

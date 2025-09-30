@@ -13,6 +13,7 @@ import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/
 import ConfirmDeleteCvForm from "@/components/forms/platform/profesional/ConfirmDeleteCvForm";
 import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
 import FileMainStudyForm from "@/components/forms/platform/profesional/FileMainStudyForm";
+import ConfirmDeleteMainStudyForm from "@/components/forms/platform/profesional/ConfirmDeleteMainStudyForm";
 import { useProfesional } from "@/hooks/usePlatPro";
 
 export default function PersonalData() {
@@ -144,16 +145,21 @@ export default function PersonalData() {
                 Previsualizar Archivo
               </a>
             ) : null}
-            {!data?.payload[1].link && !data?.payload[1].file && (<p className='text-(--main-arci)'>No Cargado</p>)}
+            {!data?.payload[1].link && !data?.payload[1].file && <p className='text-(--main-arci)'>No Cargado</p>}
           </div>
         </div>
         <div className='controles justify-end flex gap-2 mt-4'>
           {/* <button className='btn bg-[var(--soft-arci)] h-auto w-auto'>Cambiar contraseña</button> */}
           {/* --------------------------------------------------agregar Eliminar Titulo------------------------------- */}
           {data?.payload[1].status == "graduated" ? (
-            <ModalForForm title={data?.payload[1].link || data.payload[1].file ?"Actualizar Título":"Agregar Título"}>
-              <FileMainStudyForm />
-            </ModalForForm>
+            <div className="flex gap-2">
+              <ModalForFormsRedBtn title='Eliminar Título'>
+                <ConfirmDeleteMainStudyForm />
+              </ModalForFormsRedBtn>
+              <ModalForForm title={data?.payload[1].link || data.payload[1].file ? "Actualizar Título" : "Agregar Título"}>
+                <FileMainStudyForm />
+              </ModalForForm>
+            </div>
           ) : null}
 
           <ModalForForm title={data?.payload[0].name == null ? "Agregar Información" : "Modificar"}>
