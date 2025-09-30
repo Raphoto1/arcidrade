@@ -16,10 +16,18 @@ import UserDescription from "./UserDescription";
 export default function HeroHeader() {
   const { data, error, isLoading } = useProfesional();
   if (isLoading) return <div>Cargando...</div>;
-
+  if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
+  console.log("data de hero", data);
+  //full name
+  let fullName = "";
+  if (data?.payload[0].name == null) {
+    fullName = "No se ha completado el registro de datos personales";
+  } else {
+    fullName = `${data?.payload[0].name} ${data?.payload[0].last_name}`;
+  }
   //AJUSTAR IMAGEN DE FONDO Y ALINEADO EN MD
   return (
-    <div className='relative w-full md:h-[320px] overflow-hidden'>
+    <div className='relative w-full md:h-[340px] overflow-hidden'>
       {/* Imagen de fondo con opacidad */}
       <div
         className='absolute inset-0 bg-cover bg-center opacity-10'
@@ -28,45 +36,43 @@ export default function HeroHeader() {
         }}
       />
       {/* Degradado inferior hacia transparente */}
-      <div className='absolute bottom-0 left-0 right-0 h-[150px] bg-gradient-to-t from-white via-transparent to-transparent' />
+      <div className='absolute bottom-0 left-0 right-0 h-[160px] bg-gradient-to-t from-white via-transparent to-transparent' />
       {/* Contenido principal */}
       <div className='HeroArea w-full flex justify-center items-center align-middle p-2 md:pr-5 relative z-10'>
         <div className='vacio none md:visible md:w-1/3 z-10'></div>
-        <div className='avatar grid justify-center align-middle items-center p-2 z-10 md:w-1/3'>
+        <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 md:w-1/3'>
           <div className='relative w-40 h-40'>
-            {data?.payload[0].avatar?<Image
-              src={data?.payload[0].avatar}
-              className='w-full h-full rounded-full object-cover'
-              width={500}
-              height={500}
-              alt='fillImage'
-            />:<Image
-              src='/logos/Logo Arcidrade Cond.png'
-              className='w-full h-full rounded-full object-cover'
-              width={500}
-              height={500}
-              alt='fillImage'
-            />}
-            <div className='absolute bottom-2 right-2 z-10'>
-              <ModalForFormsPlusButton title='Actualizar Imagen'>
-                <AvatarForm />
-              </ModalForFormsPlusButton>
-            </div>
+            {data?.payload[0].avatar ? (
+              <Image src={data?.payload[0].avatar} className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
+            ) : (
+              <Image src='/logos/Logo Arcidrade Cond.png' className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
+            )}
+            {data?.payload[0].name != null ? (
+              <div className='absolute bottom-2 right-2 z-10'>
+                <ModalForFormsPlusButton title='Actualizar Imagen'>
+                  <AvatarForm />
+                </ModalForFormsPlusButton>
+              </div>
+            ) : null}
           </div>
-          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2 capitalize'>{`${data?.payload[0].name} ${data?.payload[0].last_name}`}</h2>
+          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2 capitalize'>{fullName}</h2>
         </div>
         <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3'>
           <h3 className='text-xl font-bold font-var(--font-oswald)'>Presentación</h3>
-          <div className="max-h-fit">
+          <div className='max-h-fit'>
             <p className='text-sm max-height-10 line-clamp-5'>{data?.payload[0].description || "Agrega una descripción para que todos te conozcan"}</p>
           </div>
           <div className='flex gap-2 justify-end mt-5'>
-            <ModalForPreviewTextLink title="Ver Más...">
-              <UserDescription description={data?.payload[0].description } />
-            </ModalForPreviewTextLink>
-            <ModalForFormsSoftBlue title='Actualizar'>
-              <UserDescriptionForm />
-            </ModalForFormsSoftBlue>
+            {data?.payload[0].name != null ? (
+              <ModalForPreviewTextLink title='Ver Más...'>
+                <UserDescription description={data?.payload[0].description} />
+              </ModalForPreviewTextLink>
+            ) : null}
+            {data?.payload[0].name != null ? (
+              <ModalForFormsSoftBlue title='Actualizar'>
+                <UserDescriptionForm />
+              </ModalForFormsSoftBlue>
+            ) : null}
           </div>
         </div>
       </div>
@@ -76,12 +82,14 @@ export default function HeroHeader() {
         <div className='flex justify-center'>
           {/* <button className='btn bg-[var(--main-arci)] text-white'>Buscando Ofertas</button>
           <button className='btn bg-[var(--main-arci)] text-white'>Disponible Para trabajar</button> */}
-          <ModalForPreview title={"Preview"}>
-            <ProfesionalDetail />
-          </ModalForPreview>
-          <ModalForPreview title={"Preview Full"}>
-            <ProfesionalDetailFull />
-          </ModalForPreview>
+          <div className='flex justify-center'>
+            <ModalForPreview title={"Preview"}>
+              <ProfesionalDetail />
+            </ModalForPreview>
+            <ModalForPreview title={"Preview Full"}>
+              <ProfesionalDetailFull />
+            </ModalForPreview>
+          </div>
         </div>
       </div>
     </div>

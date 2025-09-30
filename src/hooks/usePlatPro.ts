@@ -6,83 +6,50 @@ type ProfesionalResponse = {
 
 const fetcher = async (url: string): Promise<ProfesionalResponse> => {
   const res = await fetch(url);
-  if (!res.ok) throw new Error("Error en la petición");
+  if (!res.ok) {
+    throw new Error("Error en la petición");
+  }
   return res.json();
 };
 
 export const useProfesional = () => {
-  const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>("/api/platform/profesional/", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/", fetcher);
 
   return { data, error, isLoading, mutate };
 };
 
 export const useProfesionalSpecialities = () => {
-    const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>("/api/platform/profesional/speciality", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/speciality", fetcher);
 
   return { data, error, isLoading, mutate };
-}
+};
 
-export const useProfesionalSpeciality = (id:number) => {
-    const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>(`/api/platform/profesional/speciality/${id}`, fetcher);
+export const useProfesionalSpeciality = (id: number) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/profesional/speciality/${id}`, fetcher);
 
   return { data, error, isLoading, mutate };
-}
+};
 
 export const useProfesionalCertifications = () => {
-    const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>("/api/platform/profesional/certification", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/certification", fetcher);
 
   return { data, error, isLoading, mutate };
-}
+};
 
-export const useProfesionalCertification = (id:number) => {
-    const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>(`/api/platform/profesional/certification/${id}`, fetcher);
+export const useProfesionalCertification = (id: number) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/profesional/certification/${id}`, fetcher);
 
   return { data, error, isLoading, mutate };
-}
+};
 
 export const useProfesionalExperiences = () => {
-    const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>("/api/platform/profesional/experience", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/experience", fetcher);
 
   return { data, error, isLoading, mutate };
-}
+};
 
-export const useProfesionalExperience = (id:number) => {
-    const {
-    data,
-    error,
-    isLoading,
-    mutate,
-  } = useSWR<ProfesionalResponse>(`/api/platform/profesional/experience/${id}`, fetcher);
+export const useProfesionalExperience = (id: number) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/profesional/experience/${id}`, fetcher);
 
   return { data, error, isLoading, mutate };
-}
+};

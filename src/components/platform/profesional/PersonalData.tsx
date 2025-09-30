@@ -12,22 +12,19 @@ import ModalForFormsSoftBlue from "@/components/modals/ModalForFormsSoftBlue";
 import ProfesionalProfileHookForm from "@/components/forms/platform/profesional/ProfesionalProfileHookForm";
 import ConfirmDeleteCvForm from "@/components/forms/platform/profesional/ConfirmDeleteCvForm";
 import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
+import FileMainStudyForm from "@/components/forms/platform/profesional/FileMainStudyForm";
 import { useProfesional } from "@/hooks/usePlatPro";
 
 export default function PersonalData() {
   const { data, error, isLoading } = useProfesional();
   const { data: session } = useSession();
+  console.log("data en personalData", data);
+
   //loaders
   if (isLoading) {
     return <div>Cargando... datos</div>;
   }
 
-  if (error) {
-    console.error(error);
-    return <div>Error cargando datos</div>;
-  }
-  //cv link o cv file
-  console.log("cv link en front", data?.payload[0].cv_link);
   //adjust birthdate
   const fecha = new Date(data?.payload[0].birth_date);
   const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -47,6 +44,13 @@ export default function PersonalData() {
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:h-auto'>
       <div className='pb-1'>
+        {data?.payload[0].name == null ? (
+          <div>
+            <h1 className='text-2xl font-extrabold capitalize fontArci text-center text-(--main-arci)'>
+              Inicie AQUÍ Completando sus Datos Personales Para que pueda ser encontrado en la plataforma
+            </h1>
+          </div>
+        ) : null}
         <h1 className='text-2xl fontArci text-center'>Curriculum</h1>
       </div>
       <div className='fileSpace bg-gray-50 w-full rounded-sm p-2 grid grid-cols-3 gap-2 shadow-xl'>
@@ -72,63 +76,87 @@ export default function PersonalData() {
             <span>Aún no existe CV registrada.</span>
           )}
         </div>
-        <div className='controls grid'>
-          <ModalForFormsRedBtn title='Eliminar'>
-            <ConfirmDeleteCvForm />
-          </ModalForFormsRedBtn>
-
-          <ModalForFormsSoftBlue title='Modificar'>
-            <FileCvForm />
-          </ModalForFormsSoftBlue>
-        </div>
+        {data?.payload[0].name != null ? (
+          <div className='controls grid'>
+            {data?.payload[0].cv_link || data?.payload[0].cv_file ? (
+              <ModalForFormsRedBtn title='Eliminar'>
+                <ConfirmDeleteCvForm />
+              </ModalForFormsRedBtn>
+            ) : null}
+            <ModalForFormsSoftBlue title='Modificar'>
+              <FileCvForm />
+            </ModalForFormsSoftBlue>
+          </div>
+        ) : null}
       </div>
       <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
         <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
         <div className='w-full'>
           <div className='flex justify-between'>
             <h3 className='font-light'>Nombre</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].name}</p>
+            <p className='text-(--main-arci)'>{data?.payload[0].name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Apellido</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].last_name}</p>
+            <p className='text-(--main-arci)'>{data?.payload[0].last_name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='text-light'>Fecha de Nacimiento</h3>
-            <p className='text-(--main-arci)'>{fechaFormateada}</p>
+            <p className='text-(--main-arci)'>{fechaFormateada || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Email</h3>
-            <p className='text-(--main-arci)'>{session?.user.email}</p>
+            <p className='text-(--main-arci)'>{session?.user.email || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Numero de Contacto</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].phone}</p>
+            <p className='text-(--main-arci)'>{data?.payload[0].phone || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Pais</h3>
-            <p className='text-(--main-arci)'>{countryName?.name}</p>
+            <p className='text-(--main-arci)'>{countryName?.name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Ciudad</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].city}</p>
+            <p className='text-(--main-arci)'>{data?.payload[0].city || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Profesión</h3>
-            <p className='text-(--main-arci)'>{data?.payload[1].title}</p>
+            <p className='text-(--main-arci)'>{data?.payload[1].title || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Institución</h3>
-            <p className='text-(--main-arci)'>{data?.payload[1].institution}</p>
+            <p className='text-(--main-arci)'>{data?.payload[1].institution || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Status</h3>
-            <p className='text-(--main-arci)'>{handleStatusName(data?.payload[1].status)}</p>
+            <p className='text-(--main-arci)'>{handleStatusName(data?.payload[1].status) || "No Registra Información"}</p>
+          </div>
+          <div className='flex justify-between'>
+            <h3 className='font-light'>Respaldo</h3>
+            {data?.payload[1].link ? (
+              <a href={data?.payload[1].link} target='_blank' className='text-(--main-arci) link'>
+                Previsualizar Link
+              </a>
+            ) : null}
+            {data?.payload[1].file ? (
+              <a href={data?.payload[1].file} target='_blank' className='text-(--main-arci) link'>
+                Previsualizar Archivo
+              </a>
+            ) : null}
+            {!data?.payload[1].link && !data?.payload[1].file && (<p className='text-(--main-arci)'>No Cargado</p>)}
           </div>
         </div>
         <div className='controles justify-end flex gap-2 mt-4'>
-          <button className='btn bg-[var(--soft-arci)] h-7'>Cambiar contraseña</button>
-          <ModalForForm title='Modificar'>
+          {/* <button className='btn bg-[var(--soft-arci)] h-auto w-auto'>Cambiar contraseña</button> */}
+          {/* --------------------------------------------------agregar Eliminar Titulo------------------------------- */}
+          {data?.payload[1].status == "graduated" ? (
+            <ModalForForm title={data?.payload[1].link || data.payload[1].file ?"Actualizar Título":"Agregar Título"}>
+              <FileMainStudyForm />
+            </ModalForForm>
+          ) : null}
+
+          <ModalForForm title={data?.payload[0].name == null ? "Agregar Información" : "Modificar"}>
             <ProfesionalProfileHookForm />
           </ModalForForm>
         </div>

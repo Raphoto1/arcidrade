@@ -109,7 +109,7 @@ export const updateProfesionalStatus = async (id: string, status: StatusAvailabl
   }
 };
 //obtener main_study profesional
-export const getProfesionalMainStudyDao = async (user_id: string | undefined) => {
+export const getProfesionalMainStudyDao = async (user_id: string | undefined ) => {
   try {
     const mainStudy = await prisma.main_study.findFirst({
       where: { user_id },

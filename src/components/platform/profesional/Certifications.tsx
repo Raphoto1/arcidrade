@@ -1,11 +1,11 @@
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import Certificate from "../pieces/Certificate";
 import ProfesionalCertificationForm from "@/components/forms/platform/profesional/ProfesionalCertificationForm";
-import { useProfesionalCertifications } from "@/hooks/usePlatPro";
+import { useProfesionalCertifications, useProfesional } from "@/hooks/usePlatPro";
 
 export default function Certifications() {
   const { data, error, isLoading, mutate } = useProfesionalCertifications();
-  console.log('certifications', data);
+    const { data: UserData } = useProfesional();
    const certificationsList = data?.payload;
   
   return (
@@ -29,9 +29,9 @@ export default function Certifications() {
       </div>
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
-          <ModalForFormsPlusButton title='Agregar Certificacion'>
+          {UserData?.payload[0].name?<ModalForFormsPlusButton title='Agregar Certificacion'>
             <ProfesionalCertificationForm />
-          </ModalForFormsPlusButton>
+          </ModalForFormsPlusButton>:<div className="text-center">Complete Información Personal antes de agregar Certificaciones</div>}
         </div>
       </div>
     </div>

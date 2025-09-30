@@ -35,7 +35,7 @@ export const getUserDataService = async (id?: string | null) => {
 };
 
 export const getMainStudyService = async (id: string | undefined) => {
-  const response = getProfesionalMainStudyDao(id);
+  const response = await getProfesionalMainStudyDao(id);
   return response;
 };
 
@@ -64,8 +64,6 @@ export const updateUserDataService = async (data?: any) => {
 };
 
 export const createUserDataMainStudy = async (data: any) => {
-  // crear MainStudy
-  console.log("data main study pack en service", data);
   //obtener id para crear o actualizar
   const session = await getServerSession(authOptions);
   const id = session?.user.id;

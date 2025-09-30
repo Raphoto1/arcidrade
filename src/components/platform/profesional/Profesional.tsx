@@ -7,8 +7,6 @@ import Offers from "./Offers";
 import { useProfesional } from "@/hooks/usePlatPro";
 
 export default function Profesional() {
-
-
   return (
     <div className=''>
       <HeroHeader />

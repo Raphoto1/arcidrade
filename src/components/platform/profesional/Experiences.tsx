@@ -1,9 +1,10 @@
 import Experience from "../pieces/Experience";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ProfesionalExperienceForm from "@/components/forms/platform/profesional/ProfesionalExperienceForm";
-import { useProfesionalExperiences } from "@/hooks/usePlatPro";
+import { useProfesionalExperiences, useProfesional } from "@/hooks/usePlatPro";
 export default function Experiences() {
   const { data, error, isLoading } = useProfesionalExperiences();
+      const { data: UserData } = useProfesional();
   const experienceList = data?.payload;
 
   return (
@@ -29,9 +30,9 @@ export default function Experiences() {
       </div>
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
-          <ModalForFormsPlusButton title='Agregar Experiencia'>
+          {UserData?.payload[0].name?<ModalForFormsPlusButton title='Agregar Experiencia'>
             <ProfesionalExperienceForm />
-          </ModalForFormsPlusButton>
+          </ModalForFormsPlusButton>:<div className="text-center">Complete Información Personal antes de agregar Experiencia</div>}
         </div>
       </div>
     </div>

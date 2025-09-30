@@ -29,6 +29,7 @@ import {
   updateUserExperienceService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
+import { updateProfesionalMainStudyDao } from "@/dao/dao";
 //user__________________________________________________________________________________
 export const createUserData = async (data: any) => {
   //se extrae el session
@@ -92,20 +93,23 @@ export const updateUserData = async (data: any) => {
 type UserDataFiltered = Omit<Profesional_data, "id" | "user_id">;
 type UserMainStudyFiltered = Omit<Main_study, "id" | "user_id">;
 
-export const getUserData = async (): Promise<[UserDataFiltered, UserMainStudyFiltered]> => {
+export const getUserData = async (): Promise<any> => {
+  //revisar que si sea una sesion valida
   const session = await getServerSession(authOptions);
   if (!session?.user.id) throw new Error("Sesión inválida");
-
-  const userData = await getUserDataService(session.user.id);
-  const userMainStudy = await getMainStudyService(session.user.id);
-
-  if (!userData) throw new Error("No se encontró información del profesional");
-  if (!userMainStudy) throw new Error("No se encontró información del estudio principal");
-
-  const { id: _, user_id: __, ...userDataFiltered } = userData;
-  const { id: ___, user_id: ____, ...userMainStudyFiltered } = userMainStudy;
-
-  return [userDataFiltered ?? null, userMainStudyFiltered ?? null];
+  //buscar en db
+  let userData = await getUserDataService(session.user.id);
+  let userMainStudy = await getMainStudyService(session.user.id);
+  //crear estructura de datos son id ni user_id
+  const userDataFiltered = {} as UserDataFiltered;
+  const userMainStudyFiltered = {} as UserMainStudyFiltered;
+  //revisar si userData esta vacio y enviar la data vacia con el structure o completa
+  if (userData == null) {
+    return [userDataFiltered, userMainStudyFiltered];
+  } else {
+    const sendPack = [userData ?? null, userMainStudy ?? null];
+    return sendPack;
+  }
 };
 
 export const uploadUserCv = async (file: File) => {
@@ -163,6 +167,65 @@ export const deleteCv = async () => {
   } catch (error) {
     console.error(error);
     throw new Error();
+  }
+};
+
+export const uploadUserMainStudyLink = async (link: any) => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    const chkMainStudy = await getMainStudyService(userId);
+    console.log("link de mainstudy controller", link);
+    console.log("encuentro el main", chkMainStudy?.user_id);
+    if (!chkMainStudy) throw new Error("Estudio principal no encontrado");
+    if (chkMainStudy?.link) {
+      const updatePack = { link: link };
+      const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
+      console.log("updateDb controller", updateDb);
+      return updateDb;
+    }
+    if (chkMainStudy?.file) {
+      const deleteFile = await deleteFileService(chkMainStudy?.file);
+      const updatePack = { link: link, file: null };
+      const updateResult = await updateProfesionalMainStudyDao(updatePack, userId);
+      return updateResult;
+    }
+    const updatePack = { link: link };
+    const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
+    console.log("updateDb controller", updateDb);
+    return updateDb;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir Link");
+  }
+};
+
+export const uploadUserMainStudyFile = async (file: File) => {
+  try {
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    const chkMainStudy = await getMainStudyService(userId);
+    if (!chkMainStudy) throw new Error("Estudio principal no encontrado");
+    if (chkMainStudy?.link) {
+      const uploadFile = await uploadFileService(file, "mainStudy", userId);
+      const updatePack = { link: null, file: uploadFile.url };
+      const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
+      return updateDb;
+    }
+    if (chkMainStudy?.file) {
+      const deleteFile = await deleteFileService(chkMainStudy?.file);
+      const uploadFile = await uploadFileService(file, "mainStudy", userId);
+      const updatePack = { file: uploadFile.url };
+      const updateResult = await updateProfesionalMainStudyDao(updatePack, userId);
+      return updateResult;
+    }
+    const uploadFile = await uploadFileService(file, "mainStudy", userId);
+    const updatePack = { file: uploadFile.url };
+    const updateResult = await updateProfesionalMainStudyDao(updatePack, userId);
+    return updateResult;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al subir archivo");
   }
 };
 
@@ -282,7 +345,6 @@ export const uploadSpecialityLink = async (id: number, link: any) => {
 export const uploadUserSpecialityFile = async (id: number, file: File) => {
   try {
     console.log("entro a upload spefile");
-
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     const chk = await getSpecialityService(id);
@@ -569,9 +631,9 @@ export const updateUserExperience = async (id: number, data: any) => {
 };
 
 export const uploadUserExperienceLink = async (id: number, link: any) => {
-    try {
+  try {
     //verificar si ya existe un archivo y se borra
-      const chk = await getUserExperienceByIdService(id);
+    const chk = await getUserExperienceByIdService(id);
     if (chk?.file) {
       //si existe se borra el archivo antiguo
       const deleteFile = await deleteFileService(chk?.file);
@@ -590,10 +652,10 @@ export const uploadUserExperienceLink = async (id: number, link: any) => {
     console.error(error);
     throw new Error("error al subir Link");
   }
-}
+};
 
 export const uploadUserExperienceFile = async (id: number, file: any) => {
-   const session = await getServerSession(authOptions);
+  const session = await getServerSession(authOptions);
   const userId = session?.user.id;
   //verificar si ya existe un archivo y se borra
   const chk = await getUserExperienceByIdService(id);
@@ -614,4 +676,4 @@ export const uploadUserExperienceFile = async (id: number, file: any) => {
     const updateDb = await updateUserExperienceService(id, { file: uploadFile.url });
     return updateDb;
   }
-}
+};

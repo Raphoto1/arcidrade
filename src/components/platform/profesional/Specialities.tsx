@@ -3,10 +3,12 @@ import React from "react";
 import Speciality from "../pieces/Speciality";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ProfesionalSpecialityForm from "@/components/forms/platform/profesional/ProfesionalSpecialityForm";
-import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
+import { useProfesional, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function Specialities() {
   const { data, error, isLoading } = useProfesionalSpecialities();
+  //pendiente crear contexto userDATA
+  const { data: UserData } = useProfesional();
   const specialitiesList = data?.payload;
 
   return (
@@ -30,9 +32,9 @@ export default function Specialities() {
       </div>
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
-          <ModalForFormsPlusButton title='Agregar Especialidad'>
+          {UserData?.payload[0].name?<ModalForFormsPlusButton title='Agregar Especialidad'>
             <ProfesionalSpecialityForm />
-          </ModalForFormsPlusButton>
+          </ModalForFormsPlusButton>:<div className="text-center">Complete Información Personal antes de agregar Especialidades</div>}
         </div>
       </div>
     </div>
