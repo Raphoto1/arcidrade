@@ -181,22 +181,24 @@ model Experience {
 
 //institutions_________________________________________________
 model Institution_Data {
-  id             Int      @id @default(autoincrement())
-  user_id        String
-  fake_name      String
-  name           String
-  main_specialty String?
-  country        String?
-  state          String?
-  city           String?
-  avatar         String?
-  established    DateTime?
-  website        String?
-  phone          String?
-  status         String?
-  auth           Auth     @relation(fields: [user_id], references: [referCode])
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
+  id              Int       @id @default(autoincrement())
+  user_id         String    @unique
+  fake_name       String
+  name            String
+  main_speciality String?
+  country         String?
+  state           String?
+  city            String?
+  avatar          String?
+  established     DateTime?
+  website         String?
+  phone           String?
+  status          String?
+  company_id      String?
+  description     String?
+  auth            Auth      @relation(fields: [user_id], references: [referCode])
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @updatedAt
 }
 
 model Institution_specialization {

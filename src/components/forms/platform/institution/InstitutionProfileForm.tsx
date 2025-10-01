@@ -7,6 +7,7 @@ import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useModal } from "@/context/ModalContext";
 import { useInstitution } from "@/hooks/usePlatInst";
 import { medicalOptions } from "@/static/data/staticData";
+import { useSession } from "next-auth/react";
 
 interface FormData {
   name: string;
@@ -30,18 +31,20 @@ export default function InstitutionProfileForm() {
   const [cityList, setCityList] = useState<ICity[]>([]);
 
   const { data, error, isLoading, mutate } = useInstitution();
+  const { data: session } = useSession();
   const { closeModal } = useModal();
 
   const defaultValues: Partial<FormData> = {
     name: data?.payload?.name || "",
-    foundationDate: data?.payload?.foundationDate || "",
-    email: data?.payload?.email || "",
-    contactNumber: data?.payload?.contactNumber || "",
+    foundationDate: data?.payload?.established?.slice(0, 10),
+    email: session?.user?.email || "",
+    web: data?.payload?.website || "",
+    contactNumber: data?.payload?.phone || "",
     country: data?.payload?.country || "",
     state: data?.payload?.state || "",
     city: data?.payload?.city || "",
-    specialization: data?.payload?.specialization || "",
-    nif: data?.payload?.nif || "",
+    specialization: data?.payload?.main_speciality || "",
+    nif: data?.payload?.company_id || "",
   };
 
   const {
@@ -49,6 +52,7 @@ export default function InstitutionProfileForm() {
     handleSubmit,
     formState: { errors },
     reset,
+    watch,
   } = useForm<FormData>({ defaultValues });
 
   useEffect(() => {
@@ -122,20 +126,27 @@ export default function InstitutionProfileForm() {
                 Nombre de la Institución
               </label>
               <input type='text' className='input input-bordered w-full max-w-xs' {...register("name", { required: true })} />
+              {errors.name && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
               <label htmlFor='foundationDate' className='block'>
                 Fecha de Fundación
               </label>
-              <input type='date' className='input input-bordered w-full max-w-xs' {...register("foundationDate", { required: true })} />
+              <input
+                type='date'
+                className='input input-bordered w-full max-w-xs'
+                {...register("foundationDate", { required: true })}
+              />
+              {errors.foundationDate && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
               <label htmlFor='email' className='block'>
                 Email
               </label>
-              <input type='email' className='input input-bordered w-full max-w-xs' {...register("email", { required: true })} />
+              <input disabled type='email' className='input input-bordered w-full max-w-xs' {...register("email", { required: true })} />
+              {errors.email && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
@@ -143,6 +154,7 @@ export default function InstitutionProfileForm() {
                 Número de Contacto
               </label>
               <input type='tel' className='input input-bordered w-full max-w-xs' {...register("contactNumber", { required: true })} />
+              {errors.contactNumber && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
@@ -150,6 +162,7 @@ export default function InstitutionProfileForm() {
                 web
               </label>
               <input type='web' className='input input-bordered w-full max-w-xs' {...register("web", { required: true })} />
+              {errors.web && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
@@ -169,6 +182,7 @@ export default function InstitutionProfileForm() {
                   </option>
                 ))}
               </select>
+              {errors.country && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
@@ -177,7 +191,7 @@ export default function InstitutionProfileForm() {
               </label>
               <select
                 id='state'
-                {...register("state", { required: true })}
+                {...register("state")}
                 value={stateSelected}
                 onChange={handleStateChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
@@ -188,6 +202,7 @@ export default function InstitutionProfileForm() {
                   </option>
                 ))}
               </select>
+              {errors.state && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
@@ -196,7 +211,7 @@ export default function InstitutionProfileForm() {
               </label>
               <select
                 id='city'
-                {...register("city", { required: true })}
+                {...register("city")}
                 value={citySelected}
                 onChange={handleCityChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
@@ -207,6 +222,7 @@ export default function InstitutionProfileForm() {
                   </option>
                 ))}
               </select>
+              {errors.city && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-2'>
@@ -221,13 +237,15 @@ export default function InstitutionProfileForm() {
                   </option>
                 ))}
               </select>
+              {errors.specialization && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='mb-4'>
               <label htmlFor='nif' className='block'>
                 NIF
               </label>
-              <input type='text' className='input input-bordered w-full max-w-xs' {...register("nif", { required: true })} />
+              <input type='text' className='input input-bordered w-full max-w-xs' {...register("nif")} />
+              {errors.nif && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>

@@ -10,13 +10,15 @@ import { medicalOptions } from "@/static/data/staticData";
 export default function InstitutionData() {
   const { data, isLoading, error, mutate } = useInstitution();
   const { data: session } = useSession();
-  // console.log("data en InstitutionData", data);
+  console.log("data en InstitutionData", data);
 
-  const countryName: ICountry | undefined = data?.payload && data.payload[0] ? Country.getCountryByCode(data.payload[0].country) : undefined;
+  const countryName: ICountry | undefined = data?.payload && data.payload.country ? Country.getCountryByCode(data.payload.country) : undefined;
+    const fecha = new Date(data?.payload.established);
+  const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:h-auto'>
       <div className='pb-2'>
-        {!data?.payload[0] ? (
+        {!data?.payload.name ? (
           <div>
             <h1 className='text-2xl font-extrabold capitalize fontArci text-center text-(--main-arci)'>
               Inicie AQUÍ Completando sus Datos Para que pueda ser encontrado en la plataforma
@@ -30,23 +32,23 @@ export default function InstitutionData() {
         <div className='w-full'>
           <div className='flex justify-between'>
             <h3 className='font-light'>Nombre</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.name || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{data?.payload.name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='text-light'>Fecha de Fundación</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.foundation_date || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{fechaFormateada || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Email</h3>
-            <p className='text-(--main-arci)'>{session?.user?.email || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{session?.user.email || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Numero de Contacto</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.phone || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{data?.payload.phone || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Web</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.web || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{data?.payload.website || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Pais</h3>
@@ -54,20 +56,20 @@ export default function InstitutionData() {
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Ciudad</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.city || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{data?.payload.city || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Especialización Principal</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.main_specialization || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{data?.payload.main_speciality || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>NIF</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0]?.nif || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{data?.payload.company_id || "No Registra Información"}</p>
           </div>
         </div>
         <div className='controles justify-end flex gap-2 mt-4'>
           <button className='btn bg-[var(--soft-arci)] h-7'>Cambiar contraseña</button>
-          <ModalForForm title={data?.payload[0]?.name == null ? "Agregar Información" : "Modificar"}>
+          <ModalForForm title={data?.payload.name == null ? "Agregar Información" : "Modificar"}>
             <InstitutionProfileForm />
           </ModalForForm>
         </div>

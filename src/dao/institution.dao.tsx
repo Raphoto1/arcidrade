@@ -34,3 +34,28 @@ export const getInstitutionDataByRefferCodeDao = async (user_id: string | undefi
     throw new Error("Error al obtener institucion");
   }
 };
+
+export const createInstitutionDataDao = async (data: any) => {
+  try {
+    const newInstitutionData = await prisma.institution_Data.create({
+      data,
+    });
+    return newInstitutionData;
+  } catch (error) {
+    console.error("error de create institution Data Dao", error);
+    throw new Error("Error al crear institucion");
+  }
+};
+
+export const updateInstitutionDataDao = async (data: any, userId: string) => {
+  try {
+    const updatedInstitutionData = await prisma.institution_Data.updateManyAndReturn({
+      where: { user_id: userId },
+      data,
+    });
+    return updatedInstitutionData;
+  } catch (error) {
+    console.error("error de update institution Data Dao", error);
+    throw new Error("Error al actualizar institucion");
+  }
+};
