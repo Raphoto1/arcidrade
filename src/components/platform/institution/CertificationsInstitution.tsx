@@ -6,11 +6,11 @@ export default function CertificationsInstitution() {
       <div className="pb-2">
               <h1 className="text-2xl fontArci text-center">Certificaciones</h1>
       </div>
-      <Certificate/>
+      {/* <Certificate/>
       <Certificate />
       <Certificate />
       <Certificate />
-      <Certificate/>
+      <Certificate/> */}
     </div>
   )
 }

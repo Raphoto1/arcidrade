@@ -1,10 +1,19 @@
-import React from 'react'
-
+import React from "react";
+import BrColors from "@/components/pieces/BrColors";
+import DynamicThreeColumnGrid from "@/components/Grids/DynamicThreeColumnGrid";
+import AboutItemCard from "@/components/about/AboutItemCard";
+import { aboutItems } from "@/static/data/staticData";
 export default function page() {
   return (
     <div>
-      <h1>About Us</h1>
-      <p>Welcome to our platform. We are dedicated to providing the best services for our users.</p>
+      <BrColors title='Acerca de Nosotros' />
+      <section className='flex justify-center max-w-7xl mx-auto p-4'>
+        <DynamicThreeColumnGrid>
+          {aboutItems.map((item: any, index: number) => (
+            <AboutItemCard title={item.title} description={item.description} image={item.image} key={index} />
+          ))}
+        </DynamicThreeColumnGrid>
+      </section>
     </div>
-  )
+  );
 }

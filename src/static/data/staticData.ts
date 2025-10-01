@@ -1,33 +1,97 @@
-export const offers:any =[
-    {"title": "Ofertas de empleo", "image": "https://images.pexels.com/photos/296115/pexels-photo-296115.jpeg", "link": "/services "},
-    {"title": "Ofertas Profesionales", "image": "https://images.pexels.com/photos/37347/office-sitting-room-executive-sitting.jpg", "link": "/services "},
-    {"title": "Especialidades Solicitadas", "image": "https://images.pexels.com/photos/7789616/pexels-photo-7789616.jpeg", "link": "/services "},
-    { "title": "Regiones", "image": "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg", "link": "/services " }]
+export const offers: any = [
+  { title: "Ofertas de empleo", image: "https://images.pexels.com/photos/296115/pexels-photo-296115.jpeg", link: "/services " },
+  { title: "Ofertas Profesionales", image: "https://images.pexels.com/photos/37347/office-sitting-room-executive-sitting.jpg", link: "/services " },
+  { title: "Especialidades Solicitadas", image: "https://images.pexels.com/photos/7789616/pexels-photo-7789616.jpeg", link: "/services " },
+  { title: "Regiones", image: "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg", link: "/services " },
+];
 
-export const mainCities:any = [
-    {"title":"Madrid","image":"https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg"},
-    {"title":"Coruña","image":"https://images.pexels.com/photos/5734971/pexels-photo-5734971.jpeg"},
-    {"title":"Cataluña","image":"https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg"},
-    {"title":"Más Ciudades","image":"https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg"},
-]
+export const mainCities: any = [
+  { title: "Madrid", image: "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
+  { title: "Coruña", image: "https://images.pexels.com/photos/5734971/pexels-photo-5734971.jpeg" },
+  { title: "Cataluña", image: "https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg" },
+  { title: "Más Ciudades", image: "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg" },
+];
 
-export const mainSpecialities:any = [
-    { "title": "Cirugia", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
-    {"title":"Medico General","image":"https://images.pexels.com/photos/5734971/pexels-photo-5734971.jpeg"},
-    {"title":"Medicina Nuclear","image":"https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg"},
-    { "title": "Ver Más", "image": "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg" },
-]
+export const mainSpecialities: any = [
+  { title: "Cirugia", image: "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
+  { title: "Medico General", image: "https://images.pexels.com/photos/5734971/pexels-photo-5734971.jpeg" },
+  { title: "Medicina Nuclear", image: "https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg" },
+  { title: "Ver Más", image: "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg" },
+];
 
-export const carouselHome:any = [
-    { "text": "really motivative text that shoul get over all the image to make a great sell", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
-    { "text": "2really motivative text that shoul get over all the image to make a great sell", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
-    { "text": "3really motivative text that shoul get over all the image to make a great sell", "image": "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
-]
+export const carouselHome: any = [
+  { text: "ARCIDRADE CONSULTING LLC", image: "https://images.pexels.com/photos/5327914/pexels-photo-5327914.jpeg" },
+  {
+    text: "Captación de Talento Médico | Fusiones y Adquisiciones | Consultoría en Mercados Hospitalarios",
+    image: "https://images.pexels.com/photos/6129507/pexels-photo-6129507.jpeg",
+  },
+  {
+    text: "Tendiendo puentes entre la Sanidad y los Negocios en España y Latinoamérica",
+    image: "https://images.pexels.com/photos/3959482/pexels-photo-3959482.jpeg",
+  },
+  { text: "Consultoría Corporativa & Asesoría en Salud", image: "https://images.pexels.com/photos/8376180/pexels-photo-8376180.jpeg" },
+];
+
+export const aboutItems: any = [
+  {
+    title: "Experiencia",
+    description: "20+ años de experiencia combinada en salud y consultoría corporativa",
+    image: "https://images.pexels.com/photos/8376180/pexels-photo-8376180.jpeg",
+  },
+  {
+    title: "Red",
+    description: "Sólida red con hospitales, aseguradoras y distribuidores en España",
+    image: "https://images.pexels.com/photos/3184291/pexels-photo-3184291.jpeg",
+  },
+  {
+    title: "Socio",
+    description: "Socio de confianza para inversores latinoamericanos en Europa",
+    image: "https://images.pexels.com/photos/5716001/pexels-photo-5716001.jpeg",
+  },
+  {
+    title: "Acceso",
+    description: "Acceso a oportunidades exclusivas en salud y negocios",
+    image: "https://images.pexels.com/photos/7166020/pexels-photo-7166020.jpeg",
+  },
+  {
+    title: "Trayectoria demostrada",
+    description: "Historial probado en captación de talento, intermediación y consultoría",
+    image: "https://images.pexels.com/photos/7651924/pexels-photo-7651924.jpeg",
+  },
+];
+
+export const servicesItems: any = [
+  {
+    title: "Captación de Talento Médico",
+    extraText: "Impulsamos la captación estratégica del mejor talento médico para transformar tu institución",
+    longText: "Conectamos médicos de LATAM y Europa con el sistema de salud español. Apoyo en credenciales, homologación e incorporación.",
+    image: "https://images.pexels.com/photos/7579831/pexels-photo-7579831.jpeg",
+  },
+  {
+    title: "Fusiones y Adquisiciones / Intermediación Empresarial",
+    extraText: "Intermediación empresarial experta para operaciones que generan valor real y sostenible",
+    longText: "Asesoría en compraventa de empresas, adquisiciones y joint ventures. Sourcing confidencial y expansión transfronteriza.",
+    image: "https://images.pexels.com/photos/8112172/pexels-photo-8112172.jpeg",
+  },
+  {
+    title: "Consultoría en Mercados Hospitalarios",
+    extraText: "Inteligencia de mercado para decisiones clínicas con impacto",
+    longText: "Estrategias de acceso a mercado, cumplimiento regulatorio y análisis competitivo en el sector salud. Alianzas con hospitales y distribuidores.",
+    image: "https://images.pexels.com/photos/8376180/pexels-photo-8376180.jpeg",
+  },
+];
+
+export const companyInfo: any = {
+    address: "312 W. 2nd St #2787, Casper, WY 82601, EE. UU.",
+    phone1: "📞 USA +1 (307) 776 3025 ",
+    phone2: "📞 SPAIN +34 675 519 929",
+    representative: "Eva M. Lopez",
+}
 
 export const optionsTitleStatus = [
-    { value: "inProcess", label: "En Proceso" },
-    { value: "graduated", label: "Graduado" },
-  ];
+  { value: "inProcess", label: "En Proceso" },
+  { value: "graduated", label: "Graduado" },
+];
 
 export const medicalOptions: any = [
   { id: 1, name: "alergia" },
@@ -102,5 +166,5 @@ export const medicalOptions: any = [
   { id: 70, name: "tisioneumonologia" },
   { id: 71, name: "tocoginecologia" },
   { id: 72, name: "toxicologia" },
-  { id: 73, name: "urologia" }
-]
+  { id: 73, name: "urologia" },
+];

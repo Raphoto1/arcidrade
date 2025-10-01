@@ -1,0 +1,7 @@
+-- AlterTable
+ALTER TABLE "public"."Institution_Data" ALTER COLUMN "main_specialty" DROP NOT NULL,
+ALTER COLUMN "avatar" DROP NOT NULL,
+ALTER COLUMN "established" DROP NOT NULL,
+ALTER COLUMN "website" DROP NOT NULL,
+ALTER COLUMN "phone" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL;

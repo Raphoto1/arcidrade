@@ -185,15 +185,15 @@ model Institution_Data {
   user_id        String
   fake_name      String
   name           String
-  main_specialty String
-  country        String
-  state          String
-  city           String
-  avatar         String
-  established    DateTime
-  website        String
-  phone          String
-  status         String
+  main_specialty String?
+  country        String?
+  state          String?
+  city           String?
+  avatar         String?
+  established    DateTime?
+  website        String?
+  phone          String?
+  status         String?
   auth           Auth     @relation(fields: [user_id], references: [referCode])
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt

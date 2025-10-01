@@ -9,11 +9,11 @@ export default function SpecialitiesInstitution() {
         <h1 className='text-2xl fontArci text-center'>Especialidades</h1>
       </div>
       <div>
+        {/* <Speciality />
         <Speciality />
         <Speciality />
         <Speciality />
-        <Speciality />
-        <Speciality />
+        <Speciality /> */}
       </div>
     </div>
   );

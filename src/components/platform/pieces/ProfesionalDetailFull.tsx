@@ -162,7 +162,7 @@ export default function ProfesionalDetailFull() {
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci text'>Certificaciones</h1>
         {certifications.map((item: any, index: number) => (
-          <div className='bg-white rounded-md p-1'>
+          <div key={index} className='bg-white rounded-md p-1'>
             <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
             <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
             <p className='text-xs'>{handleDateToYear(item.end_date)}</p>

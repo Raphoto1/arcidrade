@@ -4,15 +4,21 @@ import Image from "next/image";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import InstitutionDetail from "./institutionDetail";
 import InstitutionDetailFull from "./InstitutionDetailFull";
+import { useInstitution } from "@/hooks/usePlatInst";
+import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
+
 export default function HeroHeaderInstitution() {
-  //AJUSTAR IMAGEN DE FONDO Y ALINEADO EN MD
+  const { data, isLoading, error, mutate } = useInstitution();
+  if (isLoading) return <div>Cargando...</div>;
+  if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
+
   return (
     <div className='relative w-full md:h-[320px] overflow-hidden'>
       {/* Imagen de fondo con opacidad */}
       <div
         className='absolute inset-0 bg-cover bg-center opacity-10'
         style={{
-          backgroundImage: "url('https://images.pexels.com/photos/7579823/pexels-photo-7579823.jpeg')",
+          backgroundImage: "url('https://images.pexels.com/photos/5049242/pexels-photo-5049242.jpeg')",
         }}
       />
 
@@ -24,14 +30,20 @@ export default function HeroHeaderInstitution() {
         <div className='vacio none md:visible md:w-1/3 z-10'></div>
         <div className='avata grid justify-center align-middle items-center p-2 z-10 md:w-1/3'>
           <div className='flex justify-center align-middle items-center'>
-            <Image
-              src='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'
-              className='w-40 h-40 max-w-96 rounded-full justify-center align-middle items-center'
-              width={500}
-              height={500}
-              objectFit='cover'
-              alt='fillImage'
-            />
+            <div className='relative w-40 h-40'>
+              {data?.payload[0]?.avatar ? (
+                <Image src={data?.payload[0].avatar} className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
+              ) : (
+                <Image src='/logos/Logo Arcidrade Cond.png' className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
+              )}
+              {data?.payload[0]?.name != null ? (
+                <div className='absolute bottom-2 right-2 z-10'>
+                  <ModalForFormsPlusButton title='Actualizar Imagen'>
+                    <div></div>
+                  </ModalForFormsPlusButton>
+                </div>
+              ) : null}
+            </div>
           </div>
           <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2'>Nombre de Hospital</h2>
         </div>
@@ -50,7 +62,7 @@ export default function HeroHeaderInstitution() {
       {/* Opciones */}
       <div className='options grid justify-center relative z-10'>
         <h3 className='text-xl text-center'>titulo de carrera</h3>
-        <div className="flex">
+        <div className='flex'>
           <ModalForPreview title={"Preview"}>
             <InstitutionDetail />
           </ModalForPreview>

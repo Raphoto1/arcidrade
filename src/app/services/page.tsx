@@ -1,14 +1,15 @@
 //imports app
 import React from 'react'
-
+import { servicesItems } from '@/static/data/staticData'
 // imports project
 //verificar info a cargar, generar o buscar imagenes en pexels
 import ServiceDescription from '@/components/services/ServiceDescription'
 export default function page() {
   return (
     <div>
-      <ServiceDescription title='Procurement' ExtraText='Conectamos Oportunidades de Negocio on soluciones reales' mainImage='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'/>
-      <ServiceDescription title='Consultoria' ExtraText='Facilitamos su entrada y exito en mercados clave' mainImage='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'/>
+      {servicesItems.map((item: any, index: number) => (
+        <ServiceDescription key={index} title={item.title} longText={item.longText} mainImage={item.image} ExtraText={item.extraText} />
+      ))}
     </div>
   )
 }

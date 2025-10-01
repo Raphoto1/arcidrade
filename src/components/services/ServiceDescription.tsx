@@ -11,16 +11,11 @@ export default function ServiceDescription(props: { title: string; mainImage?: s
           {props.ExtraText}
         </h2>
 
-        <img src={props.mainImage} className='w-fit h-full absolute' />
+        <img src={props.mainImage} className='w-full h-full object-cover absolute' />
       </div>
       <div className='longText p-5 first-letter:text-3xl font-roboto-condensed'>
-        <p>
+        <p className="text-justify text-xl">
           {props.longText}
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Accusantium quisquam maxime qui culpa assumenda recusandae quasi quas molestias, beatae
-          eligendi dignissimos, fugiat, tempore porro mollitia dicta sunt ipsam excepturi in! Earum ex modi quia asperiores assumenda possimus ducimus
-          repellendus. Quibusdam deserunt, ex nostrum veniam officia tempora ab pariatur quam cupiditate voluptatibus non praesentium, eveniet exercitationem
-          assumenda quia itaque! Dolorem cumque eius labore illo inventore nisi numquam autem quibusdam quia! Aperiam cupiditate velit, dolorem quia,
-          necessitatibus, fuga commodi asperiores sed tenetur placeat est sunt. Rerum ut, cum sit quod quasi eligendi!
         </p>
       </div>
     </div>

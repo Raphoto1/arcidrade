@@ -30,7 +30,9 @@ export default function PersonalData() {
   const fecha = new Date(data?.payload[0].birth_date);
   const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   //adjust country
-  const countryName: ICountry | undefined = Country.getCountryByCode(data?.payload[0].country);
+  const countryName: ICountry | undefined = data?.payload[0]
+    ? Country.getCountryByCode(data?.payload[0].country)
+    : undefined;
   //adjust status
   const handleStatusName = (status: string | undefined) => {
     if (status === "inProcess") {
