@@ -1,12 +1,10 @@
 import { createInstitutionData, getInstitutionData } from "@/controller/institutionData.controller";
-import { createUserData, getUserData } from "@/controller/userData.controller";
-import { log } from "console";
+
 import { NextResponse } from "next/server";
 
 export const GET = async (request: Request) => {
   try {
     const mainUserData = await getInstitutionData();
-    console.log("mainUserData", mainUserData);
 
     return NextResponse.json({ message: "Profesional data success", payload: mainUserData });
   } catch (error) {

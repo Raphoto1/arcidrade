@@ -17,3 +17,13 @@ export const useInstitution = () => {
 
   return { data, error, isLoading, mutate };
 };
+
+export const useInstitutionSpecializations = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/institution/speciality", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const useInstitutionSpeciality = (id: number) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(id ? `/api/platform/institution/speciality/${id}` : null, fetcher);
+  return { data, error, isLoading, mutate };
+}

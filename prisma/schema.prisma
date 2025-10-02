@@ -204,7 +204,8 @@ model Institution_Data {
 model Institution_specialization {
   id          Int      @id @default(autoincrement())
   user_id     String
-  title       String
+  title       String?
+  title_category String?
   status      String?
   description String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])

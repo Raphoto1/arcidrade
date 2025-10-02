@@ -2,7 +2,7 @@
 import { fakerES as faker } from "@faker-js/faker";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
-import { Main_study, Profesional_data } from "@/generated/prisma"
+import { Main_study, Profesional_data } from "@/generated/prisma";
 
 // my imports
 import {
@@ -31,6 +31,7 @@ import {
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 import { updateProfesionalMainStudyDao } from "@/dao/dao";
+import { getInstitutionDataByUserIdService, updateInstitutionDataService } from "@/service/institutionData.service";
 //user__________________________________________________________________________________
 export const createUserData = async (data: any) => {
   //se extrae el session
@@ -119,7 +120,7 @@ export const getUserFull = async () => {
     if (!session?.user.id) throw new Error("Sesión inválida");
     const userId = session?.user.id;
     const fullData = await getUserFullByIdService(userId);
-    return fullData
+    return fullData;
   } catch (error) {
     console.error(error);
     throw new Error("error al subir archivo");
@@ -266,20 +267,32 @@ export const uploadUserAvatar = async (file: File) => {
   try {
     const session = await getServerSession(authOptions);
     let userId = session?.user.id;
-    const chkUserAvatar = await getUserData();
-    if (chkUserAvatar[0].avatar) {
-      const deleteFile = await deleteFileService(chkUserAvatar[0].avatar);
+    //profesional
+    if (session?.user.area === "profesional") {
+      const chkUserAvatar = await getUserData();
+      if (chkUserAvatar[0].avatar) {
+        const deleteFile = await deleteFileService(chkUserAvatar[0].avatar);
+      }
+      if (!session) {
+        userId = "error";
+      }
+      const uploadResult = await uploadFileService(file, `avatar`, userId);
+      //obtengo la url del archivo y la cargo a la db
+      const avatarUrl = await uploadResult?.url;
+      const dbUpdate = await updateUserData({ avatar: avatarUrl });
+      return dbUpdate;
+      //institution
+    } else if (session?.user.area === "institution") {
+      const chkInstitutionAvatar = await getInstitutionDataByUserIdService(userId);
+      if (chkInstitutionAvatar?.avatar) {
+        const deleteFile = await deleteFileService(chkInstitutionAvatar.avatar);
+      }
+      const uploadResult = await uploadFileService(file, `avatar`, userId);
+      //obtengo la url del archivo y la cargo a la db
+      const avatarUrl = await uploadResult?.url;
+      const dbUpdate = await updateInstitutionDataService({ avatar: avatarUrl }, userId);
+      return dbUpdate;
     }
-    if (!session) {
-      userId = "error";
-    }
-    const uploadResult = await uploadFileService(file, `avatar`, userId);
-    //obtengo la url del archivo y la cargo a la db
-    const avatarUrl = await uploadResult?.url;
-    console.log(avatarUrl);
-
-    const dbUpdate = await updateUserData({ avatar: avatarUrl });
-    return dbUpdate;
   } catch (error) {
     console.error(error);
     throw new Error();
