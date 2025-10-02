@@ -1,0 +1,16 @@
+-- AlterTable
+ALTER TABLE "Goals" ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "file" DROP NOT NULL,
+ALTER COLUMN "link" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Institution_Certifications" ALTER COLUMN "country" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL,
+ALTER COLUMN "link" DROP NOT NULL,
+ALTER COLUMN "file" DROP NOT NULL;
+
+-- AlterTable
+ALTER TABLE "Institution_specialization" ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "description" DROP NOT NULL;

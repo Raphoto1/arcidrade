@@ -205,8 +205,8 @@ model Institution_specialization {
   id          Int      @id @default(autoincrement())
   user_id     String
   title       String
-  status      String
-  description String
+  status      String?
+  description String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
@@ -217,12 +217,12 @@ model Institution_Certifications {
   user_id     String
   title       String
   institution String
-  country     String
-  status      String
+  country     String?
+  status      String?
   year        Int
-  description String
-  link        String
-  file        String
+  description String?
+  link        String?
+  file        String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
@@ -232,11 +232,11 @@ model Goals {
   id          Int      @id @default(autoincrement())
   user_id     String
   title       String
-  description String
-  status      String
+  description String?
+  status      String?
   year        Int
-  file        String
-  link        String
+  file        String?
+  link        String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt

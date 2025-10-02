@@ -2,7 +2,7 @@
 import { fakerES as faker } from "@faker-js/faker";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
-import { Main_study, Profesional_data } from "@prisma/client";
+import { Main_study, Profesional_data } from "@/generated/prisma"
 
 // my imports
 import {
