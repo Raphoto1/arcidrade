@@ -1,3 +1,4 @@
+import { deleteFileService, uploadFileService } from "@/service/File.service";
 import {
   createInstitutionDataService,
   createInstitutionSpecialityService,
@@ -6,10 +7,22 @@ import {
   getInstitutionSpecialitiesService,
   deleteInstitutionSpecialityService,
   getInstitutionSpecialityService,
-  updateInstitutionSpecialityService
+  updateInstitutionSpecialityService,
+  getInstitutionCertificationsService,
+  createInstitutionCertificationService,
+  getInstitutionCertificationService,
+  updateInstitutionCertificationService,
+  deleteInstitutionCertificationService,
+  getInstitutionGoalsService,
+  createInstitutionGoalService,
+  getInstitutionGoalService,
+  updateInstitutionGoalService,
+  deleteInstitutionGoalService,
+  getInstitutionDataFullByUserIdService,
 } from "@/service/institutionData.service";
 import { authOptions } from "@/utils/authOptions";
 import { fakerES as faker } from "@faker-js/faker";
+import { get } from "http";
 import { getServerSession } from "next-auth";
 
 export const getInstitutionData = async () => {
@@ -20,6 +33,13 @@ export const getInstitutionData = async () => {
   if (institutionData == null) {
     return institutionDataFiltered;
   }
+  return institutionData;
+};
+
+export const getInstitutionDataFull = async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id as string;
+  const institutionData = await getInstitutionDataFullByUserIdService(userId);
   return institutionData;
 };
 
@@ -95,7 +115,7 @@ export const getInstitutionSpecialities = async () => {
 export const getInstitutionSpeciality = async (id: number) => {
   const speciality = await getInstitutionSpecialityService(id);
   return speciality;
-}
+};
 
 export const deleteInstitutionSpeciality = async (id: number) => {
   const response = await deleteInstitutionSpecialityService(id);
@@ -110,4 +130,147 @@ export const updateInstitutionSpeciality = async (id: number, data: any) => {
   };
   const update = await updateInstitutionSpecialityService(id, specialPack);
   return update;
-}
+};
+
+export const getInstitutionCertifications = async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id as string;
+  const response = await getInstitutionCertificationsService(userId);
+  return response;
+};
+
+export const createInstitutionCertification = async (data: any) => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id as string;
+  const uploadPack = {
+    user_id: userId,
+    title: data.title,
+    institution: data.institution,
+    year: new Date(data.year),
+    description: data.description || "",
+  };
+  const response = await createInstitutionCertificationService(uploadPack);
+  return response;
+};
+
+export const getInstitutionCertification = async (id: number) => {
+  const certification = await getInstitutionCertificationService(id);
+  return certification;
+};
+
+export const updateInstitutionCertification = async (id: number, data: any) => {
+  //AQUI SE PUEDE NORMALIZAR LA DATA EN CASO DE SER NECESARIO
+  const certPack = {
+    title: data.title,
+    institution: data.institution,
+    year: new Date(data.year),
+    description: data.description || "",
+  };
+  const update = await updateInstitutionCertificationService(id, certPack);
+  return update;
+};
+
+export const deleteInstitutionCertification = async (id: number) => {
+  const chk = await getInstitutionCertificationService(id);
+  if (chk?.file) {
+    //eliminar el archivo
+    const deleteFile = await deleteFileService(chk.file);
+    const deleteCert = await deleteInstitutionCertificationService(id);
+    return deleteCert;
+  } else {
+    const deleteCert = await deleteInstitutionCertificationService(id);
+    return deleteCert;
+  }
+};
+//goals
+export const getInstitutionGoals = async () => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id as string;
+  const response = await getInstitutionGoalsService(userId);
+  return response;
+};
+
+export const createInstitutionGoal = async (data: any) => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id as string;
+  const uploadPack = {
+    user_id: userId,
+    title: data.title,
+    year: new Date(data.year),
+    description: data.description || "",
+  };
+  const response = await createInstitutionGoalService(uploadPack);
+  return response;
+};
+
+export const getInstitutionGoal = async (id: number) => {
+  const goal = await getInstitutionGoalService(id);
+  return goal;
+};
+
+export const updateInstitutionGoal = async (id: number, data: any) => {
+  //AQUI SE PUEDE NORMALIZAR LA DATA EN CASO DE SER NECESARIO
+  const goalPack = {
+    title: data.title,
+    year: new Date(data.year),
+    description: data.description || "",
+  };
+  const update = await updateInstitutionGoalService(id, goalPack);
+  return update;
+};
+
+export const uploadInstitutionGoalLink = async (id: number, link: any) => {
+  //verificar si ya existe un archivo y se borra
+  const chk = await getInstitutionGoal(id);
+  if (chk?.file) {
+    //si existe se borra el archivo antiguo
+    const deleteFile = await deleteFileService(chk?.file);
+    //se agrega la nueva info
+    const updatePack = {
+      link: link,
+      file: null,
+    };
+    const updateDb = await updateInstitutionGoalService(id, updatePack);
+    return updateDb;
+  } else {
+    const updateDb = await updateInstitutionGoalService(id, { link: link });
+    return updateDb;
+  }
+};
+
+export const uploadInstitutionGoalFile = async (id: number, file: File) => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id as string;
+  //verificar si ya existe un archivo y se borra
+  const chk = await getInstitutionGoal(id);
+  if (chk?.link) {
+    //se elimina el link y se agrega el archivo
+    const uploadFile = await uploadFileService(file, "goal", userId);
+    const updatePack = { link: null, file: uploadFile.url };
+    const updateDb = await updateInstitutionGoalService(id, updatePack);
+    return updateDb;
+  } else if (chk?.file) {
+    //se elimina el archivo y se agrega el nuevo archivo
+    const deleteBlob = await deleteFileService(chk.file);
+    const uploadFile = await uploadFileService(file, "goal", userId);
+    const updateDb = await updateInstitutionGoalService(id, { file: uploadFile.url });
+    return updateDb;
+  } else {
+    const uploadFile = await uploadFileService(file, "goal", userId);
+    const updateDb = await updateInstitutionGoalService(id, { file: uploadFile.url });
+    return updateDb;
+  }
+};
+
+export const deleteInstitutionGoal = async (id: number) => {
+  const chk = await getInstitutionGoal(id);
+  if (chk?.file) {
+    //eliminar el archivo
+    const deleteFile = await deleteFileService(chk.file);
+    const deleteGoal = await deleteInstitutionGoalService(id);
+    return deleteGoal;
+  } else {
+    const deleteGoal = await deleteInstitutionGoalService(id);
+    return deleteGoal;
+  }
+};

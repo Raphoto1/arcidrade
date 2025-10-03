@@ -54,7 +54,7 @@ export default function HeroHeaderInstitution() {
         </div>
         <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3 mr-2'>
           <h3 className='text-xl font-bold font-var(--font-oswald)'>Presentación</h3>
-          <p className='text-sm max-height-10'>{data?.payload.description || "Agrega una descripción para que todos te conozcan"}</p>
+          <p className='text-sm max-height-10 line-clamp-5'>{data?.payload.description || "Agrega una descripción para que todos te conozcan"}</p>
           <div className='flex gap-2 justify-end mt-5'>
             {data?.payload.description != null ? (
               <ModalForPreviewTextLink title='Ver Más...'>

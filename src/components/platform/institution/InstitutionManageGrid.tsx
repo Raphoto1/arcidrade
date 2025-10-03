@@ -1,8 +1,9 @@
-import React from 'react'
+import React from "react";
 
-import InstitutionData from './InstitutionData'
-import SpecialitiesInstitution from './SpecialitiesInstitution'
-import CertificationsInstitution from './CertificationsInstitution'
+import InstitutionData from "./InstitutionData";
+import SpecialitiesInstitution from "./SpecialitiesInstitution";
+import CertificationsInstitution from "./CertificationsInstitution";
+import Goals from "./Goals";
 
 export default function InstitutionManageGrid() {
   return (
@@ -10,7 +11,7 @@ export default function InstitutionManageGrid() {
       <InstitutionData />
       <SpecialitiesInstitution />
       <CertificationsInstitution />
-      <CertificationsInstitution />
+      <Goals />
     </div>
-  )
+  );
 }

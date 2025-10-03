@@ -220,7 +220,7 @@ model Institution_Certifications {
   institution String
   country     String?
   status      String?
-  year        Int
+  year        DateTime?
   description String?
   link        String?
   file        String?
@@ -235,7 +235,7 @@ model Goals {
   title       String
   description String?
   status      String?
-  year        Int
+  year        DateTime?
   file        String?
   link        String?
   auth        Auth     @relation(fields: [user_id], references: [referCode])

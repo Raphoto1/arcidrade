@@ -1,6 +1,6 @@
 import prisma from "@/utils/db";
 import { encrypt } from "@/utils/encrypter";
-import { StatusAvailable } from "@prisma/client";
+import { StatusAvailable } from "@/generated/prisma";
 
 // auth
 export const getInvitationByIdDao = async (id: string) => {

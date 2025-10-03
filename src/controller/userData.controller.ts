@@ -31,7 +31,8 @@ import {
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 import { updateProfesionalMainStudyDao } from "@/dao/dao";
-import { getInstitutionDataByUserIdService, updateInstitutionDataService } from "@/service/institutionData.service";
+import { getInstitutionDataByUserIdService, updateInstitutionCertificationService, updateInstitutionDataService } from "@/service/institutionData.service";
+import { getInstitutionCertification, updateInstitutionCertification } from "./institutionData.controller";
 //user__________________________________________________________________________________
 export const createUserData = async (data: any) => {
   //se extrae el session
@@ -526,21 +527,42 @@ export const deleteUserCertification = async (id: number) => {
 
 export const uploadUserCertificationLink = async (id: number, link: any) => {
   try {
-    //verificar si ya existe un archivo y se borra
-    const chk = await getCertificationById(id);
-    if (chk?.file) {
-      //si existe se borra el archivo antiguo
-      const deleteFile = await deleteFileService(chk?.file);
-      //se agrega la nueva info
-      const updatePack = {
-        link: link,
-        file: null,
-      };
-      const updateDb = await updateUserCertificationService(id, updatePack);
-      return updateDb;
-    } else {
-      const updateDb = await updateUserCertificationService(id, { link: link });
-      return updateDb;
+    const session = await getServerSession(authOptions);
+    const userId = session?.user.id;
+    if (session?.user.area === "profesional") {
+      //verificar si ya existe un archivo y se borra
+      const chk = await getCertificationById(id);
+      if (chk?.file) {
+        //si existe se borra el archivo antiguo
+        const deleteFile = await deleteFileService(chk?.file);
+        //se agrega la nueva info
+        const updatePack = {
+          link: link,
+          file: null,
+        };
+        const updateDb = await updateUserCertificationService(id, updatePack);
+        return updateDb;
+      } else {
+        const updateDb = await updateUserCertificationService(id, { link: link });
+        return updateDb;
+      }
+    } else if (session?.user.area === "institution") {
+      //verificar si ya existe un archivo y se borra
+      const chk = await getInstitutionCertification(id);
+      if (chk?.file) {
+        //si existe se borra el archivo antiguo
+        const deleteFile = await deleteFileService(chk?.file);
+        //se agrega la nueva info
+        const updatePack = {
+          link: link,
+          file: null,
+        };
+        const updateDb = await updateInstitutionCertificationService(id, updatePack);
+        return updateDb;
+      } else {
+        const updateDb = await updateInstitutionCertificationService(id, { link: link });
+        return updateDb;
+      }
     }
   } catch (error) {
     console.error(error);
@@ -551,24 +573,46 @@ export const uploadUserCertificationLink = async (id: number, link: any) => {
 export const uploadUserCertificationFile = async (id: number, file: any) => {
   const session = await getServerSession(authOptions);
   const userId = session?.user.id;
-  //verificar si ya existe un archivo y se borra
-  const chk = await getCertificationById(id);
-  if (chk?.link) {
-    //se elimina el link y se agrega el archivo
-    const uploadFile = await uploadFileService(file, "certification", userId);
-    const updatePack = { link: null, file: uploadFile.url };
-    const updateDb = await updateUserCertificationService(id, updatePack);
-    return updateDb;
-  } else if (chk?.file) {
-    //se elimina el archivo y se agrega el nuevo archivo
-    const deleteBlob = await deleteFileService(chk.file);
-    const uploadFile = await uploadFileService(file, "certification", userId);
-    const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
-    return updateDb;
-  } else {
-    const uploadFile = await uploadFileService(file, "certification", userId);
-    const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
-    return updateDb;
+  if (session?.user.area === "profesional") {
+    //verificar si ya existe un archivo y se borra
+    const chk = await getCertificationById(id);
+    if (chk?.link) {
+      //se elimina el link y se agrega el archivo
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updatePack = { link: null, file: uploadFile.url };
+      const updateDb = await updateUserCertificationService(id, updatePack);
+      return updateDb;
+    } else if (chk?.file) {
+      //se elimina el archivo y se agrega el nuevo archivo
+      const deleteBlob = await deleteFileService(chk.file);
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
+      return updateDb;
+    } else {
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
+      return updateDb;
+    }
+  } else if (session?.user.area === "institution") {
+    //verificar si ya existe un archivo y se borra
+    const chk = await getInstitutionCertification(id);
+    if (chk?.link) {
+      //se elimina el link y se agrega el archivo
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updatePack = { link: null, file: uploadFile.url };
+      const updateDb = await updateInstitutionCertificationService(id, updatePack);
+      return updateDb;
+    } else if (chk?.file) {
+      //se elimina el archivo y se agrega el nuevo archivo
+      const deleteBlob = await deleteFileService(chk.file);
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updateDb = await updateInstitutionCertificationService(id, { file: uploadFile.url });
+      return updateDb;
+    } else {
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updateDb = await updateInstitutionCertificationService(id, { file: uploadFile.url });
+      return updateDb;
+    }
   }
 };
 //experience___________________________________________________________________________________
