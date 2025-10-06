@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export const GET = async (request: Request) => {
   try {
     const mainUserData = await getInstitutionData();
-
     return NextResponse.json({ message: "Profesional data success", payload: mainUserData });
   } catch (error) {
     console.error("Error in Profesional API:", error);
@@ -16,7 +15,6 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   try {
     const body = await request.json();
-    console.log(body);
     const response = await createInstitutionData(body);
     //distribuir la data en las tablas, ajustar status
     return NextResponse.json({ message: "Profesional API Post!" }, { status: 201 });

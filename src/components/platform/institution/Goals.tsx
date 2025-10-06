@@ -15,6 +15,7 @@ export default function Goals() {
       <div className='pb-1'>
         <h1 className='text-2xl fontArci text-center'>Logros</h1>
       </div>
+      {isLoading && <div>Cargando...</div>}
       <div className='max-h-110 overflow-auto'>
         {experienceList?.map((item: any, index: number) => (
           <Goal key={item.id} id={item.id} title={item.title} year={item.year} description={item.description} link={item.link} file={item.file} />

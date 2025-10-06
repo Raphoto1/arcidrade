@@ -5,17 +5,26 @@ import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import OfferDetail from "@/components/pieces/OfferDetail";
 import Process from "./Process";
+import ModalForForms from "@/components/modals/ModalForForms";
+import CreateProcessForm from "@/components/forms/platform/process/CreateProcessForm";
+import ProcessBasic from "../process/ProcessBasic";
+import { useProcesses } from "@/hooks/useProcess";
 export default function ActiveProcess() {
+  const {data, error, isLoading} = useProcesses();
   return (
     <div className='grid grid-cols-1 w- p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <div className='grid justify-center align-middle pb-2'>
         <ModalForPreview title={'Crear Proceso Muestra Preview'}>
           <Process />
         </ModalForPreview>
+        <ModalForForms title={'Crear Proceso Muestra Form'}>
+          <CreateProcessForm />
+        </ModalForForms>
       </div>
       <div className='flex justify-center align-middle bg-gray-300 rounded-t-md'>
         <h2 className='text-2xl fontArci text-center'>Procesos activos</h2>
       </div>
+      <ProcessBasic />
       <div className='flex justify-between align-middle bg-gray-100 items-center'>
         <div className='flex justify-start align-middle bg-gray-100 items-center'>
           <h2 className='text-xl fontRoboto text-center text-(--dark-gray)'>Cargo:</h2>

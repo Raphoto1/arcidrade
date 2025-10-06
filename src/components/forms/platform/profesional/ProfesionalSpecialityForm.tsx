@@ -172,6 +172,7 @@ export default function ProfesionalSpecialityForm() {
               <button type="submit" className="btn bg-[var(--soft-arci)]">Confirmar Especialidad</button>
               <button type="button" className="btn bg-[var(--orange-arci)]" onClick={closeModal}>Cancelar</button>
             </div>
+            
           </form>
         </div>
       </div>

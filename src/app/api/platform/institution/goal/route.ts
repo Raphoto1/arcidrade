@@ -6,8 +6,6 @@ import { NextResponse } from "next/server";
 export const GET = async (request: Request) => {
   try {
     const userGoals = await getInstitutionGoals();
-    console.log("logros del usuario:", userGoals);
-
     return NextResponse.json({ message: "Logros obtenidos con éxito", payload: userGoals });
   } catch (error) {
     console.error("Error en la API de Logros:", error);
@@ -18,7 +16,6 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   try {
     const body = await request.json();
-    console.log("form desde endpoint goal", body);
     const response = await createInstitutionGoal(body);
     return NextResponse.json({ message: "Profesional API Post!" }, { status: 201 });
   } catch (error) {
