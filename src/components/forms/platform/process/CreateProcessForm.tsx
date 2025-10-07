@@ -114,7 +114,7 @@ export default function CreateProcessForm() {
                 className='btn btn-sm bg-blue-500 text-white mt-2'
                 onClick={handleAddSpecialty}
                 disabled={titleCategorySelected.length >= 3}>
-                + Agregar especialidad
+                + Agregar especialidad Secundaria
               </button>
               {/* Mostrar errores solo para el primer campo */}
               {errors.title_category_0?.message && <span className='text-xs text-red-500'>{String(errors.title_category_0.message)}</span>}

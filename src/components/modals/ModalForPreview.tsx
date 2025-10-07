@@ -14,7 +14,7 @@ export default function ModalForPreview({ children, title }: { title?: string } 
 
   return (
     <div>
-      <button className='btn bg-[var(--main-arci)] text-white' onClick={openModal}>
+      <button className='btn bg-[var(--main-arci)] h-auto w-auto p-1 min-w-full text-white' onClick={openModal}>
         {title || null}
       </button>
       <dialog ref={modalRef} className='modal modal-start overflow-y-auto h-full md:w-full'>

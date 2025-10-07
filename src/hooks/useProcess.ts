@@ -16,3 +16,21 @@ export const useProcesses = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/", fetcher);
   return { data, error, isLoading, mutate };
 };
+
+export const useActiveProcesses = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/active", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const usePendingProcesses = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/pending", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const useProcess = (processId: number | null) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    processId ? `/api/platform/process/${processId}` : null,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+};

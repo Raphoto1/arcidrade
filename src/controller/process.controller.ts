@@ -1,7 +1,14 @@
 import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 
-import { createExtraSpecialityService, createProcessService, getProcessesByUserIdService } from "@/service/process.service";
+import {
+  createExtraSpecialityService,
+  createProcessService,
+  getActiveProcessesByUserIdService,
+  getPendingProcessesByUserIdService,
+  getProcessByIdService,
+  getProcessesByUserIdService,
+} from "@/service/process.service";
 
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
@@ -46,8 +53,64 @@ export const createProcess = async (data: any) => {
 };
 
 export const getProcessesByUserId = async () => {
-    const session = await getServerSession(authOptions);
-    const userId = session?.user?.id;
-    const result = await getProcessesByUserIdService(userId);
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  const result = await getProcessesByUserIdService(userId);
+  return result;
+};
+
+export const getProcessesByStatus = async (status: string | undefined) => {
+  const session = await getServerSession(authOptions);
+  const userId = session?.user?.id;
+  if (status === "pending") {
+    const result = await getPendingProcessesByUserIdService(userId);
     return result;
+  } else if (status === "active") {
+    const result = await getActiveProcessesByUserIdService(userId);
+    return result;
+  }
+};
+
+export const getProcessById = async (processId: number) => {
+  const result = await getProcessByIdService(processId);
+  return result;
+};
+
+export const updateProcessById = async (processId: number, data: any) => {
+  const mainDataPack = {
+    position: data.position,
+    main_speciality: data.title_category_0,
+    profesional_status: data.titleStatus,
+    type: data.processType,
+    start_date: new Date(data.start_date),
+    description: data.description,
+  };
+  // console.log("Creating main process with data:", mainDataPack);
+  // const processCreated = await createProcessService(mainDataPack);
+  //revisar si hay cambio en el extras
+if (Array.isArray(data.extra_specialities) && data.extra_specialities.length > 0) {
+  console.log("Adding extra specialties");
+  
+}
+
+  // if (data.title_category_1 || data.title_category_2) {
+  //   console.log("Adding additional specialties");
+  //   if (data.title_category_1) {
+  //     const extraSpecialityPack = {
+  //       process_id: processCreated.id,
+  //       speciality: data.title_category_1,
+  //     };
+  //     console.log("Creating extra speciality with data:", extraSpecialityPack);
+  //     await createExtraSpecialityService(extraSpecialityPack);
+  //   }
+  //   if (data.title_category_2) {
+  //     const extraSpecialityPack = {
+  //       process_id: processCreated.id,
+  //       speciality: data.title_category_2,
+  //     };
+  //     console.log("Creating extra speciality with data:", extraSpecialityPack);
+  //     await createExtraSpecialityService(extraSpecialityPack);
+  //   }
+  // }
+  return [{}];
 }

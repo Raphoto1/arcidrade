@@ -1,9 +1,11 @@
+import { process_status } from "@/generated/prisma";
 import prisma from "@/utils/db";
 
 export const getProcessByIdDao = async (process_id: number) => {
   try {
     const process = await prisma.process.findUnique({
       where: { id: process_id },
+      include: { extra_specialities: true, profesionals_listed: true },
     });
     return process;
   } catch (error) {
@@ -22,7 +24,7 @@ export const getAllProcessesDao = async () => {
   }
 };
 
-export const getProcessesByUserIdDao = async (user_id: string|undefined) => {
+export const getProcessesByUserIdDao = async (user_id: string | undefined) => {
   try {
     const processes = await prisma.process.findMany({
       where: { user_id },
@@ -32,6 +34,30 @@ export const getProcessesByUserIdDao = async (user_id: string|undefined) => {
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error fetching processes for user ID ${user_id}: ${errorMessage}`);
+  }
+};
+
+export const getActiveProcessesByUserIdDao = async (user_id: string | undefined) => {
+  try {
+    const activeProcesses = await prisma.process.findMany({
+      where: { status: "active", user_id },
+    });
+    return activeProcesses;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error fetching active processes: ${errorMessage}`);
+  }
+};
+
+export const getProcessesByUserIdFilteredByStatusDao = async (user_id: string | undefined, status: process_status) => {
+  try {
+    const filteredProcesses = await prisma.process.findMany({
+      where: { status: status, user_id },
+    });
+    return filteredProcesses;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error fetching filtered processes: ${errorMessage}`);
   }
 };
 
@@ -65,6 +91,19 @@ export const createExtraSpecialityDao = async (data: any) => {
       data,
     });
     return newExtraSpeciality;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error creating extra speciality: ${errorMessage}`);
+  }
+};
+
+export const updateProcess = async (process_id: number, data: any) => {
+  try {
+    const updateResponse = await prisma.process.update({
+      where: { id: process_id },
+      data: data,
+    });
+    return updateResponse;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error creating extra speciality: ${errorMessage}`);
