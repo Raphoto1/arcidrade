@@ -85,6 +85,18 @@ export const getExtraSpecialitiesByProcessIdDao = async (process_id: number) => 
   }
 };
 
+export const deleteExtraSpecialityByProcessIdDao = async (process_id: number) => {
+  try {
+    const deletedExtraSpeciality = await prisma.extra_specialities.deleteMany({
+      where: { process_id },
+    });
+    return deletedExtraSpeciality;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error deleting extra specialities for process ID ${process_id}: ${errorMessage}`);
+  }
+}
+
 export const createExtraSpecialityDao = async (data: any) => {
   try {
     const newExtraSpeciality = await prisma.extra_specialities.create({
@@ -97,7 +109,7 @@ export const createExtraSpecialityDao = async (data: any) => {
   }
 };
 
-export const updateProcess = async (process_id: number, data: any) => {
+export const updateProcessByIdDao = async (process_id: number, data: any) => {
   try {
     const updateResponse = await prisma.process.update({
       where: { id: process_id },
@@ -106,6 +118,6 @@ export const updateProcess = async (process_id: number, data: any) => {
     return updateResponse;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    throw new Error(`Error creating extra speciality: ${errorMessage}`);
+    throw new Error(`Error updating process: ${errorMessage}`);
   }
 };

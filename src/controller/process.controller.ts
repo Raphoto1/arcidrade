@@ -8,7 +8,13 @@ import {
   getPendingProcessesByUserIdService,
   getProcessByIdService,
   getProcessesByUserIdService,
+  deleteExtraSpecialityByProcessIdService,
+  updateProcessService,
+  getPausedProcessesByUserIdService,
+  getArchivedProcessesByUserIdService,
+  getCompletedProcessesByUserIdService,
 } from "@/service/process.service";
+import { getExtraSpecialitiesByProcessIdDao, getProcessesByUserIdFilteredByStatusDao } from "@/dao/process.dao";
 
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
@@ -68,6 +74,15 @@ export const getProcessesByStatus = async (status: string | undefined) => {
   } else if (status === "active") {
     const result = await getActiveProcessesByUserIdService(userId);
     return result;
+  }else if (status === "archived") {
+    const result = await getArchivedProcessesByUserIdService(userId);
+    return result;
+  }else if (status === "paused") {
+    const result = await getPausedProcessesByUserIdService(userId);
+    return result;
+  }else if (status === "completed") {
+    const result = await getCompletedProcessesByUserIdService(userId);
+    return result;
   }
 };
 
@@ -76,7 +91,16 @@ export const getProcessById = async (processId: number) => {
   return result;
 };
 
+export const updateProcessStatusById = async (processId: number, status: string) => {
+  const dataPack = {
+    status: status,
+  };
+  const result = await updateProcessService(processId, dataPack);
+  return result;
+}
+
 export const updateProcessById = async (processId: number, data: any) => {
+  // Actualiza los campos principales del proceso
   const mainDataPack = {
     position: data.position,
     main_speciality: data.title_category_0,
@@ -85,32 +109,20 @@ export const updateProcessById = async (processId: number, data: any) => {
     start_date: new Date(data.start_date),
     description: data.description,
   };
-  // console.log("Creating main process with data:", mainDataPack);
-  // const processCreated = await createProcessService(mainDataPack);
-  //revisar si hay cambio en el extras
-if (Array.isArray(data.extra_specialities) && data.extra_specialities.length > 0) {
-  console.log("Adding extra specialties");
-  
-}
+  await updateProcessService(processId, mainDataPack);
 
-  // if (data.title_category_1 || data.title_category_2) {
-  //   console.log("Adding additional specialties");
-  //   if (data.title_category_1) {
-  //     const extraSpecialityPack = {
-  //       process_id: processCreated.id,
-  //       speciality: data.title_category_1,
-  //     };
-  //     console.log("Creating extra speciality with data:", extraSpecialityPack);
-  //     await createExtraSpecialityService(extraSpecialityPack);
-  //   }
-  //   if (data.title_category_2) {
-  //     const extraSpecialityPack = {
-  //       process_id: processCreated.id,
-  //       speciality: data.title_category_2,
-  //     };
-  //     console.log("Creating extra speciality with data:", extraSpecialityPack);
-  //     await createExtraSpecialityService(extraSpecialityPack);
-  //   }
-  // }
-  return [{}];
-}
+  // Elimina todas las especialidades extras actuales
+  await deleteExtraSpecialityByProcessIdService(processId);
+
+  // Crea las nuevas especialidades extras
+  if (Array.isArray(data.extra_specialities)) {
+    for (const speciality of data.extra_specialities) {
+      await createExtraSpecialityService({
+        process_id: processId,
+        speciality: speciality.speciality,
+      });
+    }
+  }
+
+  return { success: true };
+};

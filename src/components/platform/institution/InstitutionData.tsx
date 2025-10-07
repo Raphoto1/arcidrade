@@ -60,7 +60,7 @@ export default function InstitutionData() {
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Especialización Principal</h3>
-            <p className='text-(--main-arci)'>{data?.payload.main_speciality || "No Registra Información"}</p>
+            <p className='text-(--main-arci) text-end'>{data?.payload.main_speciality || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>NIF</h3>

@@ -9,13 +9,14 @@ import { useProcess } from "@/hooks/useProcess";
 import { useCalcApprovalDate, useFormatDateToString, useHandleStatusName } from "@/hooks/useUtils";
 import ModalForForms from "@/components/modals/ModalForForms";
 import UpdateProcessForm from "@/components/forms/platform/process/UpdateProcessForm";
-
+import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
+import ConfirmArchiveProcessForm from "@/components/forms/platform/process/ConfirmArchiveProcessForm";
 
 export default function Process(props: any) {
-  const {data,error,isLoading,mutate}= useProcess(props.id);
+  const { data, error, isLoading, mutate } = useProcess(props.id);
   console.log(data);
   const processData = data?.payload;
-const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
+  const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -32,8 +33,8 @@ const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date
             <div className='flex justify-between pb-2'>
               <h1 className='text-2xl fontArci'>Detalle de Proceso:</h1>
               <p className='fontRoboto text-xl text-[var(--main-arci)] capitalize'>{processData?.position}</p>
-              <ModalForForms title="Editar">
-                <UpdateProcessForm id={ processData?.id} />
+              <ModalForForms title='Editar'>
+                <UpdateProcessForm id={processData?.id} />
               </ModalForForms>
             </div>
 
@@ -51,12 +52,12 @@ const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date
                 <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidades Secundarias:</h4>
                   <div>
-                    <p className='text-md text-[var(--main-arci)]'>{processData?.extra_specialities.map((spec: any) => spec.speciality).join(", ")}</p>
+                    <p className='text-md text-[var(--main-arci)] text-end'>{processData?.extra_specialities.map((spec: any) => spec.speciality).join(", ")}</p>
                   </div>
                 </div>
                 <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Status de estudios del profesional:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>{useHandleStatusName(processData?.profesional_status)}</p>
+                  <p className='text-md text-[var(--main-arci)] text-end'>{useHandleStatusName(processData?.profesional_status)}</p>
                 </div>
                 <div className='flex justify-between'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Fecha de Inicio:</h4>
@@ -65,9 +66,7 @@ const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date
               </div>
               <div className='descrip md:w-2/3 bg-white rounded-md px-2'>
                 <h2 className='fontRoboto text-xl text-[var(--main-arci)]'>Descripción</h2>
-                <p className='text-sm'>
-                  {processData?.description}
-                </p>
+                <p className='text-sm'>{processData?.description}</p>
               </div>
             </div>
           </div>
@@ -82,7 +81,9 @@ const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date
             <ModalForPreviewBtnLong title={"Buscar Candidatos Muestra Preview"}>
               <SearchCandidates />
             </ModalForPreviewBtnLong>
-            <button className='btn bg-[var(--orange-arci)] text-sm h-auto'>Archivar Procesos</button>
+            <ModalForFormsRedBtn title={"Eliminar Proceso"} >
+              <ConfirmArchiveProcessForm id={processData?.id} />
+            </ModalForFormsRedBtn>
             <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
             <button className='btn bg-warning h-auto text-sm'>Pausar Proceso</button>
             <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extension</button>

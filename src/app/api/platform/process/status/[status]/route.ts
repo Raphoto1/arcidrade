@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createProcess, getProcessesByStatus, getProcessesByUserId } from "@/controller/process.controller";
+import { createProcess, getProcessesByStatus, getProcessesByUserId, updateProcessStatusById } from "@/controller/process.controller";
 
 export async function GET(request: NextRequest) {
 const status = request.nextUrl.pathname.split('/').pop();
@@ -8,8 +8,15 @@ const status = request.nextUrl.pathname.split('/').pop();
     return NextResponse.json({ message: "Process data success" , payload:processList});
 }
 
-export async function POST(request: NextRequest) {
+export async function PUT(request: NextRequest) {
+    const status = request.nextUrl.pathname.split('/').pop() ?? "";
+    if (!status) {
+        return NextResponse.json({ message: "Status parameter missing", payload: {} }, { status: 400 });
+    }
     const body = await request.json();
-    const processCreated = await createProcess(body);
-    return NextResponse.json({ message: "Process created successfully", payload: processCreated });
+    const idNumber = parseInt(body.id);
+    const result = await updateProcessStatusById(idNumber, status);
+    return NextResponse.json({ message: "Process updated successfully", payload: result });
 }
+
+

@@ -14,10 +14,7 @@ export default function ActiveProcess() {
   return (
     <div className='grid grid-cols-1 w-full md:w-3/4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <div className='grid md:flex justify-center align-middle pb-2'>
-        <ModalForPreview title={'Preview de proceso'}>
-          <Process />
-        </ModalForPreview>
-        <ModalForForms title={'Crear Proceso Form'}>
+        <ModalForForms title={'Crear Proceso'}>
           <CreateProcessForm />
         </ModalForForms>
       </div>
