@@ -25,7 +25,7 @@ export default function ProcessBasic(props: any) {
             <p className='fontRoboto text-center text-(--dark-gray)'>Plazo: </p>
             <p className='text-center fontRoboto text-(--main-arci) align-middle'>{diasRestantesFormateados}</p>
           </div>
-          <div className='flex flex-col md:flex-row justify-between gap-2 md:p-2'>
+          <div className='flex flex-col md:flex-row justify-between gap-2 md:p-1'>
             {/* <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extención</button> */}
             <ModalForPreview title='Detalle del Proceso'>
               <Process id={props.process.id} />

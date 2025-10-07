@@ -8,6 +8,10 @@ import EmptyCard from "@/components/pieces/EmptyCard";
 import Grid from "./Grid";
 
 export default function GridSearch() {
+  //permitir busqueda libre en caso de no recibir props
+  //si recibe props, filtrar por especialidad principal y extra
+  //si recibe props de especialidad extra, filtrar por esa especialidad extra
+  //FILTRAR SI SON FAKE O REAL USERS
   return (
     <div className='grid justify-center'>
       <div className='grid grid-cols-1 bg-gray-200 rounded-md md:justify-center md:align-middle md:items-center pt-4'>
