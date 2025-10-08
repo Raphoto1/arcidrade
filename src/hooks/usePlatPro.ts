@@ -18,6 +18,11 @@ export const useProfesional = () => {
   return { data, error, isLoading, mutate };
 };
 
+export const useProfesionalById = (id: string) => { 
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/profesional/${id}`, fetcher);
+  return { data, error, isLoading, mutate };
+};
+
 export const useProfesionalFull = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/complete", fetcher);
   return { data, error, isLoading, mutate };
@@ -59,3 +64,18 @@ export const useProfesionalExperience = (id: number) => {
   return { data, error, isLoading, mutate };
 };
 
+
+export const useAllProfesionals = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/all", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const usePaginatedProfesionals = (page: number = 1, limit: number = 9, search?: string, speciality?: string) => {
+  const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
+  const specialityParam = speciality ? `&speciality=${encodeURIComponent(speciality)}` : '';
+  const { data, error, isLoading, mutate } = useSWR<any>(
+    `/api/platform/profesional/paginated?page=${page}&limit=${limit}${searchParam}${specialityParam}`, 
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+};

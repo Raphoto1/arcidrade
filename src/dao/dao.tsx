@@ -57,10 +57,6 @@ export const completeInvitationDao = async (id: string, email: string, password:
   }
 };
 
-// Platform
-
-// Platform - Institution
-
 // Platform - Profesional_________________________________________________________________
 export const getProfesionalFullByIdDao = async (user_id: string | undefined) => {
   try {
@@ -79,7 +75,7 @@ export const getProfesionalFullByIdDao = async (user_id: string | undefined) => 
       return safeUser;
     }
   } catch (error) {
-        console.log("error de Profesional data full", error);
+    console.log("error de Profesional data full", error);
     throw new Error("Error al obtener profesional full");
   }
 };
@@ -89,12 +85,218 @@ export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefi
     const profesionalData = await prisma.profesional_data.findFirst({
       where: { user_id },
     });
+    console.log("profesionalData dao", profesionalData);
+    
     return profesionalData;
   } catch (error) {
-    console.log("error de Profesional Data By Reffer Code Dao", error);
+    console.error("error de Profesional Data By Reffer Code Dao", error);
     throw new Error("Error al obtener el estudio principal del profesional:");
   }
 };
+
+export const getAllProfesionalsDao = async () => {
+  try {
+    const profesionals = await prisma.auth.findMany({
+      where: {
+        area: "profesional",
+        status: "registered",
+      },
+      select: {
+        referCode: true,
+      },
+    });
+    return profesionals;
+  } catch (error) {
+    console.log("error de getAllProfesionalsDao", error);
+    throw new Error("Error al obtener todos los profesionales");
+  }
+};
+
+export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, speciality?: string) => {
+  try {
+    const skip = (page - 1) * limit;
+    
+    // Construir el where clause con búsqueda y filtro por especialidad
+    const whereClause: any = {
+      area: "profesional",
+      status: "registered",
+    };
+
+    // Array para condiciones OR
+    const orConditions: any[] = [];
+    const andConditions: any[] = [];
+
+    // Si hay término de búsqueda, agregarlo a las condiciones OR
+    if (search && search.trim()) {
+      orConditions.push(
+        {
+          profesional_data: {
+            some: {
+              OR: [
+                { name: { contains: search, mode: 'insensitive' } },
+                { last_name: { contains: search, mode: 'insensitive' } },
+                { description: { contains: search, mode: 'insensitive' } },
+              ]
+            }
+          }
+        },
+        {
+          main_study: {
+            some: {
+              OR: [
+                { title: { contains: search, mode: 'insensitive' } },
+                { institution: { contains: search, mode: 'insensitive' } },
+              ]
+            }
+          }
+        },
+        {
+          study_specialization: {
+            some: {
+              OR: [
+                { title: { contains: search, mode: 'insensitive' } },
+                { title_category: { contains: search, mode: 'insensitive' } },
+                { institution: { contains: search, mode: 'insensitive' } },
+                { description: { contains: search, mode: 'insensitive' } },
+              ]
+            }
+          }
+        },
+        {
+          profesional_certifications: {
+            some: {
+              OR: [
+                { title: { contains: search, mode: 'insensitive' } },
+                { institution: { contains: search, mode: 'insensitive' } },
+              ]
+            }
+          }
+        }
+      );
+    }
+
+    // Si hay filtro por especialidad, agregarlo a las condiciones AND
+    if (speciality && speciality.trim()) {
+      andConditions.push({
+        OR: [
+          // Buscar en main_study
+          {
+            main_study: {
+              some: {
+                title: { contains: speciality, mode: 'insensitive' }
+              }
+            }
+          },
+          // Buscar en study_specialization
+          {
+            study_specialization: {
+              some: {
+                OR: [
+                  { title: { contains: speciality, mode: 'insensitive' } },
+                  { title_category: { contains: speciality, mode: 'insensitive' } }
+                ]
+              }
+            }
+          }
+        ]
+      });
+    }
+
+    // Construir la cláusula final
+    if (orConditions.length > 0 && andConditions.length > 0) {
+      // Si hay ambos filtros: (búsqueda) AND (especialidad)
+      whereClause.AND = [
+        { OR: orConditions },
+        ...andConditions
+      ];
+    } else if (orConditions.length > 0) {
+      // Solo búsqueda
+      whereClause.OR = orConditions;
+    } else if (andConditions.length > 0) {
+      // Solo filtro por especialidad
+      whereClause.AND = andConditions;
+    }
+    
+    const [profesionals, total] = await Promise.all([
+      prisma.auth.findMany({
+        where: whereClause,
+        select: {
+          referCode: true,
+        },
+        skip,
+        take: limit,
+        orderBy: {
+          creation_date: 'desc'
+        }
+      }),
+      prisma.auth.count({
+        where: whereClause
+      })
+    ]);
+
+    return {
+      data: profesionals,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit),
+      hasMore: skip + limit < total,
+      search: search || '',
+      speciality: speciality || ''
+    };
+  } catch (error) {
+    console.log("error de getAllProfesionalsPaginatedDao", error);
+    throw new Error("Error al obtener profesionales paginados");
+  }
+};
+
+export const getAllProfesionalsBByStatusDao = async (status: StatusAvailable) => {
+  try {
+    const profesionals = await prisma.auth.findMany({
+      where: {
+        area: "profesional",
+        status: status,
+      },
+      select: {
+        referCode: true,
+      },
+    });
+    return profesionals;
+  } catch (error) {
+    console.log("error de getAllProfesionalsDao", error);
+    throw new Error("Error al obtener todos los profesionales");
+  }
+};
+
+export const getAllProfesionalsBySpecialityDao = async (speciality: string) => {
+  try {
+    const profesionals = await prisma.auth.findMany({
+      where: {
+        area: "profesional",
+        study_specialization: {
+          some: {
+            title: speciality,
+          },
+        },
+      },
+      select: {
+        referCode: true,
+        email: true,
+        status: true,
+        profesional_data: true,
+        main_study: true,
+        study_specialization: true,
+        profesional_certifications: true,
+        experience: true,
+      },
+    });
+    return profesionals;
+  } catch (error) {
+    console.log("error de getAllProfesionalsBySpecialityDao", error);
+    throw new Error("Error al obtener todos los profesionales por especialidad");
+  }
+};
+
 // agregar info al profesional
 export const createProfesionalDataDao = async (data: any | undefined) => {
   try {

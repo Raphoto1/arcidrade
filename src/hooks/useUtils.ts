@@ -53,3 +53,17 @@ export function useCalcApprovalDate(start_date: string | Date, approval_date?: s
     };
   }, [start_date, approval_date]);
 }
+
+export const useFullName = (name: string | null | undefined, last_name: string | null | undefined) => {
+  return useMemo(() => {
+    if (!name && !last_name) {
+      return '';
+    } else if (!name) {
+      return last_name;
+    } else if (!last_name) {
+      return name;
+    } else {
+      return `${name} ${last_name}`;
+    }
+  }, [name, last_name]);
+};

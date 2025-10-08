@@ -12,18 +12,15 @@ const SubjectInvitation = "Le han invitado a ARCIDRADE";
 
 const transporter = nodemailer.createTransport({
   host: SMTP_SERVER_HOST,
-  port: Number(MAIL_PORT),
+  port: Number(MAIL_PORT) || 587,
+  secure: Number(MAIL_PORT) === 465, // true for 465, false for other ports
   auth: {
     user: NO_REPLY_MAIL,
     pass: NO_REPLY_MAIL_PASSWORD,
   },
-  secure: true,
   tls: {
-    ciphers: "SSLv3",
+    rejectUnauthorized: false,
   },
-  requireTLS: true,
-  debug: true,
-  connectionTimeout: 10000,
 });
 
 export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: string; referCode: string }) {

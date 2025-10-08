@@ -17,6 +17,15 @@ export const useInstitution = () => {
 
   return { data, error, isLoading, mutate };
 };
+export const useInstitutionById = (id: string) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/institution/${id}`, fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const useInstitutionFullById = (id: string) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/institution/complete/${id}`, fetcher);
+  return { data, error, isLoading, mutate };
+}
 
 export const useInstitutionFull = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/institution/complete", fetcher);
@@ -25,6 +34,22 @@ export const useInstitutionFull = () => {
 
 export const useInstitutionSpecializations = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/institution/speciality", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const useAllInstitutions = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/institution/all", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
+export const usePaginatedInstitutions = (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
+  const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
+  const countryParam = country ? `&country=${encodeURIComponent(country)}` : "";
+  const specializationParam = specialization ? `&specialization=${encodeURIComponent(specialization)}` : "";
+  const { data, error, isLoading, mutate } = useSWR<any>(
+    `/api/platform/institution/paginated?page=${page}&limit=${limit}${searchParam}${countryParam}${specializationParam}`,
+    fetcher
+  );
   return { data, error, isLoading, mutate };
 };
 

@@ -10,11 +10,17 @@ function logOut() {
     router.push('/');
   };
   return (
-    <div className='grid w-full justify-center items-center pt-2'>
-      <div className='flex flex-col gap-4'>
-        <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h1 className='text-2xl font-bold test-start font-var(--font-oswald) text-center'>Seguro que quieres Cerrar Sesión?</h1>
-          <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={handleLogOut}>Cerrar Sesión</button>
+    <div className='h-[70vh] w-full flex flex-col'>
+      <div className='flex-1 flex justify-center items-center px-4'>
+        <div className='grid w-full max-w-md justify-center items-center'>
+          <div className='flex flex-col gap-4'>
+            <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-6 md:justify-center'>
+              <h1 className='text-2xl font-bold text-center font-var(--font-oswald) mb-4'>¿Seguro que quieres Cerrar Sesión?</h1>
+              <div className='flex justify-center'>
+                <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={handleLogOut}>Cerrar Sesión</button>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -3,21 +3,29 @@ import React, { useState, useEffect } from "react";
 import InstitutionCard from "../../pieces/InstitutionCard";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import { ImSearch } from "react-icons/im";
-import { FiFilter, FiX } from "react-icons/fi";
-import { usePaginatedProfesionals } from "@/hooks/usePlatPro";
+import { FiFilter, FiX, FiGlobe } from "react-icons/fi";
+import { usePaginatedInstitutions } from "@/hooks/usePlatInst";
 import { medicalOptions } from "@/static/data/staticData";
+import { Country } from "country-state-city";
 
 interface InstitutionGridSearchProps {
   isFake?: boolean;
 }
 
-export default function InstitutionGridSearch({ isFake = true }: InstitutionGridSearchProps) {
+export default function ProfesionalGridSearch({ isFake = true }: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
-  const [selectedSpeciality, setSelectedSpeciality] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const [showFilters, setShowFilters] = useState(false);
   const itemsPerPage = 9;
+  
+  // Obtener lista de países usando country-state-city
+  const countries = Country.getAllCountries().map(country => ({
+    code: country.isoCode,
+    name: country.name
+  })).sort((a, b) => a.name.localeCompare(b.name));
   
   // Debounce para el término de búsqueda
   useEffect(() => {
@@ -29,16 +37,17 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
     return () => clearTimeout(timer);
   }, [searchTerm]);
 
-  // Resetear página cuando cambia la especialidad
+  // Resetear página cuando cambian los filtros
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedSpeciality]);
+  }, [selectedCountry, selectedSpecialization]);
 
-  const { data: paginatedData, error, isLoading } = usePaginatedProfesionals(
+  const { data: paginatedData, error, isLoading } = usePaginatedInstitutions(
     currentPage, 
     itemsPerPage,
     debouncedSearchTerm,
-    selectedSpeciality
+    selectedCountry,
+    selectedSpecialization
   );
 
   // Función para cargar más elementos
@@ -51,22 +60,28 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
     setSearchTerm(e.target.value);
   };
 
-  // Manejar cambio de especialidad
-  const handleSpecialityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedSpeciality(e.target.value);
+  // Manejar cambio de país
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedCountry(e.target.value);
+  };
+
+  // Manejar cambio de especialización
+  const handleSpecializationChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSpecialization(e.target.value);
   };
 
   // Limpiar todos los filtros
   const clearAllFilters = () => {
     setSearchTerm("");
-    setSelectedSpeciality("");
+    setSelectedCountry("");
+    setSelectedSpecialization("");
   };
 
   // Verificar si hay filtros activos
-  const hasActiveFilters = debouncedSearchTerm || selectedSpeciality;
+  const hasActiveFilters = debouncedSearchTerm || selectedCountry || selectedSpecialization;
 
   // Mostrar error solo si hay error
-  if (error) return <div className="text-center p-4 text-red-500">Error al cargar profesionales</div>;
+  if (error) return <div className="text-center p-4 text-red-500">Error al cargar instituciones</div>;
 
   return (
     <div className='grid justify-center'>
@@ -76,7 +91,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
           <div className="flex items-center">
             <input 
               type='text' 
-              placeholder='Buscar Profesionales...' 
+              placeholder='Buscar Instituciones...' 
               className='p-2 border border-gray-300 rounded-md mr-2 w-64' 
               value={searchTerm}
               onChange={handleSearchChange}
@@ -108,18 +123,38 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
               </button>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {/* Filtro por especialidad */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {/* Filtro por país */}
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Especialidad Médica
+                  <FiGlobe className="inline mr-1" />
+                  País
                 </label>
                 <select 
-                  value={selectedSpeciality}
-                  onChange={handleSpecialityChange}
+                  value={selectedCountry}
+                  onChange={handleCountryChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
-                  <option value="">Todas las especialidades</option>
+                  <option value="">Todos los países</option>
+                  {countries.map((country) => (
+                    <option key={country.code} value={country.name}>
+                      {country.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Filtro por especialización */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Especialización Médica
+                </label>
+                <select 
+                  value={selectedSpecialization}
+                  onChange={handleSpecializationChange}
+                  className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Todas las especializaciones</option>
                   {medicalOptions.map((option: any) => (
                     <option key={option.id} value={option.name}>
                       {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
@@ -157,11 +192,22 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                   </button>
                 </span>
               )}
-              {selectedSpeciality && (
-                <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
-                  Especialidad: {selectedSpeciality.charAt(0).toUpperCase() + selectedSpeciality.slice(1)}
+              {selectedCountry && (
+                <span className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-xs">
+                  País: {selectedCountry}
                   <button 
-                    onClick={() => setSelectedSpeciality("")}
+                    onClick={() => setSelectedCountry("")}
+                    className="text-yellow-600 hover:text-yellow-800"
+                  >
+                    <FiX size={12} />
+                  </button>
+                </span>
+              )}
+              {selectedSpecialization && (
+                <span className="inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">
+                  Especialización: {selectedSpecialization.charAt(0).toUpperCase() + selectedSpecialization.slice(1)}
+                  <button 
+                    onClick={() => setSelectedSpecialization("")}
                     className="text-green-600 hover:text-green-800"
                   >
                     <FiX size={12} />
@@ -186,15 +232,15 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
 
           <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
             {paginatedData?.data?.length > 0 ? (
-              paginatedData.data.map((profesional: any, index: number) => (
-                <ProfesionalCard key={profesional.referCode || index} userId={profesional.referCode} isFake={isFake} />
+              paginatedData.data.map((institution: any, index: number) => (
+                <InstitutionCard key={institution.referCode || index} userId={institution.referCode} isFake={isFake} />
               ))
             ) : (
               !isLoading && (
                 <div className='col-span-full text-center text-gray-500 py-8'>
                   {hasActiveFilters ? 
-                    'No se encontraron profesionales que coincidan con los filtros aplicados' : 
-                    'No hay profesionales disponibles'
+                    'No se encontraron instituciones que coincidan con los filtros aplicados' : 
+                    'No hay instituciones disponibles'
                   }
                 </div>
               )
@@ -206,11 +252,11 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
         {paginatedData?.hasMore && (
           <div className='flex justify-center mt-4 mb-4'>
             <button 
-              onClick={loadMore}
+              onClick={() => setCurrentPage(prev => prev + 1)}
               disabled={isLoading}
               className='btn btn-primary bg-[var(--orange-arci)] border-none hover:bg-[var(--orange-arci)]/80 disabled:opacity-50'
             >
-              {isLoading ? 'Cargando...' : 'Cargar más profesionales'}
+              {isLoading ? 'Cargando...' : 'Cargar más instituciones'}
             </button>
           </div>
         )}
@@ -218,7 +264,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
         {/* Información de elementos mostrados */}
         {paginatedData && (
           <div className='text-center text-sm text-gray-600 mb-4'>
-            Página {paginatedData.page} de {paginatedData.totalPages} - {paginatedData.total} profesionales en total
+            Página {paginatedData.page} de {paginatedData.totalPages} - {paginatedData.total} instituciones en total
           </div>
         )}
       </div>

@@ -11,9 +11,10 @@ export default function InstitutionData() {
   const { data, isLoading, error, mutate } = useInstitution();
   const { data: session } = useSession();
   console.log("data en InstitutionData", data);
+  if (isLoading) return <div>Cargando...</div>;
 
   const countryName: ICountry | undefined = data?.payload && data.payload.country ? Country.getCountryByCode(data.payload.country) : undefined;
-    const fecha = new Date(data?.payload.established);
+  const fecha = new Date(data?.payload.established);
   const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:h-auto'>

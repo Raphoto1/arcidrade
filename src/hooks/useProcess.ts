@@ -27,6 +27,11 @@ export const usePendingProcesses = () => {
   return { data, error, isLoading, mutate };
 };
 
+export const useArchivedProcesses = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/archived", fetcher);
+  return { data, error, isLoading, mutate };
+};
+
 export const useProcess = (processId: number | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     processId ? `/api/platform/process/${processId}` : null,

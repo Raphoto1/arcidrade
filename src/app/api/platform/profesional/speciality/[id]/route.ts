@@ -6,7 +6,7 @@ export const GET = async (req: NextRequest, { params }: any) => {
     const param = await params;
     const id: number = parseInt(param.id);
     const speciality = await getSpeciality(id);
-    console.log("llama especialitycon id:", id);
+    // console.log("llama especialitycon id:", id);
 
     return NextResponse.json({ message: "Profesional speciality data success", payload: speciality }, { status: 200 });
   } catch (error) {
@@ -20,10 +20,10 @@ export const POST = async (req: NextRequest, { params }: any) => {
     //capturo el id
     const param = await params;
     const id: number = parseInt(param.id);
-    console.log("recibo en post la actualizacion");
+    // console.log("recibo en post la actualizacion");
     //envio a actualizar
     const body = await req.json();
-    console.log("body en la pet", body);
+    // console.log("body en la pet", body);
     //normalizar la data para enviar directo a update
     const data = body;
     //aajuste de enddate
@@ -50,7 +50,7 @@ export const POST = async (req: NextRequest, { params }: any) => {
       end_date: endDateFix,
     };
     const update = await updateSpecialization(id, specialPack);
-    console.log("update", update);
+    // console.log("update", update);
 
     return NextResponse.json({ message: `especializacion con ID ${id} actualizado` }, { status: 200 });
   } catch (error) {
@@ -79,7 +79,7 @@ export const PUT = async (req: NextRequest, { params }: any) => {
     const param = await params;
     const id: number = parseInt(param.id);
     const result = await makeFavoriteSpeciality(id);
-    console.log(result);   
+    // console.log(result);   
     return NextResponse.json({ message: `especializacion con ID ${id} maarcado` }, { status: 200 });
   } catch (error) {
     console.error("Error in Profesional API: put", error);

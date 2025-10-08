@@ -28,6 +28,8 @@ import {
   deleteUserExperienceService,
   updateUserExperienceService,
   getUserFullByIdService,
+  getAllProfesionalsService,
+  getAllProfesionalsPaginatedService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
 import { updateProfesionalMainStudyDao } from "@/dao/dao";
@@ -125,6 +127,36 @@ export const getUserFull = async () => {
   } catch (error) {
     console.error(error);
     throw new Error("error al subir archivo");
+  }
+};
+
+export const getAllProfesionals = async () => {
+  try {
+    const response = await getAllProfesionalsService();
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener todos los profesionales");
+  }
+};
+
+export const getAllProfesionalsPaginated = async (page: number = 1, limit: number = 9, search?: string, speciality?: string) => {
+  try {
+    const response = await getAllProfesionalsPaginatedService(page, limit, search, speciality);
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener profesionales paginados");
+  }
+};
+
+export const getProfesionalByReferCode = async (refCode: string) => {
+  try {
+    const profesional = await getUserFullByIdService(refCode);
+    return profesional;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener profesional por referCode");
   }
 };
 

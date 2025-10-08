@@ -4,7 +4,7 @@ import { createProcess, getProcessesByStatus, getProcessesByUserId, updateProces
 export async function GET(request: NextRequest) {
 const status = request.nextUrl.pathname.split('/').pop();
     const processList = await getProcessesByStatus(status);
-    console.log(processList);
+    // console.log(processList);
     return NextResponse.json({ message: "Process data success" , payload:processList});
 }
 

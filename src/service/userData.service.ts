@@ -24,6 +24,8 @@ import {
   getUserExperienceByIdDao,
   updateUserExperienceByIdDao,
   getProfesionalFullByIdDao,
+  getAllProfesionalsDao,
+  getAllProfesionalsPaginatedDao,
 } from "@/dao/dao";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
@@ -45,6 +47,16 @@ export const getMainStudyService = async (id: string | undefined) => {
   const response = await getProfesionalMainStudyDao(id);
   return response;
 };
+
+export const getAllProfesionalsService = async () => {
+  const response = await getAllProfesionalsDao();
+  return response;
+}
+
+export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string) => {
+  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality);
+  return response;
+}
 
 export const createUserDataService = async (data?: any) => {
   //obtener id para crear o actualizar

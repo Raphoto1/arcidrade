@@ -19,6 +19,8 @@ import {
   updateInstitutionGoalService,
   deleteInstitutionGoalService,
   getInstitutionDataFullByUserIdService,
+  getAllInstitutionsService,
+  getAllInstitutionsPaginatedService,
 } from "@/service/institutionData.service";
 import { authOptions } from "@/utils/authOptions";
 import { fakerES as faker } from "@faker-js/faker";
@@ -40,6 +42,16 @@ export const getInstitutionDataFull = async () => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id as string;
   const institutionData = await getInstitutionDataFullByUserIdService(userId);
+  return institutionData;
+};
+
+export const getInstitutionDataFullById = async (id: string) => {
+  const institutionData = await getInstitutionDataFullByUserIdService(id);
+  return institutionData;
+}
+
+export const getInstitutionDataByReferCode = async (id: string) => {
+  const institutionData = await getInstitutionDataByUserIdService(id);
   return institutionData;
 };
 
@@ -272,5 +284,25 @@ export const deleteInstitutionGoal = async (id: number) => {
   } else {
     const deleteGoal = await deleteInstitutionGoalService(id);
     return deleteGoal;
+  }
+};
+
+export const getAllInstitutions = async () => {
+  try {
+    const response = await getAllInstitutionsService();
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener todas las instituciones");
+  }
+};
+
+export const getAllInstitutionsPaginated = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
+  try {
+    const response = await getAllInstitutionsPaginatedService(page, limit, search, country, specialization);
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener instituciones paginadas");
   }
 };

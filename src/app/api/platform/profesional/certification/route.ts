@@ -14,7 +14,7 @@ export const GET = async (request: Request) => {
 export const POST = async (request: Request) => {
   try {
       const body = await request.json();
-      console.log('POST body:',body);
+      // console.log('POST body:',body);
       const response = await createUserCertification(body);
     return NextResponse.json({ message: "Profesional API Post!" }, { status: 201 });
   } catch (error) {

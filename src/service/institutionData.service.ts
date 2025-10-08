@@ -17,7 +17,9 @@ import {
   getInstitutionGoalByIdDao,
   updateInstitutionGoalDao,
   deleteInstitutionGoalDao,
-  getInstitutionFullByUserIdDao
+  getInstitutionFullByUserIdDao,
+  getAllInstitutionsDao,
+  getAllInstitutionsPaginatedDao
 } from "@/dao/institution.dao";
 
 export const getInstitutionDataByUserIdService = async (userId: string | undefined) => {
@@ -112,5 +114,15 @@ export const updateInstitutionGoalService = async (id: number, data: any) => {
 
 export const deleteInstitutionGoalService = async (id: number) => {
   const response = await deleteInstitutionGoalDao(id);
+  return response;
+}
+
+export const getAllInstitutionsService = async () => {
+  const response = await getAllInstitutionsDao();
+  return response;
+}
+
+export const getAllInstitutionsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
+  const response = await getAllInstitutionsPaginatedDao(page, limit, search, country, specialization);
   return response;
 }

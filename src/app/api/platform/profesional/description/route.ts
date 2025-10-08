@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
 export const POST = async (request: Request) => {
   try {
     const body = await request.json();
-    console.log(body);
+    // console.log(body);
     const response = await updateUserData({ description: body.description });
-    console.log(response);
+    // console.log(response);
 
     // const response = await createUserData(body);
     //distribuir la data en las tablas, ajustar status

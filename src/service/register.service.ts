@@ -1,5 +1,5 @@
 import prisma from "@/utils/db";
-import { AreasAvailable, SenderNum, StatusAvailable } from "@prisma/client";
+import { AreasAvailable, SenderNum, StatusAvailable } from "@/generated/prisma";
 
 enum area {
   institution,
