@@ -85,7 +85,7 @@ export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefi
     const profesionalData = await prisma.profesional_data.findFirst({
       where: { user_id },
     });
-    console.log("profesionalData dao", profesionalData);
+    // console.log("profesionalData dao", profesionalData);
     
     return profesionalData;
   } catch (error) {

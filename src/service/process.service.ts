@@ -6,6 +6,7 @@ import {
   getProcessByIdDao,
   getProcessesByUserIdDao,
   getProcessesByUserIdFilteredByStatusDao,
+  getProcessesFilteredByStatusDao,
   updateProcessByIdDao,
 } from "@/dao/process.dao";
 
@@ -66,6 +67,12 @@ export const getCompletedProcessesByUserIdService = async (userId: string | unde
   const result = await getProcessesByUserIdFilteredByStatusDao(userId, "completed");
   return result;
 };
+
+export const getAllProcessesByStatusService = async (status: string) => {
+  // Simulate a service call to get all processes by status
+  const result = await getProcessesFilteredByStatusDao(status as any);
+  return result;
+}
 
 export const deleteExtraSpecialityByProcessIdService = async (id: number) => {
   const result = await deleteExtraSpecialityByProcessIdDao(id);

@@ -17,7 +17,6 @@ export default function HeroHeader() {
   const { data, error, isLoading } = useProfesional();
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
-  console.log("data de hero", data);
   //full name
   let fullName = "";
   if (data?.payload[0].name == null) {

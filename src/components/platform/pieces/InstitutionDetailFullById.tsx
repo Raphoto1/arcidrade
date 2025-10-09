@@ -9,16 +9,20 @@ import { ICountry } from "country-state-city/lib/interface";
 import { Country } from "country-state-city";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
+import { da } from "@faker-js/faker";
 
 export default function InstitutionDetailFullById(props: any) {
   const { data, error, isLoading, mutate } = useInstitutionFullById(props.userId);
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
-  console.log("data full", data);
+  // console.log("data full", data);
   const InstitutionData = data?.payload.institution_data[0] || {};
   const goals = data?.payload.goals || [];
   const speciality = data?.payload.institution_specialization || [];
   const certifications = data?.payload.institution_certifications || [];
+  const processes = data?.payload.process || [];
+  // console.log('institutiondetailfull',data?.payload);
+  //sacar procesos desde .process
   //formateo dee fecha
   const foundationDate = new Date(InstitutionData.established);
   const formattedDate = foundationDate.toLocaleDateString("es-ES", {
@@ -28,7 +32,7 @@ export default function InstitutionDetailFullById(props: any) {
   });
  //adjust fate to year
   const handleDateToYear = (dateIn: any) => {
-    console.log(dateIn);
+    // console.log(dateIn);
     if (dateIn == null) {
       return "No registrado";
     }
@@ -163,7 +167,17 @@ export default function InstitutionDetailFullById(props: any) {
         <div className=' p-2 rounded-sm z-10 w-full'>
           <h1 className='text-2xl fontArci'>Procesos Disponibles</h1>
           <div className='bg-white rounded-md p-1 justify-center text-center mt-2 w-full'>
-            <h3 className='fontArci text-[var(--main-arci)] font-black'>Proximamente</h3>
+               {processes.length > 0 ? (
+              processes.map((proc: any) => (
+                <div key={proc.id} className='mb-2'>
+                  <h4 className='text-lg font-bold'>{proc.position}</h4>
+                </div>
+              ))
+            ) : (
+              <div className='flex items-center justify-center h-20'>
+                <p>No hay procesos disponibles.</p>
+              </div>
+            )}
           </div>
           <div className='flex justify-center pt-2'>
             <button className='btn bg-[var(--main-arci)] text-white justify-end'>Ver Procesos Disponibles</button>

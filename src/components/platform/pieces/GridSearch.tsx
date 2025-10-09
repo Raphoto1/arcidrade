@@ -1,13 +1,16 @@
 import React from "react";
 
 import InstitutionCard from "../../pieces/InstitutionCard";
+import InstitutionProcessCard from "@/components/pieces/InstitutionProcessCard";
 import { ImSearch } from "react-icons/im";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import EmptyCard from "@/components/pieces/EmptyCard";
 
 import Grid from "./Grid";
+import { useProcesses } from "@/hooks/useProcess";
 
 export default function GridSearch() {
+  const { data, error, isLoading } = useProcesses();
   //permitir busqueda libre en caso de no recibir props
   //si recibe props, filtrar por especialidad principal y extra
   //si recibe props de especialidad extra, filtrar por esa especialidad extra
@@ -20,7 +23,7 @@ export default function GridSearch() {
           <ImSearch size={30} />
         </div>
         <Grid>
-          <ProfesionalCard />
+          <InstitutionProcessCard />
           <ProfesionalCard />
           <ProfesionalCard />
           <ProfesionalCard />

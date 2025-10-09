@@ -10,11 +10,16 @@ import InstitutionDetailFullById from "../platform/pieces/InstitutionDetailFullB
 
 export default function InstitutionCard(props: any) {
   const isFake = props.isFake;
-  const { data, error, isLoading } = useInstitutionById(props.userId);
-  const institutionData = data ? data.payload : {};
-  console.log("institution data Card", data);
+  const userId = props.userId || "cmg1gnhae00013pfqt8jdb4ps";
+  const { data, error, isLoading } = useInstitutionById(userId);
+  const institutionData = data ? data?.payload : {};
+  
+  // Acceso seguro a los datos de la institución
+  const institutionInfo = institutionData || {};
+  
+  // console.log("institution data Card info", institutionData);
   if (isLoading) return <div>Cargando...</div>;
-  if (error) return <div>Error al cargar la institucion</div>;
+  if (error) return <div>Error al cargar la institución</div>;
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
       <div className='topHat bg-[var(--orange-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
@@ -33,8 +38,8 @@ export default function InstitutionCard(props: any) {
           </div>
         </div> */}
         <div className='relative w-15 h-15'>
-          {institutionData.avatar ? (
-            <Image src={institutionData.avatar} className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
+          {institutionInfo.avatar ? (
+            <Image src={institutionInfo.avatar} className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
           ) : (
             <Image src='/logos/Logo Arcidrade Cond.png' className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
           )}
@@ -42,31 +47,31 @@ export default function InstitutionCard(props: any) {
       </div>
 
       <div className='card-body'>
-        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>{isFake ? institutionData.fake_name : institutionData.name || "noname"}</h2>
+        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>{isFake ? institutionInfo.fake_name : institutionInfo.name || "noname"}</h2>
 
-        <p className='description h-10 font-roboto-condensed line-clamp-2'>{institutionData.description || "Sin descripción"}</p>
+        <p className='description h-10 font-roboto-condensed line-clamp-2'>{institutionInfo.description || "Sin descripción"}</p>
         {isFake ? (
           <div></div>
-        ) : institutionData.description ? (
+        ) : institutionInfo.description ? (
           <ModalForPreviewTextLink title='Ver Más...'>
-            <UserDescription description={institutionData.description} />
+            <UserDescription description={institutionInfo.description} />
           </ModalForPreviewTextLink>
         ) : (
           <div className='h-5'> </div>
         )}
         <div className='flex justify-between card-actions items-end'>
           <div className='extraInfo font-roboto-condensed text-red-700'>
-            <p>{institutionData.main_speciality || "Sin especialización"}</p>
+            <p>{institutionInfo.main_speciality || "Sin especialización"}</p>
           </div>
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
             {/* <p>state</p> */}
             {isFake ? (
               <ModalForPreview title={"Ver Detalle"}>
-                <InstitutionDetailById userId={institutionData.user_id} />
+                <InstitutionDetailById userId={institutionInfo.user_id || userId} />
               </ModalForPreview>
             ) : (
               <ModalForPreview title={"Ver Detalle"}>
-                <InstitutionDetailFullById userId={institutionData.user_id} />
+                <InstitutionDetailFullById userId={institutionInfo.user_id || userId} />
               </ModalForPreview>
             )}
           </div>

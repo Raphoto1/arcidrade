@@ -10,7 +10,6 @@ export default function Specialities() {
   //pendiente crear contexto userDATA
   const { data: UserData } = useProfesional();
   const specialitiesList = data?.payload;
-console.log('specialitiesList',specialitiesList);
 
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:gap-4 md:h-auto'>

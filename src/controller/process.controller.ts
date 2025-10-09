@@ -13,6 +13,7 @@ import {
   getPausedProcessesByUserIdService,
   getArchivedProcessesByUserIdService,
   getCompletedProcessesByUserIdService,
+  getAllProcessesByStatusService,
 } from "@/service/process.service";
 import { getExtraSpecialitiesByProcessIdDao, getProcessesByUserIdFilteredByStatusDao } from "@/dao/process.dao";
 
@@ -74,16 +75,26 @@ export const getProcessesByStatus = async (status: string | undefined) => {
   } else if (status === "active") {
     const result = await getActiveProcessesByUserIdService(userId);
     return result;
-  }else if (status === "archived") {
+  } else if (status === "archived") {
     const result = await getArchivedProcessesByUserIdService(userId);
     return result;
-  }else if (status === "paused") {
+  } else if (status === "paused") {
     const result = await getPausedProcessesByUserIdService(userId);
     return result;
-  }else if (status === "completed") {
+  } else if (status === "completed") {
     const result = await getCompletedProcessesByUserIdService(userId);
     return result;
   }
+};
+
+export const getAllActiveProcesses = async (status:string) => {
+  const result = await getAllProcessesByStatusService(status);
+  return result;
+}
+
+export const getProccessesActiveByUserId = async (userId: string | undefined) => {
+  const result = await getActiveProcessesByUserIdService(userId);
+  return result;
 };
 
 export const getProcessById = async (processId: number) => {
@@ -97,7 +108,7 @@ export const updateProcessStatusById = async (processId: number, status: string)
   };
   const result = await updateProcessService(processId, dataPack);
   return result;
-}
+};
 
 export const updateProcessById = async (processId: number, data: any) => {
   // Actualiza los campos principales del proceso

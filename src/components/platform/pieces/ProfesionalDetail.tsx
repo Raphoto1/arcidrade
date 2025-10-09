@@ -30,7 +30,7 @@ export default function ProfesionalDetail() {
   };
   //adjust fate to year
   const handleDateToYear = (dateIn: any) => {
-    console.log(dateIn);
+    // console.log(dateIn);
     if (dateIn == null) {
       return "No terminado";
     }

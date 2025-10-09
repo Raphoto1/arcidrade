@@ -19,7 +19,6 @@ import { useProfesional } from "@/hooks/usePlatPro";
 export default function PersonalData() {
   const { data, error, isLoading } = useProfesional();
   const { data: session } = useSession();
-  console.log("data en personalData", data);
 
   //loaders
   if (isLoading) {

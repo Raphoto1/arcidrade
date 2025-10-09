@@ -7,7 +7,7 @@ export const GET = async (req: NextRequest, { params }: any) => {
     const param = await params;
       const id: string = param.id
       
-    const user = await getInstitutionDataByReferCode(id);
+    const user = await getInstitutionDataByReferCode(id); 
     return NextResponse.json({ message: "Profesional user data success", payload: user }, { status: 200 });
   } catch (error) {
     console.error("Error in Profesional API: getspprofesionalbyrefercode", error);

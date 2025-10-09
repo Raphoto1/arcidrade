@@ -26,7 +26,7 @@ export default function ProfesionalCard(props: any) {
 
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error al cargar el profesional</div>;
-  console.log("profesional data Card", data?.payload);
+  // console.log("profesional data Card", data?.payload);
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
       <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>

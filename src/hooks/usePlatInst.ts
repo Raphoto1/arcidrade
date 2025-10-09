@@ -14,11 +14,10 @@ const fetcher = async (url: string): Promise<ProfesionalResponse> => {
 
 export const useInstitution = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/institution/", fetcher);
-
   return { data, error, isLoading, mutate };
 };
 export const useInstitutionById = (id: string) => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/institution/${id}`, fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(id ? `/api/platform/institution/${id}` : null, fetcher);
   return { data, error, isLoading, mutate };
 };
 

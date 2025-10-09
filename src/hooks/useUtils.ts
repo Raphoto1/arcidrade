@@ -11,23 +11,43 @@ export const useHandleStatusName = (status: string | undefined) => {
     }
 };
   
-export const useFormatDateToString = (date: string| number | Date ) => { 
+export const formatDateToString = (date: string| number | Date ) => { 
     //manejo de fechas
     const fecha = new Date(date);
     const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
-    return fechaFormateada
+    return fechaFormateada;
 }
 
-export function useCalcApprovalDate(start_date: string | Date, approval_date?: string | Date | null) {
+export function useCalcApprovalDate(start_date: string | Date | null | undefined, approval_date?: string | Date | null) {
   return useMemo(() => {
+    // Validación de start_date
+    if (!start_date) {
+      return {
+        diasRestantesFormateados: "Fecha de inicio no disponible",
+        fechaLimite: null,
+        diasExtra: 0,
+        plazoDias: 60,
+      };
+    }
+
     const fechaAprobado = approval_date ? new Date(approval_date) : null;
     const fechaInicio = new Date(start_date);
+
+    // Validar que la fecha de inicio sea válida
+    if (isNaN(fechaInicio.getTime())) {
+      return {
+        diasRestantesFormateados: "Fecha de inicio inválida",
+        fechaLimite: null,
+        diasExtra: 0,
+        plazoDias: 60,
+      };
+    }
 
     let plazoDias = 60;
     let diasExtra = 0;
     let diasRestantesFormateados = "Pendiente de aprobación";
 
-    if (fechaAprobado) {
+    if (fechaAprobado && !isNaN(fechaAprobado.getTime())) {
       if (fechaInicio > fechaAprobado) {
         const diferencia = Math.ceil((fechaInicio.getTime() - fechaAprobado.getTime()) / (1000 * 3600 * 24));
         diasExtra = diferencia;
@@ -45,8 +65,12 @@ export function useCalcApprovalDate(start_date: string | Date, approval_date?: s
 
     return {
       diasRestantesFormateados,
-      fechaLimite: fechaAprobado
-        ? new Date(fechaAprobado.setDate(fechaAprobado.getDate() + plazoDias + diasExtra))
+      fechaLimite: fechaAprobado && !isNaN(fechaAprobado.getTime())
+        ? (() => {
+            const nuevaFechaLimite = new Date(fechaAprobado);
+            nuevaFechaLimite.setDate(nuevaFechaLimite.getDate() + plazoDias + diasExtra);
+            return nuevaFechaLimite;
+          })()
         : null,
       diasExtra,
       plazoDias,

@@ -42,6 +42,7 @@ export const getInstitutionFullByUserIdDao = async (user_id: string | undefined)
         institution_specialization: true,
         institution_certifications: true,
         goals: true,
+        process: true,
       },
     });
     if (fullInstitution) {

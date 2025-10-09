@@ -7,11 +7,12 @@ export default function InstitutionDetailById(props: any) {
   const { data, error, isLoading, mutate } = useInstitutionFullById(props.userId);
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
-  console.log("data full", data);
+  // console.log("data full", data);
   const InstitutionData = data?.payload.institution_data[0] || {};
   const goals = data?.payload.goals || [];
   const speciality = data?.payload.institution_specialization || [];
   const certifications = data?.payload.institution_certifications || [];
+  const processes = data?.payload.process || [];
   //formateo dee fecha
   const foundationDate = new Date(InstitutionData.established);
   const formattedDate = foundationDate.toLocaleDateString("es-ES", {
@@ -28,7 +29,7 @@ export default function InstitutionDetailById(props: any) {
         <div className='relative w-40 h-40'>
           <Image src='/logos/Logo Arcidrade Cond.png' className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
         </div>
-        <h1 className='text-2xl fontArci text-center'>{InstitutionData.name || "Nombre de la institución"}</h1>
+        <h1 className='text-2xl fontArci text-center'>{InstitutionData.fake_name || "Nombre de la institución"}</h1>
         <p className='text-center'>{InstitutionData.main_speciality || "Especialización"}</p>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
@@ -43,15 +44,15 @@ export default function InstitutionDetailById(props: any) {
             </div>
             <div className='flex justify-between'>
               <h3 className='text-light'>Fecha de Fundación</h3>
-              <p className='text-(--main-arci)'>{formattedDate || "fecha"}</p>
+              <p className='text-(--main-arci) text-end'>{formattedDate || "fecha"}</p>
             </div>
             <div className='flex justify-between'>
               <h3 className='font-light'>Pais</h3>
-              <p className='text-(--main-arci)'>{countryName?.name || "País"}</p>
+              <p className='text-(--main-arci) text-end'>{countryName?.name || "País"}</p>
             </div>
             <div className='flex justify-between'>
               <h3 className='font-light'>Ciudad</h3>
-              <p className='text-(--main-arci)'>{InstitutionData.city || "Ciudad"}</p>
+              <p className='text-(--main-arci) text-end'>{InstitutionData.city || "Ciudad"}</p>
             </div>
           </div>
         </div>
@@ -108,7 +109,16 @@ export default function InstitutionDetailById(props: any) {
         <div className=' p-2 rounded-sm z-10 w-full'>
           <h1 className='text-2xl fontArci'>Procesos Disponibles</h1>
           <div className='bg-white rounded-md p-1 justify-center text-center mt-2'>
-            <h3 className='fontArci text-[var(--main-arci)] font-black'>Proximamente</h3>
+            {processes.length > 0 ? (
+              <div className='flex items-center justify-center h-20 fontArci text-(--main-arci) font-bold text-2xl'>
+                <p>{ processes.length}</p>
+              </div>
+            ) : (
+              <div className='flex items-center justify-center h-20'>
+                <p>No hay procesos disponibles.</p>
+              </div>
+            )}
+
           </div>
         </div>
       </div>

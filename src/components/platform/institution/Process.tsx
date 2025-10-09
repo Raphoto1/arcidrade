@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 
 import Grid from "../pieces/Grid";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
@@ -6,7 +6,7 @@ import EmptyCard from "@/components/pieces/EmptyCard";
 import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
 import SearchCandidates from "../pieces/SearchCandidates";
 import { useProcess } from "@/hooks/useProcess";
-import { useCalcApprovalDate, useFormatDateToString, useHandleStatusName } from "@/hooks/useUtils";
+import { useCalcApprovalDate, formatDateToString, useHandleStatusName } from "@/hooks/useUtils";
 import ModalForForms from "@/components/modals/ModalForForms";
 import UpdateProcessForm from "@/components/forms/platform/process/UpdateProcessForm";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
@@ -17,6 +17,15 @@ export default function Process(props: any) {
   console.log(data);
   const processData = data?.payload;
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
+  
+  // Memoizar el formateo de fecha para evitar recálculos
+  const formattedStartDate = useMemo(() => {
+    if (processData?.start_date) {
+      return formatDateToString(processData.start_date);
+    }
+    return '';
+  }, [processData?.start_date]);
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -52,7 +61,12 @@ export default function Process(props: any) {
                 <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidades Secundarias:</h4>
                   <div>
-                    <p className='text-md text-[var(--main-arci)] text-end'>{processData?.extra_specialities.map((spec: any) => spec.speciality).join(", ")}</p>
+                    <p className='text-md text-[var(--main-arci)] text-end'>
+                      {processData?.extra_specialities?.length > 0 
+                        ? processData.extra_specialities.map((spec: any) => spec.speciality).join(", ")
+                        : "No especificadas"
+                      }
+                    </p>
                   </div>
                 </div>
                 <div className='flex justify-between border-b-2'>
@@ -61,7 +75,7 @@ export default function Process(props: any) {
                 </div>
                 <div className='flex justify-between'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Fecha de Inicio:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>{useFormatDateToString(processData?.start_date)}</p>
+                  <p className='text-md text-[var(--main-arci)]'>{formattedStartDate}</p>
                 </div>
               </div>
               <div className='descrip md:w-2/3 bg-white rounded-md px-2'>

@@ -61,6 +61,18 @@ export const getProcessesByUserIdFilteredByStatusDao = async (user_id: string | 
   }
 };
 
+export const getProcessesFilteredByStatusDao = async (status: process_status) => {
+  try {
+    const filteredProcesses = await prisma.process.findMany({
+      where: { status: status },
+    });
+    return filteredProcesses;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error fetching filtered processes: ${errorMessage}`);
+  }
+};
+
 export const createProcessDao = async (data: any) => {
   try {
     const newProcess = await prisma.process.create({
@@ -95,7 +107,7 @@ export const deleteExtraSpecialityByProcessIdDao = async (process_id: number) =>
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error deleting extra specialities for process ID ${process_id}: ${errorMessage}`);
   }
-}
+};
 
 export const createExtraSpecialityDao = async (data: any) => {
   try {
