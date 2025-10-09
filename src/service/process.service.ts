@@ -1,12 +1,16 @@
 import { updateProcessById } from "@/controller/process.controller";
 import {
+  AddProfesionalToProcessDao,
   createExtraSpecialityDao,
   createProcessDao,
   deleteExtraSpecialityByProcessIdDao,
+  deleteProfesionalFromProcessDao,
   getProcessByIdDao,
   getProcessesByUserIdDao,
   getProcessesByUserIdFilteredByStatusDao,
   getProcessesFilteredByStatusDao,
+  getProfesionalSelectedByProcessIdDao,
+  getProfesionalsSelectedByProcessIdDao,
   updateProcessByIdDao,
 } from "@/dao/process.dao";
 
@@ -83,3 +87,23 @@ export const updateProcessService = async (id: number, data: any) => {
   const result = await updateProcessByIdDao(id, data);
   return result;
 };
+
+export const getProfesionalsSelectedByProcessIdService = async (process_id: number) => {
+  const result = await getProfesionalsSelectedByProcessIdDao(process_id);
+  return result;
+}
+
+export const getProfesionalSelectedByProcessIdService = async (process_id: number, profesional_id: string) => {
+  const result = await getProfesionalSelectedByProcessIdDao(process_id, profesional_id);
+  return result;
+}
+
+export const addPProfesionalToProcessService = async (dataPack: any) => { 
+  const result = await AddProfesionalToProcessDao(dataPack);
+  return result;
+}
+
+export const deleteProfesionalFromProcessService = async (processId: number, profesionalId: string) => { 
+  const result = await deleteProfesionalFromProcessDao(processId, profesionalId);
+  return result;
+}

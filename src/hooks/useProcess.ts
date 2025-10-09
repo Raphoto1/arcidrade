@@ -47,3 +47,11 @@ export const useProcess = (processId: number | null) => {
   );
   return { data, error, isLoading, mutate };
 };
+
+export const useProfesionalsListedInProcess = (processId: number | null) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    processId ? `/api/platform/process/candidates/${processId}` : null,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+};

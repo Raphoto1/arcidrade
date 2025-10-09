@@ -5,25 +5,30 @@ import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import EmptyCard from "@/components/pieces/EmptyCard";
 import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
 import SearchCandidates from "../pieces/SearchCandidates";
-import { useProcess } from "@/hooks/useProcess";
+import { useProcess, useProfesionalsListedInProcess } from "@/hooks/useProcess";
 import { useCalcApprovalDate, formatDateToString, useHandleStatusName } from "@/hooks/useUtils";
 import ModalForForms from "@/components/modals/ModalForForms";
 import UpdateProcessForm from "@/components/forms/platform/process/UpdateProcessForm";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmArchiveProcessForm from "@/components/forms/platform/process/ConfirmArchiveProcessForm";
+import InstitutionGridSearch from "./InstitutionGridSearch";
+import InstitutionGridSearchSelection from "./InstitutionGridSearchSelection";
+import { useProfesional } from "@/hooks/usePlatPro";
 
 export default function Process(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
-  console.log(data);
+  const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
+  console.log("profesionalsSelected", profesionalsSelected);
   const processData = data?.payload;
+  const profesionals = profesionalsSelected?.payload || [];
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
-  
+
   // Memoizar el formateo de fecha para evitar recálculos
   const formattedStartDate = useMemo(() => {
     if (processData?.start_date) {
       return formatDateToString(processData.start_date);
     }
-    return '';
+    return "";
   }, [processData?.start_date]);
 
   if (isLoading) {
@@ -62,10 +67,9 @@ export default function Process(props: any) {
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidades Secundarias:</h4>
                   <div>
                     <p className='text-md text-[var(--main-arci)] text-end'>
-                      {processData?.extra_specialities?.length > 0 
+                      {processData?.extra_specialities?.length > 0
                         ? processData.extra_specialities.map((spec: any) => spec.speciality).join(", ")
-                        : "No especificadas"
-                      }
+                        : "No especificadas"}
                     </p>
                   </div>
                 </div>
@@ -92,10 +96,18 @@ export default function Process(props: any) {
           </div>
 
           <div className='flex flex-col gap-2 h-auto'>
-            <ModalForPreviewBtnLong title={"Buscar Candidatos Muestra Preview"}>
-              <SearchCandidates />
-            </ModalForPreviewBtnLong>
-            <ModalForFormsRedBtn title={"Eliminar Proceso"} >
+            {profesionals.length >= 3 ? (
+              <ModalForPreviewBtnLong title={"Se ha superado el limite de 3 candidatos"}>
+                <div className="flex flex-col items-center">
+                  <p className="text-sm fontRoboto text-[var(--dark-gray)]">Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos</p>
+                </div>  
+              </ModalForPreviewBtnLong>
+            ) : (
+              <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
+                <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+              </ModalForPreviewBtnLong>
+            )}
+            <ModalForFormsRedBtn title={"Eliminar Proceso"}>
               <ConfirmArchiveProcessForm id={processData?.id} />
             </ModalForFormsRedBtn>
             <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
@@ -108,11 +120,19 @@ export default function Process(props: any) {
       <div className='w-full pt-2'>
         <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados</h2>
         <Grid>
-          <ProfesionalCard />
-          <ProfesionalCard />
-          <EmptyCard />
+          {profesionals?.map((profesional: any) => (
+            <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} />
+          ))}
+            {profesionals.length >= 3 ? (
+              null
+            ) : (
+              <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
+                <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+              </ModalForPreviewBtnLong>
+            )}
         </Grid>
       </div>
+      {processData?.type == "arcidrade" ? null : (
       <div className='w-full pt-2'>
         <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
         <Grid>
@@ -121,6 +141,7 @@ export default function Process(props: any) {
           <EmptyCard />
         </Grid>
       </div>
+      )}
     </div>
   );
 }

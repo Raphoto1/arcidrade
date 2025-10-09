@@ -9,6 +9,11 @@ import ProfesionalDetailById from "../platform/pieces/ProfesionalDetailById";
 import ProfesionalDetailFullById from "../platform/pieces/ProfesionalDetailFullById";
 import ModalForPreviewTextLink from "../modals/ModalForPreviewTextLink";
 import UserDescription from "../platform/pieces/UserDescription";
+import ModalForFormsSoftBlue from "../modals/ModalForFormsSoftBlue";
+import ConfirmAddProfesionalToProcessForm from "../forms/platform/process/ConfirmAddProfesionalToProcessForm";
+import ModalForFormsRedBtn from "../modals/ModalForFormsRedBtn";
+import ConfirmDeleteProfesionalToProcessForm from "../forms/platform/process/ConfirmDeleteProfesionalToProcessForm";
+import ModalForForms from "../modals/ModalForForms";
 
 export default function ProfesionalCard(props: any) {
   const isFake = props.isFake;
@@ -31,9 +36,14 @@ export default function ProfesionalCard(props: any) {
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
       <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
         {props.btnActive ? (
-          <div className='buttons w-15 h-15 ml-2 grid flex-col content-between'>
-            <button className='btn btn-xs'>Responsive</button>
-            <button className='btn btn-xs'>Responsive</button>
+          <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
+            <ModalForForms title='Agregar Candidato'>
+              <ConfirmAddProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={fullName} processPosition={props.processPosition} />
+            </ModalForForms>
+            <ModalForFormsRedBtn title='Eliminar Candidato'>
+              <ConfirmDeleteProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={fullName} processPosition={props.processPosition}/>
+            </ModalForFormsRedBtn>
+
           </div>
         ) : (
           <div></div>

@@ -133,3 +133,41 @@ export const updateProcessByIdDao = async (process_id: number, data: any) => {
     throw new Error(`Error updating process: ${errorMessage}`);
   }
 };
+
+export const getProfesionalsSelectedByProcessIdDao = async (process_id: number) => {
+  const result = await prisma.profesionals_listed.findMany({
+    where: { process_id },
+  });
+  return result;
+}
+
+export const getProfesionalSelectedByProcessIdDao = async (process_id: number, profesional_id: string) => {
+  const result = await prisma.profesionals_listed.findFirst({
+    where: { process_id, profesional_id },
+  });
+  return result;
+}
+
+export const AddProfesionalToProcessDao = async (data:any) => {
+  try {
+    const create = await prisma.profesionals_listed.create({
+      data: data,
+    });
+    return create;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error adding professional to process: ${errorMessage}`);
+  }
+};
+
+export const deleteProfesionalFromProcessDao = async (process_id: number, profesional_id: string) => {
+  try {
+    const deletedProfesional = await prisma.profesionals_listed.deleteMany({
+      where: { process_id, profesional_id },
+    });
+    return deletedProfesional;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error deleting professional from process: ${errorMessage}`);
+  }
+};

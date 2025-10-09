@@ -14,8 +14,14 @@ import {
   getArchivedProcessesByUserIdService,
   getCompletedProcessesByUserIdService,
   getAllProcessesByStatusService,
+  getProfesionalsSelectedByProcessIdService,
+  getProfesionalSelectedByProcessIdService,
+  addPProfesionalToProcessService,
+  deleteProfesionalFromProcessService,
 } from "@/service/process.service";
 import { getExtraSpecialitiesByProcessIdDao, getProcessesByUserIdFilteredByStatusDao } from "@/dao/process.dao";
+import { getUserDataService } from "@/service/userData.service";
+import { stat } from "fs";
 
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
@@ -136,4 +142,64 @@ export const updateProcessById = async (processId: number, data: any) => {
   }
 
   return { success: true };
+};
+
+export const getProfesionalsSelectedByProcessId = async (process_id: number) => {
+  const result = await getProfesionalsSelectedByProcessIdService(process_id);
+  return result;
+};
+
+export const getProfesionalSelectedByUserIdAndProcessId = async (process_id: number, profesional_id: string) => {
+  const result = await getProfesionalSelectedByProcessIdService(process_id, profesional_id);
+  return result;
+}
+
+export const addProfesionalToProcess = async (processId: number, professionalId: string, status?: string, is_arcidrade?: boolean) => {
+  try {
+    const process = await getProcessByIdService(processId);
+    if (!process) {
+      throw new Error(`Process with ID ${processId} not found`);
+    }
+    const profesional = await getUserDataService(professionalId);
+    if (!profesional) {
+      throw new Error(`Professional with ID ${professionalId} not found`);
+    }
+    //revisar si ya esta en el proceso
+    const chk = await getProfesionalSelectedByUserIdAndProcessId(processId, professionalId);
+    if (chk) {
+      throw new Error(`Professional with ID ${professionalId} is already added to process ID ${processId}`);
+    } else {
+      const dataPack = {
+        process_id: processId,
+        profesional_id: professionalId,
+        process_status: status,
+        is_arcidrade: is_arcidrade
+      }
+      const result = await addPProfesionalToProcessService(dataPack);
+      return result;
+    }
+  
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error adding professional to process: ${errorMessage}`);
+  }
+}
+
+export const deleteProfesionalFromProcess = async (processId: number, professionalId: string) => {
+  try {
+    const process = await getProcessByIdService(processId);
+    if (!process) {
+      throw new Error(`Process with ID ${processId} not found`);
+    }
+    // Revisar si el profesional ya está en el proceso
+    const chk = await getProfesionalSelectedByUserIdAndProcessId(processId, professionalId);
+    if (!chk) {
+      throw new Error(`Professional with ID ${professionalId} is not part of process ID ${processId}`);
+    }
+    const result = await deleteProfesionalFromProcessService(processId, professionalId);
+    return result;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error removing professional from process: ${errorMessage}`);
+  }
 };

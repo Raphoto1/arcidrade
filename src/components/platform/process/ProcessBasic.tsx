@@ -11,7 +11,7 @@ import ProcessDetail from "./ProcessDetail";
 export default function ProcessBasic(props: any) {
   const { process } = props;
   const { diasRestantesFormateados } = useCalcApprovalDate(process.start_date, process.approval_date);
-  
+
   // Memoizar la fecha formateada para evitar recálculos innecesarios
   const formattedStartDate = useMemo(() => {
     return formatDateToString(process.start_date);
@@ -34,10 +34,10 @@ export default function ProcessBasic(props: any) {
           <div className='flex flex-col md:flex-row justify-between gap-2 md:p-1'>
             {/* <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extención</button> */}
             <ModalForPreview title='Detalle del Proceso'>
-              <Process id={props.process.id} />
+              <Process id={props.process.id} isFake={props.isFake} />
             </ModalForPreview>
-                        <ModalForPreview title='Preview del Proceso'>
-              <ProcessDetail processData={{...process}} />
+            <ModalForPreview title='Preview del Proceso'>
+              <ProcessDetail processData={{ ...process }} />
             </ModalForPreview>
             {/* <button className='btn bg-amber-300 text-white text-sm h-auto'>Pausar Proceso</button> */}
             <ModalForFormsRedBtn title='Eliminar Proceso'>
@@ -50,13 +50,9 @@ export default function ProcessBasic(props: any) {
         <Grid>
           {/* Solo renderizar profesionales si hay datos específicos del proceso */}
           {process.professionals && process.professionals.length > 0 ? (
-            process.professionals.map((professional: any, index: number) => (
-              <ProfesionalCard key={professional.id || index} userId={professional.id} />
-            ))
+            process.professionals.map((professional: any, index: number) => <ProfesionalCard key={professional.id || index} userId={professional.id} />)
           ) : (
-            <div className="text-center text-gray-500 p-4">
-              No hay candidatos asignados a este proceso
-            </div>
+            <div className='text-center text-gray-500 p-4'>No hay candidatos asignados a este proceso</div>
           )}
         </Grid>
       </div>
@@ -67,12 +63,10 @@ export default function ProcessBasic(props: any) {
             {/* Solo renderizar profesionales de ARCIDRADE si hay datos específicos */}
             {process.arcidradeProfessionals && process.arcidradeProfessionals.length > 0 ? (
               process.arcidradeProfessionals.map((professional: any, index: number) => (
-                <ProfesionalCard key={professional.id || index} userId={professional.id} />
+                <ProfesionalCard isFake={props.isFake} key={professional.id || index} userId={professional.id} />
               ))
             ) : (
-              <div className="text-center text-gray-500 p-4">
-                No hay candidatos ARCIDRADE asignados
-              </div>
+              <div className='text-center text-gray-500 p-4'>No hay candidatos ARCIDRADE asignados</div>
             )}
           </Grid>
         </div>
