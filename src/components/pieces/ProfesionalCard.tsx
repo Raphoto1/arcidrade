@@ -1,3 +1,4 @@
+'use client'
 import React, { use } from "react";
 import { CiMedal } from "react-icons/ci";
 import Image from "next/image";

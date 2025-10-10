@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { CiCirclePlus } from "react-icons/ci";
 import { PiBooksLight } from "react-icons/pi";

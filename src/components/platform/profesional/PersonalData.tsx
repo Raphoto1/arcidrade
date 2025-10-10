@@ -1,3 +1,4 @@
+'use client'
 //imports de app
 import { useEffect } from "react";
 import { IoDocumentAttachOutline } from "react-icons/io5";

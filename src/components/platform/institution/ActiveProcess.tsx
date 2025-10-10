@@ -1,3 +1,4 @@
+'use client'
 import React from "react";
 import { FiChevronDown } from "react-icons/fi";
 import ModalForForms from "@/components/modals/ModalForForms";

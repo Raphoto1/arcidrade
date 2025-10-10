@@ -1,3 +1,4 @@
+'use client'
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
