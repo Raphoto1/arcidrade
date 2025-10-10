@@ -28,7 +28,7 @@ export default function ProfesionalCard(props: any) {
   // Llamar todos los hooks al inicio, no condicionalmente
   const fullName = useFullName(profesionalInfo.name, profesionalInfo.last_name);
   const statusName = useHandleStatusName(mainStudyInfo.status);
-
+  
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error al cargar el profesional</div>;
   // console.log("profesional data Card", data?.payload);
@@ -38,10 +38,10 @@ export default function ProfesionalCard(props: any) {
         {props.btnActive ? (
           <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
             <ModalForForms title='Agregar Candidato'>
-              <ConfirmAddProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={fullName} processPosition={props.processPosition} />
+              <ConfirmAddProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={isFake ? profesionalInfo.fake_name : fullName || "noname"} processPosition={props.processPosition} addedBy={props.addedBy||'noBody' } />
             </ModalForForms>
             <ModalForFormsRedBtn title='Eliminar Candidato'>
-              <ConfirmDeleteProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={fullName} processPosition={props.processPosition}/>
+              <ConfirmDeleteProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={isFake ? profesionalInfo.fake_name : fullName || "noname"} processPosition={props.processPosition}/>
             </ModalForFormsRedBtn>
 
           </div>

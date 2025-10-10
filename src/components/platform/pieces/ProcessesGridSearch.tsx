@@ -1,16 +1,15 @@
 import React, { useState, useMemo } from "react";
 
-import InstitutionCard from "../../pieces/InstitutionCard";
 import InstitutionProcessCard from "@/components/pieces/InstitutionProcessCard";
 import { ImSearch } from "react-icons/im";
-import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import EmptyCard from "@/components/pieces/EmptyCard";
 
 import Grid from "./Grid";
 import { useActiveProcesses } from "@/hooks/useProcess";
 import { medicalOptions } from "@/static/data/staticData";
 
-export default function ProcessesGridSearch() {
+export default function ProcessesGridSearch(props: any) {
+  const isFake = props.isFake
   const [searchTerm, setSearchTerm] = useState("");
   const [specialityFilter, setSpecialityFilter] = useState("");
 
@@ -80,7 +79,7 @@ export default function ProcessesGridSearch() {
           ) : error ? (
             <div className='col-span-full text-center py-8 text-red-500'>Error al cargar procesos</div>
           ) : filteredProcesses.length > 0 ? (
-            filteredProcesses.map((process: any, index: number) => <InstitutionProcessCard key={process.id || index} processId={process.id} isFake={false} />)
+            filteredProcesses.map((process: any, index: number) => <InstitutionProcessCard key={process.id || index} processId={process.id} isFake={isFake} isProfesional/>)
           ) : (
             <div className='col-span-full text-center py-8 text-gray-500'>No se encontraron procesos con los filtros aplicados</div>
           )}

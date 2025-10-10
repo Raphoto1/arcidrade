@@ -1,10 +1,5 @@
 import React from "react";
 import { FiChevronDown } from "react-icons/fi";
-import Grid from "../pieces/Grid";
-import ProfesionalCard from "@/components/pieces/ProfesionalCard";
-import ModalForPreview from "@/components/modals/ModalForPreview";
-import OfferDetail from "@/components/pieces/OfferDetail";
-import Process from "./Process";
 import ModalForForms from "@/components/modals/ModalForForms";
 import CreateProcessForm from "@/components/forms/platform/process/CreateProcessForm";
 import ProcessBasic from "../process/ProcessBasic";

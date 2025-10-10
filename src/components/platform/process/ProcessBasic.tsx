@@ -7,11 +7,15 @@ import { formatDateToString, useCalcApprovalDate } from "@/hooks/useUtils";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmArchiveProcessForm from "@/components/forms/platform/process/ConfirmArchiveProcessForm";
 import ProcessDetail from "./ProcessDetail";
+import { useProfesionalsListedInProcess } from "@/hooks/useProcess";
+import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
+import InstitutionGridSearchSelection from "../institution/InstitutionGridSearchSelection";
 
 export default function ProcessBasic(props: any) {
   const { process } = props;
   const { diasRestantesFormateados } = useCalcApprovalDate(process.start_date, process.approval_date);
-
+  const { data: profesionalsSelected } = useProfesionalsListedInProcess(process.id);
+  const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
   // Memoizar la fecha formateada para evitar recálculos innecesarios
   const formattedStartDate = useMemo(() => {
     return formatDateToString(process.start_date);
@@ -48,11 +52,13 @@ export default function ProcessBasic(props: any) {
       </div>
       <div className='candidatos'>
         <Grid>
-          {/* Solo renderizar profesionales si hay datos específicos del proceso */}
-          {process.professionals && process.professionals.length > 0 ? (
-            process.professionals.map((professional: any, index: number) => <ProfesionalCard key={professional.id || index} userId={professional.id} />)
-          ) : (
-            <div className='text-center text-gray-500 p-4'>No hay candidatos asignados a este proceso</div>
+          {profesionals?.map((profesional: any) => (
+            <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} />
+          ))}
+          {profesionals.length >= 3 ? null : (
+            <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
+              <InstitutionGridSearchSelection isFake={props.isFake} processId={process?.id} processPosition={process?.position} />
+            </ModalForPreviewBtnLong>
           )}
         </Grid>
       </div>

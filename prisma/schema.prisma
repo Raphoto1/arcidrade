@@ -337,13 +337,14 @@ model extra_specialities {
 }
 
 model profesionals_listed {
-  id             Int      @id @default(autoincrement())
+  id             Int                        @id @default(autoincrement())
   profesional_id String
   process_id     Int
-  is_arcidrade   Boolean?  @default(false)
-  process_status  process_status_profesional @default(none)
+  is_arcidrade   Boolean?                   @default(false)
+  process_status process_status_profesional @default(none)
+  added_by       String? @default("noBodyDb")
   feedback       String?
-  created_at     DateTime @default(now())
-  updated_at     DateTime @updatedAt
-  process        Process  @relation(fields: [process_id], references: [id])
+  created_at     DateTime                   @default(now())
+  updated_at     DateTime                   @updatedAt
+  process        Process                    @relation(fields: [process_id], references: [id])
 }

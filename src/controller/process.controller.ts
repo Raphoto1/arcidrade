@@ -18,10 +18,9 @@ import {
   getProfesionalSelectedByProcessIdService,
   addPProfesionalToProcessService,
   deleteProfesionalFromProcessService,
+  getProfesionalSelectedByProfesionalIdService,
 } from "@/service/process.service";
-import { getExtraSpecialitiesByProcessIdDao, getProcessesByUserIdFilteredByStatusDao } from "@/dao/process.dao";
 import { getUserDataService } from "@/service/userData.service";
-import { stat } from "fs";
 
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
@@ -93,10 +92,10 @@ export const getProcessesByStatus = async (status: string | undefined) => {
   }
 };
 
-export const getAllActiveProcesses = async (status:string) => {
+export const getAllActiveProcesses = async (status: string) => {
   const result = await getAllProcessesByStatusService(status);
   return result;
-}
+};
 
 export const getProccessesActiveByUserId = async (userId: string | undefined) => {
   const result = await getActiveProcessesByUserIdService(userId);
@@ -152,9 +151,9 @@ export const getProfesionalsSelectedByProcessId = async (process_id: number) => 
 export const getProfesionalSelectedByUserIdAndProcessId = async (process_id: number, profesional_id: string) => {
   const result = await getProfesionalSelectedByProcessIdService(process_id, profesional_id);
   return result;
-}
+};
 
-export const addProfesionalToProcess = async (processId: number, professionalId: string, status?: string, is_arcidrade?: boolean) => {
+export const addProfesionalToProcess = async (processId: number, professionalId: string, status?: string, is_arcidrade?: boolean, added_by?: string) => {
   try {
     const process = await getProcessByIdService(processId);
     if (!process) {
@@ -173,17 +172,17 @@ export const addProfesionalToProcess = async (processId: number, professionalId:
         process_id: processId,
         profesional_id: professionalId,
         process_status: status,
-        is_arcidrade: is_arcidrade
-      }
+        is_arcidrade: is_arcidrade,
+        added_by: added_by,
+      };
       const result = await addPProfesionalToProcessService(dataPack);
       return result;
     }
-  
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error adding professional to process: ${errorMessage}`);
   }
-}
+};
 
 export const deleteProfesionalFromProcess = async (processId: number, professionalId: string) => {
   try {
@@ -203,3 +202,16 @@ export const deleteProfesionalFromProcess = async (processId: number, profession
     throw new Error(`Error removing professional from process: ${errorMessage}`);
   }
 };
+
+//encontrar todos los procesos donde el profesional este enlistado
+export const getProcessesWhereProfesionalIsListed = async (professionalId: string) => {
+  try {
+    const result = await getProfesionalSelectedByProfesionalIdService(professionalId);
+    return result;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error fetching processes for professional ID ${professionalId}: ${errorMessage}`);
+  }
+};
+
+export const updateProfesionalFromProcess = async (processId: number, professionalId: string, data: any) => {};

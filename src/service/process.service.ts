@@ -12,6 +12,7 @@ import {
   getProfesionalSelectedByProcessIdDao,
   getProfesionalsSelectedByProcessIdDao,
   updateProcessByIdDao,
+  getProfesionalSelectedByProfesionalIdDao
 } from "@/dao/process.dao";
 
 export const createProcessService = async (data: any) => {
@@ -105,5 +106,10 @@ export const addPProfesionalToProcessService = async (dataPack: any) => {
 
 export const deleteProfesionalFromProcessService = async (processId: number, profesionalId: string) => { 
   const result = await deleteProfesionalFromProcessDao(processId, profesionalId);
+  return result;
+}
+
+export const getProfesionalSelectedByProfesionalIdService = async (profesional_id: string) => {
+  const result= await getProfesionalSelectedByProfesionalIdDao(profesional_id);
   return result;
 }

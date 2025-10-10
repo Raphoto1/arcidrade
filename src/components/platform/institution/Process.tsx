@@ -18,9 +18,8 @@ import { useProfesional } from "@/hooks/usePlatPro";
 export default function Process(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
-  console.log("profesionalsSelected", profesionalsSelected);
   const processData = data?.payload;
-  const profesionals = profesionalsSelected?.payload || [];
+  const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
 
   // Memoizar el formateo de fecha para evitar recálculos
@@ -98,13 +97,15 @@ export default function Process(props: any) {
           <div className='flex flex-col gap-2 h-auto'>
             {profesionals.length >= 3 ? (
               <ModalForPreviewBtnLong title={"Se ha superado el limite de 3 candidatos"}>
-                <div className="flex flex-col items-center">
-                  <p className="text-sm fontRoboto text-[var(--dark-gray)]">Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos</p>
-                </div>  
+                <div className='flex flex-col items-center'>
+                  <p className='text-sm fontRoboto text-[var(--dark-gray)]'>
+                    Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos
+                  </p>
+                </div>
               </ModalForPreviewBtnLong>
             ) : (
               <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-                <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+                  <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
               </ModalForPreviewBtnLong>
             )}
             <ModalForFormsRedBtn title={"Eliminar Proceso"}>
@@ -121,26 +122,24 @@ export default function Process(props: any) {
         <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados</h2>
         <Grid>
           {profesionals?.map((profesional: any) => (
-            <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} />
+            <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} btnActive processId={processData.id} processPosition={processData.position} addedBy={'institution' }/>
           ))}
-            {profesionals.length >= 3 ? (
-              null
-            ) : (
-              <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-                <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
-              </ModalForPreviewBtnLong>
-            )}
+          {profesionals.length >= 3 ? null : (
+            <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
+              <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+            </ModalForPreviewBtnLong>
+          )}
         </Grid>
       </div>
       {processData?.type == "arcidrade" ? null : (
-      <div className='w-full pt-2'>
-        <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
-        <Grid>
-          <ProfesionalCard />
-          <ProfesionalCard />
-          <EmptyCard />
-        </Grid>
-      </div>
+        <div className='w-full pt-2'>
+          <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
+          <Grid>
+            <ProfesionalCard />
+            <ProfesionalCard />
+            <EmptyCard />
+          </Grid>
+        </div>
       )}
     </div>
   );

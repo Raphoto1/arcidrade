@@ -12,7 +12,7 @@ interface InstitutionGridSearchProps {
   processId?: number;
   processPosition?: string;
 }
-
+//REVISAR ADDEDBY CON MIGRATION
 export default function InstitutionGridSearchSelection({ isFake = true, processId, processPosition }: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -168,7 +168,7 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
           <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
             {paginatedData?.data?.length > 0
               ? paginatedData.data.map((profesional: any, index: number) => (
-                  <ProfesionalCard key={profesional.referCode || index} userId={profesional.referCode} isFake={isFake} btnActive processId={processId} processPosition={processPosition} />
+                <ProfesionalCard key={profesional.referCode || index} userId={profesional.referCode} isFake={isFake} btnActive processId={processId} processPosition={processPosition} addedBy={'institution' } />
                 ))
               : !isLoading && (
                   <div className='col-span-full text-center text-gray-500 py-8'>

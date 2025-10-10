@@ -17,15 +17,15 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     // const processCreated = await createProcess(body);
-    const userId = body.userID;
-    const processId = body.processId;
+    const userId = body.profesional_id;
+    const processId = body.process_id;
     const status = body.status || "listed";
     const is_arcidrade = body.isArcidrade || false;
-    console.log("userID", userId);
-    console.log("processId", processId);
-    const addProfToProcess = await addProfesionalToProcess(processId, userId, status, is_arcidrade);
+    const added_by = body.added_by || '';
+    console.log('body de POST ADD______', body);
+    console.log('processId',processId);
+    const addProfToProcess = await addProfesionalToProcess(processId, userId, status, is_arcidrade, added_by);
     console.log("addProfToProcess", addProfToProcess);
-    // return NextResponse.json({ message: "Process created successfully", payload: processCreated });
     return NextResponse.json({ message: "Process created successfully", payload: addProfToProcess });
   } catch (error) {
     console.error("Error adding professional to process:", error);
@@ -38,8 +38,6 @@ export async function DELETE(request: NextRequest) {
         const body = await request.json();
         const userId = body.userID;
         const processId = body.processId;
-        console.log("userID", userId);
-        console.log("processId", processId);
         const deleteProfFromProcess = await deleteProfesionalFromProcess(processId, userId);
         console.log("deleteProfFromProcess", deleteProfFromProcess);
         return NextResponse.json({ message: "Professional removed from process successfully", payload: deleteProfFromProcess });

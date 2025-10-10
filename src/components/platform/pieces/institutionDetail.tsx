@@ -34,7 +34,7 @@ export default function institutionDetail() {
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci text'>Presentación</h1>
         <p className='text-sm line-clamp-2'>{InstitutionData.description || "Descripción de la institución"}</p>
-        <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
+        <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl md:text-lg'>
           <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Institucionales</h2>
           <div className='w-full'>
             <div className='flex justify-between'>
@@ -57,7 +57,7 @@ export default function institutionDetail() {
         </div>
       </div>
 
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
         <h1 className='text-2xl fontArci text'>Logros</h1>
         <div className='bg-white rounded-md p-1 mt-2'>
           {goals.length === 0 ? (
@@ -71,7 +71,7 @@ export default function institutionDetail() {
           )}
         </div>
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
         <h1 className='text-2xl fontArci text'>Especialidades</h1>
         <div className='bg-white rounded-md p-1 mt-2'>
           {speciality.length === 0 ? (

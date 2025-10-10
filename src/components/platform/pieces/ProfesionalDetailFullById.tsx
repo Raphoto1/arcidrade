@@ -89,51 +89,51 @@ export default function ProfesionalDetailFull(props: any) {
         </div>
         <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
           <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
-          <div className='w-full'>
+          <div className='w-full md:text-lg'>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Nombre</h3>
-              <p className='text-(--main-arci)'>{personalData.name}</p>
+              <h3 className='font-light'>Nombre:</h3>
+              <p className='text-(--main-arci) text-end'>{personalData.name}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Apellido</h3>
-              <p className='text-(--main-arci)'>{personalData.last_name}</p>
+              <h3 className='font-light'>Apellido:</h3>
+              <p className='text-(--main-arci) text-end'>{personalData.last_name}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='text-light'>Fecha de Nacimiento</h3>
-              <p className='text-(--main-arci)'>{fechaString}</p>
+              <h3 className='text-light'>Fecha de Nacimiento:</h3>
+              <p className='text-(--main-arci) text-end'>{fechaString}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Email</h3>
-              <p className='text-(--main-arci)'>{data?.payload.email}</p>
+              <h3 className='font-light'>Email:</h3>
+              <p className='text-(--main-arci) text-end'>{data?.payload.email}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Numero de Contacto</h3>
-              <p className='text-(--main-arci)'>{personalData.phone}</p>
+              <h3 className='font-light'>Numero de Contacto:</h3>
+              <p className='text-(--main-arci) text-end'>{personalData.phone}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Pais</h3>
-              <p className='text-(--main-arci)'>{countryName?.name}</p>
+              <h3 className='font-light'>Pais:</h3>
+              <p className='text-(--main-arci) text-end'>{countryName?.name}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Ciudad</h3>
-              <p className='text-(--main-arci)'>{personalData.city}</p>
+              <h3 className='font-light'>Ciudad:</h3>
+              <p className='text-(--main-arci) text-end'>{personalData.city}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Profesión</h3>
-              <p className='text-(--main-arci)'>{mainStudy.title}</p>
+              <h3 className='font-light'>Profesión:</h3>
+              <p className='text-(--main-arci) text-end'>{mainStudy.title}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Institución</h3>
-              <p className='text-(--main-arci)'>{mainStudy.institution}</p>
+              <h3 className='font-light'>Institución:</h3>
+              <p className='text-(--main-arci) text-end'>{mainStudy.institution}</p>
             </div>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Status</h3>
-              <p className='text-(--main-arci)'>{handleStatusName(mainStudy.status)}</p>
+              <h3 className='font-light'>Status:</h3>
+              <p className='text-(--main-arci) text-end'>{handleStatusName(mainStudy.status)}</p>
             </div>
           </div>
         </div>
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
         <h1 className='text-2xl fontArci text mb-2'>Especialidades</h1>
         <div className='flex flex-col gap-2'>
           {speciality.map((item: any, index: number) => (
@@ -159,7 +159,7 @@ export default function ProfesionalDetailFull(props: any) {
           ))}
         </div>
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
         <h1 className='text-2xl fontArci text'>Certificaciones</h1>
         {certifications.map((item: any, index: number) => (
           <div key={index} className='bg-white rounded-md p-1'>
@@ -191,7 +191,7 @@ export default function ProfesionalDetailFull(props: any) {
         ))}
       </div>
 
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
         <h1 className='text-2xl fontArci'>Experiencia</h1>
         <div className='flex flex-col gap-2'>
           {experience?.map((item: any, index: number) => (

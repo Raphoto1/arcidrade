@@ -171,3 +171,11 @@ export const deleteProfesionalFromProcessDao = async (process_id: number, profes
     throw new Error(`Error deleting professional from process: ${errorMessage}`);
   }
 };
+
+export const getProfesionalSelectedByProfesionalIdDao = async (profesional_id: string) => {
+  const result = await prisma.profesionals_listed.findMany({
+    where: { profesional_id },
+    include: { process: true },
+  });
+  return result;
+}
