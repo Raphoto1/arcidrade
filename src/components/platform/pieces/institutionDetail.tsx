@@ -12,6 +12,7 @@ export default function institutionDetail() {
   const goals = data?.payload.goals || [];
   const speciality = data?.payload.institution_specialization || [];
   const certifications = data?.payload.institution_certifications || [];
+    const processes = data?.payload.process || [];
   //formateo dee fecha
   const foundationDate = new Date(InstitutionData.established);
   const formattedDate = foundationDate.toLocaleDateString("es-ES", {
@@ -107,8 +108,17 @@ export default function institutionDetail() {
       <div className='Der flex w-full bg-gray-200 rounded-sm z-10'>
         <div className=' p-2 rounded-sm z-10 w-full'>
           <h1 className='text-2xl fontArci'>Procesos Disponibles</h1>
-          <div className='bg-white rounded-md p-1 justify-center text-center mt-2'>
-            <h3 className='fontArci text-[var(--main-arci)] font-black'>Proximamente</h3>
+           <div className='bg-white rounded-md p-1 justify-center text-center mt-2'>
+            {processes.length > 0 ? (
+              <div className='flex items-center justify-center h-20 fontArci text-(--main-arci) font-bold text-2xl'>
+                <p>{ processes.length}</p>
+              </div>
+            ) : (
+              <div className='flex items-center justify-center h-20'>
+                <p>No hay procesos disponibles.</p>
+              </div>
+            )}
+
           </div>
         </div>
       </div>

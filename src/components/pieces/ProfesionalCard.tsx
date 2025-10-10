@@ -20,11 +20,17 @@ export default function ProfesionalCard(props: any) {
   const isFake = props.isFake;
   const userId = props.userId || "cmgi49p7q0003ytea9dc5yzjg";
   const { data, error, isLoading } = useProfesionalById(userId);
-  const profesionalData = data ? data.payload : {};
   
-  // Acceso seguro a los arrays
-  const profesionalInfo = profesionalData.profesional_data?.[0] || {};
-  const mainStudyInfo = profesionalData.main_study?.[0] || {};
+  // Validación defensiva: asegurar que siempre tengamos un objeto válido
+  const profesionalData = data?.payload || {};
+  
+  // Acceso seguro a los arrays con validación adicional
+  const profesionalInfo = (profesionalData.profesional_data && Array.isArray(profesionalData.profesional_data)) 
+    ? profesionalData.profesional_data[0] || {} 
+    : {};
+  const mainStudyInfo = (profesionalData.main_study && Array.isArray(profesionalData.main_study)) 
+    ? profesionalData.main_study[0] || {} 
+    : {};
   
   // Llamar todos los hooks al inicio, no condicionalmente
   const fullName = useFullName(profesionalInfo.name, profesionalInfo.last_name);
@@ -32,6 +38,7 @@ export default function ProfesionalCard(props: any) {
   
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error al cargar el profesional</div>;
+  if (!data || !data.payload) return <div>No se encontró el profesional</div>;
   // console.log("profesional data Card", data?.payload);
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>

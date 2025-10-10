@@ -16,7 +16,7 @@ export default function Goal(props: any) {
     <div>
       <div className=' bg-gray-50 w-auto min-w-full rounded-sm p-2 grid grid-cols-2 shadow-xl mt-2 items-center'>
         <div className='w-full'>
-          <h2 className='text-(--main-arci) text-bold text-nowrap font-bold'>{props.title || "Logro"}</h2>
+          <h2 className='text-(--main-arci) text-bold font-bold'>{props.title || "Logro"}</h2>
           <p className='font-light text-sm'>{year || "Año de logro"}</p>
           {props.link && props.file && <h4>Respaldo</h4>}
           {props.link ? (

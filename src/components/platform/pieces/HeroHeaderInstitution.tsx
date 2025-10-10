@@ -72,7 +72,7 @@ export default function HeroHeaderInstitution() {
 
       {/* Opciones */}
       <div className='options flex flex-col justify-center relative z-10'>
-        <h3 className='text-xl text-center'>{data?.payload.main_speciality || "Especialización Principal"}</h3>
+        <h3 className='text-xl text-center capitalize'>{data?.payload.main_speciality || "Especialización Principal"}</h3>
         <div className='flex justify-center gap-4 mt-2'>
           <ModalForPreview title={"Preview"}>
             <InstitutionDetail />

@@ -8,14 +8,21 @@ import { Country } from "country-state-city";
 export default function ProfesionalDetail() {
   const { data, error, isLoading } = useProfesionalFull();
   // console.log("full data", data?.payload.experience);
-  const personalData = data?.payload.profesional_data[0] || {};
-  const mainStudy = data?.payload.main_study[0] || {};
-  const speciality = data?.payload.study_specialization || [];
-  const certifications = data?.payload.profesional_certifications || [];
-  const experience = data?.payload.experience || [];
+  
+  // Validación defensiva para prevenir errores
+  const payload = data?.payload || {};
+  const personalData = (payload.profesional_data && Array.isArray(payload.profesional_data)) 
+    ? payload.profesional_data[0] || {} 
+    : {};
+  const mainStudy = (payload.main_study && Array.isArray(payload.main_study)) 
+    ? payload.main_study[0] || {} 
+    : {};
+  const speciality = payload.study_specialization || [];
+  const certifications = payload.profesional_certifications || [];
+  const experience = payload.experience || [];
 
   const fakeLastName = faker.person.lastName(); // Generar un apellido falso
-  const fechaEnDate = new Date(personalData.birth_date);
+  const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
   const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   const countryName: ICountry | undefined = Country.getCountryByCode(personalData?.country);
   //adjust status

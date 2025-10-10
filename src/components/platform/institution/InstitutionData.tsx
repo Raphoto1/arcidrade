@@ -69,7 +69,7 @@ export default function InstitutionData() {
           </div>
         </div>
         <div className='controles justify-end flex gap-2 mt-4'>
-          <button className='btn bg-[var(--soft-arci)] h-7'>Cambiar contraseña</button>
+          {/* <button className='btn bg-[var(--soft-arci)] h-7'>Cambiar contraseña</button> */}
           <ModalForForm title={data?.payload.name == null ? "Agregar Información" : "Modificar"}>
             <InstitutionProfileForm />
           </ModalForForm>

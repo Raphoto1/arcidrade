@@ -8,14 +8,21 @@ import { Country } from "country-state-city";
 export default function ProfesionalDetail(props:any) {
   const { data, error, isLoading } = useProfesionalById(props.userId);
   // console.log("full data", data?.payload.experience);
-  const personalData = data?.payload.profesional_data[0] || {};
-  const mainStudy = data?.payload.main_study[0] || {};
-  const speciality = data?.payload.study_specialization || [];
-  const certifications = data?.payload.profesional_certifications || [];
-  const experience = data?.payload.experience || [];
+  
+  // Validación defensiva para prevenir errores
+  const payload = data?.payload || {};
+  const personalData = (payload.profesional_data && Array.isArray(payload.profesional_data)) 
+    ? payload.profesional_data[0] || {} 
+    : {};
+  const mainStudy = (payload.main_study && Array.isArray(payload.main_study)) 
+    ? payload.main_study[0] || {} 
+    : {};
+  const speciality = payload.study_specialization || [];
+  const certifications = payload.profesional_certifications || [];
+  const experience = payload.experience || [];
 
   const fakeLastName = faker.person.lastName(); // Generar un apellido falso
-  const fechaEnDate = new Date(personalData.birth_date);
+  const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
   const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   const countryName: ICountry | undefined = Country.getCountryByCode(personalData?.country);
   //adjust status
@@ -56,56 +63,55 @@ export default function ProfesionalDetail(props:any) {
             )}
           </div>
           <h1 className='text-2xl fontArci text-center'>{personalData.fake_name || "Nombre"}</h1>
-          <p className='text-center'>{mainStudy.title || "Estudio Principal"}</p>
-          <button className='btn bg-[var(--main-arci)] text-white'>Agregar Al Proceso</button>
+          <p className='text-center text-lg'>{mainStudy.title || "Estudio Principal"}</p>
         </div>
-        <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <div className='presentacion bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
           <h1 className='text-2xl fontArci text'>Presentación</h1>
-          <p className='text-sm line-clamp-2'>{personalData.description || "Descripción breve de la persona"}</p>
+          <p className='text-sm line-clamp-2'>{personalData.description || "Descripción breve del profesional"}</p>
           <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
             <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
             <div className='w-full'>
               <div className='flex justify-between'>
-                <h3 className='font-light'>Nombre</h3>
-                <p className='text-(--main-arci)'>{personalData.fake_name || "Nombre"}</p>
+                <h3 className='font-light'>Nombre:</h3>
+                <p className='text-(--main-arci) text-end'>{personalData.fake_name || "Nombre"}</p>
               </div>
               <div className='flex justify-between'>
-                <h3 className='font-light'>Apellido</h3>
-                <p className='text-(--main-arci)'>{fakeLastName || "Apellido"}</p>
+                <h3 className='font-light'>Apellido:</h3>
+                <p className='text-(--main-arci) text-end'>{fakeLastName || "Apellido"}</p>
               </div>
               <div className='flex justify-between'>
-                <h3 className='text-light'>Fecha de Nacimiento</h3>
-                <p className='text-(--main-arci)'>{fechaString || "fecha"}</p>
+                <h3 className='text-light'>Fecha de Nacimiento:</h3>
+                <p className='text-(--main-arci) text-end'>{fechaString || "fecha"}</p>
               </div>
               <div className='flex justify-between'>
-                <h3 className='font-light'>Pais</h3>
-                <p className='text-(--main-arci)'>{countryName?.name}</p>
+                <h3 className='font-light'>Pais:</h3>
+                <p className='text-(--main-arci) text-end'>{countryName?.name}</p>
               </div>
               <div className='flex justify-between'>
-                <h3 className='font-light'>Ciudad</h3>
-                <p className='text-(--main-arci)'>{personalData.city}</p>
+                <h3 className='font-light'>Ciudad:</h3>
+                <p className='text-(--main-arci) text-end'>{personalData.city}</p>
               </div>
               <div className='flex justify-between'>
-                <h3 className='font-light'>Profesión</h3>
-                <p className='text-(--main-arci)'>{mainStudy.title}</p>
+                <h3 className='font-light'>Profesión:</h3>
+                <p className='text-(--main-arci) text-end'>{mainStudy.title}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Institución:</h3>
-                <p className='text-(--main-arci)'>{mainStudy.institution}</p>
+                <p className='text-(--main-arci) text-end'>{mainStudy.institution}</p>
               </div>
               <div className='flex justify-between'>
-                <h3 className='font-light'>Status</h3>
-                <p className='text-(--main-arci)'>{handleStatusName(mainStudy.status)}</p>
+                <h3 className='font-light'>Status:</h3>
+                <p className='text-(--main-arci) text-end'>{handleStatusName(mainStudy.status)}</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <div className='especialidades bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
           <h1 className='text-2xl fontArci text mb-2'>Especialidades</h1>
           <div className='flex flex-col gap-2'>
             {speciality?.map((item: any, index: number) => (
-              <div key={index} className='bg-white rounded-md p-1'>
+              <div key={index} className='bg-white rounded-md p-1 text-lg'>
                 <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
                 <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
                 <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
@@ -113,7 +119,7 @@ export default function ProfesionalDetail(props:any) {
             ))}
           </div>
         </div>
-        <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <div className='certificaciones bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
           <h1 className='text-2xl fontArci text mb-2'>Certificaciones</h1>
           <div className='flex flex-col gap-2'>
             {certifications?.map((item: any, index: number) => (
@@ -126,7 +132,7 @@ export default function ProfesionalDetail(props:any) {
           </div>
         </div>
       </div>
-      <div className='Der flex w-full bg-gray-200 rounded-sm z-10'>
+      <div className='experiencia der flex w-full bg-gray-200 rounded-sm z-10 md:text-lg'>
         <div className=' p-2 rounded-sm z-10 md:w-full'>
           <h1 className='text-2xl fontArci mb-2'>Experiencia</h1>
           <div className='flex flex-col gap-2'>
