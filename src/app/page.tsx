@@ -14,7 +14,7 @@ import ProfesionalGridSearch from "@/components/platform/institution/Profesional
 export default function Home() {
   return (
     <main className='flex flex-col items-center gap- min-h-screen justify-center'>
-      <div>
+      {/* <div>
         Usuarios Para prueba
         <div>
           DEVNODE
@@ -22,7 +22,7 @@ export default function Home() {
           <p>Profesional: rrhhmmtt@gmail.com pass:12345</p>
           <p>admin: sdsQ@huss.com pass:12345</p>
         </div>
-      </div>
+      </div> */}
       <Carrousel />
       <Steps />
       <GridHomeWindows />
