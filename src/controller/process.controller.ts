@@ -9,6 +9,7 @@ import {
   getProcessByIdService,
   getProcessesByUserIdService,
   deleteExtraSpecialityByProcessIdService,
+  deleteProcessByIdService,
   updateProcessService,
   getPausedProcessesByUserIdService,
   getArchivedProcessesByUserIdService,
@@ -19,6 +20,7 @@ import {
   addPProfesionalToProcessService,
   deleteProfesionalFromProcessService,
   getProfesionalSelectedByProfesionalIdService,
+  getAllProcessesService,
 } from "@/service/process.service";
 import { getUserDataService } from "@/service/userData.service";
 
@@ -97,6 +99,11 @@ export const getAllActiveProcesses = async (status: string) => {
   return result;
 };
 
+export const getAllPendingProcesses = async () => {
+  const result = await getAllProcessesByStatusService("pending");
+  return result;
+}
+
 export const getProccessesActiveByUserId = async (userId: string | undefined) => {
   const result = await getActiveProcessesByUserIdService(userId);
   return result;
@@ -110,6 +117,15 @@ export const getProcessById = async (processId: number) => {
 export const updateProcessStatusById = async (processId: number, status: string) => {
   const dataPack = {
     status: status,
+  };
+  const result = await updateProcessService(processId, dataPack);
+  return result;
+};
+
+export const updateProcessStatusByManagerById = async (processId: number, status: string) => {
+  const dataPack = {
+    status: status,
+    approval_date: new Date(),
   };
   const result = await updateProcessService(processId, dataPack);
   return result;
@@ -215,3 +231,18 @@ export const getProcessesWhereProfesionalIsListed = async (professionalId: strin
 };
 
 export const updateProfesionalFromProcess = async (processId: number, professionalId: string, data: any) => {};
+
+export const deleteProcessById = async (processId: number) => {
+  try {
+    const result = await deleteProcessByIdService(processId);
+    return result;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error deleting process with ID ${processId}: ${errorMessage}`);
+  }
+};
+
+export const getAllProcesses = async() => {
+  const result = await getAllProcessesService()
+  return result;
+}

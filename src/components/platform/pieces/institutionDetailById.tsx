@@ -24,13 +24,13 @@ export default function InstitutionDetailById(props: any) {
   //formateo de pais
   const countryName: ICountry | undefined = Country?.getCountryByCode(InstitutionData.country);
   return (
-    <div className='Total grid gap-2 md:grid-cols-3 pt-2 overflow-auto'>
+    <div className='Total grid gap-2 md:grid-cols-3 pt-2 overflow-auto md:text-lg'>
       <div className='flex flex-col justify-center align-middle items-center'>
         <div className='relative w-40 h-40'>
           <Image src='/logos/Logo Arcidrade Cond.png' className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
         </div>
         <h1 className='text-2xl fontArci text-center'>{InstitutionData.fake_name || "Nombre de la institución"}</h1>
-        <p className='text-center'>{InstitutionData.main_speciality || "Especialización"}</p>
+        <p className='text-center capitalize'>{InstitutionData.main_speciality || "Especialización"}</p>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci text'>Presentación</h1>

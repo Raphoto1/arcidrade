@@ -43,50 +43,105 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
     <title>Registro de Cuenta</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
         }
         .container {
-            width: 600px;
-            margin: 40px auto;
-            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
             background-color: #ffffff;
-            border: 1px solid #ddd;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(56, 76, 155, 0.1);
+            overflow: hidden;
         }
         .header {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
+            background: linear-gradient(135deg, #384c9b 0%, #bcceec 100%);
+            color: #ffffff;
+            padding: 30px 20px;
             text-align: center;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
         }
         .content {
-            padding: 20px;
+            padding: 30px 25px;
+            line-height: 1.6;
+            color: #333333;
+        }
+        .content p {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        .btn-primary {
+            display: inline-block;
+            background: linear-gradient(135deg, #384c9b 0%, #e94936 100%);
+            color: #ffffff;
+            text-decoration: none;
+            padding: 15px 30px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 16px;
+            margin: 20px 0;
+            box-shadow: 0 4px 12px rgba(56, 76, 155, 0.3);
+            transition: transform 0.2s ease;
+        }
+        .btn-primary:hover {
+            transform: translateY(-2px);
         }
         .footer {
-            background-color: #333;
-            color: #fff;
-            padding: 10px;
+            background-color: #384c9b;
+            color: #ffffff;
+            padding: 25px 20px;
             text-align: center;
-            border-top: 1px solid #ddd;
+            border-top: 3px solid #e94936;
+        }
+        .footer p {
+            margin: 8px 0;
+        }
+        .contact-info {
+            background-color: #bcceec;
+            color: #384c9b;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
+            <img src="https://arcidrade.com/logos/Logo Arcidrade Cond.png" alt="Arcidrade Logo" class="logo" />
             <h2>Complete su registro en Arcidrade</h2>
         </div>
         <div class="content">
-            <p>Buen dia,</b>,</p>
-            <p>estamos emocionados de que este interesado en unirse a nuestra comunidad. Para completar el registro, por favor haga click en el enlace siguiente:</p>
-            <a href="${process.env.PLAT_URL}/completeInvitation/${referCode}" target="_blank">Completar Registro</a>
-            <p></p>
+            <p><strong>¡Buen día!</strong></p>
+            <p>Estamos emocionados de que esté interesado en unirse a nuestra comunidad profesional. Para completar el registro, por favor haga clic en el enlace siguiente:</p>
+            <div style="text-align: center; margin: 25px 0;">
+                <a href="${process.env.PLAT_URL}/completeInvitation/${referCode}" target="_blank" class="btn-primary">
+                    Completar Registro
+                </a>
+            </div>
+            <p>Este enlace es seguro y lo dirigirá directamente a nuestro formulario de registro.</p>
         </div>
         <div class="footer">
-            <p>Gracias por tu interés en nuestra comunidad. Si tienes alguna pregunta o necesitas ayuda, no dudes en hacérlo saber.</p>
-            <p>contacto@arcidrade.com</p>
-            <p>¡Bienvenido a Arcidrade!</p>
+            <p><strong>¡Bienvenido a Arcidrade!</strong></p>
+            <p>Gracias por tu interés en nuestra comunidad. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
+            <div class="contact-info">
+                <p>📧 contacto@arcidrade.com</p>
+            </div>
         </div>
     </div>
 </body>
@@ -119,8 +174,8 @@ export async function sendContactMail(contactData: ContactFormData) {
     "soporte-tecnico": "Soporte Técnico",
     "registro-profesional": "Registro como Profesional",
     "registro-institucion": "Registro como Institución",
-    "colaboracion": "Oportunidades de Colaboración",
-    "otro": "Consulta General"
+    colaboracion: "Oportunidades de Colaboración",
+    otro: "Consulta General",
   };
 
   const subjectText = subjectMapping[contactData.subject] || "Consulta General";
@@ -140,59 +195,101 @@ export async function sendContactMail(contactData: ContactFormData) {
     <title>Nuevo Mensaje de Contacto</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #bcceec 0%, #f5f7fa 100%);
             margin: 0;
             padding: 20px;
+            line-height: 1.6;
         }
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(56, 76, 155, 0.15);
             overflow: hidden;
         }
         .header {
-            background-color: #2c5aa0;
-            color: #fff;
-            padding: 20px;
+            background: linear-gradient(135deg, #384c9b 0%, #2c3e87 100%);
+            color: #ffffff;
+            padding: 32px 20px;
             text-align: center;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://arcidrade.com/logo-white.png') no-repeat center;
+            background-size: 120px auto;
+            opacity: 0.1;
+        }
+        .header h2 {
+            margin: 0 0 8px 0;
+            font-size: 26px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }
         .content {
-            padding: 30px;
+            padding: 40px 30px;
         }
         .field {
-            margin-bottom: 20px;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
+            margin-bottom: 24px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
+            border-radius: 10px;
+            border-left: 4px solid #384c9b;
+            box-shadow: 0 2px 8px rgba(56, 76, 155, 0.08);
         }
         .field:last-child {
-            border-bottom: none;
             margin-bottom: 0;
         }
         .label {
-            font-weight: bold;
-            color: #333;
+            font-weight: 600;
+            color: #384c9b;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 8px;
+            font-size: 15px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
         .value {
-            color: #666;
-            line-height: 1.5;
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 16px;
         }
         .message-box {
-            background-color: #f9f9f9;
-            padding: 15px;
-            border-left: 4px solid #2c5aa0;
-            border-radius: 4px;
+            background: linear-gradient(135deg, #bcceec 0%, #e8f0ff 100%);
+            padding: 20px;
+            border-radius: 10px;
+            border: 1px solid #d0ddf7;
+            margin-top: 10px;
         }
         .footer {
-            background-color: #f8f9fa;
-            padding: 20px;
+            background: linear-gradient(135deg, #f8f9fc 0%, #e8f0ff 100%);
+            padding: 24px;
             text-align: center;
-            color: #666;
+            color: #5a6c7d;
             font-size: 14px;
+            border-top: 1px solid #e8f0ff;
+        }
+        .footer p {
+            margin: 8px 0;
+        }
+        .priority-high {
+            background: linear-gradient(135deg, #fff5f5 0%, #fee);
+            border-left-color: #e94936;
         }
     </style>
 </head>
@@ -213,14 +310,18 @@ export async function sendContactMail(contactData: ContactFormData) {
                 <span class="value">${contactData.email}</span>
             </div>
             
-            ${contactData.phone ? `
+            ${
+              contactData.phone
+                ? `
             <div class="field">
                 <span class="label">📱 Teléfono:</span>
                 <span class="value">${contactData.phone}</span>
             </div>
-            ` : ''}
+            `
+                : ""
+            }
             
-            <div class="field">
+            <div class="field ${subjectText.includes("Técnico") ? "priority-high" : ""}">
                 <span class="label">📋 Asunto:</span>
                 <span class="value">${subjectText}</span>
             </div>
@@ -228,20 +329,23 @@ export async function sendContactMail(contactData: ContactFormData) {
             <div class="field">
                 <span class="label">💬 Mensaje:</span>
                 <div class="message-box">
-                    <span class="value">${contactData.message.replace(/\n/g, '<br>')}</span>
+                    <span class="value">${contactData.message.replace(/\n/g, "<br>")}</span>
                 </div>
             </div>
         </div>
         <div class="footer">
-            <p>Este mensaje fue enviado desde el formulario de contacto de ARCIDRADE</p>
-            <p>Fecha: ${new Date().toLocaleString('es-ES', { 
-              timeZone: 'America/New_York',
-              year: 'numeric',
-              month: 'long',
-              day: 'numeric',
-              hour: '2-digit',
-              minute: '2-digit'
+            <p><strong>📧 Mensaje enviado desde ARCIDRADE</strong></p>
+            <p>🕒 Recibido el ${new Date().toLocaleString("es-ES", {
+              timeZone: "America/New_York",
+              year: "numeric",
+              month: "long",
+              day: "numeric",
+              hour: "2-digit",
+              minute: "2-digit",
             })}</p>
+            <p style="margin-top: 16px; color: #384c9b; font-weight: 600;">
+                Responder directamente a: ${contactData.email}
+            </p>
         </div>
     </div>
 </body>
@@ -262,78 +366,167 @@ export async function sendContactMail(contactData: ContactFormData) {
     <title>Confirmación de Contacto</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f7f7f7;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #bcceec 0%, #f5f7fa 100%);
             margin: 0;
             padding: 20px;
+            line-height: 1.6;
         }
         .container {
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
             background-color: #ffffff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(56, 76, 155, 0.15);
             overflow: hidden;
         }
         .header {
-            background-color: #2c5aa0;
-            color: #fff;
-            padding: 30px 20px;
+            background: linear-gradient(135deg, #384c9b 0%, #2c3e87 100%);
+            color: #ffffff;
+            padding: 40px 20px;
             text-align: center;
+            position: relative;
+        }
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('https://arcidrade.com/logo-white.png') no-repeat center top;
+            background-size: 100px auto;
+            opacity: 0.1;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 28px;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
+        }
+        .header p {
+            margin: 0;
+            font-size: 16px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
         }
         .content {
-            padding: 30px;
+            padding: 40px 30px;
             text-align: center;
+        }
+        .content p {
+            font-size: 16px;
+            color: #2c3e50;
+            margin: 16px 0;
         }
         .message-summary {
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 8px;
-            margin: 20px 0;
-            border-left: 4px solid #2c5aa0;
+            background: linear-gradient(135deg, #bcceec 0%, #e8f0ff 100%);
+            padding: 24px;
+            border-radius: 12px;
+            margin: 24px 0;
+            border: 1px solid #d0ddf7;
+            box-shadow: 0 2px 8px rgba(56, 76, 155, 0.08);
         }
-        .footer {
-            background-color: #2c5aa0;
-            color: #fff;
+        .message-summary h3 {
+            margin: 0 0 16px 0;
+            color: #384c9b;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .message-summary p {
+            margin: 8px 0;
+            color: #2c3e50;
+        }
+        .info-box {
+            background: linear-gradient(135deg, #f8f9fc 0%, #ffffff 100%);
             padding: 20px;
-            text-align: center;
+            border-radius: 10px;
+            border-left: 4px solid #e94936;
+            margin: 20px 0;
+            text-align: left;
+        }
+        .info-box p {
+            margin: 8px 0;
+            color: #2c3e50;
         }
         .btn {
             display: inline-block;
-            background-color: #ff6b35;
-            color: white;
-            padding: 12px 30px;
+            background: linear-gradient(135deg, #e94936 0%, #d63384 100%);
+            color: white !important;
+            padding: 16px 32px;
             text-decoration: none;
-            border-radius: 5px;
-            margin: 20px 0;
+            border-radius: 10px;
+            margin: 24px 0;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(233, 73, 54, 0.3);
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(233, 73, 54, 0.4);
+        }
+        .footer {
+            background: linear-gradient(135deg, #384c9b 0%, #2c3e87 100%);
+            color: #ffffff;
+            padding: 32px 20px;
+            text-align: center;
+        }
+        .footer p {
+            margin: 8px 0;
+            color: #ffffff !important;
+        }
+        .footer .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .contact-info {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>¡Gracias por contactarnos!</h1>
-            <p>Hemos recibido tu mensaje</p>
+            <h1>✅ ¡Gracias por contactarnos!</h1>
+            <p>Tu mensaje ha sido recibido exitosamente</p>
         </div>
         <div class="content">
             <p>Hola <strong>${contactData.name}</strong>,</p>
-            <p>Gracias por ponerte en contacto con ARCIDRADE. Hemos recibido tu mensaje sobre <strong>"${subjectText}"</strong> y nuestro equipo te responderá lo antes posible.</p>
+            <p>Gracias por ponerte en contacto con <strong>ARCIDRADE</strong>. Hemos recibido tu mensaje sobre <strong>"${subjectText}"</strong> y nuestro equipo te responderá lo antes posible.</p>
             
             <div class="message-summary">
-                <h3>Resumen de tu consulta:</h3>
+                <h3>📋 Resumen de tu consulta</h3>
                 <p><strong>Asunto:</strong> ${subjectText}</p>
-                <p><strong>Fecha:</strong> ${new Date().toLocaleDateString('es-ES')}</p>
+                <p><strong>Fecha de envío:</strong> ${new Date().toLocaleDateString("es-ES", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}</p>
             </div>
             
-            <p>📧 <strong>Tiempo de respuesta habitual:</strong> 24-48 horas</p>
-            <p>📞 <strong>Para consultas urgentes:</strong> contacto@arcidrade.com</p>
+            <div class="info-box">
+                <p>⏱️ <strong>Tiempo de respuesta habitual:</strong> 24-48 horas laborables</p>
+                <p>� <strong>Para consultas urgentes:</strong> contacto@arcidrade.com</p>
+                <p>🔄 <strong>Seguimiento:</strong> Te notificaremos por este mismo email cuando tengamos una respuesta</p>
+            </div>
             
-            <a href="${process.env.PLAT_URL}" class="btn">Visitar ARCIDRADE</a>
+            <a href="${process.env.PLAT_URL || "https://arcidrade.com"}" class="btn">🏠 Visitar ARCIDRADE</a>
         </div>
         <div class="footer">
-            <p><strong>ARCIDRADE</strong></p>
-            <p>Conectando talento médico con oportunidades</p>
-            <p>📧 contacto@arcidrade.com | 📱 +1 (555) 123-4567</p>
+            <div class="logo-text">ARCIDRADE</div>
+            <p>Conectando talento médico con oportunidades excepcionales</p>
+            <div class="contact-info">
+                <p>📧 contacto@arcidrade.com</p>
+                <p>🌐 www.arcidrade.com</p>
+            </div>
         </div>
     </div>
 </body>
@@ -344,13 +537,10 @@ export async function sendContactMail(contactData: ContactFormData) {
       success: true,
       adminMessageId: adminInfo.messageId,
       userMessageId: userInfo.messageId,
-      message: "Emails enviados exitosamente"
+      message: "Emails enviados exitosamente",
     };
-
   } catch (error) {
     console.error("Error sending contact emails:", error);
     throw new Error("Error al enviar los emails de contacto");
   }
 }
-
-

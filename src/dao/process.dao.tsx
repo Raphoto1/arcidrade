@@ -24,6 +24,18 @@ export const getAllProcessesDao = async () => {
   }
 };
 
+export const getAllProcessesPendingDao = async () => {
+  try {
+    const processes = await prisma.process.findMany({
+      where: { status: "pending" },
+    });
+    return processes;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error fetching all pending processes: ${errorMessage}`);
+  }
+};
+
 export const getProcessesByUserIdDao = async (user_id: string | undefined) => {
   try {
     const processes = await prisma.process.findMany({
@@ -65,6 +77,7 @@ export const getProcessesFilteredByStatusDao = async (status: process_status) =>
   try {
     const filteredProcesses = await prisma.process.findMany({
       where: { status: status },
+      include: { extra_specialities: true, profesionals_listed: true },
     });
     return filteredProcesses;
   } catch (error) {
@@ -179,3 +192,16 @@ export const getProfesionalSelectedByProfesionalIdDao = async (profesional_id: s
   });
   return result;
 }
+
+export const deleteProcessByIdDao = async (process_id: number) => {
+  try {
+    // Gracias al onDelete: Cascade, las tablas relacionadas se eliminarán automáticamente
+    const deletedProcess = await prisma.process.delete({
+      where: { id: process_id },
+    });
+    return deletedProcess;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error deleting process with ID ${process_id}: ${errorMessage}`);
+  }
+};

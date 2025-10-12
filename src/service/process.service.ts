@@ -1,10 +1,11 @@
-import { updateProcessById } from "@/controller/process.controller";
+import { getAllProcesses, updateProcessById } from "@/controller/process.controller";
 import {
   AddProfesionalToProcessDao,
   createExtraSpecialityDao,
   createProcessDao,
   deleteExtraSpecialityByProcessIdDao,
   deleteProfesionalFromProcessDao,
+  deleteProcessByIdDao,
   getProcessByIdDao,
   getProcessesByUserIdDao,
   getProcessesByUserIdFilteredByStatusDao,
@@ -12,7 +13,8 @@ import {
   getProfesionalSelectedByProcessIdDao,
   getProfesionalsSelectedByProcessIdDao,
   updateProcessByIdDao,
-  getProfesionalSelectedByProfesionalIdDao
+  getProfesionalSelectedByProfesionalIdDao,
+  getAllProcessesDao
 } from "@/dao/process.dao";
 
 export const createProcessService = async (data: any) => {
@@ -79,6 +81,11 @@ export const getAllProcessesByStatusService = async (status: string) => {
   return result;
 }
 
+export const getAllProcessesPendingService = async () => {
+  const result = await getAllProcessesByStatusService("pending");
+  return result;
+}
+
 export const deleteExtraSpecialityByProcessIdService = async (id: number) => {
   const result = await deleteExtraSpecialityByProcessIdDao(id);
   return result;
@@ -111,5 +118,15 @@ export const deleteProfesionalFromProcessService = async (processId: number, pro
 
 export const getProfesionalSelectedByProfesionalIdService = async (profesional_id: string) => {
   const result= await getProfesionalSelectedByProfesionalIdDao(profesional_id);
+  return result;
+}
+
+export const deleteProcessByIdService = async (process_id: number) => {
+  const result = await deleteProcessByIdDao(process_id);
+  return result;
+}
+
+export const getAllProcessesService = async() => {
+  const result = await getAllProcessesDao();
   return result;
 }

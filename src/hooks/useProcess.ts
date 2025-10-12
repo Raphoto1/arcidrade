@@ -55,3 +55,19 @@ export const useProfesionalsListedInProcess = (processId: number | null) => {
   );
   return { data, error, isLoading, mutate };
 };
+
+export const useAllProcesses= () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/platform/process/all`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}
+
+export const useAllPendingProcesses= () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/platform/process/all/pending`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}

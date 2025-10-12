@@ -333,7 +333,7 @@ model extra_specialities {
   speciality String
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  process    Process  @relation(fields: [process_id], references: [id])
+  process    Process  @relation(fields: [process_id], references: [id], onDelete: Cascade)
 }
 
 model profesionals_listed {
@@ -346,5 +346,5 @@ model profesionals_listed {
   feedback       String?
   created_at     DateTime                   @default(now())
   updated_at     DateTime                   @updatedAt
-  process        Process                    @relation(fields: [process_id], references: [id])
+  process        Process                    @relation(fields: [process_id], references: [id], onDelete: Cascade)
 }
