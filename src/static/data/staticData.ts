@@ -46,7 +46,7 @@ export const aboutItems: any = [
   {
     title: "Socio",
     description: "Socio de confianza para inversores latinoamericanos en Europa",
-    image: "https://images.pexels.com/photos/5716001/pexels-photo-5716001.jpeg",
+    image: "https://images.pexels.com/photos/3184465/pexels-photo-3184465.jpeg",
   },
   {
     title: "Acceso",
