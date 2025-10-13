@@ -19,7 +19,7 @@ function NavBar() {
           <li>
             <Link href={"/about"}>Acerca de nosotros</Link>
           </li>
-          <li>
+          {/* <li>
             <details className="z-30">
               <summary>Ofertas</summary>
               <ul className='p-2'>
@@ -31,7 +31,7 @@ function NavBar() {
                 </li>
               </ul>
             </details>
-          </li>
+          </li> */}
           <li>
             <Link href={"/services"}>Servicios</Link>
           </li>
@@ -74,7 +74,7 @@ function NavBar() {
             <li>
               <a>Acerca de nosotros</a>
             </li>
-            <li>
+            {/* <li>
               <a>Ofertas</a>
               <ul className='p-2'>
                 <li>
@@ -84,7 +84,7 @@ function NavBar() {
                   <Link href={"/offers/Profesionals"}>Profesionales</Link>
                 </li>
               </ul>
-            </li>
+            </li> */}
             <li>
               <Link href={"/services"}>Servicios</Link>
             </li>
