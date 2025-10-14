@@ -21,55 +21,54 @@ export default function VictorHeroHeader() {
   }
 
   return (
-    <div>
-      <Image
-        src='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'
-        className={`h-100 max-w-full absolute object-cover opacity-10 filter-blur-xl md:max-h-1/3 bg-gradient-to-b from-gray-200 to-transparent`}
-        width={1000}
-        height={1000}
-        objectFit='cover'
-        alt='fillImage'
+    <div className='relative w-full md:h-[340px] overflow-hidden'>
+      {/* Imagen de fondo con opacidad */}
+      <div
+        className='absolute inset-0 bg-cover bg-center opacity-10'
+        style={{
+          backgroundImage: "url('https://images.pexels.com/photos/7579823/pexels-photo-7579823.jpeg')",
+        }}
       />
-      <div className='HeroArea w-full md:flex flex-colum justify-center items-center align-middle p-2 md:pr-20'>
-        <div className=' vacio none md:visible md:w-1/3 z-1'></div>
-        <div className='avata grid justify-center align-middle items-center p-2 z-1 md:w-1/3'>
-          <div className='flex justify-center align-middle items-center'>
+      {/* Degradado inferior hacia transparente */}
+      <div className='absolute bottom-0 left-0 right-0 h-[160px] bg-gradient-to-t from-white via-transparent to-transparent' />
+      {/* Contenido principal */}
+      <div className='HeroArea w-full flex justify-center items-center align-middle p-2 md:pr-5 relative z-10'>
+        <div className='vacio none md:visible md:w-1/3 z-10'></div>
+        <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 md:w-1/3'>
+          <div className='relative w-40 h-40'>
             <Image
               src='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'
-              className='w-40 h-40 max-w-96 rounded-full justify-center align-middle items-center'
+              className='w-full h-full rounded-full object-cover'
               width={500}
               height={500}
-              objectFit='cover'
-              alt='fillImage'
+              alt='Victor Profile Image'
             />
           </div>
-          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2'>Victor</h2>
+          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2 capitalize'>Victor</h2>
         </div>
-        <div className='generalSpot bg-gray-200 p-4 rounded-sm z-10 md:w-1/3 items-center justify-center'>
-          <h1 className='text-xl'>Informe General</h1>
-          <div className='flex justify-between align-middle items-center p-2 w-xs bg-white rounded-md m-2'>
-            <h3 className='text-(--main-arci)'>Procesos Activos</h3>
+        <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3'>
+          <h1 className='text-xl font-bold font-var(--font-oswald) mb-4'>Informe General</h1>
+          
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Activos</h3>
             <p className="font-bold text-green-600">{processStats.active}</p>
           </div>
-          {/* <div className='flex justify-between align-middle items-center p-2 w-xs bg-white rounded-md m-2'>
-            <h3 className='text-(--main-arci)'>Procesos En Proceso</h3>
-            <p className="font-bold text-blue-600">{processStats.in_process}</p>
-          </div> */}
-          <div className='flex justify-between align-middle items-center p-2 w-xs bg-white rounded-md m-2'>
-            <h3 className='text-(--main-arci)'>Procesos Pendientes</h3>
+          
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Pendientes</h3>
             <p className="font-bold text-yellow-600">{processStats.pending}</p>
           </div>
-          <div className='flex justify-between align-middle items-center p-2 w-xs bg-white rounded-md m-2'>
-            <h3 className='text-(--main-arci)'>Procesos Finalizados</h3>
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Finalizados</h3>
             <p className="font-bold text-gray-600">{processStats.completed}</p>
           </div>
-          <div className='flex justify-between align-middle items-center p-2 w-xs bg-white rounded-md m-2'>
-            <h3 className='text-(--main-arci)'>Procesos Archivados</h3>
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Archivados</h3>
             <p className="font-bold text-gray-500">{processStats.archived}</p>
           </div>
-          <div className='flex justify-between align-middle items-center p-2 w-xs bg-white rounded-md m-2'>
-            <h3 className='text-(--main-arci)'>Total de Procesos</h3>
-            <p className="font-bold text-indigo-600">{processStats.total}</p>
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-[var(--main-arci)] bg-opacity-10 rounded-md m-2 border border-[var(--main-arci)] border-opacity-20'>
+            <h3 className='text-[var(--soft-arci)] font-bold'>Total de Procesos</h3>
+            <p className="font-bold text-[var(--soft-arci)] text-lg">{processStats.total}</p>
           </div>
         </div>
       </div>

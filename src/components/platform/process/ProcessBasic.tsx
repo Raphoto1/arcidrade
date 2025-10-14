@@ -50,7 +50,7 @@ export default function ProcessBasic(props: any) {
           </div>
         </div>
       </div>
-      <div className='candidatos'>
+      <div className='candidato min-w-full'>
         <Grid>
           {profesionals?.map((profesional: any) => (
             <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} />
@@ -62,7 +62,7 @@ export default function ProcessBasic(props: any) {
           )}
         </Grid>
       </div>
-      {props.process.type == "arcidrade" ? null : (
+      {process.type === "arcidrade" ? (
         <div className='candidatos-arci'>
           <p className='text-start fontRoboto text-(--main-arci) align-middle bg-gray-100'>Seleccionados ARCIDRADE</p>
           <Grid>
@@ -76,7 +76,7 @@ export default function ProcessBasic(props: any) {
             )}
           </Grid>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
