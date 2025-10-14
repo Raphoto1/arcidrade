@@ -26,20 +26,19 @@ export default function Home() {
       <Carrousel />
       <Steps />
       <GridHomeWindows />
-      <BrColors title={"Ofertas"} />
       <ThreeColumnGrid />
       <BrColors title={"Principales Ciudades"} />
       <GridHomeWindowsCities />
       <BrColors title={"Principales Especialidades"} />
       <GridHomeWindowsSpecialities />
-      <BrColors title={"Profesionales"} />
+      {/* <BrColors title={"Profesionales"} />
       <div className='w-full flex flex-col items-center justify-center p-4'>
         <InstitutionGridSearch isFake={true} />
       </div>
             <BrColors title={"Instituciones"} />
       <div className='w-full flex flex-col items-center justify-center p-4'>
         <ProfesionalGridSearch isFake={true} />
-      </div>
+      </div> */}
     </main>
   );
 }

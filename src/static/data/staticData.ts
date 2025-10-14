@@ -7,16 +7,16 @@ export const offers: any = [
 
 export const mainCities: any = [
   { title: "Madrid", image: "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
-  { title: "Coruña", image: "https://images.pexels.com/photos/5734971/pexels-photo-5734971.jpeg" },
+  { title: "Malaga", image: "https://images.pexels.com/photos/34257932/pexels-photo-34257932.jpeg" },
   { title: "Cataluña", image: "https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg" },
-  { title: "Más Ciudades", image: "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg" },
+  { title: "Cantabria", image: "https://images.pexels.com/photos/13441966/pexels-photo-13441966.jpeg" },
 ];
 
 export const mainSpecialities: any = [
-  { title: "Cirugia", image: "https://images.pexels.com/photos/3757144/pexels-photo-3757144.jpeg" },
-  { title: "Medico General", image: "https://images.pexels.com/photos/5734971/pexels-photo-5734971.jpeg" },
-  { title: "Medicina Nuclear", image: "https://images.pexels.com/photos/33389195/pexels-photo-33389195.jpeg" },
-  { title: "Ver Más", image: "https://images.pexels.com/photos/355935/pexels-photo-355935.jpeg" },
+  { title: "Cirugia", image: "https://images.pexels.com/photos/3844581/pexels-photo-3844581.jpeg" },
+  { title: "Medico General", image: "https://images.pexels.com/photos/5722164/pexels-photo-5722164.jpeg" },
+  { title: "Traumatología", image: "https://images.pexels.com/photos/8395815/pexels-photo-8395815.jpeg" },
+  { title: "Neurocirugía", image: "https://images.pexels.com/photos/30964756/pexels-photo-30964756.jpeg" },
 ];
 
 export const carouselHome: any = [

@@ -12,6 +12,9 @@ import { useProcess } from "@/hooks/useProcess";
 import { useHandleStatusName } from "@/hooks/useUtils";
 import ProcessDetail from "../platform/process/ProcessDetail";
 import { useSession } from "next-auth/react";
+import ModalForFormsGreenBtn from "../modals/ModalForFormsGreenBtn";
+import ConfirmAddProfesionalToProcessForm from "../forms/platform/process/ConfirmAddProfesionalToProcessForm";
+
 
 export default function InstitutionProcessCard(props: any) {
   const { data: session } = useSession()
@@ -80,6 +83,11 @@ export default function InstitutionProcessCard(props: any) {
                   <div>Cargando datos del proceso...</div>
                 )}
               </ModalForPreview>
+            )}
+            {props.applyButton && session?.user.area === "profesional" && (
+              <ModalForFormsGreenBtn title={"Aplicar al Proceso"}>
+                <ConfirmAddProfesionalToProcessForm ProcessId={processData?.payload.id} UserID={session?.user.id} addedBy={"profesional"} processPosition={processData?.payload.position} />
+              </ModalForFormsGreenBtn>
             )}
           </div>
         </div>

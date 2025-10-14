@@ -105,16 +105,16 @@ export default function Process(props: any) {
               </ModalForPreviewBtnLong>
             ) : (
               <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-                  <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+                <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
               </ModalForPreviewBtnLong>
             )}
             <ModalForFormsRedBtn title={"Eliminar Proceso"}>
               <ConfirmArchiveProcessForm id={processData?.id} />
             </ModalForFormsRedBtn>
-            <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
+            {/* <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
             <button className='btn bg-warning h-auto text-sm'>Pausar Proceso</button>
             <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extension</button>
-            <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Finalizar Proceso</button>
+            <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Finalizar Proceso</button> */}
           </div>
         </div>
       </div>
@@ -122,7 +122,15 @@ export default function Process(props: any) {
         <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados</h2>
         <Grid>
           {profesionals?.map((profesional: any) => (
-            <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} btnActive processId={processData.id} processPosition={processData.position} addedBy={'institution' }/>
+            <ProfesionalCard
+              key={profesional.id}
+              userId={profesional.profesional_id}
+              isFake={props.isFake}
+              btnActive
+              processId={processData.id}
+              processPosition={processData.position}
+              addedBy={"institution"}
+            />
           ))}
           {profesionals.length >= 3 ? null : (
             <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
@@ -131,7 +139,7 @@ export default function Process(props: any) {
           )}
         </Grid>
       </div>
-      {processData?.type == "arcidrade" ? null : (
+      {processData?.type == "arcidrade" ? (
         <div className='w-full pt-2'>
           <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
           <Grid>
@@ -140,7 +148,7 @@ export default function Process(props: any) {
             <EmptyCard />
           </Grid>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }

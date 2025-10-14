@@ -9,7 +9,7 @@ export default function ConfirmAddProfesionalToProcessForm(props: any) {
   const [isLoading, setIsLoading] = useState(false);
   const { closeModal } = useModal();
   const { data, mutate } = useProfesionalsListedInProcess(props.ProcessId);
-  const chk = data?.payload.find((item: any) => item.profesional_id === props.UserID);
+  const chk = data?.payload.find((item: any) => item.profesional_id === props.UserID && item.added_by === 'institution');
   
   if (chk) {
     return (
@@ -56,7 +56,7 @@ export default function ConfirmAddProfesionalToProcessForm(props: any) {
   };
   return (
     <div className='flex flex-col justify-center align-middle items-center'>
-      <h1 className='text-2xl fontArci text-center pb-5'>{`Se Agregara ${props.fullName} al Proceso ${props.processPosition}`}</h1>
+      <h1 className='text-2xl fontArci text-center pb-5'>{`${props.fullName||''} Se Agregara al Proceso ${props.processPosition}`}</h1>
       <button 
         className={`btn h-7 w-20 text-white text-center justify-center pt flex items-center ${
           isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--main-arci)]'

@@ -15,7 +15,7 @@ export default function ProcessBasic(props: any) {
   const { process } = props;
   const { diasRestantesFormateados } = useCalcApprovalDate(process.start_date, process.approval_date);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(process.id);
-  const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
+  const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution" ) || [];
   // Memoizar la fecha formateada para evitar recálculos innecesarios
   const formattedStartDate = useMemo(() => {
     return formatDateToString(process.start_date);

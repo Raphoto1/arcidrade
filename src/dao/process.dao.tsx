@@ -205,3 +205,15 @@ export const deleteProcessByIdDao = async (process_id: number) => {
     throw new Error(`Error deleting process with ID ${process_id}: ${errorMessage}`);
   }
 };
+
+export const getAllProfesionalAddedToProcessDao = async () => {
+  const result = await prisma.profesionals_listed.findMany();
+  return result;
+}
+
+export const getProfesionalsByAddedByDao = async (added_by: string) => {
+  const result = await prisma.profesionals_listed.findMany({
+    where: { added_by },
+  });
+  return result;
+};

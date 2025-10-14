@@ -54,17 +54,23 @@ export default function ProcessDetail(props: any) {
               <p className='text-sm'>{processData?.description}</p>
             </div>
           </div>
-            <div className='controles w-full flex justify-end mt-4'>
-              {props.btnActive ? (
-                        <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
-                          <ModalForForms title='Agregar Candidato'>
-                            <ConfirmAddProfesionalToProcessForm UserID={props.profesionalId} ProcessId={processData.id} fullName={props.fullName || "postulación"} processPosition={processData.position} addedBy={props.addedBy || 'profesional'} />
-                          </ModalForForms>
-                        </div>
-                      ) : (
-                        <div></div>
-                      )}
-            </div>
+          <div className='controles w-full flex justify-end mt-4'>
+            {props.btnActive ? (
+              <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
+                <ModalForForms title='Agregar Candidato'>
+                  <ConfirmAddProfesionalToProcessForm
+                    UserID={props.profesionalId}
+                    ProcessId={processData.id}
+                    fullName={props.fullName || "postulación"}
+                    processPosition={processData.position}
+                    addedBy={props.addedBy || "profesional"}
+                  />
+                </ModalForForms>
+              </div>
+            ) : (
+              <div></div>
+            )}
+          </div>
         </div>
       </div>
     </div>

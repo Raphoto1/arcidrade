@@ -21,8 +21,12 @@ import {
   deleteProfesionalFromProcessService,
   getProfesionalSelectedByProfesionalIdService,
   getAllProcessesService,
+  getAllProfesionalAddedByProfesionalService,
+  getAllProfesionalAddedByInstitutionService,
+  getAllProfesionalAddedByService,
 } from "@/service/process.service";
 import { getUserDataService } from "@/service/userData.service";
+import { getProfesionalsByAddedByDao } from "@/dao/process.dao";
 
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
@@ -245,4 +249,17 @@ export const deleteProcessById = async (processId: number) => {
 export const getAllProcesses = async() => {
   const result = await getAllProcessesService()
   return result;
+}
+
+export const getAllProfesionalsPostulatedByAddedBy = async (addedBy: string | null) => {
+  switch (addedBy) {
+    case 'profesional':
+      return await getAllProfesionalAddedByProfesionalService();
+    case 'institution':
+      return await getAllProfesionalAddedByInstitutionService();
+        case null:
+      return await getAllProfesionalAddedByService();
+    default:
+      throw new Error(`Invalid addedBy value: ${addedBy}`);
+  }
 }

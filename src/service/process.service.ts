@@ -14,7 +14,9 @@ import {
   getProfesionalsSelectedByProcessIdDao,
   updateProcessByIdDao,
   getProfesionalSelectedByProfesionalIdDao,
-  getAllProcessesDao
+  getAllProcessesDao,
+  getProfesionalsByAddedByDao,
+  getAllProfesionalAddedToProcessDao,
 } from "@/dao/process.dao";
 
 export const createProcessService = async (data: any) => {
@@ -79,12 +81,12 @@ export const getAllProcessesByStatusService = async (status: string) => {
   // Simulate a service call to get all processes by status
   const result = await getProcessesFilteredByStatusDao(status as any);
   return result;
-}
+};
 
 export const getAllProcessesPendingService = async () => {
   const result = await getAllProcessesByStatusService("pending");
   return result;
-}
+};
 
 export const deleteExtraSpecialityByProcessIdService = async (id: number) => {
   const result = await deleteExtraSpecialityByProcessIdDao(id);
@@ -99,34 +101,49 @@ export const updateProcessService = async (id: number, data: any) => {
 export const getProfesionalsSelectedByProcessIdService = async (process_id: number) => {
   const result = await getProfesionalsSelectedByProcessIdDao(process_id);
   return result;
-}
+};
 
 export const getProfesionalSelectedByProcessIdService = async (process_id: number, profesional_id: string) => {
   const result = await getProfesionalSelectedByProcessIdDao(process_id, profesional_id);
   return result;
-}
+};
 
-export const addPProfesionalToProcessService = async (dataPack: any) => { 
+export const addPProfesionalToProcessService = async (dataPack: any) => {
   const result = await AddProfesionalToProcessDao(dataPack);
   return result;
-}
+};
 
-export const deleteProfesionalFromProcessService = async (processId: number, profesionalId: string) => { 
+export const deleteProfesionalFromProcessService = async (processId: number, profesionalId: string) => {
   const result = await deleteProfesionalFromProcessDao(processId, profesionalId);
   return result;
-}
+};
 
 export const getProfesionalSelectedByProfesionalIdService = async (profesional_id: string) => {
-  const result= await getProfesionalSelectedByProfesionalIdDao(profesional_id);
+  const result = await getProfesionalSelectedByProfesionalIdDao(profesional_id);
   return result;
-}
+};
+
+export const getAllProfesionalAddedByProfesionalService = async () => {
+  const result = await getProfesionalsByAddedByDao("profesional");
+  return result;
+};
+
+export const getAllProfesionalAddedByInstitutionService = async () => {
+  const result = await getProfesionalsByAddedByDao("institution");
+  return result;
+};
+
+export const getAllProfesionalAddedByService = async () => {
+  const result = await getAllProfesionalAddedToProcessDao();
+  return result;
+};
 
 export const deleteProcessByIdService = async (process_id: number) => {
   const result = await deleteProcessByIdDao(process_id);
   return result;
-}
+};
 
-export const getAllProcessesService = async() => {
+export const getAllProcessesService = async () => {
   const result = await getAllProcessesDao();
   return result;
-}
+};

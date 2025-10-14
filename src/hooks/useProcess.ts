@@ -56,6 +56,14 @@ export const useProfesionalsListedInProcess = (processId: number | null) => {
   return { data, error, isLoading, mutate };
 };
 
+export const useAllProfesionalsPostulatedByAddedBy = (addedBy: string | null) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    addedBy ? `/api/platform/process/all/candidates/${addedBy}` : null,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+};
+
 export const useAllProcesses= () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     `/api/platform/process/all`,
