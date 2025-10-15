@@ -24,7 +24,7 @@ export default function MyAplications() {
         <Grid>
           {profesionalApplications.length > 0 ? (
             profesionalApplications.map((process: any, index: number) => (
-              <InstitutionProcessCard key={process.id || index} processId={process.process_id} isFake={true} />
+              <InstitutionProcessCard key={process.id || index} processId={process.process_id} isFake={true} btnActive={false} />
             ))
           ) : (
             <div className="col-span-full flex justify-center items-center py-8">

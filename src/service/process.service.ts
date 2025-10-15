@@ -17,6 +17,8 @@ import {
   getAllProcessesDao,
   getProfesionalsByAddedByDao,
   getAllProfesionalAddedToProcessDao,
+  updateProfesionalListedByProcessIdAndAddedByDao,
+  deleteProfesionalListedByProcessIdAndAddedByDao,
 } from "@/dao/process.dao";
 
 export const createProcessService = async (data: any) => {
@@ -147,3 +149,13 @@ export const getAllProcessesService = async () => {
   const result = await getAllProcessesDao();
   return result;
 };
+
+export const updateProfesionalListedByProcessIdAndAddedByService = async (processId: number, profesionalId: string, addedBy: string, data: any) => {
+  const result = await updateProfesionalListedByProcessIdAndAddedByDao(processId, profesionalId, addedBy, data);
+  return result;
+}
+
+export const deleteProfesionalListedByProcessIdAndAddedByService = async (processId: number, profesionalId: string, addedBy: string) => {
+  const result = await deleteProfesionalListedByProcessIdAndAddedByDao(processId, profesionalId, addedBy);
+  return result;
+}

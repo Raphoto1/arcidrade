@@ -1,7 +1,6 @@
 'use client'
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { useProfesional } from "@/hooks/usePlatPro";
 import { useProfesionalsListedInProcess } from "@/hooks/useProcess";
 
 export default function ConfirmAddProfesionalToProcessForm(props: any) {

@@ -20,6 +20,7 @@ export default function Process(props: any) {
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
   const processData = data?.payload;
   const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
+  const profesionalsArci = profesionalsSelected?.payload?.filter((profesional: any) => profesional.is_arcidrade) || [];
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
 
   // Memoizar el formateo de fecha para evitar recálculos
@@ -143,9 +144,18 @@ export default function Process(props: any) {
         <div className='w-full pt-2'>
           <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
           <Grid>
-            <ProfesionalCard />
-            <ProfesionalCard />
-            <EmptyCard />
+            {/*logica procesos arcidrade*/}
+           {profesionalsArci?.map((profesional: any) => (
+            <ProfesionalCard
+              key={profesional.id}
+              userId={profesional.profesional_id}
+              isFake={props.isFake}
+              btnActive
+              processId={processData.id}
+              processPosition={processData.position}
+              addedBy={"institution"}
+            />
+          ))}
           </Grid>
         </div>
       ) : null}

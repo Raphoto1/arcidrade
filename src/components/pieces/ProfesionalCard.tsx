@@ -1,5 +1,5 @@
 'use client'
-import React, { use } from "react";
+import React, { useMemo } from "react";
 import { CiMedal } from "react-icons/ci";
 import Image from "next/image";
 import { useProfesional, useProfesionalById } from "@/hooks/usePlatPro";
@@ -15,6 +15,7 @@ import ConfirmAddProfesionalToProcessForm from "../forms/platform/process/Confir
 import ModalForFormsRedBtn from "../modals/ModalForFormsRedBtn";
 import ConfirmDeleteProfesionalToProcessForm from "../forms/platform/process/ConfirmDeleteProfesionalToProcessForm";
 import ModalForForms from "../modals/ModalForForms";
+import { fakerES as faker } from "@faker-js/faker";
 
 export default function ProfesionalCard(props: any) {
   const isFake = props.isFake;
@@ -32,26 +33,69 @@ export default function ProfesionalCard(props: any) {
     ? profesionalData.main_study[0] || {} 
     : {};
   
+  // Función para generar iniciales
+  const getInitials = (fullName: string) => {
+    if (!fullName) return "N/A";
+    return fullName
+      .split(' ')
+      .map(name => name.charAt(0).toUpperCase())
+      .join('.');
+  };
+
   // Llamar todos los hooks al inicio, no condicionalmente
   const fullName = useFullName(profesionalInfo.name, profesionalInfo.last_name);
   const statusName = useHandleStatusName(mainStudyInfo.status);
   
+  // Memoizar el nombre a mostrar basado en si es fake o no
+  const displayName = useMemo(() => {
+    if (isFake) {
+      // Si es fake, generar apellido falso y mostrar solo iniciales
+      const fakeLastName = faker.person.lastName();
+      const fakeName = profesionalInfo.fake_name || "Nombre";
+      const nameInitials = getInitials(fakeName);
+      const lastNameInitials = getInitials(fakeLastName);
+      return `${nameInitials} ${lastNameInitials}`;
+    } else {
+      // Si no es fake, mostrar el nombre completo
+      return fullName || "Sin nombre";
+    }
+  }, [isFake, profesionalInfo.fake_name, fullName]);
+
+  // Nombre para los formularios (necesita ser completo para identificación)
+  const formName = useMemo(() => {
+    if (isFake) {
+      return profesionalInfo.fake_name || "noname";
+    } else {
+      return fullName || "noname";
+    }
+  }, [isFake, profesionalInfo.fake_name, fullName]);
+  
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error al cargar el profesional</div>;
   if (!data || !data.payload) return <div>No se encontró el profesional</div>;
-  // console.log("profesional data Card", data?.payload);
+
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
       <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
         {props.btnActive ? (
           <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
             <ModalForForms title='Agregar Candidato'>
-              <ConfirmAddProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={isFake ? profesionalInfo.fake_name : fullName || "noname"} processPosition={props.processPosition} addedBy={props.addedBy||'noBody' } />
+              <ConfirmAddProfesionalToProcessForm 
+                UserID={userId} 
+                ProcessId={props.processId} 
+                fullName={formName} 
+                processPosition={props.processPosition} 
+                addedBy={props.addedBy || 'noBody'} 
+              />
             </ModalForForms>
             <ModalForFormsRedBtn title='Eliminar Candidato'>
-              <ConfirmDeleteProfesionalToProcessForm UserID={userId} ProcessId={props.processId} fullName={isFake ? profesionalInfo.fake_name : fullName || "noname"} processPosition={props.processPosition}/>
+              <ConfirmDeleteProfesionalToProcessForm 
+                UserID={userId} 
+                ProcessId={props.processId} 
+                fullName={formName} 
+                processPosition={props.processPosition}
+              />
             </ModalForFormsRedBtn>
-
           </div>
         ) : (
           <div></div>
@@ -81,7 +125,7 @@ export default function ProfesionalCard(props: any) {
       </div>
 
       <div className='card-body'>
-        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>{isFake ? profesionalInfo.fake_name : fullName || "noname"}</h2>
+        <h2 className='card-title font-oswald text-xl text-[var(--main-arci)]'>Dr. {displayName}</h2>
 
         <p className='description h-10 font-roboto-condensed line-clamp-2'>{profesionalInfo.description || "Sin descripción"}</p>
         {isFake ? <div></div> : (

@@ -22,11 +22,11 @@ export default function InstitutionProcessCard(props: any) {
   const isProfesional = props.isProfesional;
   const isFake = props.isFake;
   const processId = props.processId || 1;
+  const btnActive = props.btnActive !== undefined ? props.btnActive : true; // Por defecto es true 
   const { data: processData, isLoading: processLoading, error: processError } = useProcess(processId);
   const userId = processData?.payload.user_id || "cmg1gnhae00013pfqt8jdb4ps";
   const { data, error, isLoading } = useInstitutionFullById(userId);
   const institutionData = data ? data?.payload.institution_data[0] : {};
-  const institutionProcesses = data ? data?.payload.process : [];
   const processPack = processData?.payload || {};
   // Acceso seguro a los datos de la institución
   const institutionInfo = institutionData || {};
@@ -67,18 +67,18 @@ export default function InstitutionProcessCard(props: any) {
         <div className='flex justify-between card-actions items-end'>
           <div className='extraInfo font-roboto-condensed text-red-700'>
             <p>Especialización solicitada</p>
-            <p className='font-bold text-xl capitalize'>{processData?.payload.main_speciality || "especialización de la oferta"}</p>
+            <p className='font-bold text-xl capitalize text-wrap max-w-30'>{processData?.payload.main_speciality || "especialización de la oferta"}</p>
           </div>
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
             {/* <p>state</p> REVISAR LOGICA SIGUIENTE*/}
             {isFake & isProfesional? (
               <ModalForPreview title={"Ver Detalle"}>
-                <ProcessDetail processData={{ ...processPack }} isFake/>
+                <ProcessDetail processData={{ ...processPack }} isFake />
               </ModalForPreview>
             ) : (
               <ModalForPreview title={"Ver Detalle full"}>
                 {processPack && Object.keys(processPack).length > 0 ? (
-                    <ProcessDetail processData={{ ...processPack }} btnActive isFake={false} profesionalId={profesionalIdBySession } />
+                    <ProcessDetail processData={{ ...processPack }} btnActive={btnActive} isFake={false} profesionalId={profesionalIdBySession } />
                 ) : (
                   <div>Cargando datos del proceso...</div>
                 )}

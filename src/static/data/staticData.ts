@@ -85,7 +85,7 @@ export const companyInfo: any = {
     address: "312 W. 2nd St #2787, Casper, WY 82601, EE. UU.",
     phone1: "📞 USA +1 (307) 776 3025 ",
     phone2: "📞 SPAIN +34 675 519 929",
-    representative: "Eva M. Lopez",
+    representative: " Eva M. Lopez, Ejecutivo de Consultoría",
 }
 
 export const optionsTitleStatus = [

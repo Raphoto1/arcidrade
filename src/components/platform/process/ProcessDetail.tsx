@@ -61,7 +61,7 @@ export default function ProcessDetail(props: any) {
                   <ConfirmAddProfesionalToProcessForm
                     UserID={props.profesionalId}
                     ProcessId={processData.id}
-                    fullName={props.fullName || "postulación"}
+                    fullName={props.fullName || "Postulación"}
                     processPosition={processData.position}
                     addedBy={props.addedBy || "profesional"}
                   />

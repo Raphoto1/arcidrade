@@ -11,6 +11,7 @@ import { medicalOptions } from "@/static/data/staticData";
 
 export default function ProcessesGridSearch(props: any) {
   const isFake = props.isFake
+  const applyButton = props.applyButton || false
   const [searchTerm, setSearchTerm] = useState("");
   const [specialityFilter, setSpecialityFilter] = useState("");
 
@@ -80,7 +81,7 @@ export default function ProcessesGridSearch(props: any) {
           ) : error ? (
             <div className='col-span-full text-center py-8 text-red-500'>Error al cargar procesos</div>
           ) : filteredProcesses.length > 0 ? (
-            filteredProcesses.map((process: any, index: number) => <InstitutionProcessCard key={process.id || index} processId={process.id} isFake={isFake} isProfesional/>)
+                filteredProcesses.map((process: any, index: number) => <InstitutionProcessCard key={process.id || index} processId={process.id} isFake={isFake} isProfesional applyButton={applyButton} />)
           ) : (
             <div className='col-span-full text-center py-8 text-gray-500'>No se encontraron procesos con los filtros aplicados</div>
           )}

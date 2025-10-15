@@ -10,7 +10,7 @@ export default function ListedProcess() {
   const { data: session } = useSession()
   const userId = session?.user.id
   const { data } = useActiveProcessesByUser(userId || null);
-  const processData = data?.payload.filter((process: any) => process.added_by === "instituttion") || [];
+  const processData = data?.payload.filter((process: any) => process.added_by === "institution") || [];
   return (
     <div className='grid grid-cols-1 gap-4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <h2 className='text-2xl fontArci text-center'>Procesos en que aparezco</h2>

@@ -217,3 +217,28 @@ export const getProfesionalsByAddedByDao = async (added_by: string) => {
   });
   return result;
 };
+
+export const updateProfesionalListedByProcessIdAndAddedByDao = async (processId: number, profesionalId: string, addedBy: string, data:any) => {
+  try {
+    const updateResponse = await prisma.profesionals_listed.updateMany({
+      where: { process_id: processId, profesional_id: profesionalId, added_by: addedBy },
+      data,
+    });
+    return updateResponse;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error updating professional listed by process ID and added by: ${errorMessage}`);
+  }
+};
+
+export const deleteProfesionalListedByProcessIdAndAddedByDao = async (processId: number, profesionalId: string, addedBy: string) => {
+  try {
+    const deleteResponse = await prisma.profesionals_listed.deleteMany({
+      where: { process_id: processId, profesional_id: profesionalId, added_by: addedBy },
+    });
+    return deleteResponse;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error deleting professional listed by process ID and added by: ${errorMessage}`);
+  }
+};

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import { useProfesional, useProfesionalFull } from "@/hooks/usePlatPro";
 import { fakerES as faker } from "@faker-js/faker";
@@ -7,24 +7,47 @@ import { Country } from "country-state-city";
 
 export default function ProfesionalDetail() {
   const { data, error, isLoading } = useProfesionalFull();
-  // console.log("full data", data?.payload.experience);
-  
+
   // Validación defensiva para prevenir errores
   const payload = data?.payload || {};
-  const personalData = (payload.profesional_data && Array.isArray(payload.profesional_data)) 
-    ? payload.profesional_data[0] || {} 
-    : {};
-  const mainStudy = (payload.main_study && Array.isArray(payload.main_study)) 
-    ? payload.main_study[0] || {} 
-    : {};
+  const personalData = payload.profesional_data && Array.isArray(payload.profesional_data) ? payload.profesional_data[0] || {} : {};
+  const mainStudy = payload.main_study && Array.isArray(payload.main_study) ? payload.main_study[0] || {} : {};
   const speciality = payload.study_specialization || [];
   const certifications = payload.profesional_certifications || [];
   const experience = payload.experience || [];
 
-  const fakeLastName = faker.person.lastName(); // Generar un apellido falso
-  const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
-  const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
-  const countryName: ICountry | undefined = Country.getCountryByCode(personalData?.country);
+  // Función para generar iniciales
+  const getInitials = (fullName: string) => {
+    if (!fullName) return "N/A";
+    return fullName
+      .split(' ')
+      .map(name => name.charAt(0).toUpperCase())
+      .join('.');
+  };
+
+  // Memoizar los datos procesados
+  const processedData = useMemo(() => {
+    const fakeLastName = faker.person.lastName();
+    const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
+    const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
+    const countryName: ICountry | undefined = Country.getCountryByCode(personalData?.country);
+    
+    // Generar iniciales para nombre y apellido
+    const nameInitials = getInitials(personalData.fake_name || "Nombre");
+    const lastNameInitials = getInitials(fakeLastName);
+    const fullInitials = `${nameInitials} ${lastNameInitials}`;
+
+    return {
+      nameInitials,
+      lastNameInitials,
+      fullInitials,
+      fechaString,
+      countryName
+    };
+  }, [personalData]);
+
+  const { nameInitials, lastNameInitials, fullInitials, fechaString, countryName } = processedData;
+
   //adjust status
   const handleStatusName = (status: string | undefined) => {
     if (status === "inProcess") {
@@ -35,9 +58,9 @@ export default function ProfesionalDetail() {
       return "No Registrado";
     }
   };
-  //adjust fate to year
+
+  //adjust date to year
   const handleDateToYear = (dateIn: any) => {
-    // console.log(dateIn);
     if (dateIn == null) {
       return "No terminado";
     }
@@ -45,6 +68,23 @@ export default function ProfesionalDetail() {
     const endDate = date.getFullYear();
     return endDate;
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <span className="loading loading-spinner loading-lg"></span>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <p className="text-error">Error al cargar el profesional</p>
+      </div>
+    );
+  }
+
   return (
     <div className='Total grid gap-2 md:grid-cols-2 pt-2 overflow-auto'>
       <div className='Izqui grid gap-2 md:grid-cols-2 w-full'>
@@ -62,7 +102,7 @@ export default function ProfesionalDetail() {
               />
             )}
           </div>
-          <h1 className='text-2xl fontArci text-center'>{personalData.fake_name || "Nombre"}</h1>
+          <h1 className='text-2xl fontArci text-center'>{fullInitials}</h1>
           <p className='text-center'>{mainStudy.title || "Estudio Principal"}</p>
           <button className='btn bg-[var(--main-arci)] text-white'>Agregar Al Proceso</button>
         </div>
@@ -74,35 +114,27 @@ export default function ProfesionalDetail() {
             <div className='w-full'>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Nombre</h3>
-                <p className='text-(--main-arci)'>{personalData.fake_name || "Nombre"}</p>
+                <p className='text-[var(--main-arci)]'>Dr. {nameInitials}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Apellido</h3>
-                <p className='text-(--main-arci)'>{fakeLastName || "Apellido"}</p>
+                <p className='text-[var(--main-arci)]'>Dr. {lastNameInitials}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='text-light'>Fecha de Nacimiento</h3>
-                <p className='text-(--main-arci)'>{fechaString || "fecha"}</p>
-              </div>
-              <div className='flex justify-between'>
-                <h3 className='font-light'>Pais</h3>
-                <p className='text-(--main-arci)'>{countryName?.name}</p>
-              </div>
-              <div className='flex justify-between'>
-                <h3 className='font-light'>Ciudad</h3>
-                <p className='text-(--main-arci)'>{personalData.city}</p>
+                <p className='text-[var(--main-arci)]'>{fechaString || "fecha"}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Profesión</h3>
-                <p className='text-(--main-arci)'>{mainStudy.title}</p>
+                <p className='text-[var(--main-arci)]'>{mainStudy.title}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Institución:</h3>
-                <p className='text-(--main-arci)'>{mainStudy.institution}</p>
+                <p className='text-[var(--main-arci)]'>{mainStudy.institution}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Status</h3>
-                <p className='text-(--main-arci)'>{handleStatusName(mainStudy.status)}</p>
+                <p className='text-[var(--main-arci)]'>{handleStatusName(mainStudy.status)}</p>
               </div>
             </div>
           </div>
@@ -147,7 +179,7 @@ export default function ProfesionalDetail() {
                 </div>
                 <div>
                   <h3 className='text-[var(--main-arci)]'>Descripción:</h3>
-                  <p className="line-clamp-6">{item.description}</p>
+                  <p className='line-clamp-6'>{item.description}</p>
                 </div>
               </div>
             ))}

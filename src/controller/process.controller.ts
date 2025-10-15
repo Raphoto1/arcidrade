@@ -24,6 +24,8 @@ import {
   getAllProfesionalAddedByProfesionalService,
   getAllProfesionalAddedByInstitutionService,
   getAllProfesionalAddedByService,
+  updateProfesionalListedByProcessIdAndAddedByService,
+  deleteProfesionalListedByProcessIdAndAddedByService,
 } from "@/service/process.service";
 import { getUserDataService } from "@/service/userData.service";
 import { getProfesionalsByAddedByDao } from "@/dao/process.dao";
@@ -183,21 +185,45 @@ export const addProfesionalToProcess = async (processId: number, professionalId:
     if (!profesional) {
       throw new Error(`Professional with ID ${professionalId} not found`);
     }
-    //revisar si ya esta en el proceso
-    const chk = await getProfesionalSelectedByUserIdAndProcessId(processId, professionalId);
-    if (chk) {
-      throw new Error(`Professional with ID ${professionalId} is already added to process ID ${processId}`);
-    } else {
-      const dataPack = {
-        process_id: processId,
-        profesional_id: professionalId,
-        process_status: status,
-        is_arcidrade: is_arcidrade,
-        added_by: added_by,
-      };
-      const result = await addPProfesionalToProcessService(dataPack);
-      return result;
+
+    // Obtener todas las postulaciones del profesional en este proceso
+    const existingEntries = await getProfesionalsSelectedByProcessIdService(processId);
+    
+    // Filtrar las entradas que corresponden a este profesional
+    const professionalEntries = existingEntries.filter((entry: any) => 
+      entry.profesional_id === professionalId
+    );
+
+    // Verificar si ya existe una entrada con el mismo added_by
+    const duplicateEntry = professionalEntries.find((entry: any) => 
+      entry.added_by === added_by
+    );
+
+    if (duplicateEntry) {
+      throw new Error(`Professional with ID ${professionalId} is already added to process ID ${processId} by ${added_by}`);
     }
+
+    // Verificar que no exceda el límite de 3 postulaciones por proceso
+    if (professionalEntries.length >= 3) {
+      throw new Error(`Professional with ID ${professionalId} has already reached the maximum number of applications (3) for process ID ${processId}`);
+    }
+
+    // Validar que added_by sea uno de los valores permitidos
+    const allowedAddedByValues = ['profesional', 'institution', 'arcidrade'];
+    if (added_by && !allowedAddedByValues.includes(added_by)) {
+      throw new Error(`Invalid added_by value: ${added_by}. Allowed values are: ${allowedAddedByValues.join(', ')}`);
+    }
+
+    const dataPack = {
+      process_id: processId,
+      profesional_id: professionalId,
+      process_status: status,
+      is_arcidrade: is_arcidrade,
+      added_by: added_by,
+    };
+    
+    const result = await addPProfesionalToProcessService(dataPack);
+    return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error adding professional to process: ${errorMessage}`);
@@ -234,7 +260,49 @@ export const getProcessesWhereProfesionalIsListed = async (professionalId: strin
   }
 };
 
-export const updateProfesionalFromProcess = async (processId: number, professionalId: string, data: any) => {};
+export const updateProfesionalFromProcessVictor = async (processId: number, data: any) => {
+  try {
+    const { profesional_id, is_arci, added_by, process_status, feedback } = data;
+    
+    // Verificar que el proceso existe
+    const process = await getProcessByIdService(processId);
+    if (!process) {
+      throw new Error(`Process with ID ${processId} not found`);
+    }
+
+    // Verificar que el profesional existe
+    const profesional = await getUserDataService(profesional_id);
+    if (!profesional) {
+      throw new Error(`Professional with ID ${profesional_id} not found`);
+    }
+
+    // Preparar los datos para actualizar - corregir el nombre del campo
+    const updateData: any = {
+      updated_at: new Date(),
+    };
+
+    // Solo incluir campos que están definidos y tienen valores válidos
+    if (is_arci !== undefined) {
+      updateData.is_arcidrade = Boolean(is_arci); // Corregir nombre del campo
+    }
+    
+    if (process_status !== undefined) {
+      updateData.process_status = process_status;
+    }
+    
+    if (feedback !== undefined) {
+      updateData.feedback = feedback;
+    }
+
+    // Actualizar el registro
+    const result = await updateProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by, updateData);
+    
+    return result;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error updating professional in process: ${errorMessage}`);
+  }
+};
 
 export const deleteProcessById = async (processId: number) => {
   try {
@@ -263,3 +331,14 @@ export const getAllProfesionalsPostulatedByAddedBy = async (addedBy: string | nu
       throw new Error(`Invalid addedBy value: ${addedBy}`);
   }
 }
+
+export const deleteProfesionalFromProcessVictor = async (processId: number, data: any) => {
+  try {
+    const { profesional_id, added_by } = data;
+    const result = await deleteProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by);
+    return result;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error removing professional from process: ${errorMessage}`);
+  }
+};

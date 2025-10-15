@@ -15,7 +15,8 @@ export default function ProcessBasic(props: any) {
   const { process } = props;
   const { diasRestantesFormateados } = useCalcApprovalDate(process.start_date, process.approval_date);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(process.id);
-  const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution" ) || [];
+  const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
+  const profesionalsArci = profesionalsSelected?.payload?.filter((profesional: any) => profesional.is_arcidrade) || [];
   // Memoizar la fecha formateada para evitar recálculos innecesarios
   const formattedStartDate = useMemo(() => {
     return formatDateToString(process.start_date);
@@ -51,6 +52,7 @@ export default function ProcessBasic(props: any) {
         </div>
       </div>
       <div className='candidato min-w-full'>
+        <p className='text-start fontRoboto text-(--main-arci) align-middle bg-gray-100'>Mis Seleccionados</p>
         <Grid>
           {profesionals?.map((profesional: any) => (
             <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} />
@@ -67,13 +69,16 @@ export default function ProcessBasic(props: any) {
           <p className='text-start fontRoboto text-(--main-arci) align-middle bg-gray-100'>Seleccionados ARCIDRADE</p>
           <Grid>
             {/* Solo renderizar profesionales de ARCIDRADE si hay datos específicos */}
-            {process.arcidradeProfessionals && process.arcidradeProfessionals.length > 0 ? (
-              process.arcidradeProfessionals.map((professional: any, index: number) => (
-                <ProfesionalCard isFake={props.isFake} key={professional.id || index} userId={professional.id} />
-              ))
-            ) : (
-              <div className='text-center text-gray-500 p-4'>No hay candidatos ARCIDRADE asignados</div>
-            )}
+            {profesionalsArci?.map((profesional: any) => (
+              <ProfesionalCard
+                key={profesional.id}
+                userId={profesional.profesional_id}
+                isFake={props.isFake}
+                processId={process.id}
+                processPosition={process.position}
+                addedBy={"institution"}
+              />
+            ))}
           </Grid>
         </div>
       ) : null}

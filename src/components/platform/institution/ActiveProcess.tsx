@@ -28,7 +28,7 @@ export default function ActiveProcess() {
               data.payload.map((process: any, idx: number) => (
                 <React.Fragment key={process.id}>
                   <ProcessBasic process={{ ...process }} isFake={false} />
-                  {idx < data.payload.length - 1 && <hr className='border-t border-gray-300 my-1' />}
+                  {idx < data.payload.length - 1 && <hr className='border-t border-gray-600 my-1 border-4 rounded-3xl' />}
                 </React.Fragment>
               ))
             ) : (

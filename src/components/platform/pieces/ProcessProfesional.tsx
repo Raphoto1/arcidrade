@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import { useInstitutionById } from "@/hooks/usePlatInst";
 import { useProfesionalById } from "@/hooks/usePlatPro";
@@ -9,6 +9,11 @@ import React from "react";
 import { FaStar } from "react-icons/fa";
 import ProfesionalDetailFull from "./ProfesionalDetailFull";
 import ProfesionalDetailFullById from "./ProfesionalDetailFullById";
+import ProcessDetail from "../process/ProcessDetail";
+import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
+import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
+import ConfirmAddProfesionalToProcessVictorForm from "@/components/forms/platform/process/ConfirmAddProfesionalToProcessVictorForm";
+import ConfirmDeleteProfesionalToProcessVictorForm from "@/components/forms/platform/process/ConfirmDeleteProfesionalToProcessVictorForm";
 
 export default function ProcessProfesional(props: any) {
   const processData = props.processData;
@@ -16,9 +21,9 @@ export default function ProcessProfesional(props: any) {
   const { data: processPack } = useProcess(processData);
   const { data: profesionalPack } = useProfesionalById(userId);
   const { data: institutionPack } = useInstitutionById(processPack?.payload.user_id);
-  console.log('processPack en ProcessProfesional', processPack);
-  console.log('profesional pack', profesionalPack);
-  console.log('institution pack', institutionPack);
+  console.log("processPack en ProcessProfesional", processPack);
+  console.log("profesional pack", profesionalPack);
+  console.log("institution pack", institutionPack);
 
   const fullName = useFullName(profesionalPack?.payload.profesional_data[0].name, profesionalPack?.payload.profesional_data[0].last_name);
   return (
@@ -34,8 +39,21 @@ export default function ProcessProfesional(props: any) {
           <ModalForPreview title='Ver Profesional'>
             <ProfesionalDetailFullById userId={userId} />
           </ModalForPreview>
-          <button className='btn btn-wide bg-[var(--orange-arci)] text-sm h-auto'>Eliminar</button>
-          <button className='btn bg-success h-auto text-sm'>Aceptar Proceso</button>
+          <ModalForPreview title='Ver Proceso'>
+            <ProcessDetail processData={processPack?.payload} />
+          </ModalForPreview>
+          <ModalForFormsRedBtn title='Rechazar Solicitud'>
+            <ConfirmDeleteProfesionalToProcessVictorForm ProcessId={processPack?.payload.id} UserID={userId} fullName={fullName} processPosition={processPack?.payload.position} />
+          </ModalForFormsRedBtn>
+          <ModalForFormsGreenBtn title='Aceptar Solicitud'>
+            <ConfirmAddProfesionalToProcessVictorForm
+              ProcessId={processPack?.payload.id}
+              UserID={userId}
+              fullName={fullName}
+              processPosition={processPack?.payload.position}
+              isArci={true}
+            />
+          </ModalForFormsGreenBtn>
         </div>
       </div>
     </div>
