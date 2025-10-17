@@ -10,7 +10,9 @@ export default function Footer() {
       <aside className='grid-flow-col items-center'>
         <img src='/logos/LogoWhite.png' className='h-12' alt='Logo Arcidrade Blanco' />
         <p>Copyright © {new Date().getFullYear()} - All right reserved</p>
+        
       </aside>
+      
       <div className='flex flex-col items-center'>
         <p>{companyInfo.address}</p>
         <p>{companyInfo.phone1}</p>
@@ -19,6 +21,12 @@ export default function Footer() {
           Representante:
           {companyInfo.representative}
         </p>
+        <div>
+        Designed and Developed by{' '}
+        <a href='https://www.creativerafa.com' target='_blank' rel='noopener noreferrer' className='underline'>
+          Creative Rafa
+        </a>
+      </div>
       </div>
       <nav className='grid-flow-col gap-4 md:place-self-center md:justify-self-end md:justify-center md:align-center md:items-center'>
         <ModalForFormsMailButton title='Contáctanos'>
