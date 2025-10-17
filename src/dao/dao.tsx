@@ -57,6 +57,30 @@ export const completeInvitationDao = async (id: string, email: string, password:
   }
 };
 
+export const listInvitedUsersDao = async () => {
+  try {
+    const invitedUsers = await prisma.auth.findMany({
+      where: { status: "invited" },
+    });
+    return invitedUsers;
+  } catch (error) {
+    console.log("Error al listar usuarios invitados:", error);
+    throw error;
+  }
+};
+
+export const listRegisteredUsersDao = async () => {
+  try {
+    const registeredUsers = await prisma.auth.findMany({
+      where: { status: "registered" },
+    });
+    return registeredUsers;
+  } catch (error) {
+    console.log("Error al listar usuarios registrados:", error);
+    throw error;
+  }
+};
+
 // Platform - Profesional_________________________________________________________________
 export const getProfesionalFullByIdDao = async (user_id: string | undefined) => {
   try {

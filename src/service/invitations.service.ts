@@ -1,7 +1,7 @@
 import prisma from "@/utils/db";
 import { encrypt } from "@/utils/encrypter";
 
-import { getInvitationByIdDao, getInvitationByEmailDao, completeInvitationDao } from "@/dao/dao";
+import { getInvitationByIdDao, getInvitationByEmailDao, completeInvitationDao, listInvitedUsersDao, listRegisteredUsersDao } from "@/dao/dao";
 
 export const getInvitationById = async (id: string) => {
   try {
@@ -32,3 +32,13 @@ export const completeInvitation = async (id: string, email:string, password: str
     throw error;
   }
 };
+
+export const listInvitedInvitationsService = async () => { 
+  const result = await listInvitedUsersDao();
+  return result;
+}
+
+export const listRegisteredInvitationsService = async () => { 
+  const result = await listRegisteredUsersDao();
+  return result;
+}

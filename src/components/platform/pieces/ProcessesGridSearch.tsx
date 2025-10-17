@@ -20,9 +20,12 @@ export default function ProcessesGridSearch(props: any) {
 
   // Filtrar procesos basado en la búsqueda
   const filteredProcesses = useMemo(() => {
-    if (!data?.payload) return [];
+    if (!data?.payload || !Array.isArray(data.payload)) return [];
 
     return data.payload.filter((process: any) => {
+      // Verificar que el proceso sea válido y tenga un ID
+      if (!process || !process.id) return false;
+
       const matchesSearch =
         !searchTerm ||
         process.position?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -81,7 +84,17 @@ export default function ProcessesGridSearch(props: any) {
           ) : error ? (
             <div className='col-span-full text-center py-8 text-red-500'>Error al cargar procesos</div>
           ) : filteredProcesses.length > 0 ? (
-                filteredProcesses.map((process: any, index: number) => <InstitutionProcessCard key={process.id || index} processId={process.id} isFake={isFake} isProfesional applyButton={applyButton} />)
+                filteredProcesses
+                  .filter((process: any) => process && process.id) // Filtro adicional de seguridad
+                  .map((process: any, index: number) => (
+                    <InstitutionProcessCard 
+                      key={process.id || index} 
+                      processId={process.id} 
+                      isFake={isFake} 
+                      isProfesional 
+                      applyButton={applyButton} 
+                    />
+                  ))
           ) : (
             <div className='col-span-full text-center py-8 text-gray-500'>No se encontraron procesos con los filtros aplicados</div>
           )}

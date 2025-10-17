@@ -7,12 +7,19 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "clean": "rm -rf node_modules package-lock.json .next .turbo",
+    "clean:win": "rmdir /s /q node_modules & del package-lock.json & rmdir /s /q .next & rmdir /s /q .turbo",
+    "sync": "npm run clean && npm install && npm run build",
+    "sync:win": "npm run clean:win && npm install && npm run build",
+    "fresh": "npm run sync && npm run dev",
+    "fresh:win": "npm run sync:win && npm run dev"
   },
   "dependencies": {
     "@faker-js/faker": "^9.9.0",
     "@prisma/client": "^6.16.3",
     "@prisma/extension-accelerate": "^2.0.2",
+    "@vercel/analytics": "^1.5.0",
     "@vercel/blob": "^1.1.1",
     "bcrypt": "^6.0.0",
     "cally": "^0.8.0",

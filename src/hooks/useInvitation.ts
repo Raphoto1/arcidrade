@@ -1,5 +1,19 @@
 import { useEffect, useState } from "react";
 import { useHandleSubmitText } from "./useFetch";
+import useSWR from "swr";
+
+type ResponseType = {
+  payload: any; // Idealmente reemplazar con un tipo más preciso
+};
+
+const fetcher = async (url: string): Promise<ResponseType> => {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error("Error en la petición");
+  }
+  return res.json();
+};
+
 //confirmar invitacion enviada
 export const useChkInvitation = async (id: string) => {
   const [invitation, setInvitation] = useState([]);
@@ -28,3 +42,8 @@ export const useInvitation = async (form: any, id: string) => {
     throw error;
   }
 };
+
+export const useSentInvitations = (status:string) => { 
+  const { data, error, isLoading, mutate } = useSWR<ResponseType>(`/api/platform/victor/invitations/?status=${status}`, fetcher);
+  return { data, error, isLoading, mutate };
+}
