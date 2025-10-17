@@ -26,10 +26,20 @@ const transporter = nodemailer.createTransport({
 export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: string; referCode: string }) {
   try {
     const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
   } catch (error) {
     console.error("Something Went Wrong", error);
     return;
   }
+
+  // Construir URL de manera más robusta
+  const baseUrl = process.env.PLAT_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const completeRegistrationUrl = `${baseUrl}/completeInvitation/${referCode}`;
+  
+  console.log('Sending invitation email to:', sendTo);
+  console.log('Registration URL:', completeRegistrationUrl);
   const info = await transporter.sendMail({
     from: NO_REPLY_MAIL,
     to: sendTo,
@@ -84,22 +94,6 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
             margin-bottom: 16px;
             font-size: 16px;
         }
-        .btn-primary {
-            display: inline-block;
-            background: linear-gradient(135deg, #384c9b 0%, #e94936 100%);
-            color: #ffffff;
-            text-decoration: none;
-            padding: 15px 30px;
-            border-radius: 8px;
-            font-weight: 600;
-            font-size: 16px;
-            margin: 20px 0;
-            box-shadow: 0 4px 12px rgba(56, 76, 155, 0.3);
-            transition: transform 0.2s ease;
-        }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-        }
         .footer {
             background-color: #384c9b;
             color: #ffffff;
@@ -129,9 +123,38 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
         <div class="content">
             <p><strong>¡Buen día!</strong></p>
             <p>Estamos emocionados de que esté interesado en unirse a nuestra comunidad profesional. Para completar el registro, por favor haga clic en el enlace siguiente:</p>
+            
+            <!-- Botón compatible con todos los clientes de email -->
             <div style="text-align: center; margin: 25px 0;">
-                <a href="${process.env.PLAT_URL}/completeInvitation/${referCode}" target="_blank" class="btn-primary">
-                    Completar Registro
+                <table border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+                    <tr>
+                        <td style="border-radius: 8px; background: linear-gradient(135deg, #384c9b 0%, #e94936 100%); background-color: #384c9b;">
+                            <a href="${completeRegistrationUrl}" target="_blank" style="
+                                display: inline-block;
+                                padding: 15px 30px;
+                                color: #ffffff !important;
+                                text-decoration: none;
+                                font-weight: 600;
+                                font-size: 16px;
+                                font-family: Arial, sans-serif;
+                                text-align: center;
+                                border-radius: 8px;
+                                mso-padding-alt: 0;
+                            ">
+                                <span style="color: #ffffff !important; text-decoration: none; font-weight: 600;">
+                                    🔗 Completar Registro
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Fallback para clientes que no soporten el botón -->
+            <div style="text-align: center; margin: 10px 0; font-size: 14px; color: #666;">
+                <p>¿No ve el botón? Use este enlace:</p>
+                <a href="${completeRegistrationUrl}" style="color: #384c9b; font-weight: bold; text-decoration: underline;" target="_blank">
+                    ${completeRegistrationUrl}
                 </a>
             </div>
             <p>Este enlace es seguro y lo dirigirá directamente a nuestro formulario de registro.</p>

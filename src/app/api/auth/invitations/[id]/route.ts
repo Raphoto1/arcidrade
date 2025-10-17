@@ -1,4 +1,4 @@
-import { completeInvitation, getInvitationById } from "@/service/invitations.service";
+import { completeInvitation, getInvitationById, resendInvitation } from "@/service/invitations.service";
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
@@ -26,6 +26,20 @@ export async function POST(request: NextRequest) {
     const { password, email } = body;
     const updatePassword = await completeInvitation(id, email, password);
     return NextResponse.json({ message: "Invitación procesada", updatePassword }, { status: 201 });
+  } catch (error: any) {
+    return NextResponse.json({ message: error.message, error }, { status: 409 });
+  }
+}
+
+//reenviar invitación
+export async function PUT(request: NextRequest) {
+  const id = await request.nextUrl.pathname.split("/").pop();
+  if (!id) {
+    return NextResponse.json({ error: "Missing invitation ID" }, { status: 400 });
+  }
+  try {
+    const resendInvitationResult = await resendInvitation(id as string);
+    return NextResponse.json({ message: "Invitación reenviada", payload: resendInvitationResult }, { status: 200 });
   } catch (error: any) {
     return NextResponse.json({ message: error.message, error }, { status: 409 });
   }

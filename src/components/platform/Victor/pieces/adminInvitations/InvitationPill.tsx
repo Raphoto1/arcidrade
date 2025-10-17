@@ -1,3 +1,5 @@
+import ConfirmResendInvitationForm from '@/components/forms/platform/victor/ConfirmResendInvitationForm';
+import ModalForFormsGreenBtn from '@/components/modals/ModalForFormsGreenBtn';
 import { formatDateToString } from '@/hooks/useUtils'
 import React from 'react'
 
@@ -39,8 +41,10 @@ export default function InvitationPill({ invitationData }: InvitationPillProps) 
         </div>
         <div className='w-1/3 p-1'>
           {/* <button className='btn bg-warning w-full text-white h-auto '>Pausar Invitación</button>
-          <button className='btn bg-[var(--orange-arci)] w-full text-white h-auto '>Archivar</button>
-          <button className='btn bg-success w-full text-white h-auto '>Reenviar Invitación</button> */}
+          <button className='btn bg-[var(--orange-arci)] w-full text-white h-auto '>Archivar</button> */}
+          <ModalForFormsGreenBtn title='Reenviar Invitación'>
+            <ConfirmResendInvitationForm id={invitationData.referCode} email={invitationData.email} />
+          </ModalForFormsGreenBtn>
         </div>
       </div>
     </div>

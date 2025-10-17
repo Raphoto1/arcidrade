@@ -15,19 +15,47 @@ const fetcher = async (url: string): Promise<ResponseType> => {
 };
 
 //confirmar invitacion enviada
-export const useChkInvitation = async (id: string) => {
-  const [invitation, setInvitation] = useState([]);
+export const useChkInvitation = (id: string) => {
+  const [invitation, setInvitation] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const fetchInvitation = async () => {
-    const response = await fetch(`/api/auth/invitations/${id}`);
-    const data = await response.json();
-    setInvitation(data);
-    setLoading(false);
-  };
+  const [error, setError] = useState<string | null>(null);
+  
   useEffect(() => {
-    fetchInvitation();
-  }, [id, loading]);
-  return { invitation, loading };
+    const fetchInvitation = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        console.log('Fetching invitation for ID:', id);
+        
+        const response = await fetch(`/api/auth/invitations/${id}`);
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
+        
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Invitation data received:', data);
+        setInvitation(data);
+      } catch (error: any) {
+        console.error('Error fetching invitation:', error);
+        setError(error.message || 'Error al cargar la invitación');
+        setInvitation(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (id) {
+      fetchInvitation();
+    } else {
+      setLoading(false);
+      setError('ID de invitación no proporcionado');
+    }
+  }, [id]);
+  
+  return { invitation, loading, error };
 };
 
 // id para test cmekeqy4d0000pg8r3xz08x8l
