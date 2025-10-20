@@ -92,7 +92,7 @@ export default function ProcessesGridSearch(props: any) {
                       processId={process.id} 
                       isFake={isFake} 
                       isProfesional 
-                      applyButton={applyButton} 
+                      btnActive={applyButton} 
                     />
                   ))
           ) : (

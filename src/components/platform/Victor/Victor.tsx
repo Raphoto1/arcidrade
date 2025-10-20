@@ -8,6 +8,10 @@ import ActiveProcess from "./ActiveProcess";
 import ArchivedProcess from "./ArchivedProcess";
 import FinishedProcess from "./FinishedProcess";
 import Offers from "../profesional/Offers";
+import InstitutionGridSearch from "../institution/InstitutionGridSearch";
+import ProcessListVictor from "./pieces/ProcessListVictor";
+import ProfesionalsListVictor from "./pieces/ProfesionalsListVictor";
+import InstitutionsListVictor from "./pieces/InstitutionsListVictor";
 
 export default function Victor() {
   return (
@@ -19,7 +23,9 @@ export default function Victor() {
       <ActiveProcess />
       <ArchivedProcess />
       <FinishedProcess />
-      <Offers />
+      <ProcessListVictor />
+      <ProfesionalsListVictor />
+      <InstitutionsListVictor />
     </div>
   );
 }
