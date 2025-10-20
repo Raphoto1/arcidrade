@@ -117,12 +117,12 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
 <body>
     <div class="container">
         <div class="header">
-            <img src="https://arcidrade.com/logos/Logo Arcidrade Cond.png" alt="Arcidrade Logo" class="logo" />
+            <img src="https://arcidrade.com/logos/Logo Arcidrade Full.png" alt="Arcidrade Logo" class="logo" />
             <h2>Complete su registro en Arcidrade</h2>
         </div>
         <div class="content">
             <p><strong>¡Buen día!</strong></p>
-            <p>Estamos emocionados de que esté interesado en unirse a nuestra comunidad profesional. Para completar el registro, por favor haga clic en el enlace siguiente:</p>
+            <p>Estamos emocionados de que esté interesado en unirse a nuestra comunidad profesional. Para completar el registro, por favor haga clic en el siguiente enlace:</p>
             
             <!-- Botón compatible con todos los clientes de email -->
             <div style="text-align: center; margin: 25px 0;">
