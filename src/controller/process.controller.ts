@@ -47,17 +47,17 @@ export const createProcess = async (data: any) => {
     description: data.description,
     status: pStatus,
   };
-  console.log("Creating main process with data:", mainDataPack);
+
   const processCreated = await createProcessService(mainDataPack);
 
   if (data.title_category_1 || data.title_category_2) {
-    console.log("Adding additional specialties");
+
     if (data.title_category_1) {
       const extraSpecialityPack = {
         process_id: processCreated.id,
         speciality: data.title_category_1,
       };
-      console.log("Creating extra speciality with data:", extraSpecialityPack);
+
       await createExtraSpecialityService(extraSpecialityPack);
     }
     if (data.title_category_2) {
@@ -65,7 +65,7 @@ export const createProcess = async (data: any) => {
         process_id: processCreated.id,
         speciality: data.title_category_2,
       };
-      console.log("Creating extra speciality with data:", extraSpecialityPack);
+
       await createExtraSpecialityService(extraSpecialityPack);
     }
   }
@@ -100,8 +100,8 @@ export const getProcessesByStatus = async (status: string | undefined) => {
   }
 };
 
-export const getAllActiveProcesses = async (status: string) => {
-  const result = await getAllProcessesByStatusService(status);
+export const getAllActiveProcesses = async () => {
+  const result = await getAllProcessesByStatusService("active");
   return result;
 };
 

@@ -39,7 +39,7 @@ export default function Contact() {
       }
 
       const result = await response.json();
-      console.log("Mensaje enviado exitosamente:", result);
+
         
       setSubmitStatus("success");
       reset();

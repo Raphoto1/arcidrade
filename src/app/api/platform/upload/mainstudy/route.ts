@@ -7,8 +7,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     const formData = await request.formData();
     const file = formData.get("file");
     const link = formData.get("link");
-    console.log("link desde back mainstudy", link);
-    console.log("file desde back de mainstudy", file);
+
+
     //verificar si es archivo o es link
     if (link) {
       const linkUpload = await uploadUserMainStudyLink(link)

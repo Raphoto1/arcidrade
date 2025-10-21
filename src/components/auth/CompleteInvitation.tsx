@@ -9,18 +9,18 @@ export default function CompleteInvitation(idIn: any) {
   const { id } = idIn;
   const { invitation, loading, error }: any = useChkInvitation(id);
 
-  console.log("=== DEBUG INFO ===");
-  console.log("Dato id en el componente:", { id });
-  console.log("Invitation data:", invitation);
-  console.log("Loading state:", loading);
-  console.log("Error state:", error);
-  console.log("Invitation type:", typeof invitation);
-  console.log("Invitation keys:", invitation ? Object.keys(invitation) : 'No invitation');
-  console.log("Has payload:", invitation?.payload);
-  console.log("Has id:", invitation?.id);
-  console.log("Has referCode:", invitation?.referCode);
-  console.log("Has email:", invitation?.email);
-  console.log("==================");
+
+
+
+
+
+
+
+
+
+
+
+
 
   // Manejar estados de carga y error
   if (loading) {
@@ -114,7 +114,7 @@ export default function CompleteInvitation(idIn: any) {
 
     try {
       const response = await useInvitation(data, id);
-      console.log(response);
+
       alert("Registrado Satisfactoriamente");
       
       const result = await signIn("credentials", {

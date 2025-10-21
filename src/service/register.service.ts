@@ -11,7 +11,7 @@ enum area {
 
 export async function registerUser(email: string, area: string, invitation_sender?: string, invitation_sender_id?: string) {
   // revisar el sender para saber si es un extender
-  console.log("Invitación enviada desde:", invitation_sender, invitation_sender_id);
+
   if ((invitation_sender && invitation_sender_id === "") || null) {
     invitation_sender = "external";
     invitation_sender_id = "external";
@@ -28,7 +28,7 @@ export async function registerUser(email: string, area: string, invitation_sende
         invitation_sender_id: invitation_sender_id || "external", // O el id real del usuario que invita
       },
     });
-    console.log("Invitación Enviada:", user);
+
     if (!user) {
       return null;
     }
@@ -60,7 +60,7 @@ export async function registerLeads(user_id: string, email: string) {
         status: 'sent',
       },
     });
-    console.log("Lead Registrado:", lead);
+
     if (!lead) {
       return null;
     }

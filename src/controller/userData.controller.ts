@@ -74,19 +74,19 @@ export const createUserData = async (data: any) => {
       }
       break;
     case "institution":
-      console.log("es institution");
+
       const fakeNameInstitution = await faker.company.name();
       break;
     default:
       break;
   }
 
-  console.log("data en el controller de userData", data);
+
   return data;
 };
 
 export const updateUserData = async (data: any) => {
-  console.log("actualizo");
+
   try {
     const result = updateUserDataService(data);
     return result;
@@ -185,11 +185,11 @@ export const uploadUserCv = async (file: File) => {
 export const uploadUserCvLink = async (link: any) => {
   try {
     const chkUserCvFile = await getUserData();
-    console.log("chkUserCvFile", chkUserCvFile[0].cv_file);
+
     if (chkUserCvFile[0].cv_file) {
-      console.log("elimino el archivo");
+
       const deleteFile = await deleteFileService(chkUserCvFile[0].cv_file);
-      console.log("deletefileService desde controller", deleteFile);
+
     }
     const dbUpdate = await updateUserData({ cv_link: link, cv_file: null });
     //limpiar file si existe
@@ -203,11 +203,11 @@ export const uploadUserCvLink = async (link: any) => {
 export const deleteCv = async () => {
   try {
     const chkUserCvFile = await getUserData();
-    console.log("chkUserCvFile", chkUserCvFile[0].cv_file);
+
     if (chkUserCvFile[0].cv_file) {
-      console.log("elimino el archivo");
+
       const deleteFile = await deleteFileService(chkUserCvFile[0].cv_file);
-      console.log("deletefileService desde controller", deleteFile);
+
     }
     const dbUpdate = await updateUserData({ cv_link: null, cv_file: null });
     //limpiar file si existe
@@ -223,13 +223,13 @@ export const uploadUserMainStudyLink = async (link: any) => {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     const chkMainStudy = await getMainStudyService(userId);
-    console.log("link de mainstudy controller", link);
-    console.log("encuentro el main", chkMainStudy?.user_id);
+
+
     if (!chkMainStudy) throw new Error("Estudio principal no encontrado");
     if (chkMainStudy?.link) {
       const updatePack = { link: link };
       const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
-      console.log("updateDb controller", updateDb);
+
       return updateDb;
     }
     if (chkMainStudy?.file) {
@@ -240,7 +240,7 @@ export const uploadUserMainStudyLink = async (link: any) => {
     }
     const updatePack = { link: link };
     const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
-    console.log("updateDb controller", updateDb);
+
     return updateDb;
   } catch (error) {
     console.error(error);
@@ -334,7 +334,7 @@ export const uploadUserAvatar = async (file: File) => {
 //speciality_______________________________________________________________________________________
 export const createSpeciality = async (data: any) => {
   try {
-    console.log("data en controller", data);
+
     //se crea pack
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
@@ -423,14 +423,14 @@ export const uploadSpecialityLink = async (id: number, link: any) => {
 
 export const uploadUserSpecialityFile = async (id: number, file: File) => {
   try {
-    console.log("entro a upload spefile");
+
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     const chk = await getSpecialityService(id);
     if (chk?.file) {
-      console.log("si hay archivo y se borra");
+
       const deleteOld = await deleteFileService(chk?.file);
-      console.log(deleteOld);
+
       const uploadNewFile = await uploadFileService(file, "specialization", userId);
       const uploadUrl = uploadNewFile.url;
       const updateDb = await updateUserSpecializationService(id, { file: uploadUrl });
@@ -462,7 +462,7 @@ export const getUserCertifications = async () => {
     const certificates = await getUserCertificationsService(userId);
     return certificates;
   } catch (error) {
-    console.log("Error al obtener certificaciones", error);
+
     throw new Error();
   }
 };
@@ -492,7 +492,7 @@ export const createUserCertification = async (data: any) => {
     const result = await createUserCertificationService(userId, certPack);
     return result;
   } catch (error) {
-    console.log("Error al obtener certificaciones", error);
+
     throw new Error();
   }
 };
@@ -502,14 +502,14 @@ export const getCertificationById = async (id: number) => {
     const certificate = await getCertificationByIdService(id);
     return certificate;
   } catch (error) {
-    console.log("Error al obtener certificaciones", error);
+
     throw new Error();
   }
 };
 
 export const updateCertification = async (id: number, data: any) => {
   try {
-    console.log("data en controller cert", data);
+
     //normalizar la info
     //aajuste de enddate
     let endDateFix = data.endDate;
@@ -535,7 +535,7 @@ export const updateCertification = async (id: number, data: any) => {
       description: data.description,
     };
     const update = await updateUserCertificationService(id, specialPack);
-    console.log("update de cert", update);
+
 
     return update;
   } catch (error) {
@@ -655,7 +655,7 @@ export const getUserExperiences = async () => {
     const response = await getUserExperiencesService(userId);
     return response;
   } catch (error) {
-    console.log("Error al obtener Experiencia", error);
+
     throw new Error();
   }
 };
@@ -665,7 +665,7 @@ export const getUserExperienceById = async (id: number) => {
     const result = await getUserExperienceByIdService(id);
     return result;
   } catch (error) {
-    console.log("Error al obtener certificaciones", error);
+
     throw new Error();
   }
 };
@@ -695,7 +695,7 @@ export const createUserExperience = async (data: any) => {
     const response = await createUserExperienceService(userPack);
     return response;
   } catch (error) {
-    console.log("Error al crear Experiencia", error);
+
     throw new Error();
   }
 };
@@ -712,7 +712,7 @@ export const deleteUserExperience = async (id: number) => {
       return deleteUser;
     }
   } catch (error) {
-    console.log("Error al obtener certificaciones", error);
+
     throw new Error();
   }
 };

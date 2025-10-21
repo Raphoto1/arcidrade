@@ -17,7 +17,7 @@ export default function InstitutionConfirmDeleteCertificationForm(id: any) {
       throw new Error("Error en la peticion o la informacion proporcionada");
     }
     const result = await response.json();
-    console.log(response);
+
     mutate();
     closeModal();
   };

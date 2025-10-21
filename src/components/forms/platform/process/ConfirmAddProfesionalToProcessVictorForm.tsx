@@ -27,7 +27,7 @@ export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
   };
   const handleDelete = async () => {
     setIsLoading(true);
-    console.log("pack de envio_____", pack);
+
 
     try {
       // Lógica para archivar el proceso
@@ -42,7 +42,7 @@ export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
         throw new Error("Error en la peticion o la informacion proporcionada");
       }
       const result = await response.json();
-      console.log(response);
+
       mutate();
       mutateAll();
       closeModal();

@@ -79,3 +79,11 @@ export const useAllPendingProcesses= () => {
   );
   return { data, error, isLoading, mutate };
 }
+
+export const useAllActiveProcesses= () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/platform/process/all/active`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}

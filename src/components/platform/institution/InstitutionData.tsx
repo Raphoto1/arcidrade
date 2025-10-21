@@ -10,7 +10,7 @@ import { medicalOptions } from "@/static/data/staticData";
 export default function InstitutionData() {
   const { data, isLoading, error, mutate } = useInstitution();
   const { data: session } = useSession();
-  console.log("data en InstitutionData", data);
+
   if (isLoading) return <div>Cargando...</div>;
 
   const countryName: ICountry | undefined = data?.payload && data.payload.country ? Country.getCountryByCode(data.payload.country) : undefined;

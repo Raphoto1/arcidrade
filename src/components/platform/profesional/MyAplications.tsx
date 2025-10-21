@@ -15,7 +15,7 @@ export default function MyAplications() {
   // Filtrar solo los procesos agregados por profesional
   const profesionalApplications = data?.payload?.filter((process: any) => process.added_by === "profesional") || [];
   
-  console.log('users aplications', data);
+
   return (
     <div className='grid grid-cols-1 gap-4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <h2 className='text-2xl fontArci text-center'>Mis Postulaciones</h2>

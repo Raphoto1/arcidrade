@@ -4,7 +4,7 @@ import { StatusAvailable } from "@/generated/prisma";
 
 // auth
 export const getInvitationByIdDao = async (id: string) => {
-  console.log("Buscando invitación por ID:", id);
+
   try {
     const chkInvitations = await prisma.auth.findUnique({
       where: { referCode: id },
@@ -12,7 +12,7 @@ export const getInvitationByIdDao = async (id: string) => {
 
     return chkInvitations;
   } catch (error) {
-    console.log("Error al obtener la invitación:", error);
+
     return null;
   }
 };
@@ -23,19 +23,19 @@ export const getInvitationByEmailDao = async (email: string) => {
     });
     return chkInvitations;
   } catch (error) {
-    console.log("Error al obtener la invitación por email:", error);
+
     return null;
   }
 };
 export const completeInvitationDao = async (id: string, email: string, password: string) => {
-  console.log(id, email, password);
+
 
   try {
     const invitation = await getInvitationByEmailDao(email);
     const invitationIdChk = await getInvitationByIdDao(id);
 
-    console.log("invitation desde dao", invitation?.email);
-    console.log("invitationIdChk desde dao", invitationIdChk?.email);
+
+
 
     // Verifica que ambos emails existan y sean iguales
     if (!invitation?.email || !invitationIdChk?.email) {
@@ -52,7 +52,7 @@ export const completeInvitationDao = async (id: string, email: string, password:
     });
     return true;
   } catch (error) {
-    console.log("Error al completar la invitación:", error);
+
     throw error; // Propaga el error para manejarlo en el endpoint
   }
 };
@@ -64,7 +64,7 @@ export const listInvitedUsersDao = async () => {
     });
     return invitedUsers;
   } catch (error) {
-    console.log("Error al listar usuarios invitados:", error);
+    console.error("Error al listar usuarios invitados:", error);
     throw error;
   }
 };
@@ -76,7 +76,7 @@ export const listRegisteredUsersDao = async () => {
     });
     return registeredUsers;
   } catch (error) {
-    console.log("Error al listar usuarios registrados:", error);
+    console.error("Error al listar usuarios registrados:", error);
     throw error;
   }
 };
@@ -99,7 +99,7 @@ export const getProfesionalFullByIdDao = async (user_id: string | undefined) => 
       return safeUser;
     }
   } catch (error) {
-    console.log("error de Profesional data full", error);
+
     throw new Error("Error al obtener profesional full");
   }
 };
@@ -131,7 +131,7 @@ export const getAllProfesionalsDao = async () => {
     });
     return profesionals;
   } catch (error) {
-    console.log("error de getAllProfesionalsDao", error);
+
     throw new Error("Error al obtener todos los profesionales");
   }
 };
@@ -269,7 +269,7 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
       speciality: speciality || ''
     };
   } catch (error) {
-    console.log("error de getAllProfesionalsPaginatedDao", error);
+
     throw new Error("Error al obtener profesionales paginados");
   }
 };
@@ -287,7 +287,7 @@ export const getAllProfesionalsBByStatusDao = async (status: StatusAvailable) =>
     });
     return profesionals;
   } catch (error) {
-    console.log("error de getAllProfesionalsDao", error);
+
     throw new Error("Error al obtener todos los profesionales");
   }
 };
@@ -316,7 +316,7 @@ export const getAllProfesionalsBySpecialityDao = async (speciality: string) => {
     });
     return profesionals;
   } catch (error) {
-    console.log("error de getAllProfesionalsBySpecialityDao", error);
+
     throw new Error("Error al obtener todos los profesionales por especialidad");
   }
 };
@@ -334,12 +334,12 @@ export const createProfesionalDataDao = async (data: any | undefined) => {
 };
 //actualizar  info al profesional
 export const updateProfesionalDataDao = async (data: any, user_id: string | undefined) => {
-  console.log("se actualiza dao");
+
   const updateInfo = await prisma.profesional_data.updateManyAndReturn({
     where: { user_id: user_id },
     data: data,
   });
-  console.log("update Info", updateInfo);
+
   return updateInfo;
 };
 // actualizar estado de profesional
@@ -352,7 +352,7 @@ export const updateProfesionalStatus = async (id: string, status: StatusAvailabl
       },
     });
   } catch (error) {
-    console.log("Error al completar la invitación:", error);
+
     throw error; // Propaga el error para manejarlo en el endpoint
   }
 };
@@ -373,7 +373,7 @@ export const createProfesionalMainStudyDao = async (data: any) => {
     const result = prisma.main_study.create({
       data: data,
     });
-    console.log(result);
+
     return result;
   } catch (error) {
     console.error(error);
@@ -402,7 +402,7 @@ export const createUserSpecializationDao = async (data: any) => {
     const result = await prisma.study_specialization.create({
       data: data,
     });
-    console.log("result de dao specialization", result);
+
     return result;
   } catch (error) {
     throw new Error("error al crear especialidad");

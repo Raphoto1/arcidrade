@@ -7,7 +7,7 @@ import SpecialityInstitution from "../pieces/SpecialityInstitution";
 export default function SpecialitiesInstitution() {
   const { data: userData, mutate: institutionMutate } = useInstitution();
   const { data, error, isLoading, mutate } = useInstitutionSpecializations();
-  console.log("institution specialities data:", data);
+
 
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:gap-4 md:h-auto'>

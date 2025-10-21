@@ -22,7 +22,7 @@ export const POST = async (req: NextRequest, { params }: any) => {
         return NextResponse.json({ error: "Archivo inválido" }, { status: 400 });
       }
         const blob = await uploadUserSpecialityFile(id, file);
-        console.log('blob en endpoint speci',blob);    
+    
       if (blob) {
         const clearLinkIfExist = await updateSpecialization(id, { link: null });
       }

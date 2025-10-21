@@ -85,7 +85,8 @@ export default function ProfesionalCard(props: any) {
                 ProcessId={props.processId} 
                 fullName={formName} 
                 processPosition={props.processPosition} 
-                addedBy={props.addedBy || 'noBody'} 
+                addedBy={props.addedBy || 'noBody'}
+                isArci={props.isArci || false}
               />
             </ModalForForms>
             <ModalForFormsRedBtn title='Eliminar Candidato'>

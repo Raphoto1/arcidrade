@@ -16,7 +16,7 @@ export const getInstitutionFullByIdDao = async (user_id: string | undefined) => 
       return safeUser;
     }
   } catch (error) {
-    console.log("error de Profesional data full", error);
+
     throw new Error("Error al obtener profesional full");
   }
 };
@@ -50,7 +50,7 @@ export const getInstitutionFullByUserIdDao = async (user_id: string | undefined)
       return safeUser;
     }
   } catch (error) {
-    console.log("error de Profesional data full", error);
+
     throw new Error("Error al obtener profesional full");
   }
 };
@@ -276,7 +276,7 @@ export const getAllInstitutionsDao = async () => {
     });
     return institutions;
   } catch (error) {
-    console.log("error de getAllInstitutionsDao", error);
+
     throw new Error("Error al obtener todas las instituciones");
   }
 };
@@ -417,7 +417,7 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
       specialization: specialization || ''
     };
   } catch (error) {
-    console.log("error de getAllInstitutionsPaginatedDao", error);
+
     throw new Error("Error al obtener instituciones paginadas");
   }
 };

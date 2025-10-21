@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 export async function POST(request: Request): Promise<NextResponse> {
   const formData = await request.formData();
   const file = formData.get("file");
-  console.log('llega file de avatar',file);
+
   
 //PRUEBA DE CAPTURA GENERAL NO USAR AUN
   if (!file || !(file instanceof File)) {

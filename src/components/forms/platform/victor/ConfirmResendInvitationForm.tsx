@@ -24,7 +24,7 @@ export default function ConfirmResendInvitationForm(props: any) {
       }
       
       const result = await response.json();
-      console.log('Invitación reenviada exitosamente:', result);
+
       
       // Pequeña pausa para mostrar el éxito antes de cerrar
       setTimeout(() => {

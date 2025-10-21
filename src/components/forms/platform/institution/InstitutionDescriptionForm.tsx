@@ -18,7 +18,7 @@ export default function InstitutionDescriptionForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await useHandleSubmitText(data, "/api/platform/institution/description");
-    console.log("response form", response);
+
     if (response.ok) {
       mutate();
       closeModal();

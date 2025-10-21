@@ -29,7 +29,7 @@ export default function FileMainStudyForm() {
       body: formData,
     });
     const result = await res.json();
-    console.log("Cv Registrado:", result.url);
+
     mutate();
     closeModal();
   });

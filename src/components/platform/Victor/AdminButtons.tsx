@@ -10,14 +10,14 @@ export default function AdminButtons() {
       <ModalForPreview title='Administrar Procesos'>
         <AdminProcess />
       </ModalForPreview>
-      <ModalForPreview title='Administrar Invitaciones'>
-        <AdminInvitations />
-      </ModalForPreview>
       <ModalForPreview title='Administrar Instituciones'>
         <AdminInstitutions />
       </ModalForPreview>
       <ModalForPreview title='Administrar Profesionales'>
         <AdminProfesional />
+      </ModalForPreview>
+      <ModalForPreview title='Administrar Invitaciones'>
+        <AdminInvitations />
       </ModalForPreview>
     </div>
   );

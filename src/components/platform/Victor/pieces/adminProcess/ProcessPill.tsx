@@ -1,13 +1,20 @@
+import { useInstitutionById } from "@/hooks/usePlatInst";
+import { formatDateToString } from "@/hooks/useUtils";
 import React from "react";
 
-export default function ProcessPill() {
+export default function ProcessPill(props: any) {
+  const process = props.process;
+  const { data: institutionPack } = useInstitutionById(process?.user_id);
+  const institutionData = institutionPack?.payload;
+
+  
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col'>
       <div className='w-full h-auto flex'>
         <div className='flex flex-col align-middle justify-center w-1/2 p-1'>
-          <h3 className='text-(--main-arci) text-bold text-nowrap font-bold'>Institución</h3>
-          <p className='text-sm text-gray-600 w-100'>Cirujano</p>
-          <p className='font-light'>24/10/2025</p>
+          <h3 className='text-(--main-arci) text-bold text-wrap font-bold'>{institutionData?.name || "Institución"}</h3>
+          <p className='text-sm text-gray-600 w-100 capitalize'>{process?.position || "Cargo"}</p>
+          <p className='font-light'>{formatDateToString(process?.start_date) || "No date"}</p>
         </div>
         <div className='w-1/2 p-1'>
           <button className='btn bg-[var(--main-arci)] w-full text-white h-auto '>Detalle</button>
@@ -17,7 +24,7 @@ export default function ProcessPill() {
         </div>
       </div>
         <div className="w-full flex justify-center">
-          <span className="fontArci text-[var(--orange-arci)]">Proceso Arcidrade</span>
+        <span className="fontArci text-[var(--orange-arci)]">{ process?.type ==='arcidrade' ? 'Proceso Arcidrade' : null }</span>
         </div>
     </div>
   );

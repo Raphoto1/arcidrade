@@ -31,7 +31,7 @@ export default function InstitutionFileCertificationForm(id: any) {
       body: formData,
     });
     const result = await res.json();
-    console.log("spe Registrado:", result.url);
+
     mutate();
     closeModal();
   });

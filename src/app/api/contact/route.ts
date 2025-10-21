@@ -26,7 +26,7 @@ function sanitizeText(text: string): string {
 export async function POST(request: NextRequest) {
   try {
     const body: ContactFormData = await request.json();
-    console.log('Contact form data received:', body);
+
 
     // Validación de campos requeridos
     const requiredFields = ['name', 'email', 'subject', 'message'];
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
     // Enviar emails usando la función sendContactMail
     const emailResult = await sendContactMail(sanitizedData);
 
-    console.log('Contact emails sent successfully:', emailResult);
+
 
     return NextResponse.json({
       success: true,

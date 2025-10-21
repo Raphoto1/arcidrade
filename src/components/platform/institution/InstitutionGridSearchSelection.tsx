@@ -11,9 +11,11 @@ interface InstitutionGridSearchProps {
   isFake?: boolean;
   processId?: number;
   processPosition?: string;
+  isArci?: boolean;
+  addedBy?: string;
 }
 //REVISAR ADDEDBY CON MIGRATION
-export default function InstitutionGridSearchSelection({ isFake = true, processId, processPosition }: InstitutionGridSearchProps) {
+export default function InstitutionGridSearchSelection({ isFake = true, processId, processPosition, isArci, addedBy }: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -168,7 +170,7 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
           <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
             {paginatedData?.data?.length > 0
               ? paginatedData.data.map((profesional: any, index: number) => (
-                <ProfesionalCard key={profesional.referCode || index} userId={profesional.referCode} isFake={isFake} btnActive processId={processId} processPosition={processPosition} addedBy={'institution' } />
+                <ProfesionalCard key={profesional.referCode || index} userId={profesional.referCode} isFake={isFake} btnActive processId={processId} processPosition={processPosition} addedBy={addedBy || 'institution'} isArci={isArci || false} />
                 ))
               : !isLoading && (
                   <div className='col-span-full text-center text-gray-500 py-8'>

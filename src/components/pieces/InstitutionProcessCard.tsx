@@ -35,7 +35,7 @@ export default function InstitutionProcessCard(props: any) {
   const processPack = processData?.payload || {};
   const institutionInfo = institutionData || {};
 
-  console.log("institution processs data Card info", processData);
+
   if (isLoading || processLoading) return <div>Cargando...</div>;
   if (error || processError) return <div>Error al cargar la institución</div>;
 

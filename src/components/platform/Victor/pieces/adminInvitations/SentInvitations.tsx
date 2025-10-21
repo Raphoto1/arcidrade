@@ -7,7 +7,7 @@ export default function SentInvitations() {
   const { data, error, isLoading, mutate } = useSentInvitations('invited');
   const [filterType, setFilterType] = useState<string>('');
   
-  console.log('tiro el sent', data?.payload);
+
   const invitationsData = data?.payload || [];
 
   // Filtrar invitaciones según el tipo seleccionado

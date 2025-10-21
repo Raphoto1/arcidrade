@@ -25,18 +25,18 @@ export const useChkInvitation = (id: string) => {
       try {
         setLoading(true);
         setError(null);
-        console.log('Fetching invitation for ID:', id);
+
         
         const response = await fetch(`/api/auth/invitations/${id}`);
-        console.log('Response status:', response.status);
-        console.log('Response ok:', response.ok);
+
+
         
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
-        console.log('Invitation data received:', data);
+
         setInvitation(data);
       } catch (error: any) {
         console.error('Error fetching invitation:', error);
@@ -63,10 +63,10 @@ export const useChkInvitation = (id: string) => {
 export const useInvitation = async (form: any, id: string) => {
   try {
     const result = await useHandleSubmitText(form, `/api/auth/invitations/${id}`);
-    console.log(result);
+
     return true;
   } catch (error) {
-    console.log(error);
+
     throw error;
   }
 };

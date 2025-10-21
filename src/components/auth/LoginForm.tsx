@@ -18,7 +18,7 @@ export default function LoginForm() {
     });
     setLoading(true);
     const response = await signIn("credentials", { ...data, redirect: false });
-    console.log("respuesta del login:", response);
+
     if (response?.error) {
       setLoading(false);
       alert("Credenciales inválidas");

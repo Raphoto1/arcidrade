@@ -109,7 +109,7 @@ export default function InstitutionProfileForm() {
 
   const onSubmit = handleSubmit(async (formData) => {
     const response = await useHandleSubmitText(formData, "/api/platform/institution");
-    console.log("response form", response);
+
     if (response.ok) {
       mutate();
       closeModal();

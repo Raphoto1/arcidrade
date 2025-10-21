@@ -38,8 +38,8 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
   const baseUrl = process.env.PLAT_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
   const completeRegistrationUrl = `${baseUrl}/completeInvitation/${referCode}`;
   
-  console.log('Sending invitation email to:', sendTo);
-  console.log('Registration URL:', completeRegistrationUrl);
+
+
   const info = await transporter.sendMail({
     from: NO_REPLY_MAIL,
     to: sendTo,

@@ -21,9 +21,9 @@ export default function ProcessProfesional(props: any) {
   const { data: processPack } = useProcess(processData);
   const { data: profesionalPack } = useProfesionalById(userId);
   const { data: institutionPack } = useInstitutionById(processPack?.payload.user_id);
-  console.log("processPack en ProcessProfesional", processPack);
-  console.log("profesional pack", profesionalPack);
-  console.log("institution pack", institutionPack);
+
+
+
 
   const fullName = useFullName(profesionalPack?.payload.profesional_data[0].name, profesionalPack?.payload.profesional_data[0].last_name);
   return (

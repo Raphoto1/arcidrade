@@ -4,7 +4,7 @@ import { createProcess, getProcessesByUserId } from "@/controller/process.contro
 export async function GET(request: NextRequest) {
     const response = 'Successfully connected to api route';
     const processList = await getProcessesByUserId();
-    console.log(processList);
+
     return NextResponse.json({ message: "Process data success" , payload:processList});
 }
 

@@ -23,7 +23,7 @@ export default function AvatarForm() {
       body: formData,
     });
     const result = await res.json();
-    console.log("avatar:", result.url);
+
     mutate();
     closeModal();
   });

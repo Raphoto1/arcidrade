@@ -14,8 +14,8 @@ export async function POST(request: Request): Promise<NextResponse> {
     access: "public",
     addRandomSuffix: true,
   });
-  console.log("blob en back", blob);
-  console.log("url to save", blob.url);
+
+
 
   return NextResponse.json(blob);
 }

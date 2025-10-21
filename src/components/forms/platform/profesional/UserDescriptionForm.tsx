@@ -18,7 +18,7 @@ export default function UserDescriptionForm() {
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await useHandleSubmitText(data, "/api/platform/profesional/description");
-    console.log("response form", response);
+
     if (response.ok) {
       mutate();
       closeModal();

@@ -17,8 +17,6 @@ export default function InstitutionCard(props: any) {
   
   // Acceso seguro a los datos de la institución
   const institutionInfo = institutionData || {};
-  
-  // console.log("institution data Card info", institutionData);
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error al cargar la institución</div>;
   return (

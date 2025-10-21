@@ -29,7 +29,7 @@ export default function FileCvForm() {
       body: formData,
     });
     const result = await res.json();
-    console.log("Cv Registrado:", result.url);
+
     mutate();
     closeModal();
   });

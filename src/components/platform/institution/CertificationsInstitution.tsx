@@ -7,7 +7,7 @@ import InstitutionCertificationForm from "@/components/forms/platform/institutio
 export default function CertificationsInstitution() {
   const { data: userData } = useInstitution();
   const { data, error, isLoading, mutate } = useInstitutionCertifications();
-  console.log(data);
+
   
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:gap-4 overflow-auto md:h-auto'>

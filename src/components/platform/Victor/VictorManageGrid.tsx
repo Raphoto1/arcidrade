@@ -12,7 +12,6 @@ export default function VictorManageGrid() {
         <ProcessAvailableProfesional />
         <GenerateInvitations />
       </div>
-     
     </div>
   );
 }

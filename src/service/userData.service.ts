@@ -87,7 +87,6 @@ export const createUserDataMainStudy = async (data: any) => {
   const session = await getServerSession(authOptions);
   const id = session?.user.id;
   const chk = await getProfesionalMainStudyDao(id);
-  console.log(chk);
 
   if (!chk) {
     const result = await createProfesionalMainStudyDao(data);
@@ -122,10 +121,13 @@ export const deleteUserSpecialityService = async (id: number) => {
   const userId = session?.user.id;
   const chk = await getUserSpecializationByIdDao(id);
   if (chk) {
-    const result = chk.user_id == userId ? await deleteSpecializationByIdDao(id) : console.error("Intruso");
-    return result;
+    if (chk.user_id == userId) {
+      const result = await deleteSpecializationByIdDao(id);
+      return result;
+    } else {
+      throw new Error("Unauthorized");
+    }
   } else {
-    console.error("intento de Intruso");
     throw new Error("Unauthorized");
   }
 };
@@ -144,9 +146,9 @@ export const makeFavoriteSpecialityService = async (userId: string | undefined, 
   //revisar si ya hay algun favorito con el id del study specialization
   const chk = await getFavoriteSpecializationBySpecializationIdDao(specialityId);
   if (chk) {
-    console.log("actualizo favorito");
+    // actualizar favorito existente
   } else {
-    console.log("creo favorito");
+    // crear nuevo favorito
   }
   return userId;
 };
@@ -168,12 +170,9 @@ export const getCertificationByIdService = async (id: number | undefined) => {
 
 export const createUserCertificationService = async (userId: string | undefined, data: any) => {
   const chk = await getUserCertificationByTitleService(userId, data.title);
-  console.log(chk);
   if (chk?.title == data.title) {
-    console.log("ya existe no se crea");
     throw new Error("ta existe esta certificación");
   } else {
-    console.log("se crea");
     const result = createUserCertificationDao(data);
     return result;
   }

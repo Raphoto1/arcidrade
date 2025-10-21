@@ -5,7 +5,7 @@ import ProcessStatsExample from "@/components/examples/ProcessStatsExample";
 
 export default function VictorHeroHeader() {
   const { processStats, isLoading, error } = useProcessStats();
-  console.log('process stats', processStats);
+
   
 
   if (isLoading) {

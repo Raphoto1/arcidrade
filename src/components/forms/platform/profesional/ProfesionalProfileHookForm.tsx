@@ -55,7 +55,7 @@ export default function ProfesionalProfileHookForm() {
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCountrySelected(e.target.value);
-    console.log(e.target.value);
+
     const states = State.getStatesOfCountry(e.target.value);
     setStateList(states);
   };
@@ -79,14 +79,14 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const handleStudyCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    console.log("study country selected", e.target.value);
+
     const countryName = e.target.value;
     setStudyCountry(countryName);
   };
 
   const onSubmit = handleSubmit(async (data) => {
     const response = await useHandleSubmitText(data, "/api/platform/profesional");
-    console.log("response form", response);
+
     if (response.ok) {
       mutate();
       closeModal();

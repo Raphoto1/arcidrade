@@ -10,7 +10,7 @@ export const getInvitationById = async (id: string) => {
     const chkInvitations = await getInvitationByIdDao(id);
     return chkInvitations;
   } catch (error) {
-    console.log("Error al obtener la invitación:", error);
+
     return null;
   }
 };
@@ -20,7 +20,7 @@ export const getInvitationByEmail = async (email: string) => {
     const chkInvitations = await getInvitationByEmailDao(email);
     return chkInvitations;
   } catch (error) {
-    console.log("Error al obtener la invitación por email:", error);
+
     return null;
   }
 };
@@ -30,7 +30,7 @@ export const completeInvitation = async (id: string, email: string, password: st
     const result = await completeInvitationDao(id, email, password);
     return result;
   } catch (error) {
-    console.log("Error al completar la invitación:", error);
+
     throw error;
   }
 };
@@ -41,7 +41,7 @@ export const resendInvitation = async (id: string) => {
     if (!invitation) {
       throw new Error("Invitation not found");
     }
-    console.log("invitation", invitation);
+
     const emailToSend = {
       sendTo: invitation.email,
       referCode: invitation.referCode,
@@ -55,7 +55,7 @@ export const resendInvitation = async (id: string) => {
     // Aquí puedes agregar la lógica para reenviar la invitación
     return { success: true };
   } catch (error) {
-    console.log("Error al reenviar la invitación:", error);
+
     throw error;
   }
 };
