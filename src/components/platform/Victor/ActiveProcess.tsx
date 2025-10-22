@@ -55,6 +55,9 @@ export default function ActiveProcess() {
   // Estados para controlar dropdowns
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
+  
+  // Estado para controlar si el contenido completo está expandido
+  const [isContentExpanded, setIsContentExpanded] = useState<boolean>(false);
 
   // Referencias a los dropdowns
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -137,15 +140,30 @@ export default function ActiveProcess() {
   return (
     <div className='flex justify-center'>
       <div className='grid grid-cols-1 gap-4 mt-4 pt-0 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center md:w-4/5 bg-gray-100'>
-        {/* Header con título y botón */}
-        <div className='flex md:justify-around flex-col md:flex-row bg-gray-300 rounded-t-md p-2'>
-          <span></span>
-          <h2 className='text-2xl fontArci text-center bg-gray-300 rounded-t-md'>Procesos Activos ({filteredProcesses.length})</h2>
-          <ModalForPreview title='Administrar Procesos'>
-            <AdminProcess />
-          </ModalForPreview>
+        {/* Header clickeable con título y botón */}
+        <div 
+          className={`flex md:justify-around flex-col md:flex-row bg-gray-300 p-2 cursor-pointer hover:bg-gray-400 transition-colors ${isContentExpanded ? 'rounded-t-md' : 'rounded-md'}`}
+          onClick={() => setIsContentExpanded(!isContentExpanded)}
+        >
+          <div className='flex items-center gap-2'>
+            <svg
+              className={`w-5 h-5 fill-current transition-transform duration-200 ${isContentExpanded ? "rotate-90" : ""}`}
+              xmlns='http://www.w3.org/2000/svg'
+              viewBox='0 0 20 20'>
+              <path d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z' />
+            </svg>
+          </div>
+          <h2 className='text-2xl fontArci text-center flex-1'>Procesos Activos ({validProcesses.length})</h2>
+          <div onClick={(e) => e.stopPropagation()}>
+            <ModalForPreview title='Administrar Procesos'>
+              <AdminProcess />
+            </ModalForPreview>
+          </div>
         </div>
-
+        
+        {/* Contenido expandible */}
+        {isContentExpanded && (
+          <>
         {/* Estados de carga y error */}
         {isLoading && (
           <div className='flex justify-center items-center p-8'>
@@ -314,6 +332,8 @@ export default function ActiveProcess() {
               </div>
             )}
           </div>
+        )}
+          </>
         )}
       </div>
 
