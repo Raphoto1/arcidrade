@@ -110,6 +110,21 @@ export const getAllPendingProcesses = async () => {
   return result;
 }
 
+export const getAllPausedProcesses = async () => {
+  const result = await getAllProcessesByStatusService("paused");
+  return result;
+}
+
+export const getAllArchivedProcesses = async () => {
+  const result = await getAllProcessesByStatusService("archived");
+  return result;
+}
+
+export const getAllCompletedProcesses = async () => {
+  const result = await getAllProcessesByStatusService("completed");
+  return result;
+}
+
 export const getProccessesActiveByUserId = async (userId: string | undefined) => {
   const result = await getActiveProcessesByUserIdService(userId);
   return result;

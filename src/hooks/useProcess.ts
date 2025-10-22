@@ -87,3 +87,27 @@ export const useAllActiveProcesses= () => {
   );
   return { data, error, isLoading, mutate };
 }
+
+export const useAllPausedProcesses= () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/platform/process/all/paused`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}
+
+export const useAllArchivedProcesses= () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/platform/process/all/archived`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}
+
+export const useAllCompletedProcesses= () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/platform/process/all/completed`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}

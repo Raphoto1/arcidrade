@@ -1,27 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 
-import Grid from "../pieces/Grid";
-import ProfesionalCard from "@/components/pieces/ProfesionalCard";
-import { useAllPendingProcesses } from "@/hooks/useProcess";
-import Process from "../institution/Process";
+
+import { useAllPausedProcesses } from "@/hooks/useProcess";
 import ProcessVictor from "./pieces/ProcessVictor";
 import { useInstitutionById } from "@/hooks/usePlatInst";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import AdminProcess from "./AdminProcess";
-
-// Componente para mostrar información de institución y recopilar datos para el filtro
-function InstitutionDataCollector({ userId, onInstitutionLoaded }: { userId: string; onInstitutionLoaded: (userId: string, name: string) => void }) {
-  const { data: institutionPack } = useInstitutionById(userId || "");
-  const institutionData = institutionPack?.payload;
-
-  React.useEffect(() => {
-    if (institutionData?.name) {
-      onInstitutionLoaded(userId, institutionData.name);
-    }
-  }, [institutionData, userId, onInstitutionLoaded]);
-
-  return null; // Este componente no renderiza nada visible
-}
 
 // Componente auxiliar para mostrar cada proceso con información del cliente
 function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; onSelect: (process: any) => void; isSelected: boolean }) {
@@ -35,7 +19,7 @@ function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; 
           <span className='font-semibold text-[var(--main-arci)]'>{process.position}</span>
           <span className='text-sm font-medium text-gray-700'>Cliente: {institutionData?.name || "Cargando cliente..."}</span>
           <span className='text-sm text-gray-600'>Especialidad: {process.main_speciality}</span>
-          <span className='text-xs text-gray-500'>Estado: {process.status || "Pendiente"}</span>
+          <span className='text-xs text-gray-500'>Estado: {process.status || "Pausado"}</span>
         </div>
       </button>
     </li>
@@ -55,9 +39,9 @@ function SelectedProcessDisplay({ process }: { process: any }) {
   );
 }
 
-export default function AskedProcess() {
-  const { data, error, isLoading, mutate } = useAllPendingProcesses();
-  const pendingProcesses = data?.payload || [];
+export default function PausedProcess() {
+  const { data, error, isLoading, mutate } = useAllPausedProcesses();
+  const activeProcesses = data?.payload || [];
   const [selectedProcess, setSelectedProcess] = useState<any>(null);
   const [institutionFilter, setInstitutionFilter] = useState<string>("");
 
@@ -67,7 +51,7 @@ export default function AskedProcess() {
   // Estado para el loader del proceso seleccionado
   const [isLoadingProcess, setIsLoadingProcess] = useState<boolean>(false);
 
-  // Estado para controlar si el dropdown está abierto
+  // Estados para controlar dropdowns
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState<boolean>(false);
 
@@ -76,7 +60,7 @@ export default function AskedProcess() {
   const filterDropdownRef = useRef<HTMLDivElement>(null);
 
   // Filtrar procesos válidos
-  const validProcesses = pendingProcesses.filter((process: any) => process && process.id);
+  const validProcesses = activeProcesses.filter((process: any) => process && process.id);
 
   // Componente auxiliar para cargar información de institución
   const InstitutionDataLoader = ({ userId }: { userId: string }) => {
@@ -135,10 +119,6 @@ export default function AskedProcess() {
     }, 800);
   };
 
-  const handleInstitutionLoaded = (userId: string, name: string) => {
-    setInstitutionsData((prev) => ({ ...prev, [userId]: name }));
-  };
-
   const handleFilterSelect = (institution: string) => {
     setInstitutionFilter(institution);
     setIsFilterDropdownOpen(false);
@@ -153,29 +133,29 @@ export default function AskedProcess() {
     }
   };
 
-  //usar process de institution
   return (
     <div className='flex justify-center'>
       <div className='grid grid-cols-1 gap-4 mt-4 pt-0 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center md:w-4/5 bg-gray-100'>
         {/* Header con título y botón */}
         <div className='flex md:justify-around flex-col md:flex-row bg-gray-300 rounded-t-md p-2'>
           <span></span>
-          <h2 className='text-2xl fontArci text-center bg-gray-300 rounded-t-md'>Procesos Solicitados ({filteredProcesses.length})</h2>
+          <h2 className='text-2xl fontArci text-center bg-gray-300 rounded-t-md'>Procesos Pausados ({filteredProcesses.length})</h2>
           <ModalForPreview title='Administrar Procesos'>
             <AdminProcess />
           </ModalForPreview>
         </div>
+
         {/* Estados de carga y error */}
         {isLoading && (
           <div className='flex justify-center items-center p-8'>
             <div className='loading loading-spinner loading-lg'></div>
-            <span className='ml-2'>Cargando procesos...</span>
+            <span className='ml-2'>Cargando procesos pausados...</span>
           </div>
         )}
 
         {error && (
           <div className='alert alert-error max-w-md mx-auto'>
-            <p>Error al cargar los procesos pendientes</p>
+            <p>Error al cargar los procesos pausados</p>
           </div>
         )}
 
@@ -288,7 +268,7 @@ export default function AskedProcess() {
                     )}
 
                     {!selectedProcess && (
-                      <div className='text-center'>
+                      <div className='text-center p-12'>
                         <div className='flex flex-col items-center gap-4'>
                           <svg className='w-20 h-20 text-gray-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                             <path
@@ -327,8 +307,8 @@ export default function AskedProcess() {
                       d='M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2'
                     />
                   </svg>
-                  <p className='text-gray-500 text-xl'>No hay procesos pendientes</p>
-                  <p className='text-gray-400 text-sm'>Los procesos solicitados aparecerán aquí</p>
+                  <p className='text-gray-500 text-xl'>No hay procesos pausados</p>
+                  <p className='text-gray-400 text-sm'>Los procesos pausados aparecerán aquí</p>
                 </div>
               </div>
             )}

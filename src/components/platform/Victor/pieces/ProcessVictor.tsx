@@ -148,23 +148,49 @@ export default function ProcessVictor(props: any) {
                 />
               </ModalForPreviewBtnLong>
             )}
-            <ModalForFormsRedBtn title={"Eliminar Proceso"}>
-              <ConfirmArchiveProcessForm id={processData?.id} />
-            </ModalForFormsRedBtn>
+            {processData?.status == "archived" ? null : (
+              <ModalForFormsRedBtn title={"Eliminar Proceso"}>
+                <ConfirmArchiveProcessForm id={processData?.id} />
+              </ModalForFormsRedBtn>
+            )}
             {processData?.status == "pending" && (
               <ModalForFormsGreenBtn title={"Aceptar Proceso"}>
                 <ConfirmActivateProcessForm id={processData?.id} />
               </ModalForFormsGreenBtn>
             )}
             {processData?.status == "active" && (
-              <ModalForFormsYellowBtn title={"Pausar Proceso"}>
-                <ConfirmPauseProcessForm id={processData?.id} />
-              </ModalForFormsYellowBtn>
+              <>
+                <ModalForFormsYellowBtn title={"Pausar Proceso"}>
+                  <ConfirmPauseProcessForm id={processData?.id} />
+                </ModalForFormsYellowBtn>
+                <ModalForForms title={"Extender Plazo"}>
+                  <div>En desarrollo</div>
+                </ModalForForms>
+              </>
             )}
-            {/* <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
-            <button className='btn bg-warning h-auto text-sm'>Pausar Proceso</button>
-            <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extension</button>
-            <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Finalizar Proceso</button> */}
+            {processData?.status == "paused" && (
+              <>
+                <ModalForFormsGreenBtn title={"Reactivar Proceso"}>
+                  <ConfirmActivateProcessForm id={processData?.id} />
+                </ModalForFormsGreenBtn>
+                <ModalForForms title={"Extender Plazo"}>
+                  <div>En desarrollo</div>
+                </ModalForForms>
+              </>
+            )}
+            {processData?.status == "archived" && (
+              <>
+                <ModalForFormsGreenBtn title={"Reactivar Proceso"}>
+                  <ConfirmActivateProcessForm id={processData?.id} />
+                </ModalForFormsGreenBtn>
+                <ModalForForms title={"Extender Plazo"}>
+                  <div>En desarrollo</div>
+                </ModalForForms>
+                <ModalForFormsRedBtn title={"Eliminar Proceso de Base de Datos"}>
+                  <div>En desarrollo</div>
+                </ModalForFormsRedBtn>
+              </>
+            )}
           </div>
         </div>
       </div>

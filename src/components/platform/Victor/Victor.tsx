@@ -12,6 +12,7 @@ import InstitutionGridSearch from "../institution/InstitutionGridSearch";
 import ProcessListVictor from "./pieces/ProcessListVictor";
 import ProfesionalsListVictor from "./pieces/ProfesionalsListVictor";
 import InstitutionsListVictor from "./pieces/InstitutionsListVictor";
+import PausedProcess from "./PausedProcess";
 
 export default function Victor() {
   return (
@@ -21,6 +22,7 @@ export default function Victor() {
       <AdminButtons />
       <AskedProcess />
       <ActiveProcess />
+      <PausedProcess />
       <ArchivedProcess />
       <FinishedProcess />
       <ProcessListVictor />
