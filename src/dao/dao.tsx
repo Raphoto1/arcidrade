@@ -96,6 +96,18 @@ export const listRegisteredUsersDao = async () => {
   }
 };
 
+export const updateProfesionalAuthStatusDao = async (userId: string | undefined, status: StatusAvailable) => {
+  try {
+    const updatedAuth = await prisma.auth.updateManyAndReturn({
+      where: { referCode: userId },
+      data: { status: status },
+    });
+    return updatedAuth;
+  } catch (error) {
+    console.error("error de update institution Auth Status Dao", error);
+    throw new Error("Error al actualizar estado de autenticación");
+  }
+}
 // Platform - Profesional_________________________________________________________________
 export const getProfesionalFullByIdDao = async (user_id: string | undefined) => {
   try {
@@ -158,7 +170,7 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
     // Construir el where clause con búsqueda y filtro por especialidad
     const whereClause: any = {
       area: "profesional",
-      status: "registered",
+      status: "active",
     };
 
     // Array para condiciones OR

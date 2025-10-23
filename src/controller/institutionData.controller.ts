@@ -21,11 +21,16 @@ import {
   getInstitutionDataFullByUserIdService,
   getAllInstitutionsService,
   getAllInstitutionsPaginatedService,
+  getAllActiveInstitutionsService,
+  getAllPausedInstitutionsService,
 } from "@/service/institutionData.service";
 import { authOptions } from "@/utils/authOptions";
 import { fakerES as faker } from "@faker-js/faker";
 import { get } from "http";
 import { getServerSession } from "next-auth";
+import { updateUserData } from "./userData.controller";
+import { updateUserDataService } from "@/service/userData.service";
+import { updateInstitutionAuthStatusDao } from "@/dao/institution.dao";
 
 export const getInstitutionData = async () => {
   const session = await getServerSession(authOptions);
@@ -48,7 +53,7 @@ export const getInstitutionDataFull = async () => {
 export const getInstitutionDataFullById = async (id: string) => {
   const institutionData = await getInstitutionDataFullByUserIdService(id);
   return institutionData;
-}
+};
 
 export const getInstitutionDataByReferCode = async (id: string) => {
   const institutionData = await getInstitutionDataByUserIdService(id);
@@ -94,6 +99,7 @@ export const createInstitutionData = async (data: any) => {
       status: "active", // Or another default status
     };
     const response = await createInstitutionDataService(uploadPack);
+    await updateInstitutionAuthStatusDao(userId, "active");
     return response;
   }
 };
@@ -304,5 +310,25 @@ export const getAllInstitutionsPaginated = async (page: number = 1, limit: numbe
   } catch (error) {
     console.error(error);
     throw new Error("error al obtener instituciones paginadas");
+  }
+};
+
+export const getAllActiveInstitutions = async () => {
+  try {
+    const response = await getAllActiveInstitutionsService();
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener instituciones activas");
+  }
+};
+
+export const getAllPausedInstitutions = async () => {
+  try {
+    const response = await getAllPausedInstitutionsService();
+    return response;
+  } catch (error) {
+    console.error(error);
+    throw new Error("error al obtener instituciones en pausa");
   }
 };

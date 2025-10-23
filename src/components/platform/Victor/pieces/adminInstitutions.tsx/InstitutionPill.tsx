@@ -1,41 +1,57 @@
+import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
+import ModalForForms from "@/components/modals/ModalForForms";
+import ModalForPreview from "@/components/modals/ModalForPreview";
+import InstitutionDetailFullById from "@/components/platform/pieces/InstitutionDetailFullById";
+import { useInstitutionById, useInstitutionFullById } from "@/hooks/usePlatInst";
+import { formatDateToString } from "@/hooks/useUtils";
 import React from "react";
 
-export default function InstitutionPill() {
+export default function InstitutionPill({ institution }: { institution: any }) {
+  const { data, isLoading, error } = useInstitutionFullById(institution);
+  const institutionPack  = data?.payload;
+
+  if (isLoading) return <p>Cargando...</p>;
+  if (error) return <p>Error al cargar la institución.</p>;
+  if (!institutionPack) return <p>Institución no encontrada.</p>;
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col'>
       <div className='w-full h-auto flex'>
         <div className='flex flex-col align-middle justify-center w-2/3 p-1'>
-          <h3 className='text-(--main-arci) text-bold text-nowrap font-bold'>Nombre Institución</h3>
+          <h3 className='text-(--main-arci) text-bold text-nowrap font-bold'>{institutionPack?.institution_data[0].name}</h3>
           <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Cantidad de Procesos:</p>
-            <p className='font-light text-[var(--main-arci)]'>8</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.process.length || 0}</p>
           </div>
           <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Inscrito desde:</p>
-            <p className='font-light text-[var(--main-arci)]'>05/08/2025</p>
+            <p className='font-light text-[var(--main-arci)]'>{formatDateToString(institutionPack?.creation_date) || 'Fecha no disponible'}</p>
           </div>
           <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Codigo Enviado:</p>
-            <p className='font-light text-[var(--main-arci)]'>ds987adhb87adhiu87asdh</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.referCode || 'Código no disponible'}</p>
           </div>
           <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Email:</p>
-            <p className='font-light text-[var(--main-arci)]'>Profesional@pro.com</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.email || 'Email no disponible'}</p>
           </div>
                     <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>NIF:</p>
-            <p className='font-light text-[var(--main-arci)]'>9876543</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.institution_data[0].company_id || 'NIF no disponible'}</p>
           </div>
                     <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Ciudad:</p>
-            <p className='font-light text-[var(--main-arci)]'>Sada</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.institution_data[0].city || 'Ciudad no disponible'}</p>
           </div>
         </div>
         <div className='w-1/3 p-1 flex flex-col justify-center'>
-          <button className='btn bg-[var(--main-arci)] w-full text-white h-auto '>Detalle</button>
-          <button className='btn bg-[var(--orange-arci)] w-full text-white h-auto '>Pausar</button>
-          <button className='btn bg-warning w-full text-white h-auto '>Solicitud de Contacto</button>
-          <button className='btn bg-[var(--main-arci)] w-full text-white h-auto '>Procesos</button>
+          <ModalForPreview title={"Ver Detalle"}>
+            <InstitutionDetailFullById userId={institutionPack?.referCode} />
+          </ModalForPreview>
+          <button className='btn bg-[var(--orange-arci)] w-full text-white h-auto '>Pausar(en desarrollo)</button>
+          <ModalForForms title={"Solicitar Contacto"}>
+            <ConfirmAskContactForm referCode={institutionPack?.referCode} name={institutionPack?.institution_data[0].name} />
+          </ModalForForms>
+          {/* <button className='btn bg-[var(--main-arci)] w-full text-white h-auto '>Procesos</button> */}
         </div>
       </div>
     </div>

@@ -32,7 +32,7 @@ import {
   getAllProfesionalsPaginatedService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
-import { updateProfesionalMainStudyDao } from "@/dao/dao";
+import { updateProfesionalAuthStatusDao, updateProfesionalMainStudyDao } from "@/dao/dao";
 import { getInstitutionDataByUserIdService, updateInstitutionCertificationService, updateInstitutionDataService } from "@/service/institutionData.service";
 import { getInstitutionCertification, updateInstitutionCertification } from "./institutionData.controller";
 //user__________________________________________________________________________________
@@ -66,15 +66,14 @@ export const createUserData = async (data: any) => {
         //se envian los paquetes al service
         const resultUserData = await createUserDataService(profesionalDataPack);
         const resultMainStudy = await createUserDataMainStudy(profesionalMainStudyPack);
+        const updateAuthStatus = await updateProfesionalAuthStatusDao(session.user.id, "active");
         return true;
       } catch (error) {
         console.error(error);
-
         throw new Error("error en userdatacontroller");
       }
       break;
     case "institution":
-
       const fakeNameInstitution = await faker.company.name();
       break;
     default:

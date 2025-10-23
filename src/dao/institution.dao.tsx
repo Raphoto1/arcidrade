@@ -1,4 +1,5 @@
 import prisma from "@/utils/db";
+import { StatusAvailable } from "@/generated/prisma"; // Adjust the path based on where your types are defined
 
 export const getInstitutionFullByIdDao = async (user_id: string | undefined) => {
   try {
@@ -16,7 +17,6 @@ export const getInstitutionFullByIdDao = async (user_id: string | undefined) => 
       return safeUser;
     }
   } catch (error) {
-
     throw new Error("Error al obtener profesional full");
   }
 };
@@ -50,7 +50,6 @@ export const getInstitutionFullByUserIdDao = async (user_id: string | undefined)
       return safeUser;
     }
   } catch (error) {
-
     throw new Error("Error al obtener profesional full");
   }
 };
@@ -79,6 +78,20 @@ export const updateInstitutionDataDao = async (data: any, userId: string | undef
     throw new Error("Error al actualizar institucion");
   }
 };
+
+export const updateInstitutionAuthStatusDao = async (userId: string | undefined, status: StatusAvailable) => {
+  try {
+    const updatedAuth = await prisma.auth.updateManyAndReturn({
+      where: { referCode: userId },
+      data: { status: status },
+    });
+    return updatedAuth;
+  } catch (error) {
+    console.error("error de update institution Auth Status Dao", error);
+    throw new Error("Error al actualizar estado de autenticación");
+  }
+};
+
 //speciality
 export const createInstitutionSpecialityDao = async (data: any) => {
   try {
@@ -222,7 +235,7 @@ export const createInstitutionGoalDao = async (data: any) => {
   } catch (error) {
     console.error("error de create institution Goal Dao", error);
     throw new Error("Error al crear objetivo");
-  } 
+  }
 };
 
 export const getInstitutionGoalByIdDao = async (id: number) => {
@@ -276,7 +289,6 @@ export const getAllInstitutionsDao = async () => {
     });
     return institutions;
   } catch (error) {
-
     throw new Error("Error al obtener todas las instituciones");
   }
 };
@@ -284,11 +296,11 @@ export const getAllInstitutionsDao = async () => {
 export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
   try {
     const skip = (page - 1) * limit;
-    
+
     // Construir el where clause con búsqueda y filtros
     const whereClause: any = {
       area: "institution",
-      status: "registered",
+      status: "active",
     };
 
     // Array para condiciones OR y AND
@@ -302,35 +314,32 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
           institution_data: {
             some: {
               OR: [
-                { name: { contains: search, mode: 'insensitive' } },
-                { fake_name: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } },
-                { main_speciality: { contains: search, mode: 'insensitive' } },
-              ]
-            }
-          }
+                { name: { contains: search, mode: "insensitive" } },
+                { fake_name: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+                { main_speciality: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          },
         },
         {
           institution_specialization: {
             some: {
               OR: [
-                { title: { contains: search, mode: 'insensitive' } },
-                { title_category: { contains: search, mode: 'insensitive' } },
-                { institution: { contains: search, mode: 'insensitive' } },
-                { description: { contains: search, mode: 'insensitive' } },
-              ]
-            }
-          }
+                { title: { contains: search, mode: "insensitive" } },
+                { title_category: { contains: search, mode: "insensitive" } },
+                { institution: { contains: search, mode: "insensitive" } },
+                { description: { contains: search, mode: "insensitive" } },
+              ],
+            },
+          },
         },
         {
           institution_certifications: {
             some: {
-              OR: [
-                { title: { contains: search, mode: 'insensitive' } },
-                { institution: { contains: search, mode: 'insensitive' } },
-              ]
-            }
-          }
+              OR: [{ title: { contains: search, mode: "insensitive" } }, { institution: { contains: search, mode: "insensitive" } }],
+            },
+          },
         }
       );
     }
@@ -340,9 +349,9 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
       andConditions.push({
         institution_data: {
           some: {
-            country: { contains: country, mode: 'insensitive' }
-          }
-        }
+            country: { contains: country, mode: "insensitive" },
+          },
+        },
       });
     }
 
@@ -354,32 +363,26 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
           {
             institution_specialization: {
               some: {
-                OR: [
-                  { title: { contains: specialization, mode: 'insensitive' } },
-                  { title_category: { contains: specialization, mode: 'insensitive' } }
-                ]
-              }
-            }
+                OR: [{ title: { contains: specialization, mode: "insensitive" } }, { title_category: { contains: specialization, mode: "insensitive" } }],
+              },
+            },
           },
           // Buscar en main_speciality de institution_data
           {
             institution_data: {
               some: {
-                main_speciality: { contains: specialization, mode: 'insensitive' }
-              }
-            }
-          }
-        ]
+                main_speciality: { contains: specialization, mode: "insensitive" },
+              },
+            },
+          },
+        ],
       });
     }
 
     // Construir la cláusula final
     if (orConditions.length > 0 && andConditions.length > 0) {
       // Si hay ambos filtros: (búsqueda) AND (otros filtros)
-      whereClause.AND = [
-        { OR: orConditions },
-        ...andConditions
-      ];
+      whereClause.AND = [{ OR: orConditions }, ...andConditions];
     } else if (orConditions.length > 0) {
       // Solo búsqueda
       whereClause.OR = orConditions;
@@ -387,7 +390,7 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
       // Solo filtros
       whereClause.AND = andConditions;
     }
-    
+
     const [institutions, total] = await Promise.all([
       prisma.auth.findMany({
         where: whereClause,
@@ -397,12 +400,12 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
         skip,
         take: limit,
         orderBy: {
-          creation_date: 'desc'
-        }
+          creation_date: "desc",
+        },
       }),
       prisma.auth.count({
-        where: whereClause
-      })
+        where: whereClause,
+      }),
     ]);
 
     return {
@@ -412,12 +415,47 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
       limit,
       totalPages: Math.ceil(total / limit),
       hasMore: skip + limit < total,
-      search: search || '',
-      country: country || '',
-      specialization: specialization || ''
+      search: search || "",
+      country: country || "",
+      specialization: specialization || "",
     };
   } catch (error) {
-
     throw new Error("Error al obtener instituciones paginadas");
+  }
+};
+
+export const getAllActiveInstitutionsDao = async () => {
+  try {
+    const institutions = await prisma.auth.findMany({
+      where: {
+        area: "institution",
+        status: "active",
+      },
+      select: {
+        referCode: true,
+      },
+    });
+    return institutions;
+  } catch (error) {
+    console.error("Error al obtener instituciones activas:", error);
+    throw new Error("Error al obtener instituciones activas");
+  }
+};
+
+export const getAllPausedInstitutionsDao = async () => {
+  try {
+    const institutions = await prisma.auth.findMany({
+      where: {
+        area: "institution",
+        status: "desactivated",
+      },
+      select: {
+        referCode: true,
+      },
+    });
+    return institutions;
+  } catch (error) {
+    console.error("Error al obtener instituciones en pausa:", error);
+    throw new Error("Error al obtener instituciones en pausa");
   }
 };

@@ -3,8 +3,10 @@ import React from "react";
 import { ImSearch } from "react-icons/im";
 
 import InstitutionPill from "./InstitutionPill";
+import { useAllActiveInstitutions } from "@/hooks/usePlatInst";
 
 export default function ActiveInstitutions() {
+  const {data, isLoading, error} = useAllActiveInstitutions();
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:gap-4 md:h-auto'>
       <div className='pb-2'>
@@ -15,7 +17,9 @@ export default function ActiveInstitutions() {
         <ImSearch size={30} />
       </div>
       <div>
-        <InstitutionPill />
+        {data?.payload?.map((institution: any) => (
+          <InstitutionPill key={institution.referCode} institution={institution.referCode} />
+        ))}
       </div>
     </div>
   );

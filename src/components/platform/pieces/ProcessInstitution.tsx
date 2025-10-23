@@ -39,7 +39,7 @@ export default function ProcessInstitution(props: any) {
             <ConfirmActivateProcessForm id={process.id} />
           </ModalForFormsGreenBtn>
           <ModalForForms title={"Solicitar Contacto"}>
-            <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
+            <ConfirmAskContactForm referCode={process?.user_id} name={institutionData?.name} />
           </ModalForForms>
         </div>
       </div>

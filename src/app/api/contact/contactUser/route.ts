@@ -25,9 +25,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validar formato de userId (debe ser un UUID válido)
-    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
-    if (!uuidRegex.test(userId)) {
+    // Validar formato de userId (acepta UUID o cuid/nanoid)
+    const validIdRegex = /^[a-zA-Z0-9_-]{20,30}$|^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    
+    if (!validIdRegex.test(userId)) {
       return NextResponse.json(
         { 
           error: "userId inválido", 
@@ -38,11 +39,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Validar longitud del name
-    if (name.length > 100) {
+    if (name.length > 500) {
       return NextResponse.json(
         { 
           error: "Name demasiado largo", 
-          message: "El nombre excede la longitud máxima permitida (100 caracteres)" 
+          message: "El nombre excede la longitud máxima permitida (500 caracteres)" 
         },
         { status: 400 }
       );
