@@ -16,6 +16,7 @@ export const getInvitationByIdDao = async (id: string) => {
     return null;
   }
 };
+
 export const getInvitationByEmailDao = async (email: string) => {
   try {
     const chkInvitations = await prisma.auth.findUnique({
@@ -27,6 +28,20 @@ export const getInvitationByEmailDao = async (email: string) => {
     return null;
   }
 };
+
+export const getUserEmailByRefferCodeDao = async (referCode: string) => {
+  try {
+    const user = await prisma.auth.findUnique({
+      where: { referCode },
+      select: { email: true }
+    });
+    return user?.email || null;
+  } catch (error) {
+    console.error("Error al obtener el email por referCode:", error);
+    return null;
+  }
+};
+
 export const completeInvitationDao = async (id: string, email: string, password: string) => {
 
 

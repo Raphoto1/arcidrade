@@ -21,7 +21,7 @@ import UserDescription from "../../pieces/UserDescription";
 import { useInstitutionById } from "@/hooks/usePlatInst";
 import ModalForFormsYellowBtn from "@/components/modals/ModalForFormsYellowBtn";
 import ConfirmPauseProcessForm from "@/components/forms/platform/process/ConfirmPauseProcessForm";
-
+import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
@@ -191,6 +191,9 @@ export default function ProcessVictor(props: any) {
                 </ModalForFormsRedBtn>
               </>
             )}
+                      <ModalForForms title={"Solicitar Contacto"}>
+                        <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
+                      </ModalForForms>
           </div>
         </div>
       </div>

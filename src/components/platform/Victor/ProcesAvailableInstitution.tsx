@@ -2,6 +2,8 @@ import React from "react";
 
 import ProcessInstitution from "../pieces/ProcessInstitution";
 import { useAllPendingProcesses } from "@/hooks/useProcess";
+import ModalForPreview from "@/components/modals/ModalForPreview";
+import AdminProcess from "./AdminProcess";
 
 export default function ProcesAvailableInstitution() {
   const { data, error, isLoading, mutate } = useAllPendingProcesses()
@@ -59,9 +61,9 @@ export default function ProcesAvailableInstitution() {
         )}
       </div>
       <div className="flex justify-center pt-2">
-         <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>
-           Administrar Solicitudes
-         </button>
+              <ModalForPreview title='Administrar Procesos'>
+                <AdminProcess />
+              </ModalForPreview>
       </div>
     </div>
   );
