@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { Country } from "country-state-city";
 import { ICountry } from "country-state-city";
+import Link from "next/link";
 
 import ModalForForm from "../../modals/ModalForForms";
 import InstitutionProfileForm from "@/components/forms/platform/institution/InstitutionProfileForm";
@@ -69,7 +70,13 @@ export default function InstitutionData() {
           </div>
         </div>
         <div className='controles justify-end flex gap-2 mt-4'>
-          {/* <button className='btn bg-[var(--soft-arci)] h-7'>Cambiar contraseña</button> */}
+          <ModalForForm title='Cambiar Contraseña'>
+            <div className='flex flex-col gap-4'>
+              <Link href={`/resetPassword/${session?.user.id}`} className='btn bg-[var(--main-arci)] text-white hover:bg-[var(--soft-arci)]'>
+                Cambiar Contraseña
+              </Link>
+            </div>
+          </ModalForForm>
           <ModalForForm title={data?.payload.name == null ? "Agregar Información" : "Modificar"}>
             <InstitutionProfileForm />
           </ModalForForm>

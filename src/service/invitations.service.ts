@@ -1,7 +1,7 @@
 import prisma from "@/utils/db";
 import { encrypt } from "@/utils/encrypter";
 
-import { getInvitationByIdDao, getInvitationByEmailDao, completeInvitationDao, listInvitedUsersDao, listRegisteredUsersDao } from "@/dao/dao";
+import { getInvitationByIdDao, getInvitationByEmailDao, completeInvitationDao, resetPasswordDao, listInvitedUsersDao, listRegisteredUsersDao } from "@/dao/dao";
 import { sendInvitationMail } from "@/utils/sendMail";
 import { failedMail } from "./register.service";
 
@@ -28,6 +28,16 @@ export const getInvitationByEmail = async (email: string) => {
 export const completeInvitation = async (id: string, email: string, password: string) => {
   try {
     const result = await completeInvitationDao(id, email, password);
+    return result;
+  } catch (error) {
+
+    throw error;
+  }
+};
+
+export const resetPassword = async (id: string, email: string, password: string) => {
+  try {
+    const result = await resetPasswordDao(id, email, password);
     return result;
   } catch (error) {
 

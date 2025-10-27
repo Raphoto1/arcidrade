@@ -7,16 +7,18 @@ export const useHandleSubmitText = async (data: any, url: string) => {
       },
       body: JSON.stringify(data),
     });
-    if (!response.ok) {
-      throw new Error('Error en la peticion o la informacion proporcionada');
-    }
-    const result = await response.json();
-
     
-    return response
+    const result = await response.json();
+    
+    if (!response.ok) {
+      // Usar el mensaje específico del servidor si está disponible
+      const errorMessage = result.message || result.error || 'Error en la petición o la información proporcionada';
+      throw new Error(errorMessage);
+    }
+    
+    return response;
     
   } catch (error) {
-    throw error
+    throw error;
   }
-
 };

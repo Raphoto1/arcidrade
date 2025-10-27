@@ -40,10 +40,10 @@ export default function GenerateInvitation() {
 
   };
   return (
-
-    <div className='flex justify-center items-center align-middle h-full p-2 max-w-sm md:max-w-xl'>
-      {isLoading && <Loading />}
-      <div className='flex-col justify-center h-full bg-gray-200 w-full align-middle items-center rounded-sm p-4'>
+    <div className='flex w-full justify-center items-center min-h-[calc(100vh-200px)] py-8'>
+      <div className='flex justify-center items-center p-2 max-w-sm md:max-w-xl'>
+        {isLoading && <Loading />}
+        <div className='flex-col justify-center h-full bg-gray-200 w-full align-middle items-center rounded-sm p-4'>
         { session?.user.email ?<div><h1>Correo Autorizado para Enviar Invitación</h1><span>{session.user.email}</span></div> : null }
         <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Generar Invitación</h2>
         <form onSubmit={handleSubmit} className='form justify-center align-middle'>
@@ -62,8 +62,14 @@ export default function GenerateInvitation() {
               ))}
             </div>
           </div>
-          <button className='btn bg-[var(--soft-arci)]'>Generar Invitación</button>
+          <button 
+            className='btn btn-wide bg-[var(--main-arci)] text-white hover:bg-[var(--soft-arci)] font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105'
+            type='submit'
+          >
+            📧 Generar Invitación
+          </button>
         </form>
+        </div>
       </div>
     </div>
   );

@@ -25,18 +25,11 @@ export const useChkInvitation = (id: string) => {
       try {
         setLoading(true);
         setError(null);
-
-        
         const response = await fetch(`/api/auth/invitations/${id}`);
-
-
-        
         if (!response.ok) {
           throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
-        
         const data = await response.json();
-
         setInvitation(data);
       } catch (error: any) {
         console.error('Error fetching invitation:', error);
@@ -63,10 +56,41 @@ export const useChkInvitation = (id: string) => {
 export const useInvitation = async (form: any, id: string) => {
   try {
     const result = await useHandleSubmitText(form, `/api/auth/invitations/${id}`);
-
     return true;
   } catch (error) {
+    throw error;
+  }
+};
 
+// reset password para usuarios ya registrados
+export const useResetPassword = async (form: any, id: string) => {
+  try {
+    const result = await useHandleSubmitText(form, `/api/auth/resetPassword/${id}`);
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// solicitar reset password por email
+export const useForgotPassword = async (email: string) => {
+  try {
+    const response = await fetch('/api/auth/forgot-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email }),
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || 'Error al enviar email de recuperación');
+    }
+
+    return data;
+  } catch (error) {
     throw error;
   }
 };

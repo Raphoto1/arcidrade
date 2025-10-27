@@ -1,4 +1,4 @@
-'use client'
+"use client";
 //imports de app
 import { useEffect } from "react";
 import { IoDocumentAttachOutline } from "react-icons/io5";
@@ -30,9 +30,7 @@ export default function PersonalData() {
   const fecha = new Date(data?.payload[0].birth_date);
   const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   //adjust country
-  const countryName: ICountry | undefined = data?.payload[0]
-    ? Country.getCountryByCode(data?.payload[0].country)
-    : undefined;
+  const countryName: ICountry | undefined = data?.payload[0] ? Country.getCountryByCode(data?.payload[0].country) : undefined;
   //adjust status
   const handleStatusName = (status: string | undefined) => {
     if (status === "inProcess") {
@@ -150,11 +148,11 @@ export default function PersonalData() {
             {!data?.payload[1].link && !data?.payload[1].file && <p className='text-(--main-arci)'>No Cargado</p>}
           </div>
         </div>
-        <div className='controles justify-end flex gap-2 mt-4'>
-          {/* <button className='btn bg-[var(--soft-arci)] h-auto w-auto'>Cambiar contraseña</button> */}
+
+        <div className='controles justify-center flex gap-2 mt-4'>
           {/* --------------------------------------------------agregar Eliminar Titulo------------------------------- */}
           {data?.payload[1].status == "graduated" ? (
-            <div className="flex gap-2">
+            <div className='flex gap-2'>
               <ModalForFormsRedBtn title='Eliminar Título'>
                 <ConfirmDeleteMainStudyForm />
               </ModalForFormsRedBtn>
@@ -168,6 +166,14 @@ export default function PersonalData() {
             <ProfesionalProfileHookForm />
           </ModalForForm>
         </div>
+        <ModalForForm title='Cambiar Contraseña'>
+          <div className='flex flex-col gap-4'>
+            <Link href={`/resetPassword/${session?.user.id}`} className='btn bg-[var(--soft-arci)] text-white hover:bg-[var(--main-arci)]'>
+              Cambiar Contraseña
+            </Link>
+          </div>
+
+        </ModalForForm>
       </div>
     </div>
   );

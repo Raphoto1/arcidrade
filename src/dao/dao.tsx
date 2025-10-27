@@ -72,6 +72,44 @@ export const completeInvitationDao = async (id: string, email: string, password:
   }
 };
 
+export const resetPasswordDao = async (id: string, email: string, password: string) => {
+  try {
+    const invitation = await getInvitationByEmailDao(email);
+    const invitationIdChk = await getInvitationByIdDao(id);
+
+    // Verifica que ambos emails existan
+    if (!invitation?.email || !invitationIdChk?.email) {
+      throw new Error("Email no encontrado en la invitación.");
+    }
+
+    // Verificar que los emails de la invitación coincidan (case-insensitive)
+    if (invitation.email.toLowerCase() !== invitationIdChk.email.toLowerCase()) {
+      throw new Error("Los datos de la invitación no son consistentes.");
+    }
+
+    // Verificar que el email del formulario coincida con el de la invitación
+    if (email.toLowerCase() !== invitation.email.toLowerCase()) {
+      throw new Error("El email ingresado no coincide con el email de la cuenta.");
+    }
+
+    // Verificar que el usuario esté en estado 'registered' o 'active'
+    if (invitationIdChk.status !== "registered" && invitationIdChk.status !== "active") {
+      throw new Error("Esta cuenta no ha completado su registro inicial o no está activa.");
+    }
+
+    const encryptedPass = await encrypt(password);
+    const updatedUser = await prisma.auth.update({
+      where: { referCode: id },
+      data: {
+        password: encryptedPass,
+      },
+    });
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
+
 export const listInvitedUsersDao = async () => {
   try {
     const invitedUsers = await prisma.auth.findMany({

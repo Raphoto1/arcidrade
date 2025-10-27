@@ -1,10 +1,10 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useChkInvitation, useInvitation } from "@/hooks/useInvitation";
+import { useChkInvitation, useResetPassword } from "@/hooks/useInvitation";
 import { signIn } from "next-auth/react";
 
-export default function CompleteInvitation(idIn: any) {
+export default function ResetPassword(idIn: any) {
   const router = useRouter();
   const { id } = idIn;
   const { invitation, loading, error }: any = useChkInvitation(id);
@@ -17,7 +17,7 @@ export default function CompleteInvitation(idIn: any) {
       <div className='flex w-full justify-center items-center min-h-[calc(100vh-200px)] py-8'>
         <div className='flex flex-col items-center gap-4'>
           <div className="loading loading-spinner loading-lg"></div>
-          <p>Verificando invitación...</p>
+          <p>Verificando cuenta...</p>
         </div>
       </div>
     );
@@ -28,7 +28,7 @@ export default function CompleteInvitation(idIn: any) {
     return (
       <div className='flex w-full justify-center items-center min-h-[calc(100vh-200px)] py-8'>
         <div className='alert alert-error max-w-md'>
-          <p>Error al verificar la invitación:</p>
+          <p>Error al verificar la cuenta:</p>
           <p>{error}</p>
           <p>ID: {id}</p>
           <div className="flex justify-center mt-4">
@@ -56,7 +56,7 @@ export default function CompleteInvitation(idIn: any) {
     return (
       <div className='flex w-full justify-center items-center min-h-[calc(100vh-200px)] py-8'>
         <div className='alert alert-warning max-w-md'>
-          <p>Invitación no válida o no encontrada:</p>
+          <p>Cuenta no válida o no encontrada:</p>
           <p>ID/ReferCode: {id}</p>
           <details className="mt-2">
             <summary className="cursor-pointer">Ver respuesta completa</summary>
@@ -105,20 +105,19 @@ export default function CompleteInvitation(idIn: any) {
 
     // Validación del email con la invitación
     const invitationEmail = invitation?.email;
-    console.log("Invitation object:", invitation);
-    console.log("Invitation email:", invitationEmail);
-    console.log("Form email:", data.email);
+    console.log("Reset Password - Invitation object:", invitation);
+    console.log("Reset Password - Invitation email:", invitationEmail);
+    console.log("Reset Password - Form email:", data.email);
+    console.log("Reset Password - ID:", id);
     
     if (invitationEmail && data.email.toLowerCase() !== invitationEmail.toLowerCase()) {
-      alert(`El email ingresado (${data.email}) no coincide con el email de la invitación (${invitationEmail}).`);
+      alert("El email ingresado no coincide con el email de la cuenta.");
       return;
     }
 
     try {
-      const response = await useInvitation(data, id);
-
-      alert("Registrado Satisfactoriamente");
-      
+      const response = await useResetPassword(data, id);
+      alert("Contraseña cambiada exitosamente. Iniciando sesión...");     
       const result = await signIn("credentials", {
         email: data.email,
         password: data.password,
@@ -129,25 +128,26 @@ export default function CompleteInvitation(idIn: any) {
         router.push("/platform");
       } else {
         console.error("Error en signIn:", result?.error);
-        alert("Error al iniciar sesión después del registro");
+        alert("Error al iniciar sesión después de cambiar Contraseña");
       }
-    } catch (error) {
-      console.error("Error using invitation:", error);
-      alert("Error al completar el registro. Verifique que el email coincida con la invitación.");
+    } catch (error: any) {
+      console.error("Error resetting password:", error);
+      const errorMessage = error.message || "Error al cambiar la contraseña. Verifique que el email coincida con la cuenta.";
+      alert(errorMessage);
     }
   };
   return (
     <div className='flex w-full justify-center items-center min-h-[calc(100vh-200px)] py-8'>
       <div className='flex justify-center items-center h-1/2 p-2 min-w-sm md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Bienvenido a Arcidrade</h2>
+          <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Cambiar Contraseña</h2>
           <form onSubmit={handleInvitation} className='form justify-center align-middle pl-2 md:grid md:min-w-full'>
             <div className='block mb-4'>
               <label htmlFor='email' className='block text-sm font-medium mb-2'>
                 Confirmar email
                 {invitation?.email && (
                   <span className='block text-xs text-gray-600 mt-1'>
-                    Email de la invitación: {invitation.email}
+                    Email de la cuenta: {invitation.email}
                   </span>
                 )}
               </label>
@@ -230,7 +230,7 @@ export default function CompleteInvitation(idIn: any) {
                 className='btn btn-wide bg-green-600 text-white hover:bg-green-700 border-green-600 hover:border-green-700 font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105' 
                 type='submit'
               >
-                ✅ Confirmar Registro
+                🔒 Actualizar Contraseña
               </button>
               <button 
                 type='button'
