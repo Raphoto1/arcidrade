@@ -1,10 +1,32 @@
-import React from "react";
+import React, { useMemo } from "react";
 import Image from "next/image";
 import { useProcessStats } from "@/hooks/useProcessStats";
+import { useSentInvitations } from "@/hooks/useInvitation";
 import ProcessStatsExample from "@/components/examples/ProcessStatsExample";
 
 export default function VictorHeroHeader() {
   const { processStats, isLoading, error } = useProcessStats();
+  const { data: invitationsData, isLoading: invitationsLoading, error: invitationsError } = useSentInvitations('invited');
+
+  // Contar invitaciones por tipo
+  const invitationStats = useMemo(() => {
+    const invitations = invitationsData?.payload || [];
+    const stats = {
+      total: invitations.length,
+      profesional: 0,
+      institution: 0,
+      manager: 0
+    };
+    
+    invitations.forEach((invitation: any) => {
+      const area = invitation.area?.toLowerCase();
+      if (area === 'profesional') stats.profesional++;
+      else if (area === 'institution') stats.institution++;
+      else if (area === 'manager') stats.manager++;
+    });
+    
+    return stats;
+  }, [invitationsData]);
 
   
 
@@ -33,7 +55,61 @@ export default function VictorHeroHeader() {
       <div className='absolute bottom-0 left-0 right-0 h-[160px] bg-gradient-to-t from-white via-transparent to-transparent' />
       {/* Contenido principal */}
       <div className='HeroArea w-full flex justify-center items-center align-middle p-2 md:pr-5 relative z-10'>
-        <div className='vacio none md:visible md:w-1/3 z-10'></div>
+        <div className='invitations bg-gray-200 p-4 rounded-sm z-10 md:w-1/3 hidden md:block'>
+          <h1 className='text-xl font-bold font-var(--font-oswald) mb-4'>Invitaciones Pendientes</h1>
+          
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Profesionales</h3>
+            <p className="font-bold text-blue-600">
+              {invitationsLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : invitationsError ? (
+                <span className="text-error">-</span>
+              ) : (
+                invitationStats.profesional
+              )}
+            </p>
+          </div>
+          
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Instituciones</h3>
+            <p className="font-bold text-green-600">
+              {invitationsLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : invitationsError ? (
+                <span className="text-error">-</span>
+              ) : (
+                invitationStats.institution
+              )}
+            </p>
+          </div>
+          
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
+            <h3 className='text-[var(--main-arci)] font-medium'>Selección</h3>
+            <p className="font-bold text-purple-600">
+              {invitationsLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : invitationsError ? (
+                <span className="text-error">-</span>
+              ) : (
+                invitationStats.manager
+              )}
+            </p>
+          </div>
+          
+          <div className='flex justify-between align-middle items-center p-2 w-full bg-[var(--main-arci)] bg-opacity-10 rounded-md m-2 border border-[var(--main-arci)] border-opacity-20'>
+            <h3 className='text-[var(--soft-arci)] font-bold'>Total Invitaciones</h3>
+            <p className="font-bold text-[var(--soft-arci)] text-lg">
+              {invitationsLoading ? (
+                <span className="loading loading-spinner loading-sm"></span>
+              ) : invitationsError ? (
+                <span className="text-error">-</span>
+              ) : (
+                invitationStats.total
+              )}
+            </p>
+          </div>
+        </div>
         <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 md:w-1/3'>
           <div className='relative w-40 h-40'>
             <Image
