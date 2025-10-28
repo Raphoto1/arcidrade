@@ -106,7 +106,7 @@ export default function GenerateMasiveInvitationsSus() {
       return;
     }
 
-    const processedData: InvitationData[] = rows
+    const processedData = rows
       .map((row, index) => {
         const email = row[emailIndex]?.trim();
         if (!email) return null;
