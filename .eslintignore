@@ -1,0 +1,15 @@
+# Archivos generados automáticamente
+src/generated/
+prisma/generated/
+node_modules/
+.next/
+dist/
+build/
+
+# Archivos de configuración
+.env*
+*.log
+
+# Archivos problemáticos de Windows
+**/Configuración local/**
+**/Cookies/**
