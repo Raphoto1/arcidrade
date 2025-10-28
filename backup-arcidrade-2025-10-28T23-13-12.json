@@ -1,0 +1,511 @@
+{
+  "metadata": {
+    "timestamp": "2025-10-28T23:13:12.272Z",
+    "version": "1.0",
+    "description": "Backup completo de la base de datos Arcidrade"
+  },
+  "data": {
+    "auth": [
+      {
+        "referCode": "cmh59bvzi0000znfm8l2xoxwf",
+        "email": "azeyarmal@gmail.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T19:41:51.833Z",
+        "update_date": "2025-10-24T19:41:51.833Z"
+      },
+      {
+        "referCode": "cmgntgngq00006efhxir74ib1",
+        "email": "info@creativerafa.com",
+        "password": "$2b$10$cclXIPHEtwoX2XMvCHv3De6dzuakA.rayg2smUuUf6J5.1Od0uDzW",
+        "area": "campaign",
+        "status": "registered",
+        "invitation_sender": "victor",
+        "invitation_sender_id": "cmgmc5qix00007jguvu46py4g",
+        "creation_date": "2025-10-12T14:45:35.237Z",
+        "update_date": "2025-10-12T14:49:47.130Z"
+      },
+      {
+        "referCode": "cmgmc5qix00007jguvu46py4g",
+        "email": "info@arcidrade.com",
+        "password": "$2b$10$rh0ZndXvJRqU0uDEr8k2bOR84LQGSBxv2dzxID0MkWsrGhMt8r4Xe",
+        "area": "victor",
+        "status": "registered",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-11T13:53:26.148Z",
+        "update_date": "2025-10-14T13:48:54.316Z"
+      },
+      {
+        "referCode": "cmgr4jpb90000zofktsjn7mw5",
+        "email": "vrcha01@gmail.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-14T22:19:11.974Z",
+        "update_date": "2025-10-14T22:19:11.974Z"
+      },
+      {
+        "referCode": "cmh5clvfx0000y3fl2k4jyz51",
+        "email": "francoisknapen@hotmail.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T21:13:36.537Z",
+        "update_date": "2025-10-24T21:13:36.537Z"
+      },
+      {
+        "referCode": "cmh6zkn9r00003gfok5huqhxb",
+        "email": "rosserosu19@yahoo.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-26T00:44:16.638Z",
+        "update_date": "2025-10-26T00:44:16.638Z"
+      },
+      {
+        "referCode": "cmh1rir9j0000zxeaf8672mzj",
+        "email": "ezowimef193@gmail.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-22T09:00:00.694Z",
+        "update_date": "2025-10-22T09:00:00.694Z"
+      },
+      {
+        "referCode": "cmhaumq8p00000ne9hnrjjcp9",
+        "email": "slb316@comcast.net",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-28T17:37:00.422Z",
+        "update_date": "2025-10-28T17:37:00.422Z"
+      },
+      {
+        "referCode": "cmgws3lsz000065fjnz4ssz4s",
+        "email": "orlandoco222@hotmail.com",
+        "password": "$2b$10$4/bcj330LZ0Ik2AGw.XVPuK4M.B1T0g7hRLXKJ6Dt2gwusRJ9hWg.",
+        "area": "profesional",
+        "status": "active",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-18T21:17:22.596Z",
+        "update_date": "2025-10-18T21:19:40.017Z"
+      },
+      {
+        "referCode": "cmh7vyaui00002mfjrjmrffqf",
+        "email": "valeriea2297@hotmail.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-26T15:50:41.440Z",
+        "update_date": "2025-10-26T15:50:41.440Z"
+      },
+      {
+        "referCode": "cmh95s6va00000beuwqmxe6xg",
+        "email": "mightymuff32@yahoo.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-27T13:13:38.682Z",
+        "update_date": "2025-10-27T13:13:38.682Z"
+      },
+      {
+        "referCode": "cmh3zes1m000013fokhimh78i",
+        "email": "uvozihupiya842@gmail.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-23T22:16:24.364Z",
+        "update_date": "2025-10-23T22:16:24.364Z"
+      },
+      {
+        "referCode": "cmh45b8f5000055cpplzldd84",
+        "email": "lindsey.mcbrearty@gmail.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T01:01:36.655Z",
+        "update_date": "2025-10-24T01:01:36.655Z"
+      },
+      {
+        "referCode": "cmh4bo9fy0000zaflf37zxzqg",
+        "email": "nikki@totlotpros.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T03:59:42.208Z",
+        "update_date": "2025-10-24T03:59:42.208Z"
+      },
+      {
+        "referCode": "cmh4i30ab00004jfj02e236hv",
+        "email": "carlo@lugcraft.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T06:59:07.871Z",
+        "update_date": "2025-10-24T06:59:07.871Z"
+      },
+      {
+        "referCode": "cmh4ri8s10000zfetf2phji6z",
+        "email": "rmac0808@outlook.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T11:22:55.249Z",
+        "update_date": "2025-10-24T11:22:55.249Z"
+      },
+      {
+        "referCode": "cmh4wwnye00001nfiulfhf2to",
+        "email": "gretawinget6485500@gmail.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T13:54:06.201Z",
+        "update_date": "2025-10-24T13:54:06.201Z"
+      },
+      {
+        "referCode": "cmh51iajq00002ee83avos3gk",
+        "email": "karlalletter@web.de",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-24T16:02:53.722Z",
+        "update_date": "2025-10-24T16:02:53.722Z"
+      },
+      {
+        "referCode": "cmgldqeb900003wfnp482z2t5",
+        "email": "rrhhmmtt@hotmail.com",
+        "password": "$2b$10$SurZdgWrt2oILQY5SpJWvelDVMcY8kf/GypZ9RB3ptlM3SmlqeWkS",
+        "area": "profesional",
+        "status": "registered",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-10T21:49:43.797Z",
+        "update_date": "2025-10-27T15:16:47.007Z"
+      },
+      {
+        "referCode": "cmhb68yma0000zle9773z2tw8",
+        "email": "lihonglaw@gmail.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-28T23:02:13.489Z",
+        "update_date": "2025-10-28T23:02:13.489Z"
+      },
+      {
+        "referCode": "cmglf3zh600023wfnmzo0hvjo",
+        "email": "rrhhmmtt@gmail.com",
+        "password": "$2b$10$W4KNRkg0SwzvOBKRd6vLe.tS7H3qbyAYNKiMXDjotImbxEHhGoSCO",
+        "area": "institution",
+        "status": "active",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-10T22:28:17.299Z",
+        "update_date": "2025-10-27T15:54:58.641Z"
+      },
+      {
+        "referCode": "cmh9bnlbf00032lea5wpz41g2",
+        "email": "mlhabetz@advplastics.com",
+        "password": "",
+        "area": "institution",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-27T15:58:01.899Z",
+        "update_date": "2025-10-27T15:58:01.899Z"
+      },
+      {
+        "referCode": "cmh9ektzj000054ea8in12b1f",
+        "email": "ralph@modestocpa.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-27T17:19:52.016Z",
+        "update_date": "2025-10-27T17:19:52.016Z"
+      },
+      {
+        "referCode": "cmh9l9zuk00004zflqm2njezq",
+        "email": "eolson175@gmail.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-27T20:27:23.623Z",
+        "update_date": "2025-10-27T20:27:23.623Z"
+      },
+      {
+        "referCode": "cmh9xj11000007lfl7y2mc8x3",
+        "email": "m_ohara92@hotmail.com",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-28T02:10:20.451Z",
+        "update_date": "2025-10-28T02:10:20.451Z"
+      },
+      {
+        "referCode": "cmhap5wc00000ygfofd0anptm",
+        "email": "loristeppler@shaw.ca",
+        "password": "",
+        "area": "profesional",
+        "status": "invited",
+        "invitation_sender": "external",
+        "invitation_sender_id": "external",
+        "creation_date": "2025-10-28T15:03:57.092Z",
+        "update_date": "2025-10-28T15:03:57.092Z"
+      }
+    ],
+    "profesional_data": [
+      {
+        "id": 1,
+        "user_id": "cmgldqeb900003wfnp482z2t5",
+        "fake_name": "Homero",
+        "name": "Rafael",
+        "last_name": "Martinez",
+        "phone": "3002089971",
+        "birth_date": "1987-12-24T00:00:00.000Z",
+        "description": "Medico dedicado a la Mejor Praxis ",
+        "country": "CO",
+        "state": "CUN",
+        "city": "Chía",
+        "local_id": null,
+        "cv_file": null,
+        "cv_link": null,
+        "avatar": null,
+        "created_at": "2025-10-10T21:52:52.034Z",
+        "updated_at": "2025-10-10T22:26:12.695Z"
+      },
+      {
+        "id": 2,
+        "user_id": "cmgws3lsz000065fjnz4ssz4s",
+        "fake_name": "Maricarmen",
+        "name": "Orlando Jose ",
+        "last_name": "Colina Orta ",
+        "phone": "682787928",
+        "birth_date": "1973-11-22T00:00:00.000Z",
+        "description": null,
+        "country": "ES",
+        "state": "GA",
+        "city": "A Coruña",
+        "local_id": null,
+        "cv_file": null,
+        "cv_link": null,
+        "avatar": null,
+        "created_at": "2025-10-18T21:24:10.260Z",
+        "updated_at": "2025-10-18T21:24:10.260Z"
+      }
+    ],
+    "institution_data": [
+      {
+        "id": 1,
+        "user_id": "cmglf3zh600023wfnmzo0hvjo",
+        "fake_name": "Solorzano, Quezada y Colón Asociados",
+        "name": "Hospital General del Pueblo2",
+        "country": "ES",
+        "state": "GA",
+        "city": "Sada",
+        "avatar": "",
+        "established": "1952-02-14T00:00:00.000Z",
+        "website": "123456",
+        "phone": "123456",
+        "status": "active",
+        "created_at": "2025-10-10T22:32:59.038Z",
+        "updated_at": "2025-10-27T15:54:17.270Z",
+        "company_id": "123456",
+        "description": "Institución con mas de ......",
+        "main_speciality": "enfermedades infecciosas: infectología"
+      }
+    ],
+    "process": [
+      {
+        "id": 3,
+        "position": "cirujano 2",
+        "area": null,
+        "main_speciality": "cirugia toracica",
+        "approval_date": null,
+        "start_date": "2025-10-24T00:00:00.000Z",
+        "end_date": null,
+        "profesional_status": "graduated",
+        "description": "dsf sdf sdf rs d",
+        "type": "arcidrade",
+        "status": "pending",
+        "extended": false,
+        "user_id": "cmglf3zh600023wfnmzo0hvjo",
+        "created_at": "2025-10-14T16:37:38.815Z",
+        "updated_at": "2025-10-21T14:20:13.566Z"
+      },
+      {
+        "id": 2,
+        "position": "Medico Investigador",
+        "area": null,
+        "main_speciality": "anatomia patologica",
+        "approval_date": "2025-10-22T15:30:16.962Z",
+        "start_date": "2025-11-09T00:00:00.000Z",
+        "end_date": null,
+        "profesional_status": "inProcess",
+        "description": "Investigador interesado en ...",
+        "type": "auto",
+        "status": "active",
+        "extended": false,
+        "user_id": "cmglf3zh600023wfnmzo0hvjo",
+        "created_at": "2025-10-11T13:44:11.942Z",
+        "updated_at": "2025-10-22T15:30:16.791Z"
+      },
+      {
+        "id": 1,
+        "position": "Jefe de area",
+        "area": null,
+        "main_speciality": "dermatologia",
+        "approval_date": "2025-10-21T16:44:52.641Z",
+        "start_date": "2025-10-31T00:00:00.000Z",
+        "end_date": null,
+        "profesional_status": "graduated",
+        "description": "profesional dedicado",
+        "type": "arcidrade",
+        "status": "archived",
+        "extended": false,
+        "user_id": "cmglf3zh600023wfnmzo0hvjo",
+        "created_at": "2025-10-10T22:51:34.469Z",
+        "updated_at": "2025-10-22T15:31:44.012Z"
+      }
+    ],
+    "campaign_data": [],
+    "goals": [
+      {
+        "id": 1,
+        "user_id": "cmglf3zh600023wfnmzo0hvjo",
+        "title": "Descubrimiento de procedimiento Intercostal",
+        "description": "hallazgo de nuevos procesos para extracción de moléculas laterales intercostales",
+        "status": null,
+        "file": null,
+        "link": null,
+        "created_at": "2025-10-10T22:45:28.945Z",
+        "updated_at": "2025-10-10T22:45:28.945Z",
+        "year": "2020-07-14T00:00:00.000Z"
+      }
+    ],
+    "fail_mail": [],
+    "main_study": [
+      {
+        "id": 2,
+        "user_id": "cmgws3lsz000065fjnz4ssz4s",
+        "title": "Traumatologo cirujano de columna ",
+        "status": "graduated",
+        "institution": "UDO ANZOATEGUI ",
+        "country": "Venezuela",
+        "start_date": null,
+        "end_date": null,
+        "description": null,
+        "file": null,
+        "link": null,
+        "sub_area": null,
+        "created_at": "2025-10-18T21:24:10.491Z",
+        "updated_at": "2025-10-18T21:24:10.491Z"
+      },
+      {
+        "id": 1,
+        "user_id": "cmgldqeb900003wfnp482z2t5",
+        "title": "Medico General",
+        "status": "graduated",
+        "institution": "pontificia universidad javeriana",
+        "country": "Colombia",
+        "start_date": null,
+        "end_date": null,
+        "description": null,
+        "file": "https://fsnuyjgzhsou6se1.public.blob.vercel-storage.com/usersData/cmgldqeb900003wfnp482z2t5/mainStudy/color-wheel-poster-sfS300AV2dFRa25g07CGIv667JZX2s.jpg",
+        "link": null,
+        "sub_area": null,
+        "created_at": "2025-10-10T21:52:52.446Z",
+        "updated_at": "2025-10-28T21:50:08.712Z"
+      }
+    ],
+    "study_specialization": [
+      {
+        "id": 1,
+        "user_id": "cmgldqeb900003wfnp482z2t5",
+        "title": "Cirugia Estetica",
+        "title_category": "cirugia plastica y reparadora",
+        "status": "inProcess",
+        "institution": "Universidad del Valle",
+        "country": "Colombia",
+        "start_date": "2022-06-10T00:00:00.000Z",
+        "end_date": null,
+        "description": null,
+        "file": null,
+        "link": null,
+        "sub_area": null,
+        "is_main": false,
+        "created_at": "2025-10-10T21:55:09.697Z",
+        "updated_at": "2025-10-10T21:55:09.697Z"
+      }
+    ],
+    "experience": [
+      {
+        "id": 1,
+        "user_id": "cmgldqeb900003wfnp482z2t5",
+        "title": "Medico General",
+        "institution": "Eps Sanitas",
+        "country": "Colombia",
+        "state": "Bogotá D.C.",
+        "city": "Bogotá D.C.",
+        "status": null,
+        "start_date": "2022-01-12T00:00:00.000Z",
+        "end_date": "2024-06-06T00:00:00.000Z",
+        "description": "Consulta externa",
+        "file": null,
+        "link": null,
+        "created_at": "2025-10-10T21:58:50.193Z",
+        "updated_at": "2025-10-10T21:58:50.193Z"
+      }
+    ],
+    "leads_send": [
+      {
+        "id": 1,
+        "user_id": "cmgntgngq00006efhxir74ib1",
+        "campaign_id": "basic",
+        "email": "raphoto1@icloud.com",
+        "status": "sent",
+        "created_at": "2025-10-12T14:56:51.119Z",
+        "updated_at": "2025-10-12T14:56:51.119Z"
+      }
+    ]
+  }
+}
