@@ -173,6 +173,486 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
   return info;
 }
 
+// Nueva función para invitaciones masivas CON registro - crea cuenta y envía invitación personalizada
+export async function sendMassInvitationMail({ 
+  sendTo, 
+  referCode, 
+  nombre, 
+  apellido, 
+  institucion 
+}: { 
+  sendTo: string; 
+  referCode: string; 
+  nombre?: string; 
+  apellido?: string; 
+  institucion?: string; 
+}) {
+  try {
+    const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
+  } catch (error) {
+    console.error("Something Went Wrong", error);
+    return false;
+  }
+
+  // Construir URL de manera más robusta
+  const baseUrl = process.env.PLAT_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+  const completeRegistrationUrl = `${baseUrl}/completeInvitation/${referCode}`;
+  
+  // Crear saludo personalizado
+  let greeting = '¡Hola!';
+  if (nombre || apellido) {
+    const nameParts = [nombre, apellido].filter(Boolean);
+    if (nameParts.length > 0) {
+      greeting = `¡Hola ${nameParts.join(' ')}!`;
+    }
+  }
+
+  // Crear mención de institución si está disponible
+  let institutionMention = '';
+  if (institucion) {
+    institutionMention = `<p>Vemos que formas parte de <strong>${institucion}</strong>, y creemos que Arcidrade puede ser una herramienta valiosa para ti y tu institución.</p>`;
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: NO_REPLY_MAIL,
+      to: sendTo,
+      subject: "🎯 Te han invitado a unirte a Arcidrade - Completa tu registro",
+      text: `${greeting} Te han invitado a unirte a Arcidrade. Completa tu registro en: ${completeRegistrationUrl}`,
+      html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Invitación a Arcidrade</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(56, 76, 155, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #384c9b 0%, #bcceec 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 30px 25px;
+            line-height: 1.6;
+            color: #333333;
+        }
+        .content p {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e3f2fd 100%);
+            border-left: 4px solid #384c9b;
+            padding: 20px;
+            margin: 20px 0;
+            border-radius: 8px;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .benefit-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e9ecef;
+        }
+        .benefit-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .footer {
+            background-color: #384c9b;
+            color: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            border-top: 3px solid #e94936;
+        }
+        .footer p {
+            margin: 8px 0;
+        }
+        .contact-info {
+            background-color: #bcceec;
+            color: #384c9b;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        @media (max-width: 600px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://arcidrade.com/logos/Logo Arcidrade Full.png" alt="Arcidrade Logo" class="logo" />
+            <h2>¡Te han invitado a Arcidrade!</h2>
+        </div>
+        <div class="content">
+            <p><strong>${greeting}</strong></p>
+            <p>Has recibido una invitación especial para formar parte de <strong>Arcidrade</strong>, la plataforma líder que conecta profesionales, instituciones y oportunidades de desarrollo.</p>
+            
+            ${institutionMention}
+            
+            <div class="highlight-box">
+                <h3 style="margin-top: 0; color: #384c9b;">🚀 ¿Por qué unirte a Arcidrade?</h3>
+                <div class="benefits-grid">
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🎯</div>
+                        <strong>Oportunidades</strong><br>
+                        <small>Descubre proyectos y colaboraciones</small>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🤝</div>
+                        <strong>Networking</strong><br>
+                        <small>Conecta con profesionales</small>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">📈</div>
+                        <strong>Crecimiento</strong><br>
+                        <small>Impulsa tu carrera profesional</small>
+                    </div>
+                    <div class="benefit-item">
+                        <div class="benefit-icon">🏆</div>
+                        <strong>Reconocimiento</strong><br>
+                        <small>Destaca tus logros</small>
+                    </div>
+                </div>
+            </div>
+            
+            <p><strong>✨ Completa tu registro ahora mismo:</strong></p>
+            
+            <!-- Botón compatible con todos los clientes de email -->
+            <div style="text-align: center; margin: 25px 0;">
+                <table border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+                    <tr>
+                        <td style="border-radius: 8px; background: linear-gradient(135deg, #384c9b 0%, #e94936 100%); background-color: #384c9b;">
+                            <a href="${completeRegistrationUrl}" target="_blank" style="
+                                display: inline-block;
+                                padding: 18px 35px;
+                                color: #ffffff !important;
+                                text-decoration: none;
+                                font-weight: 700;
+                                font-size: 18px;
+                                font-family: Arial, sans-serif;
+                                text-align: center;
+                                border-radius: 8px;
+                                mso-padding-alt: 0;
+                            ">
+                                <span style="color: #ffffff !important; text-decoration: none; font-weight: 700;">
+                                    🚀 Completar Mi Registro
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Fallback para clientes que no soporten el botón -->
+            <div style="text-align: center; margin: 15px 0; font-size: 14px; color: #666;">
+                <p>¿No puedes ver el botón? Copia y pega este enlace en tu navegador:</p>
+                <a href="${completeRegistrationUrl}" style="color: #384c9b; font-weight: bold; text-decoration: underline; word-break: break-all;" target="_blank">
+                    ${completeRegistrationUrl}
+                </a>
+            </div>
+            
+            <p>Este enlace es <strong>seguro y personalizado</strong> para ti. Te llevará directamente a completar tu perfil en nuestra plataforma.</p>
+            <p><strong>¡No pierdas esta oportunidad de formar parte de nuestra comunidad!</strong></p>
+        </div>
+        <div class="footer">
+            <p><strong>🎉 ¡Bienvenido a Arcidrade!</strong></p>
+            <p>Tu futuro profesional comienza aquí. Si tienes alguna pregunta, estamos aquí para ayudarte.</p>
+            <div class="contact-info">
+                <p>📧 contacto@arcidrade.com | 🌐 www.arcidrade.com</p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>`,
+    });
+    
+    return info ? true : false;
+  } catch (error) {
+    console.error('Error sending mass invitation email:', error);
+    return false;
+  }
+}
+
+// Nueva función para invitaciones masivas SIN registro - solo invita a visitar la página
+export async function sendWebsiteInvitationMail({ 
+  sendTo, 
+  nombre, 
+  apellido, 
+  institucion 
+}: { 
+  sendTo?: string; 
+  nombre?: string;
+  apellido?: string;
+  institucion?: string;
+}) {
+  try {
+    const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
+  } catch (error) {
+    console.error("Something Went Wrong", error);
+    return;
+  }
+
+  // URL directa a la página principal
+  const websiteUrl = process.env.PLAT_URL || 'https://arcidrade.com';
+  
+  // Generar saludo personalizado
+  let greeting = "¡Hola!";
+  if (nombre || apellido) {
+    const fullName = [nombre, apellido].filter(Boolean).join(' ');
+    greeting = `¡Hola ${fullName}!`;
+  }
+
+  // Mensaje personalizado según la institución
+  let institutionMessage = "";
+  if (institucion) {
+    institutionMessage = `<p>Sabemos que trabajas en <strong>${institucion}</strong>, y creemos que ARCIDRADE puede ser de gran valor para tu desarrollo profesional y el de tu organización.</p>`;
+  }
+
+  const info = await transporter.sendMail({
+    from: NO_REPLY_MAIL,
+    to: sendTo,
+    subject: "Descubre ARCIDRADE - La plataforma para profesionales de la salud",
+    text: `Te invitamos a conocer ARCIDRADE, la plataforma que conecta profesionales de la salud con las mejores oportunidades. Visita: ${websiteUrl}`,
+    html: `<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubre ARCIDRADE</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 16px rgba(56, 76, 155, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #384c9b 0%, #bcceec 100%);
+            color: #ffffff;
+            padding: 30px 20px;
+            text-align: center;
+        }
+        .logo {
+            width: 120px;
+            height: auto;
+            margin-bottom: 15px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+        }
+        .header h2 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 700;
+        }
+        .content {
+            padding: 30px 25px;
+            line-height: 1.6;
+            color: #333333;
+        }
+        .content p {
+            margin-bottom: 16px;
+            font-size: 16px;
+        }
+        .highlight-box {
+            background-color: #f0f4ff;
+            border-left: 4px solid #384c9b;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .benefits-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .benefit-item {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            border: 1px solid #e9ecef;
+        }
+        .benefit-item .icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+        .benefit-item .text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #384c9b;
+        }
+        .footer {
+            background-color: #384c9b;
+            color: #ffffff;
+            padding: 25px 20px;
+            text-align: center;
+            border-top: 3px solid #e94936;
+        }
+        .footer p {
+            margin: 8px 0;
+        }
+        .contact-info {
+            background-color: #bcceec;
+            color: #384c9b;
+            padding: 10px;
+            border-radius: 6px;
+            margin: 10px 0;
+            font-weight: 600;
+        }
+        @media (max-width: 480px) {
+            .benefits-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <img src="https://arcidrade.com/logos/Logo Arcidrade Full.png" alt="Arcidrade Logo" class="logo" />
+            <h2>🌟 Descubre ARCIDRADE</h2>
+        </div>
+        <div class="content">
+            <p><strong>${greeting}</strong></p>
+            <p>Te invitamos a conocer <strong>ARCIDRADE</strong>, la plataforma innovadora que está transformando la manera en que los profesionales de la salud conectan con oportunidades excepcionales.</p>
+            
+            ${institutionMessage}
+            
+            <div class="highlight-box">
+                <p><strong>🎯 ¿Qué hace especial a ARCIDRADE?</strong></p>
+                <p>Somos una plataforma especializada que conecta el talento médico con las mejores oportunidades del sector salud, creando un ecosistema donde profesionales e instituciones pueden crecer juntos.</p>
+            </div>
+            
+            <div class="benefits-grid">
+                <div class="benefit-item">
+                    <div class="icon">🏥</div>
+                    <div class="text">Oportunidades Exclusivas</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="icon">🤝</div>
+                    <div class="text">Red Profesional</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="icon">📈</div>
+                    <div class="text">Desarrollo de Carrera</div>
+                </div>
+                <div class="benefit-item">
+                    <div class="icon">🎓</div>
+                    <div class="text">Instituciones de Prestigio</div>
+                </div>
+            </div>
+            
+            <p>Explora todas nuestras funcionalidades, conoce casos de éxito y descubre cómo ARCIDRADE puede impulsar tu carrera profesional.</p>
+            
+            <!-- Botón principal -->
+            <div style="text-align: center; margin: 25px 0;">
+                <table border="0" cellspacing="0" cellpadding="0" style="margin: 0 auto;">
+                    <tr>
+                        <td style="border-radius: 8px; background: linear-gradient(135deg, #384c9b 0%, #e94936 100%); background-color: #384c9b;">
+                            <a href="${websiteUrl}" target="_blank" style="
+                                display: inline-block;
+                                padding: 15px 30px;
+                                color: #ffffff !important;
+                                text-decoration: none;
+                                font-weight: 600;
+                                font-size: 16px;
+                                font-family: Arial, sans-serif;
+                                text-align: center;
+                                border-radius: 8px;
+                                mso-padding-alt: 0;
+                            ">
+                                <span style="color: #ffffff !important; text-decoration: none; font-weight: 600;">
+                                    🚀 Visitar ARCIDRADE
+                                </span>
+                            </a>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Fallback para clientes que no soporten el botón -->
+            <div style="text-align: center; margin: 10px 0; font-size: 14px; color: #666;">
+                <p>¿No puedes ver el botón? Visita directamente:</p>
+                <a href="${websiteUrl}" style="color: #384c9b; font-weight: bold; text-decoration: underline;" target="_blank">
+                    ${websiteUrl}
+                </a>
+            </div>
+            
+            <p>¡No te pierdas la oportunidad de ser parte de la comunidad profesional más dinámica del sector salud!</p>
+        </div>
+        <div class="footer">
+            <p><strong>🏥 ARCIDRADE - Conectando talento con oportunidades</strong></p>
+            <p>La plataforma líder para profesionales de la salud en Latinoamérica</p>
+            <div class="contact-info">
+                <p>📧 contacto@arcidrade.com | 🌐 www.arcidrade.com</p>
+            </div>
+            <p style="font-size: 12px; margin-top: 15px; opacity: 0.8;">
+                Has recibido este email porque creemos que ARCIDRADE puede ser de tu interés. Si no deseas recibir más comunicaciones, puedes ignorar este mensaje.
+            </p>
+        </div>
+    </div>
+</body>
+</html>`,
+  });
+  return info;
+}
+
 export async function sendResetPasswordMail({ sendTo, referCode }: { sendTo?: string; referCode: string }) {
   try {
     const isVerified = await transporter.verify();
