@@ -16,7 +16,7 @@ export default function Certificate(props: any) {
     <div>
       <div className=' bg-gray-50 w-full rounded-sm p-2 grid grid-cols-2 gap-2 shadow-xl mt-2 justify-between items-center'>
         <div className='w-2/3'>
-          <h2 className='text-(--main-arci) text-bold text-nowrap font-bold'>{props.title || "Nombre Cert"}</h2>
+          <h2 className='text-(--main-arci) text-bold text-wrap font-bold'>{props.title || "Nombre Cert"}</h2>
           <span className='text-sm text-gray-600 w-100'>{props.institution || "Universidad Grande"}</span>
           <p className='font-light'>{endDate || "No Finalizado"}</p>
           {props.link ? (

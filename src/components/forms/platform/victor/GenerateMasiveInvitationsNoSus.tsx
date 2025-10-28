@@ -70,7 +70,7 @@ export default function GenerateMasiveInvitationsNoSus() {
               jsonData = results.data as any[];
               processData(jsonData);
             },
-            error: (error) => {
+            error: (error: any) => {
               console.error('Error parsing CSV:', error);
               alert('Error al procesar el archivo CSV');
               setIsProcessing(false);
