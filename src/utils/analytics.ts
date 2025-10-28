@@ -1,69 +1,81 @@
 // Google Analytics utilities for tracking events and conversions
+// Using @next/third-parties for proper Next.js integration
 
-declare global {
-  interface Window {
-    gtag: (...args: any[]) => void;
-  }
-}
+import { sendGAEvent } from '@next/third-parties/google';
 
 export const GA_TRACKING_ID = 'G-Y3N9J0K5L3';
 
-// Track page views
-export const trackPageView = (url: string) => {
-  if (typeof window.gtag !== 'undefined') {
-    window.gtag('config', GA_TRACKING_ID, {
-      page_path: url,
-    });
-  }
-};
-
-// Track events
+// Track events using Next.js third-parties
 export const trackEvent = (action: string, category: string, label?: string, value?: number) => {
-  if (typeof window.gtag !== 'undefined') {
-    window.gtag('event', action, {
-      event_category: category,
-      event_label: label,
-      value: value,
-    });
-  }
+  sendGAEvent({
+    event: action,
+    event_category: category,
+    event_label: label,
+    value: value,
+  });
 };
 
 // Track conversions (for important actions)
 export const trackConversion = (eventName: string, parameters?: Record<string, any>) => {
-  if (typeof window.gtag !== 'undefined') {
-    window.gtag('event', eventName, {
-      ...parameters,
-    });
-  }
+  sendGAEvent({
+    event: eventName,
+    ...parameters,
+  });
 };
 
 // Specific tracking functions for your platform
 export const trackUserRegistration = () => {
-  trackConversion('sign_up', {
+  sendGAEvent({
+    event: 'sign_up',
     method: 'invitation',
   });
 };
 
 export const trackUserLogin = () => {
-  trackConversion('login', {
+  sendGAEvent({
+    event: 'login',
     method: 'credentials',
   });
 };
 
 export const trackInvitationSent = (userType: string) => {
-  trackEvent('invitation_sent', 'user_management', userType);
+  sendGAEvent({
+    event: 'invitation_sent',
+    event_category: 'user_management',
+    event_label: userType,
+  });
 };
 
 export const trackPasswordReset = () => {
-  trackEvent('password_reset', 'authentication', 'forgot_password');
+  sendGAEvent({
+    event: 'password_reset',
+    event_category: 'authentication',
+    event_label: 'forgot_password',
+  });
 };
 
 export const trackProcessCreated = (processType: string) => {
-  trackEvent('process_created', 'platform_activity', processType);
+  sendGAEvent({
+    event: 'process_created',
+    event_category: 'platform_activity',
+    event_label: processType,
+  });
 };
 
 export const trackContactFormSubmit = (formType: string) => {
-  trackEvent('contact_form_submit', 'engagement', formType);
+  sendGAEvent({
+    event: 'contact_form_submit',
+    event_category: 'engagement',
+    event_label: formType,
+  });
+};
+
+// Track page views (optional, as Next.js handles this automatically)
+export const trackPageView = (url: string) => {
+  sendGAEvent({
+    event: 'page_view',
+    page_path: url,
+  });
 };
 
 export default {
