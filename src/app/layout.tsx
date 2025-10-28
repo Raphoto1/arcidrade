@@ -7,6 +7,7 @@ import { Analytics } from "@vercel/analytics/next";
 import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/pieces/Footer";
 import GlobalContext from "@/context/GlobalContext";
+import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 
 const robotoCond = Roboto_Condensed({
   variable: "--font-roboto-condensed",
@@ -30,6 +31,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='es'>
+      <head>
+        <GoogleAnalytics />
+      </head>
       <body className={`${robotoCond.variable} ${oswald.variable} antialiased`}>
         <GlobalContext>
           <NavBar />

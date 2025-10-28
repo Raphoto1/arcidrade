@@ -6,8 +6,6 @@ export const GET = async (req: NextRequest, { params }: any) => {
     const param = await params;
     const id: number = parseInt(param.id);
     const selected = await getProfesionalsSelectedByProcessId(id);
-    console.log("selected", selected);
-
     return NextResponse.json({ message: "process data success", payload: selected }, { status: 200 });
   } catch (error) {
     console.error("Error in process API: getprocess", error);
