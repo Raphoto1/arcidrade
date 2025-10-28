@@ -111,13 +111,22 @@ export default function GenerateMasiveInvitationsSus() {
         const email = row[emailIndex]?.trim();
         if (!email) return null;
 
-        return {
-          email,
-          nombre: nombreIndex !== -1 ? row[nombreIndex]?.trim() || undefined : undefined,
-          segundoNombre: segundoNombreIndex !== -1 ? row[segundoNombreIndex]?.trim() || undefined : undefined,
-          apellido: apellidoIndex !== -1 ? row[apellidoIndex]?.trim() || undefined : undefined,
-          institucion: institucionIndex !== -1 ? row[institucionIndex]?.trim() || undefined : undefined,
-        };
+        const invitation: InvitationData = { email };
+        
+        // Solo agregar campos opcionales si tienen valor
+        const nombre = nombreIndex !== -1 ? row[nombreIndex]?.trim() : undefined;
+        if (nombre) invitation.nombre = nombre;
+        
+        const segundoNombre = segundoNombreIndex !== -1 ? row[segundoNombreIndex]?.trim() : undefined;
+        if (segundoNombre) invitation.segundoNombre = segundoNombre;
+        
+        const apellido = apellidoIndex !== -1 ? row[apellidoIndex]?.trim() : undefined;
+        if (apellido) invitation.apellido = apellido;
+        
+        const institucion = institucionIndex !== -1 ? row[institucionIndex]?.trim() : undefined;
+        if (institucion) invitation.institucion = institucion;
+
+        return invitation;
       })
       .filter((item): item is InvitationData => item !== null)
       .filter((item, index, array) => {
