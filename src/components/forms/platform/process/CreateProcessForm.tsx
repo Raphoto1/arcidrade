@@ -47,6 +47,7 @@ export default function CreateProcessForm() {
     };
 
     const response = await useHandleSubmitText(payload, "/api/platform/process/");
+    
     if (response.ok) {
       reset(); // Resetea los campos del formulario
       setTitleCategorySelected([""]); // Reinicia especialidades

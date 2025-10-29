@@ -16,11 +16,11 @@ export default function InstitutionDetailFull() {
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
 
-  const InstitutionData = data?.payload.institution_data[0] || {};
+  const InstitutionData = data?.payload.institution_data || {};
   const goals = data?.payload.goals || [];
   const speciality = data?.payload.institution_specialization || [];
   const certifications = data?.payload.institution_certifications || [];
-    const processes = data?.payload.process || [];
+  const processes = data?.payload.process || [];
   //formateo dee fecha
   const foundationDate = new Date(InstitutionData.established);
   const formattedDate = foundationDate.toLocaleDateString("es-ES", {

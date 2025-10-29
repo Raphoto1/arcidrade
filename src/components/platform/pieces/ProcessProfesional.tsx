@@ -25,7 +25,7 @@ export default function ProcessProfesional(props: any) {
 
 
 
-  const fullName = useFullName(profesionalPack?.payload.profesional_data[0].name, profesionalPack?.payload.profesional_data[0].last_name);
+  const fullName = useFullName(profesionalPack?.payload.profesional_data?.name, profesionalPack?.payload.profesional_data?.last_name);
   return (
     <div>
       <div className=' bg-gray-50 w-full rounded-sm p-2 grid grid-cols-2 gap-2 shadow-xl mt-2 justify-between items-center'>

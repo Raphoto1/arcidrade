@@ -13,11 +13,16 @@ export default function InstitutionPill({ institution }: { institution: any }) {
   if (isLoading) return <p>Cargando...</p>;
   if (error) return <p>Error al cargar la institución.</p>;
   if (!institutionPack) return <p>Institución no encontrada.</p>;
+
+  // Verificación adicional para institution_data
+  const institutionData = institutionPack?.institution_data;
+  if (!institutionData) return <p>Datos de institución no disponibles.</p>;
+
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col'>
       <div className='w-full h-auto flex'>
         <div className='flex flex-col align-middle justify-center w-2/3 p-1'>
-          <h3 className='text-(--main-arci) text-bold text-nowrap font-bold'>{institutionPack?.institution_data[0].name}</h3>
+          <h3 className='text-(--main-arci) text-bold text-nowrap font-bold'>{institutionData?.name || 'Nombre no disponible'}</h3>
           <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Cantidad de Procesos:</p>
             <p className='font-light text-[var(--main-arci)]'>{institutionPack?.process.length || 0}</p>
@@ -36,11 +41,11 @@ export default function InstitutionPill({ institution }: { institution: any }) {
           </div>
                     <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>NIF:</p>
-            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.institution_data[0].company_id || 'NIF no disponible'}</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionData?.company_id || 'NIF no disponible'}</p>
           </div>
                     <div className='flex'>
             <p className='text-sm text-gray-600 w-100'>Ciudad:</p>
-            <p className='font-light text-[var(--main-arci)]'>{institutionPack?.institution_data[0].city || 'Ciudad no disponible'}</p>
+            <p className='font-light text-[var(--main-arci)]'>{institutionData?.city || 'Ciudad no disponible'}</p>
           </div>
         </div>
         <div className='w-1/3 p-1 flex flex-col justify-center'>
@@ -49,7 +54,7 @@ export default function InstitutionPill({ institution }: { institution: any }) {
           </ModalForPreview>
           <button className='btn bg-[var(--orange-arci)] w-full text-white h-auto '>Pausar(en desarrollo)</button>
           <ModalForForms title={"Solicitar Contacto"}>
-            <ConfirmAskContactForm referCode={institutionPack?.referCode} name={institutionPack?.institution_data[0].name} />
+            <ConfirmAskContactForm referCode={institutionPack?.referCode} name={institutionData?.name || 'Nombre no disponible'} />
           </ModalForForms>
           {/* <button className='btn bg-[var(--main-arci)] w-full text-white h-auto '>Procesos</button> */}
         </div>

@@ -311,6 +311,13 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
         where: whereClause,
         select: {
           referCode: true,
+          email: true,
+          status: true,
+          profesional_data: true,
+          main_study: true,
+          study_specialization: true,
+          profesional_certifications: true,
+          experience: true,
         },
         skip,
         take: limit,

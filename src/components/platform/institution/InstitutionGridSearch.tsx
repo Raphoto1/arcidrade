@@ -187,7 +187,12 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
           <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
             {paginatedData?.data?.length > 0 ? (
               paginatedData.data.map((profesional: any, index: number) => (
-                <ProfesionalCard key={profesional.referCode || index} userId={profesional.referCode} isFake={isFake} />
+                <ProfesionalCard 
+                  key={profesional.referCode || index} 
+                  userId={profesional.referCode} 
+                  profesionalData={profesional}
+                  isFake={isFake} 
+                />
               ))
             ) : (
               !isLoading && (

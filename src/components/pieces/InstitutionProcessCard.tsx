@@ -27,10 +27,8 @@ export default function InstitutionProcessCard(props: any) {
   const userId = processData?.payload.user_id || "cmg1gnhae00013pfqt8jdb4ps";
   const { data, error, isLoading } = useInstitutionFullById(userId);
   
-  // Acceso seguro a los datos de la institución con verificación completa
-  const institutionData = data?.payload?.institution_data && Array.isArray(data.payload.institution_data) && data.payload.institution_data.length > 0 
-    ? data.payload.institution_data[0] 
-    : {};
+  // Acceso seguro a los datos de la institución
+  const institutionData = data?.payload?.institution_data || {};
   
   const processPack = processData?.payload || {};
   const institutionInfo = institutionData || {};

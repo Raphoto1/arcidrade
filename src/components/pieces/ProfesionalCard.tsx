@@ -20,20 +20,17 @@ import { fakerES as faker } from "@faker-js/faker";
 export default function ProfesionalCard(props: any) {
   const isFake = props.isFake;
   const userId = props.userId || "cmgi49p7q0003ytea9dc5yzjg";
-  const { data, error, isLoading } = useProfesionalById(userId);
   
-  // Validación defensiva: asegurar que siempre tengamos un objeto válido
-  const profesionalData = data?.payload || {};
+  // Si se proporcionan datos del profesional como prop, usarlos; si no, hacer la llamada
+  const shouldFetch = !props.profesionalData;
+  const { data, error, isLoading } = useProfesionalById(shouldFetch ? userId : null);
   
-  // Acceso seguro a los arrays con validación adicional
-  const profesionalInfo = (profesionalData.profesional_data && Array.isArray(profesionalData.profesional_data)) 
-    ? profesionalData.profesional_data[0] || {} 
-    : {};
-  const mainStudyInfo = (profesionalData.main_study && Array.isArray(profesionalData.main_study)) 
-    ? profesionalData.main_study[0] || {} 
-    : {};
+  // Usar datos de props o de la llamada
+  const profesionalData = props.profesionalData || data?.payload || {};
   
-  // Función para generar iniciales
+  // Acceso seguro a los datos con validación adicional
+  const profesionalInfo = profesionalData.profesional_data || {};
+  const mainStudyInfo = profesionalData.main_study || {};  // Función para generar iniciales
   const getInitials = (fullName: string) => {
     if (!fullName) return "N/A";
     return fullName
@@ -70,9 +67,9 @@ export default function ProfesionalCard(props: any) {
     }
   }, [isFake, profesionalInfo.fake_name, fullName]);
   
-  if (isLoading) return <div>Cargando...</div>;
-  if (error) return <div>Error al cargar el profesional</div>;
-  if (!data || !data.payload) return <div>No se encontró el profesional</div>;
+  if (shouldFetch && isLoading) return <div>Cargando...</div>;
+  if (shouldFetch && error) return <div>Error al cargar el profesional</div>;
+  if (!profesionalData || (shouldFetch && !data?.payload)) return <div>No se encontró el profesional</div>;
 
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>

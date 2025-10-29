@@ -10,12 +10,8 @@ export default function ProfesionalDetail(props: any) {
   
   // Validación defensiva para prevenir errores
   const payload = data?.payload || {};
-  const personalData = (payload.profesional_data && Array.isArray(payload.profesional_data)) 
-    ? payload.profesional_data[0] || {} 
-    : {};
-  const mainStudy = (payload.main_study && Array.isArray(payload.main_study)) 
-    ? payload.main_study[0] || {} 
-    : {};
+  const personalData = payload.profesional_data || {};
+  const mainStudy = payload.main_study || {};
   const speciality = payload.study_specialization || [];
   const certifications = payload.profesional_certifications || [];
   const experience = payload.experience || [];

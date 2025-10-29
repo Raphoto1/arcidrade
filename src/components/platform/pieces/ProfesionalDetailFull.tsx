@@ -16,12 +16,8 @@ export default function ProfesionalDetailFull() {
   
   // Validación defensiva para prevenir errores
   const payload = data?.payload || {};
-  const personalData = (payload.profesional_data && Array.isArray(payload.profesional_data)) 
-    ? payload.profesional_data[0] || {} 
-    : {};
-  const mainStudy = (payload.main_study && Array.isArray(payload.main_study)) 
-    ? payload.main_study[0] || {} 
-    : {};
+  const personalData = payload.profesional_data || {};
+  const mainStudy = payload.main_study || {};
   const speciality = payload.study_specialization || [];
   const certifications = payload.profesional_certifications || [];
   const experience = payload.experience || [];
@@ -53,14 +49,25 @@ export default function ProfesionalDetailFull() {
   return (
     <div className='Total grid gap-2 md:grid-cols-3 pt-2 overflow-auto'>
       <div className='flex flex-col justify-center align-middle items-center'>
-        <Image
-          src='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'
-          className='w-40 h-40 max-w-96 rounded-full justify-center align-middle items-center'
-          width={500}
-          height={500}
-          objectFit='cover'
-          alt='fillImage'
-        />
+        <div className='relative w-40 h-40'>
+          {personalData.avatar ? (
+            <Image
+              src={personalData.avatar}
+              className='w-full h-full rounded-full object-cover'
+              width={500}
+              height={500}
+              alt='fillImage'
+            />
+          ) : (
+            <Image
+              src='/logos/Logo Arcidrade Cond.png'
+              className='w-40 h-40 max-w-96 rounded-full justify-center align-middle items-center'
+              width={500}
+              height={500}
+              alt='fillImage'
+            />
+          )}
+        </div>
         <h1 className='text-2xl fontArci text-center'>{`${personalData.name} ${personalData.last_name} `}</h1>
         <p className='text-center'>{mainStudy.title}</p>
         <button className='btn bg-[var(--main-arci)] text-white'>Agregar Al Proceso</button>
