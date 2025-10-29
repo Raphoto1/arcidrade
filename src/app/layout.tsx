@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Roboto_Condensed, Oswald } from "next/font/google";
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next"
 //project imports
 import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/pieces/Footer";
@@ -38,6 +39,7 @@ export default function RootLayout({
         <GlobalContext>
           <NavBar />
           {children}
+          <SpeedInsights />
           <Analytics />
           <Footer />
         </GlobalContext>

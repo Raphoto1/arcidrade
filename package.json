@@ -22,6 +22,7 @@
     "@prisma/extension-accelerate": "^2.0.2",
     "@vercel/analytics": "^1.5.0",
     "@vercel/blob": "^1.1.1",
+    "@vercel/speed-insights": "^1.2.0",
     "bcrypt": "^6.0.0",
     "cally": "^0.8.0",
     "country-state-city": "^3.2.1",
