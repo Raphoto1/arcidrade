@@ -84,6 +84,8 @@ export const getProcessesByUserId = async () => {
 export const getProcessesByStatus = async (status: string | undefined) => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
+  console.log('traigo processes desde el id que me encuentro');
+  
   if (status === "pending") {
     const result = await getPendingProcessesByUserIdService(userId);
     return result;

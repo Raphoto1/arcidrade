@@ -8,6 +8,8 @@ import { useActiveProcesses, useProcesses } from "@/hooks/useProcess";
 
 export default function ActiveProcess() {
   const { data, error, isLoading } = useActiveProcesses();
+  console.log('active process data', data);
+  
   if (isLoading) return <div>Cargando...</div>;
   return (
     <div className='grid grid-cols-1 w-full md:w-3/4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
