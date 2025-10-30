@@ -13,6 +13,7 @@ import InstitutionGridSearchSelection from "../institution/InstitutionGridSearch
 import ModalForForms from "@/components/modals/ModalForForms";
 import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 import ConfirmFinishProcessForm from "@/components/forms/platform/process/ConfirmFinishProcessForm";
+import ConfirmSelectProfesionalToProcessForm from "@/components/forms/platform/process/ConfirmSelectProfesionalToProcessForm";
 
 export default function ProcessBasic(props: any) {
   const { process } = props;
@@ -51,10 +52,10 @@ export default function ProcessBasic(props: any) {
             <ModalForFormsRedBtn title='Eliminar Proceso'>
               <ConfirmArchiveProcessForm id={process.id} />
             </ModalForFormsRedBtn>
-            {(process.status !== "completed" && process.status !== "pending" && process.status !== "paused") && (
-            <ModalForFormsGreenBtn title={"Finalizar Proceso"}>
-              <ConfirmFinishProcessForm id={process.id} />
-            </ModalForFormsGreenBtn>
+            {process.status !== "completed" && process.status !== "pending" && process.status !== "paused" && (
+              <ModalForFormsGreenBtn title={"Finalizar Proceso"}>
+                <ConfirmFinishProcessForm id={process.id} />
+              </ModalForFormsGreenBtn>
             )}
           </div>
         </div>
@@ -63,7 +64,14 @@ export default function ProcessBasic(props: any) {
         <p className='text-start fontRoboto text-(--main-arci) align-middle bg-gray-100'>Mis Seleccionados</p>
         <Grid>
           {profesionals?.map((profesional: any) => (
-            <ProfesionalCard key={profesional.id} userId={profesional.profesional_id} isFake={props.isFake} />
+            <div key={profesional.id}>
+              {process.status !== "pending" && process.status !== "paused" && profesional.process_status !== "selected" && (
+              <ModalForFormsGreenBtn title={"Seleccionar para Contratación"}>
+                <ConfirmSelectProfesionalToProcessForm UserID={profesional.profesional_id} ProcessId={process.id} fullName={profesional.fullName} processPosition={process.position} addedBy={"institution"}  />
+              </ModalForFormsGreenBtn>
+              )}
+              <ProfesionalCard userId={profesional.profesional_id} isFake={props.isFake} isSelected={profesional.process_status === "selected"} />
+            </div>
           ))}
           {profesionals.length >= 3 ? null : (
             <ModalForPreviewBtnLong title={"Buscar Candidatos"}>

@@ -27,7 +27,7 @@ export default function Home() {
       <Steps />
       <GridHomeWindows />
       <ThreeColumnGrid />
-      <BrColors title={"Principales Ciudades"} />
+      <BrColors title={"Principales Provincias"} />
       <GridHomeWindowsCities />
       <BrColors title={"Principales Especialidades"} />
       <GridHomeWindowsSpecialities />

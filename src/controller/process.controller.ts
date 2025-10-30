@@ -320,6 +320,36 @@ export const updateProfesionalFromProcessVictor = async (processId: number, data
     throw new Error(`Error updating professional in process: ${errorMessage}`);
   }
 };
+//PENDIENTE ASNTES DE HAACER PR
+export const updateProfesionalFromProcessInstitution = async (processId: number, profesional_id: string, added_by: string, data: any) => {
+  try {
+    // Filtrar solo los campos que se pueden actualizar
+    const updateData: any = {
+      updated_at: new Date(),
+    };
+
+    // Solo incluir campos válidos para actualizar
+    if (data.status !== undefined) {
+      updateData.status = data.status;
+    }
+    if (data.is_arcidrade !== undefined) {
+      updateData.is_arcidrade = data.is_arcidrade;
+    }
+    if (data.process_status !== undefined) {
+      updateData.process_status = data.process_status;
+    }
+    if (data.feedback !== undefined) {
+      updateData.feedback = data.feedback;
+    }
+
+    // Actualizar el registro
+    const result = await updateProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by, updateData);
+    return result;
+} catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error updating professional in process: ${errorMessage}`);
+}
+}
 
 export const deleteProcessById = async (processId: number) => {
   try {
