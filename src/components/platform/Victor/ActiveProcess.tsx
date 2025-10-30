@@ -106,15 +106,11 @@ export default function ActiveProcess() {
   const handleProcessSelect = (process: any) => {
     setIsLoadingProcess(true);
     setSelectedProcess(process);
-    setIsDropdownOpen(false);
-
-    // Forzar el cierre del dropdown usando la referencia
-    if (dropdownRef.current) {
-      dropdownRef.current.classList.remove("dropdown-open");
-      const button = dropdownRef.current.querySelector('div[role="button"]') as HTMLElement;
-      if (button) {
-        button.blur();
-      }
+    
+    // Cerrar dropdown de forma simple y estable
+    const activeElement = document.activeElement as HTMLElement;
+    if (activeElement && activeElement.blur) {
+      activeElement.blur();
     }
 
     // Simular un pequeño delay para mostrar el loader
@@ -125,15 +121,11 @@ export default function ActiveProcess() {
 
   const handleFilterSelect = (institution: string) => {
     setInstitutionFilter(institution);
-    setIsFilterDropdownOpen(false);
-
-    // Forzar el cierre del dropdown del filtro
-    if (filterDropdownRef.current) {
-      filterDropdownRef.current.classList.remove("dropdown-open");
-      const button = filterDropdownRef.current.querySelector('div[role="button"]') as HTMLElement;
-      if (button) {
-        button.blur();
-      }
+    
+    // Cerrar dropdown de forma simple y estable
+    const activeElement = document.activeElement as HTMLElement;
+    if (activeElement && activeElement.blur) {
+      activeElement.blur();
     }
   };
 
