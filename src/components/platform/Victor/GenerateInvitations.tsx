@@ -6,6 +6,7 @@ import AdminInvitations from "./AdminInvitations";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import GenerateMasiveInvitationsNoSus from "@/components/forms/platform/victor/GenerateMasiveInvitationsNoSus";
 import GenerateMasiveInvitationsSus from "@/components/forms/platform/victor/GenerateMasiveInvitationsSus";
+import GenerateSingleInvitation from "@/components/forms/platform/victor/GenerateSingleInvitation";
 export default function GenerateInvitations() {
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:gap-4 md:h-auto'>
@@ -19,6 +20,9 @@ export default function GenerateInvitations() {
         <ModalForPreview title='Administrar Invitaciones'>
           <AdminInvitations />
         </ModalForPreview>
+        <ModalForForms title='Generar Invitacion Sin Suscripción'>
+          <GenerateSingleInvitation />
+        </ModalForForms>
         <ModalForForms title='Generar Invitaciones Masivas Sin Suscripción'>
           <GenerateMasiveInvitationsNoSus />
         </ModalForForms>
