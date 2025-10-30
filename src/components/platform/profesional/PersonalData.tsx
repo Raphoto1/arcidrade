@@ -26,11 +26,30 @@ export default function PersonalData() {
     return <div>Cargando... datos</div>;
   }
 
-  //adjust birthdate
-  const fecha = new Date(data?.payload[0].birth_date);
-  const fechaFormateada = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
-  //adjust country
-  const countryName: ICountry | undefined = data?.payload[0] ? Country.getCountryByCode(data?.payload[0].country) : undefined;
+  // error handling
+  if (error) {
+    return <div className="text-red-600">Error al cargar datos: {error.message}</div>;
+  }
+
+  // data validation
+  if (!data?.payload || !Array.isArray(data.payload) || data.payload.length === 0) {
+    return <div className="text-yellow-600">No hay datos disponibles</div>;
+  }
+
+  const personalData = data.payload[0];
+  const studyData = data.payload[1] || {}; // Safe fallback
+
+  //adjust birthdate with validation
+  const formatBirthDate = () => {
+    if (!personalData?.birth_date) return "No Registra Información";
+    const fecha = new Date(personalData.birth_date);
+    if (isNaN(fecha.getTime())) return "Fecha inválida";
+    return fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
+  };
+  const fechaFormateada = formatBirthDate();
+
+  //adjust country with validation
+  const countryName: ICountry | undefined = personalData?.country ? Country.getCountryByCode(personalData.country) : undefined;
   //adjust status
   const handleStatusName = (status: string | undefined) => {
     if (status === "inProcess") {
@@ -45,7 +64,7 @@ export default function PersonalData() {
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:h-auto'>
       <div className='pb-1'>
-        {data?.payload[0].name == null ? (
+        {personalData?.name == null ? (
           <div>
             <h1 className='text-2xl font-extrabold capitalize fontArci text-center text-(--main-arci)'>
               Inicie AQUÍ Completando sus Datos Personales Para que pueda ser encontrado en la plataforma
@@ -59,17 +78,17 @@ export default function PersonalData() {
           <IoDocumentAttachOutline size={36} />
         </div>
         <div>
-          {data?.payload[0].cv_link ? (
+          {personalData?.cv_link ? (
             <div className='flex flex-col'>
               <span>Link</span>
-              <a className='link text-blue-300' href={data?.payload[0].cv_link} target='_blank'>
+              <a className='link text-blue-300' href={personalData.cv_link} target='_blank' rel='noopener noreferrer'>
                 Previsualizar
               </a>
             </div>
-          ) : data?.payload[0].cv_file ? (
+          ) : personalData?.cv_file ? (
             <div className='flex flex-col'>
               <span>Archivo</span>
-              <a className='link text-blue-300' href={data?.payload[0].cv_file} target='_blank'>
+              <a className='link text-blue-300' href={personalData.cv_file} target='_blank' rel='noopener noreferrer'>
                 Previsualizar
               </a>
             </div>
@@ -77,9 +96,9 @@ export default function PersonalData() {
             <span>Aún no existe CV registrada.</span>
           )}
         </div>
-        {data?.payload[0].name != null ? (
+        {personalData?.name != null ? (
           <div className='controls grid'>
-            {data?.payload[0].cv_link || data?.payload[0].cv_file ? (
+            {personalData?.cv_link || personalData?.cv_file ? (
               <ModalForFormsRedBtn title='Eliminar'>
                 <ConfirmDeleteCvForm />
               </ModalForFormsRedBtn>
@@ -95,23 +114,23 @@ export default function PersonalData() {
         <div className='w-full'>
           <div className='flex justify-between'>
             <h3 className='font-light'>Nombre</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].name || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{personalData?.name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Apellido</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].last_name || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{personalData?.last_name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='text-light'>Fecha de Nacimiento</h3>
-            <p className='text-(--main-arci)'>{fechaFormateada || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{fechaFormateada}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Email</h3>
-            <p className='text-(--main-arci)'>{session?.user.email || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{session?.user?.email || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Numero de Contacto</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].phone || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{personalData?.phone || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Pais</h3>
@@ -119,50 +138,50 @@ export default function PersonalData() {
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Ciudad</h3>
-            <p className='text-(--main-arci)'>{data?.payload[0].city || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{personalData?.city || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Profesión</h3>
-            <p className='text-(--main-arci)'>{data?.payload[1].title || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{studyData?.title || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Institución</h3>
-            <p className='text-(--main-arci)'>{data?.payload[1].institution || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{studyData?.institution || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Status</h3>
-            <p className='text-(--main-arci)'>{handleStatusName(data?.payload[1].status) || "No Registra Información"}</p>
+            <p className='text-(--main-arci)'>{handleStatusName(studyData?.status) || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Respaldo</h3>
-            {data?.payload[1].link ? (
-              <a href={data?.payload[1].link} target='_blank' className='text-(--main-arci) link'>
+            {studyData?.link ? (
+              <a href={studyData.link} target='_blank' rel='noopener noreferrer' className='text-(--main-arci) link'>
                 Previsualizar Link
               </a>
             ) : null}
-            {data?.payload[1].file ? (
-              <a href={data?.payload[1].file} target='_blank' className='text-(--main-arci) link'>
+            {studyData?.file ? (
+              <a href={studyData.file} target='_blank' rel='noopener noreferrer' className='text-(--main-arci) link'>
                 Previsualizar Archivo
               </a>
             ) : null}
-            {!data?.payload[1].link && !data?.payload[1].file && <p className='text-(--main-arci)'>No Cargado</p>}
+            {!studyData?.link && !studyData?.file && <p className='text-(--main-arci)'>No Cargado</p>}
           </div>
         </div>
 
         <div className='controles justify-center flex gap-2 mt-4'>
           {/* --------------------------------------------------agregar Eliminar Titulo------------------------------- */}
-          {data?.payload[1].status == "graduated" ? (
+          {studyData?.status === "graduated" ? (
             <div className='flex gap-2'>
               <ModalForFormsRedBtn title='Eliminar Título'>
                 <ConfirmDeleteMainStudyForm />
               </ModalForFormsRedBtn>
-              <ModalForForm title={data?.payload[1].link || data.payload[1].file ? "Actualizar Título" : "Agregar Título"}>
+              <ModalForForm title={studyData?.link || studyData?.file ? "Actualizar Título" : "Agregar Título"}>
                 <FileMainStudyForm />
               </ModalForForm>
             </div>
           ) : null}
 
-          <ModalForForm title={data?.payload[0].name == null ? "Agregar Información" : "Modificar"}>
+          <ModalForForm title={personalData?.name == null ? "Agregar Información" : "Modificar"}>
             <ProfesionalProfileHookForm />
           </ModalForForm>
         </div>
