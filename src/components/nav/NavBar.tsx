@@ -7,6 +7,15 @@ import { useSession } from "next-auth/react";
 function NavBar() {
   const { data: session } = useSession();
 
+  // Función simple para cerrar el dropdown móvil
+  const closeDropdown = () => {
+    // Quitar foco del elemento activo para cerrar dropdown de DaisyUI
+    const activeElement = document.activeElement as HTMLElement;
+    if (activeElement && activeElement.blur) {
+      activeElement.blur();
+    }
+  };
+
   return (
     <nav className='navbar bg-base-100 shadow-sm z-30'>
       <div className='navbar-start hidden lg:flex'>
@@ -70,42 +79,31 @@ function NavBar() {
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth='2' d='M4 6h16M4 12h8m-8 6h16' />{" "}
             </svg>
           </div>
-          <ul tabIndex={0} className='menu menu-sm dropdown-content bg-base-100 rounded-box z-1 mt-3 w-52 p-2 shadow'>
+          <ul tabIndex={0} className='menu menu-sm dropdown-content bg-base-100 rounded-box z-[1] mt-3 w-52 p-2 shadow'>
             <li>
-              <a>Acerca de nosotros</a>
+              <Link href={"/about"} onClick={closeDropdown}>Acerca de nosotros</Link>
             </li>
-            {/* <li>
-              <a>Ofertas</a>
-              <ul className='p-2'>
-                <li>
-                  <Link href={"/offers/Institutions"}>Instituciones</Link>
-                </li>
-                <li>
-                  <Link href={"/offers/Profesionals"}>Profesionales</Link>
-                </li>
-              </ul>
-            </li> */}
             <li>
-              <Link href={"/services"}>Servicios</Link>
+              <Link href={"/services"} onClick={closeDropdown}>Servicios</Link>
             </li>
             {session ? (
-              <ul>
+              <>
                 <li>
-                  <Link href={"/platform"}>Plataforma</Link>
+                  <Link href={"/platform"} onClick={closeDropdown}>Plataforma</Link>
                 </li>
                 <li>
-                  <Link href={"/auth/logOut"}>Cerrar Sesión</Link>
+                  <Link href={"/auth/logOut"} onClick={closeDropdown}>Cerrar Sesión</Link>
                 </li>
-              </ul>
+              </>
             ) : (
-              <ul>
+              <>
                 <li>
-                  <Link href={"/auth/login"}>Iniciar sesión</Link>
+                  <Link href={"/auth/login"} onClick={closeDropdown}>Iniciar sesión</Link>
                 </li>
                 <li>
-                  <Link href={"/auth/genInvitation"}>Registrarse</Link>
+                  <Link href={"/auth/genInvitation"} onClick={closeDropdown}>Registrarse</Link>
                 </li>
-              </ul>
+              </>
             )}
           </ul>
         </div>
