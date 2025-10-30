@@ -10,6 +10,9 @@ import ProcessDetail from "./ProcessDetail";
 import { useProfesionalsListedInProcess } from "@/hooks/useProcess";
 import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
 import InstitutionGridSearchSelection from "../institution/InstitutionGridSearchSelection";
+import ModalForForms from "@/components/modals/ModalForForms";
+import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
+import ConfirmFinishProcessForm from "@/components/forms/platform/process/ConfirmFinishProcessForm";
 
 export default function ProcessBasic(props: any) {
   const { process } = props;
@@ -36,7 +39,7 @@ export default function ProcessBasic(props: any) {
             <p className='fontRoboto text-center text-(--dark-gray)'>Plazo: </p>
             <p className='text-center fontRoboto text-(--main-arci) align-middle'>{diasRestantesFormateados}</p>
           </div>
-          <div className='flex flex-col md:flex-row justify-between gap-2 md:p-1'>
+          <div className='flex flex-col md:flex-row justify-end gap-2 md:p-1'>
             {/* <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extención</button> */}
             <ModalForPreview title='Detalle del Proceso'>
               <Process id={props.process.id} isFake={props.isFake} />
@@ -48,6 +51,11 @@ export default function ProcessBasic(props: any) {
             <ModalForFormsRedBtn title='Eliminar Proceso'>
               <ConfirmArchiveProcessForm id={process.id} />
             </ModalForFormsRedBtn>
+            {(process.status !== "completed" && process.status !== "pending" && process.status !== "paused") && (
+            <ModalForFormsGreenBtn title={"Finalizar Proceso"}>
+              <ConfirmFinishProcessForm id={process.id} />
+            </ModalForFormsGreenBtn>
+            )}
           </div>
         </div>
       </div>

@@ -22,6 +22,16 @@ export const useActiveProcesses = () => {
   return { data, error, isLoading, mutate };
 };
 
+export const useFinishedProcesses = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/completed", fetcher);
+  return { data, error, isLoading, mutate };
+}
+
+export const usePausedProcesses = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/paused", fetcher);
+  return { data, error, isLoading, mutate };
+}
+
 export const useActiveProcessesByUser = (userId: string | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     userId ? `/api/platform/process/status/active/${userId}` : null,

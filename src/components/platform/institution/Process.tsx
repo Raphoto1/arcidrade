@@ -14,6 +14,8 @@ import ConfirmArchiveProcessForm from "@/components/forms/platform/process/Confi
 import InstitutionGridSearch from "./InstitutionGridSearch";
 import InstitutionGridSearchSelection from "./InstitutionGridSearchSelection";
 import { useProfesional } from "@/hooks/usePlatPro";
+import ConfirmFinishProcessForm from "@/components/forms/platform/process/ConfirmFinishProcessForm";
+import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 
 export default function Process(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
@@ -112,6 +114,11 @@ export default function Process(props: any) {
             <ModalForFormsRedBtn title={"Eliminar Proceso"}>
               <ConfirmArchiveProcessForm id={processData?.id} />
             </ModalForFormsRedBtn>
+            {processData?.status !== "completed" && processData?.status !== "pending" && (
+              <ModalForFormsGreenBtn title={"Finalizar Proceso"}>
+                <ConfirmFinishProcessForm id={processData.id} />
+              </ModalForFormsGreenBtn>
+            )}
             {/* <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>
             <button className='btn bg-warning h-auto text-sm'>Pausar Proceso</button>
             <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Solicitar Extension</button>
@@ -145,17 +152,17 @@ export default function Process(props: any) {
           <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
           <Grid>
             {/*logica procesos arcidrade*/}
-           {profesionalsArci?.map((profesional: any) => (
-            <ProfesionalCard
-              key={profesional.id}
-              userId={profesional.profesional_id}
-              isFake={props.isFake}
-              btnActive
-              processId={processData.id}
-              processPosition={processData.position}
-              addedBy={"institution"}
-            />
-          ))}
+            {profesionalsArci?.map((profesional: any) => (
+              <ProfesionalCard
+                key={profesional.id}
+                userId={profesional.profesional_id}
+                isFake={props.isFake}
+                btnActive
+                processId={processData.id}
+                processPosition={processData.position}
+                addedBy={"institution"}
+              />
+            ))}
           </Grid>
         </div>
       ) : null}
