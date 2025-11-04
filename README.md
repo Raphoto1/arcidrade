@@ -1,162 +1,397 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🏥 ARCIDRADE - Plataforma de Conectividad Médica
 
-## Getting Started
+**ARCIDRADE** es una plataforma integral que conecta profesionales de la salud con instituciones médicas, facilitando procesos de contratación, gestión de perfiles profesionales y búsqueda de talento en el sector salud.
 
-First, run the development server:
+## 🎯 **Propósito**
 
+ARCIDRADE funciona como un puente digital entre:
+- **👨‍⚕️ Profesionales de la Salud** (Doctores, Enfermeros, Farmacéuticos)
+- **🏥 Instituciones Médicas** (Hospitales, Clínicas, Centros de Salud)
+
+Permitiendo procesos eficientes de reclutamiento, gestión de perfiles y creación de oportunidades laborales.
+
+---
+
+## 🚀 **Inicio Rápido**
+
+### Requisitos Previos
+- Node.js 18+
+- PostgreSQL
+- Prisma CLI
+
+### Instalación
 ```bash
+# Clonar repositorio
+git clone [repo-url]
+cd arcidrade
+
+# Instalar dependencias
+npm install
+
+# Configurar base de datos
+cp .env.example .env
+# Configurar DATABASE_URL en .env
+
+# Ejecutar migraciones
+npx prisma migrate dev
+npx prisma generate
+
+# Iniciar servidor de desarrollo
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000)
 
 ---
 
-# Plataforma de Gestión de Procesos
+## 🏗️ **Arquitectura del Sistema**
 
-## Descripción
-
-Esta plataforma permite la gestión de procesos profesionales (por ejemplo, médicos o institucionales). Los usuarios pueden crear, actualizar, listar y archivar procesos, cada uno con información relevante como cargo, especialidad principal, especialidades extras, fechas, estado, tipo de proceso y descripción.
-
-## Tecnologías
-
-- **Frontend:** React, DaisyUI, react-icons, SWR
+### **Stack Tecnológico**
+- **Frontend:** Next.js 15.5.6, React, TypeScript
+- **Styling:** DaisyUI, TailwindCSS
 - **Backend:** Next.js API Routes
-- **ORM:** Prisma
+- **Base de Datos:** PostgreSQL con Prisma ORM
+- **Autenticación:** NextAuth.js
+- **Estado:** SWR para cache y sincronización
+- **Formularios:** React Hook Form
 
-## Estructura de Carpetas
+### **Estructura de Usuarios**
 
-- `/src/components/`  
-  Componentes de la interfaz, como formularios, cards y modales.
-- `/src/hooks/`  
-  Hooks personalizados para consumir la API y manejar el estado.
-- `/src/controller/`  
-  Lógica de negocio y controladores para los procesos.
-- `/src/dao/`  
-  Acceso a datos usando Prisma.
-- `/src/app/api/`  
-  Rutas API de Next.js para operaciones CRUD.
+#### 👨‍⚕️ **Profesionales de la Salud**
+```typescript
+enum Sub_area {
+  doctor      // Médicos y especialistas
+  nurse       // Enfermeros y técnicos
+  pharmacist  // Farmacéuticos
+}
+```
 
-## Principales Hooks
-
-- `useProcesses`: Obtiene todos los procesos.
-- `useActiveProcesses`: Obtiene procesos con estado "active".
-- `usePendingProcesses`: Obtiene procesos con estado "pending".
-- `useArchivedProcesses`: Obtiene procesos con estado "archived".
-- `useProcess(processId)`: Obtiene un proceso por su ID.
-
-## Hooks personalizados
-
-En la carpeta `/src/hooks/` se encuentran los siguientes hooks para consumir la API y manejar el estado de los procesos:
-
-- **useProcesses**  
-  Obtiene todos los procesos registrados en la plataforma.
-
-- **useActiveProcesses**  
-  Obtiene los procesos con estado "active".
-
-- **usePendingProcesses**  
-  Obtiene los procesos con estado "pending".
-
-- **useArchivedProcesses**  
-  Obtiene los procesos con estado "archived".
-
-- **useProcess(processId)**  
-  Obtiene la información de un proceso específico por su ID.
-
-- **useCalcDates(start_date, approval_date)**  
-  Calcula el plazo y los días restantes de un proceso según su fecha de inicio y aprobación.
-
-- **useHandleSubmitText(payload, endpoint)**  
-  Realiza peticiones POST para crear o actualizar procesos.
+#### 🏥 **Instituciones Médicas**
+- Hospitales públicos y privados
+- Clínicas especializadas
+- Centros de atención primaria
+- Instituciones de salud mental
 
 ---
 
-Estos hooks utilizan SWR para el manejo eficiente de datos y revalidación automática en el frontend.
+## 📂 **Estructura del Proyecto**
 
-## Componentes Clave
-
-- **ProcessBasic:** Muestra información básica de un proceso.
-- **CreateProcessForm / UpdateProcessForm:** Formularios para crear y actualizar procesos.
-- **ActiveProcess / PendingProcess:** Listados de procesos activos y pendientes, con opción de desplegar/ocultar usando DaisyUI.
-
-## Endpoints API
-
-A continuación se listan los endpoints disponibles en la carpeta `/src/app/api/`.  
-**Los endpoints marcados con 🔒 están protegidos por middleware y requieren autenticación.**
-
-- `GET /api/platform/process/`  
-  Lista todos los procesos. 🔒
-
-- `GET /api/platform/process/status/[status]`  
-  Lista procesos por estado (`active`, `pending`, `archived`). 🔒
-
-- `GET /api/platform/process/[id]`  
-  Obtiene un proceso por ID. 🔒
-
-- `POST /api/platform/process/`  
-  Crea un proceso. 🔒
-
-- `POST /api/platform/process/update`  
-  Actualiza un proceso existente. 🔒
-
-- `POST /api/platform/process/status`  
-  Actualiza el estado de un proceso. 🔒
-
-- `GET /api/platform/ping`  
-  Endpoint público para verificar la conexión con la API. (No protegido)
+```
+src/
+├── app/                    # Next.js App Router
+│   ├── api/               # API Routes
+│   │   ├── auth/          # Autenticación
+│   │   └── platform/      # Endpoints principales
+│   ├── auth/              # Páginas de autenticación
+│   ├── platform/          # Área principal de la aplicación
+│   └── services/          # Páginas de servicios
+├── components/            # Componentes React
+│   ├── auth/             # Componentes de autenticación
+│   ├── forms/            # Formularios especializados
+│   ├── platform/         # Componentes de la plataforma
+│   └── pieces/           # Componentes reutilizables
+├── controller/           # Lógica de negocio
+├── dao/                  # Acceso a datos (Data Access Objects)
+├── hooks/                # Hooks personalizados
+├── service/              # Servicios de negocio
+├── static/               # Datos estáticos y configuraciones
+├── types/                # Definiciones de tipos TypeScript
+└── utils/                # Utilidades y helpers
+```
 
 ---
 
-**Notas:**
-- Todos los endpoints relacionados con procesos están protegidos por el middleware de autenticación, por lo que solo usuarios autenticados pueden acceder.
-- El endpoint `/api/platform/ping` es público y puede usarse para pruebas de conexión.
-- Los endpoints usan Next.js API Routes y Prisma para la gestión de datos.
+## 🔑 **Funcionalidades Principales**
 
-## Modelos Principales
+### **Para Profesionales de la Salud**
 
-- **Process:**  
-  - id, position, main_speciality, extra_specialities, start_date, approval_date, end_date, profesional_status, description, type, status, user_id, created_at, updated_at
+#### 📋 **Gestión de Perfil**
+- **Datos Personales:** Información completa, foto de perfil
+- **Estudio Principal:** Carrera universitaria, institución, fechas
+- **Especialidades:** Múltiples especialidades por categoría profesional
+- **Certificaciones:** Cursos, diplomados, certificaciones
+- **Experiencia Laboral:** Historial profesional detallado
 
-- **ExtraSpeciality:**  
-  - id, process_id, speciality
+#### 🎯 **Categorización Inteligente**
+```typescript
+// Especialidades médicas (73 opciones)
+medicalOptions: ["Cardiología", "Neurología", "Pediatría", ...]
 
-## Flujo Básico
+// Especialidades de enfermería (25 opciones)  
+nurseOptions: ["Enfermería Crítica", "Enfermería Pediátrica", ...]
 
-1. El usuario puede crear un proceso desde el formulario.
-2. Los procesos se listan y pueden filtrarse por estado.
-3. Cada proceso puede ser editado, archivado o eliminado.
-4. Las especialidades extras se gestionan dinámicamente en los formularios.
+// Especialidades farmacéuticas (4 opciones)
+pharmacistOptions: ["Farmacia Hospitalaria", "Industria Farmacéutica", ...]
+```
 
-## Notas
+#### 🔍 **Búsqueda de Oportunidades**
+- Procesos de selección activos
+- Filtrado por especialidad y ubicación
+- Postulación directa a procesos
 
-- Los componentes usan DaisyUI para estilos y react-icons para iconografía.
-- Los hooks usan SWR para manejo de datos y revalidación automática.
-- Prisma gestiona la persistencia y relaciones entre procesos y especialidades.
+### **Para Instituciones Médicas**
+
+#### 🏥 **Gestión Institucional**
+- **Perfil Corporativo:** Información completa de la institución
+- **Certificaciones:** Acreditaciones y certificados institucionales
+- **Especialidades:** Áreas de atención médica
+
+#### 📊 **Gestión de Procesos de Contratación**
+- **Creación de Procesos:** Definición de cargos y requisitos
+- **Invitaciones Masivas:** Sistema de invitaciones por CSV
+- **Seguimiento:** Estados de proceso (pendiente, activo, archivado)
+- **Filtrado de Candidatos:** Por especialidad, experiencia, ubicación
 
 ---
 
-## Learn More
+## 🗄️ **Modelo de Base de Datos**
 
-To learn more about Next.js, take a look at the following resources:
+### **Entidades Principales**
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```prisma
+model Auth {
+  referCode    String @id @default(cuid())
+  email        String @unique
+  area         AreasAvailable  // 'profesional' | 'institution'
+  status       StatusAvailable // 'active' | 'pending' | 'archived'
+  // ... relaciones
+}
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+model Profesional_data {
+  user_id     String @unique
+  name        String
+  last_name   String?
+  phone       String?
+  birth_date  DateTime?
+  country     String
+  state       String?
+  city        String?
+  // ...
+}
 
-## Deploy on Vercel
+model Main_study {
+  user_id     String @unique
+  title       String
+  institution String
+  sub_area    Sub_area?  // Nueva categorización
+  // ...
+}
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+model Study_specialization {
+  user_id      String
+  title        String
+  title_category String
+  sub_area     Sub_area?  // Filtrado por categoría
+  // ...
+}
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+model Process {
+  user_id           String  // Institución creadora
+  position          String
+  main_speciality   String
+  extra_specialities String?
+  status            String  // 'pending' | 'active' | 'archived'
+  // ...
+}
+```
+
+### **Enums Importantes**
+
+```prisma
+enum AreasAvailable {
+  profesional
+  institution
+}
+
+enum StatusAvailable {
+  active
+  pending
+  archived
+}
+
+enum Sub_area {
+  doctor
+  nurse
+  pharmacist
+}
+```
+
+---
+
+## 🔗 **API Endpoints**
+
+### **Autenticación**
+```
+POST   /api/auth/signup              # Registro de usuarios
+POST   /api/auth/signin              # Inicio de sesión
+GET    /api/auth/session             # Información de sesión
+```
+
+### **Profesionales**
+```
+GET    /api/platform/profesional/                    # Datos del profesional
+POST   /api/platform/profesional/                    # Crear/actualizar perfil
+GET    /api/platform/profesional/all                 # Todos los profesionales
+GET    /api/platform/profesional/paginated           # Profesionales paginados
+POST   /api/platform/profesional/speciality/         # Crear especialidad
+GET    /api/platform/profesional/speciality          # Listar especialidades
+PUT    /api/platform/profesional/speciality/[id]     # Actualizar especialidad
+DELETE /api/platform/profesional/speciality/[id]     # Eliminar especialidad
+```
+
+### **Instituciones**
+```
+GET    /api/platform/institution/                    # Datos institucionales
+POST   /api/platform/institution/                    # Crear/actualizar institución
+```
+
+### **Procesos**
+```
+GET    /api/platform/process/                        # Listar procesos
+POST   /api/platform/process/                        # Crear proceso
+GET    /api/platform/process/[id]                    # Obtener proceso específico
+PUT    /api/platform/process/update                  # Actualizar proceso
+POST   /api/platform/process/status                  # Cambiar estado de proceso
+```
+
+---
+
+## 🎨 **Componentes Clave**
+
+### **Formularios Inteligentes**
+- **`ProfesionalProfileHookForm`** - Perfil con categorización automática
+- **`ProfesionalSpecialityForm`** - Especialidades filtradas por `sub_area`
+- **`ProcessForm`** - Creación de procesos con validaciones avanzadas
+
+### **Gestión de Estado**
+```typescript
+// Hooks SWR para sincronización de datos
+const { data, mutate } = useProfesional();           // Datos del profesional
+const { data } = useProfesionalSpecialities();       // Especialidades
+const { data } = useProcesses();                     // Procesos disponibles
+const { data } = useAllProfesionals();               // Todos los profesionales
+```
+
+### **Componentes de UI**
+- **Cards Dinámicas** - Información profesional e institucional
+- **Modales Inteligentes** - Formularios con validación en tiempo real
+- **Grillas Responsivas** - Listados con filtrado y paginación
+- **Sistema de Notificaciones** - Feedback de acciones del usuario
+
+---
+
+## 🛠️ **Características Técnicas Avanzadas**
+
+### **Invalidación Inteligente de Cache**
+```typescript
+// Sincronización automática entre componentes
+const onSubmit = async (data) => {
+  const response = await updateProfile(data);
+  if (response.ok) {
+    await Promise.all([
+      mutate(),                                    // Cache local
+      globalMutate("/api/platform/profesional/"), // Cache global
+      globalMutate("/api/platform/profesional/complete"),
+    ]);
+  }
+};
+```
+
+### **Filtrado Dinámico por Categoría**
+```typescript
+const getSpecialityOptions = () => {
+  const currentSubArea = selectedSubArea || subArea;
+  switch (currentSubArea) {
+    case 'doctor': return medicalOptions;
+    case 'nurse': return nurseOptions;
+    case 'pharmacist': return pharmacistOptions;
+    default: return [];
+  }
+};
+```
+
+### **Sistema de Invitaciones Masivas**
+- Carga de archivos CSV
+- Validación de emails
+- Envío automático de invitaciones
+- Seguimiento de respuestas
+
+---
+
+## 🔧 **Scripts de Utilidad**
+
+```bash
+# Base de datos
+npm run db:migrate          # Ejecutar migraciones
+npm run db:generate         # Generar cliente Prisma
+npm run db:studio          # Abrir Prisma Studio
+npm run db:reset           # Resetear base de datos (desarrollo)
+
+# Desarrollo
+npm run dev                # Servidor de desarrollo
+npm run build             # Build de producción
+npm run start             # Servidor de producción
+npm run lint              # Linting del código
+
+# Backups (scripts personalizados)
+node backup-database.js    # Crear backup de base de datos
+node restore-backup.js     # Restaurar desde backup
+```
+
+---
+
+## 🚀 **Deployment**
+
+### **Variables de Entorno**
+```env
+# Base de datos
+DATABASE_URL="postgresql://user:pass@host:port/db"
+
+# NextAuth
+NEXTAUTH_SECRET="your-secret-key"
+NEXTAUTH_URL="https://your-domain.com"
+
+# Email (opcional)
+EMAIL_SERVER_USER="your-email@domain.com"
+EMAIL_SERVER_PASSWORD="your-password"
+EMAIL_SERVER_HOST="smtp.your-provider.com"
+EMAIL_SERVER_PORT="587"
+EMAIL_FROM="noreply@your-domain.com"
+```
+
+### **Consideraciones de Producción**
+- Configurar SSL/TLS para base de datos
+- Implementar rate limiting en endpoints críticos
+- Configurar monitoreo y logs
+- Backup automático de base de datos
+- CDN para assets estáticos
+
+---
+
+## 📊 **Métricas y Analytics**
+
+La plataforma incluye sistema de analytics para:
+- Registro de usuarios por tipo
+- Procesos creados y completados
+- Especialidades más demandadas
+- Ubicaciones con mayor actividad
+- Tiempo promedio de contratación
+
+---
+
+## 📝 **Licencia**
+
+Este proyecto está bajo licencia MIT. Ver `LICENSE` para más detalles.
+
+---
+
+## 📞 **Soporte**
+
+Para soporte técnico o consultas sobre ARCIDRADE:
+- **Email:** soporte@arcidrade.com
+- **Documentación:** [docs.arcidrade.com](https://docs.arcidrade.com)
+- **Issues:** [GitHub Issues](https://github.com/owner/arcidrade/issues)
+
+---
+
+**ARCIDRADE** - Conectando talento médico con oportunidades de crecimiento profesional 🏥✨
