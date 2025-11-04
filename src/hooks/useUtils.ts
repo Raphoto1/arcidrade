@@ -10,6 +10,19 @@ export const useHandleStatusName = (status: string | undefined) => {
       return "No Registrado";
     }
 };
+
+//adjust category
+export const useHandleCategoryName = (category: string | undefined) => {
+    if (category === "doctor") {
+      return "Doctor";
+    } else if (category === "nurse") {
+      return "Enfermero/a";
+    } else if (category === "pharmacist") {
+      return "Farmacéutico/a";
+    } else {
+      return "No Registrado";
+    }
+};
   
 export const formatDateToString = (date: string| number | Date ) => { 
     //manejo de fechas

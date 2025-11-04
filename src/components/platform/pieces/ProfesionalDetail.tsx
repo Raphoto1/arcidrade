@@ -4,6 +4,7 @@ import { useProfesional, useProfesionalFull } from "@/hooks/usePlatPro";
 import { fakerES as faker } from "@faker-js/faker";
 import { ICountry } from "country-state-city";
 import { Country } from "country-state-city";
+import { useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function ProfesionalDetail() {
   const { data, error, isLoading } = useProfesionalFull();
@@ -20,9 +21,9 @@ export default function ProfesionalDetail() {
   const getInitials = (fullName: string) => {
     if (!fullName) return "N/A";
     return fullName
-      .split(' ')
-      .map(name => name.charAt(0).toUpperCase())
-      .join('.');
+      .split(" ")
+      .map((name) => name.charAt(0).toUpperCase())
+      .join(".");
   };
 
   // Memoizar los datos procesados
@@ -31,7 +32,7 @@ export default function ProfesionalDetail() {
     const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
     const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
     const countryName: ICountry | undefined = Country.getCountryByCode(personalData?.country);
-    
+
     // Generar iniciales para nombre y apellido
     const nameInitials = getInitials(personalData.fake_name || "Nombre");
     const lastNameInitials = getInitials(fakeLastName);
@@ -42,7 +43,7 @@ export default function ProfesionalDetail() {
       lastNameInitials,
       fullInitials,
       fechaString,
-      countryName
+      countryName,
     };
   }, [personalData]);
 
@@ -71,16 +72,16 @@ export default function ProfesionalDetail() {
 
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <span className="loading loading-spinner loading-lg"></span>
+      <div className='flex justify-center items-center h-64'>
+        <span className='loading loading-spinner loading-lg'></span>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center items-center h-64">
-        <p className="text-error">Error al cargar el profesional</p>
+      <div className='flex justify-center items-center h-64'>
+        <p className='text-error'>Error al cargar el profesional</p>
       </div>
     );
   }
@@ -123,6 +124,10 @@ export default function ProfesionalDetail() {
               <div className='flex justify-between'>
                 <h3 className='text-light'>Fecha de Nacimiento</h3>
                 <p className='text-[var(--main-arci)]'>{fechaString || "fecha"}</p>
+              </div>
+              <div className='flex justify-between'>
+                <h3 className='font-light'>Categoria de Profesión</h3>
+                <p className='text-[var(--main-arci)]'>{useHandleCategoryName(mainStudy.sub_area)}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Profesión</h3>

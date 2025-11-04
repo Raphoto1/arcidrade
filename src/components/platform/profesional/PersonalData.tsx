@@ -16,6 +16,7 @@ import FileCvForm from "@/components/forms/platform/profesional/FileCvForm";
 import FileMainStudyForm from "@/components/forms/platform/profesional/FileMainStudyForm";
 import ConfirmDeleteMainStudyForm from "@/components/forms/platform/profesional/ConfirmDeleteMainStudyForm";
 import { useProfesional } from "@/hooks/usePlatPro";
+import { useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function PersonalData() {
   const { data, error, isLoading } = useProfesional();
@@ -28,12 +29,12 @@ export default function PersonalData() {
 
   // error handling
   if (error) {
-    return <div className="text-red-600">Error al cargar datos: {error.message}</div>;
+    return <div className='text-red-600'>Error al cargar datos: {error.message}</div>;
   }
 
   // data validation
   if (!data?.payload || !Array.isArray(data.payload) || data.payload.length === 0) {
-    return <div className="text-yellow-600">No hay datos disponibles</div>;
+    return <div className='text-yellow-600'>No hay datos disponibles</div>;
   }
 
   const personalData = data.payload[0];
@@ -50,16 +51,6 @@ export default function PersonalData() {
 
   //adjust country with validation
   const countryName: ICountry | undefined = personalData?.country ? Country.getCountryByCode(personalData.country) : undefined;
-  //adjust status
-  const handleStatusName = (status: string | undefined) => {
-    if (status === "inProcess") {
-      return "En Proceso";
-    } else if (status === "graduated") {
-      return "Graduado";
-    } else {
-      return "No Registrado";
-    }
-  };
 
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:h-auto'>
@@ -113,47 +104,51 @@ export default function PersonalData() {
         <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
         <div className='w-full'>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Nombre</h3>
+            <h3 className='font-light'>Nombre:</h3>
             <p className='text-(--main-arci)'>{personalData?.name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Apellido</h3>
+            <h3 className='font-light'>Apellido:</h3>
             <p className='text-(--main-arci)'>{personalData?.last_name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='text-light'>Fecha de Nacimiento</h3>
+            <h3 className='text-light'>Fecha de Nacimiento:</h3>
             <p className='text-(--main-arci)'>{fechaFormateada}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Email</h3>
+            <h3 className='font-light'>Email:</h3>
             <p className='text-(--main-arci)'>{session?.user?.email || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Numero de Contacto</h3>
+            <h3 className='font-light'>Numero de Contacto:</h3>
             <p className='text-(--main-arci)'>{personalData?.phone || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Pais</h3>
+            <h3 className='font-light'>Pais:</h3>
             <p className='text-(--main-arci)'>{countryName?.name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Ciudad</h3>
+            <h3 className='font-light'>Ciudad:</h3>
             <p className='text-(--main-arci)'>{personalData?.city || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Profesión</h3>
+            <h3 className='font-light'>Categoria de Profesión:</h3>
+            <p className='text-(--main-arci) text-end'>{useHandleCategoryName(studyData?.sub_area)}</p>
+          </div>
+          <div className='flex justify-between'>
+            <h3 className='font-light'>Profesión:</h3>
             <p className='text-(--main-arci)'>{studyData?.title || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Institución</h3>
+            <h3 className='font-light'>Institución:</h3>
             <p className='text-(--main-arci)'>{studyData?.institution || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Status</h3>
-            <p className='text-(--main-arci)'>{handleStatusName(studyData?.status) || "No Registra Información"}</p>
+            <h3 className='font-light'>Status:</h3>
+            <p className='text-(--main-arci)'>{useHandleStatusName(studyData?.status) || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
-            <h3 className='font-light'>Respaldo</h3>
+            <h3 className='font-light'>Respaldo:</h3>
             {studyData?.link ? (
               <a href={studyData.link} target='_blank' rel='noopener noreferrer' className='text-(--main-arci) link'>
                 Previsualizar Link
@@ -173,11 +168,10 @@ export default function PersonalData() {
           {studyData?.status === "graduated" ? (
             <div className='flex gap-2'>
               {studyData?.link || studyData?.file ? (
-              <ModalForFormsRedBtn title='Eliminar Título'>
-                <ConfirmDeleteMainStudyForm />
-              </ModalForFormsRedBtn>
-
-              ): null}
+                <ModalForFormsRedBtn title='Eliminar Título'>
+                  <ConfirmDeleteMainStudyForm />
+                </ModalForFormsRedBtn>
+              ) : null}
               <ModalForForm title={studyData?.link || studyData?.file ? "Actualizar Título" : "Agregar Título"}>
                 <FileMainStudyForm />
               </ModalForForm>
@@ -194,7 +188,6 @@ export default function PersonalData() {
               Cambiar Contraseña
             </Link>
           </div>
-
         </ModalForForm>
       </div>
     </div>

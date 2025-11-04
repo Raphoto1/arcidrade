@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 
 import Speciality from "../pieces/Speciality";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
@@ -7,9 +7,19 @@ import { useProfesional, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function Specialities() {
   const { data, error, isLoading } = useProfesionalSpecialities();
-  //pendiente crear contexto userDATA
   const { data: UserData } = useProfesional();
   const specialitiesList = data?.payload;
+  
+  // Estado para forzar re-render del modal cuando cambie sub_area
+  const [modalKey, setModalKey] = useState(0);
+  
+  // Efecto para detectar cambios en sub_area y forzar re-render del modal
+  useEffect(() => {
+    if (UserData?.payload[1]?.sub_area) {
+      setModalKey(prev => prev + 1);
+    }
+  }, [UserData?.payload[1]?.sub_area]);
+  
 
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-1 md:justify-center md:gap-4 md:h-auto'>
@@ -32,9 +42,16 @@ export default function Specialities() {
       </div>
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
-          {UserData?.payload[0].name?<ModalForFormsPlusButton title='Agregar Especialidad'>
-            <ProfesionalSpecialityForm />
-          </ModalForFormsPlusButton>:<div className="text-center">Complete Información Personal antes de agregar Especialidades</div>}
+          {UserData?.payload[0].name ? (
+            <ModalForFormsPlusButton 
+              key={modalKey} // Key que cambia cuando sub_area cambia
+              title='Agregar Especialidad'
+            >
+              <ProfesionalSpecialityForm subArea={UserData?.payload[1].sub_area} />
+            </ModalForFormsPlusButton>
+          ) : (
+            <div className="text-center">Complete Información Personal antes de agregar Especialidades</div>
+          )}
         </div>
       </div>
     </div>

@@ -4,20 +4,26 @@ import { useForm } from "react-hook-form";
 import { Country } from "country-state-city";
 import { ICountry } from "country-state-city";
 
-import { optionsTitleStatus, medicalOptions } from "@/static/data/staticData";
+import { optionsTitleStatus, medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalSpeciality, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+import { useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function ProfesionalSpecialityUpdateForm(props: any) {
   const { closeModal } = useModal();
   const { data, error, isLoading, mutate } = useProfesionalSpeciality(props.id);
-    const { mutate:mutate2 } = useProfesionalSpecialities();
+  const { mutate: mutate2 } = useProfesionalSpecialities();
+  
+  // Obtener subArea desde los datos cargados
+  const subArea = data?.payload?.sub_area;
 
   const [countryList, setCountryList] = useState<ICountry[]>([]);
   const [titleCategorySelected, setTitleCategorySelected] = useState('');
   const [statusSelected, setStatusSelected] = useState('');
   const [studyCountry, setStudyCountry] = useState('');
+  const [selectedSubArea, setSelectedSubArea] = useState(subArea || ""); // Estado para manejar subArea seleccionado
+  const [isSubmitting, setIsSubmitting] = useState(false); // Estado de carga
 
   const {
     register,
@@ -45,6 +51,8 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
       setTitleCategorySelected(data.payload.title_category);
       setStatusSelected(data.payload.status);
       setStudyCountry(data.payload.country);
+      // Actualizar selectedSubArea con los datos cargados
+      setSelectedSubArea(data.payload.sub_area || "");
     }
   }, [data, reset]);
 
@@ -65,13 +73,46 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
     setStudyCountry(e.target.value);
   };
 
+  const handleSubAreaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSelectedSubArea(e.target.value);
+    setTitleCategorySelected(""); // Reset especialidad cuando cambia la categoría
+  };
+
+  // Función para obtener las opciones según el subArea
+  const getSpecialityOptions = () => {
+    const currentSubArea = selectedSubArea || subArea;
+    switch (currentSubArea) {
+      case 'doctor':
+        return medicalOptions;
+      case 'nurse':
+        return nurseOptions;
+      case 'pharmacist':
+        return pharmacistOptions;
+      default:
+        return []; // No mostrar opciones si no hay categoría seleccionada
+    }
+  };
+
   const path = `/api/platform/profesional/speciality/${props.id}`;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const response = await useHandleSubmitText(formData, path);
-    if (response.ok) {
-      mutate2();
-      closeModal();
+    setIsSubmitting(true); // Activar loader
+    try {
+      const payload = {
+        ...formData,
+        // Incluir subArea si se seleccionó en el formulario
+        ...(selectedSubArea && !subArea && { subArea: selectedSubArea }),
+      };
+
+      const response = await useHandleSubmitText(payload, path);
+      if (response.ok) {
+        mutate2();
+        closeModal();
+      }
+    } catch (error) {
+      console.error("Error al actualizar especialidad:", error);
+    } finally {
+      setIsSubmitting(false); // Desactivar loader
     }
   });
 
@@ -82,7 +123,45 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
     <div className="flex w-full justify-center items-center">
       <div className="flex justify-center items-center h-1/2 p-2 min-w-xl">
         <div className="flex flex-col justify-start h-full bg-gray-200 w-2/3 items-center rounded-sm p-4 md:justify-center">
-          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Especialidad</h2>
+          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Actualizar Especialidad</h2>
+          
+          {/* Mostrar categoría si existe o selector si es null */}
+          {subArea ? (
+            <div className="w-full mb-4 bg-gray-50 p-3 rounded-md border">
+              <p className="text-sm text-gray-600">Categoría de Profesión:</p>
+              <p className="font-semibold text-[var(--main-arci)] text-lg">{useHandleCategoryName(subArea)}</p>
+            </div>
+          ) : (
+            <div className="w-full mb-4">
+              {/* Mensaje motivacional para actualizar perfil */}
+              <div className="bg-blue-50 border-l-4 border-blue-400 p-4 mb-4 rounded-md">
+                <div className="flex">
+                  <div className="ml-3">
+                    <p className="text-sm text-blue-700">
+                      💡 <strong>Para mejorar tu experiencia al agregar especialidades</strong>, actualiza en tus datos personales la categoría de tu profesión.
+                    </p>
+                  </div>
+                </div>
+              </div>
+              
+              <label htmlFor="subArea" className="block font-semibold mb-1 text-red-600">* Seleccione su Categoría de Profesión</label>
+              <select
+                {...register("subArea", { required: "Debe seleccionar una categoría de profesión" })}
+                value={selectedSubArea}
+                onChange={handleSubAreaChange}
+                className="select select-bordered w-full"
+                disabled={isSubmitting}
+              >
+                <option value="">Seleccione una categoría</option>
+                <option value="doctor">Doctor</option>
+                <option value="nurse">Enfermero/a</option>
+                <option value="pharmacist">Farmacéutico/a</option>
+              </select>
+              {errors.subArea?.message && (
+                <span className="text-xs text-red-500">{String(errors.subArea.message)}</span>
+              )}
+            </div>
+          )}
 
           <form onSubmit={onSubmit} className="w-full grid gap-4 mt-4">
             <div>
@@ -92,6 +171,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                 type="text"
                 {...register("title", { required: "Este campo es obligatorio" })}
                 className="input input-bordered w-full"
+                disabled={isSubmitting}
               />
             </div>
 
@@ -103,9 +183,15 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                 value={titleCategorySelected}
                 onChange={handleTitleCategorySelected}
                 className="select select-bordered w-full"
+                disabled={(!selectedSubArea && !subArea) || isSubmitting}
               >
-                <option value="">Seleccione una especialidad</option>
-                {medicalOptions.map((speciality: { name: string }, index: number) => (
+                <option value="">
+                  {!selectedSubArea && !subArea 
+                    ? "Primero seleccione una categoría de profesión" 
+                    : "Seleccione una especialidad"
+                  }
+                </option>
+                {getSpecialityOptions().map((speciality: { name: string }, index: number) => (
                   <option key={index} value={speciality.name}>{speciality.name}</option>
                 ))}
               </select>
@@ -119,6 +205,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                 value={statusSelected}
                 onChange={handleStatusSelected}
                 className="select select-bordered w-full"
+                disabled={isSubmitting}
               >
                 <option value="">Seleccione un estado</option>
                 {optionsTitleStatus.map((status, index) => (
@@ -135,6 +222,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                   type="date"
                   {...register("startDate")}
                   className="input input-bordered w-full"
+                  disabled={isSubmitting}
                 />
               </div>
               <div>
@@ -144,6 +232,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                   type="date"
                   {...register("endDate")}
                   className="input input-bordered w-full"
+                  disabled={isSubmitting}
                 />
               </div>
             </div>
@@ -156,6 +245,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                 value={studyCountry}
                 onChange={handleStudyCountryChange}
                 className="select select-bordered w-full"
+                disabled={isSubmitting}
               >
                 <option value="">Seleccione un país</option>
                 {countryList.map((country, index) => (
@@ -171,12 +261,33 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
                 type="text"
                 {...register("titleInstitution", { required: "Este campo es obligatorio" })}
                 className="input input-bordered w-full"
+                disabled={isSubmitting}
               />
             </div>
 
             <div className="flex justify-center gap-4 mt-6">
-              <button type="submit" className="btn bg-[var(--soft-arci)]">Confirmar Especialidad</button>
-              <button type="button" className="btn bg-[var(--orange-arci)]" onClick={closeModal}>Cancelar</button>
+              <button 
+                type="submit" 
+                className="btn bg-[var(--main-arci)] text-white"
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Actualizando...
+                  </>
+                ) : (
+                  "Confirmar Especialidad"
+                )}
+              </button>
+              <button 
+                type="button" 
+                className="btn bg-[var(--orange-arci)] text-white" 
+                onClick={closeModal}
+                disabled={isSubmitting}
+              >
+                Cancelar
+              </button>
             </div>
           </form>
         </div>

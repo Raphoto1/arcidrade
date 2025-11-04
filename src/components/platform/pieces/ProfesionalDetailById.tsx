@@ -4,6 +4,7 @@ import { useProfesional, useProfesionalById, useProfesionalFull } from "@/hooks/
 import { fakerES as faker } from "@faker-js/faker";
 import { ICountry } from "country-state-city";
 import { Country } from "country-state-city";
+import { useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function ProfesionalDetail(props: any) {
   const { data, error, isLoading } = useProfesionalById(props.userId);
@@ -123,6 +124,10 @@ export default function ProfesionalDetail(props: any) {
               <div className='flex justify-between'>
                 <h3 className='text-light'>Fecha de Nacimiento:</h3>
                 <p className='text-[var(--main-arci)] text-end'>{fechaString || "fecha"}</p>
+              </div>
+              <div className='flex justify-between'>
+                <h3 className='font-light'>Categoría de Profesión:</h3>
+                <p className='text-[var(--main-arci)] text-end'>{useHandleCategoryName(mainStudy.sub_area)}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Profesión:</h3>

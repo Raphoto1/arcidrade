@@ -2,7 +2,7 @@
 import { fakerES as faker } from "@faker-js/faker";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
-import { Main_study, Profesional_data } from "@/generated/prisma";
+import { Main_study, Profesional_data, Sub_area } from "@/generated/prisma";
 
 // my imports
 import {
@@ -11,6 +11,7 @@ import {
   getUserDataService,
   getMainStudyService,
   updateUserDataService,
+  updateUserMainStudyService,
   createUserSpecialityService,
   getUserSpecialitiesService,
   deleteUserSpecialityService,
@@ -56,12 +57,14 @@ export const createUserData = async (data: any) => {
           state: data.state,
           city: data.city,
         };
+
         const profesionalMainStudyPack = {
           user_id: session.user.id,
           title: data.title,
           status: data.titleStatus,
           institution: data.titleInstitution,
           country: data.studyCountry,
+          sub_area: data.sub_area,
         };
         //se envian los paquetes al service
         const resultUserData = await createUserDataService(profesionalDataPack);
@@ -333,10 +336,13 @@ export const uploadUserAvatar = async (file: File) => {
 //speciality_______________________________________________________________________________________
 export const createSpeciality = async (data: any) => {
   try {
-
+    console.log('Datos recibidos en createSpeciality:', data);
+    console.log('subArea recibido:', data.subArea);
+    
     //se crea pack
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
+    
     //ajuste de fecha endDate
     let endDateFix = data.endDate;
     if (endDateFix === "") {
@@ -344,6 +350,7 @@ export const createSpeciality = async (data: any) => {
     } else {
       endDateFix = new Date(data.endDate);
     }
+    
     const specialPack = {
       user_id: userId,
       institution: data.titleInstitution,
@@ -351,10 +358,14 @@ export const createSpeciality = async (data: any) => {
       title_category: data.title_category,
       status: data.titleStatus,
       country: data.country,
+      sub_area: data.subArea,
       start_date: new Date(data.startDate),
       end_date: endDateFix,
     };
+    
+    // Crear la especialidad
     const create = await createUserSpecialityService(specialPack);
+    
     return create;
   } catch (error) {
     console.error(error);

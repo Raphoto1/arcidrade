@@ -96,6 +96,17 @@ export const createUserDataMainStudy = async (data: any) => {
     return result;
   }
 };
+
+// Servicio específico para actualizar main_study
+export const updateUserMainStudyService = async (data: any, userId: string) => {
+  try {
+    const result = await updateProfesionalMainStudyDao(data, userId);
+    return result;
+  } catch (error) {
+    console.error('Error in updateUserMainStudyService:', error);
+    throw error;
+  }
+};
 //speciality
 export const createUserSpecialityService = async (data: any) => {
   //revisar que no este creada previamente para ese usuario

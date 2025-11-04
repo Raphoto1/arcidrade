@@ -4,11 +4,19 @@ import { useSession } from "next-auth/react";
 import { useForm } from "react-hook-form";
 import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
+import { mutate as globalMutate } from "swr";
 
 import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesional } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+
+// Opciones para sub_area (deben coincidir con el enum Sub_area en Prisma)
+const subAreaOptions = [
+  { value: "doctor", label: "Doctor" },
+  { value: "nurse", label: "Enfermero/a" },
+  { value: "pharmacist", label: "Farmacéutico/a" }
+];
 
 export default function ProfesionalProfileHookForm() {
   const { closeModal } = useModal();
@@ -30,6 +38,7 @@ export default function ProfesionalProfileHookForm() {
       country: "",
       state: "",
       city: "",
+      sub_area: "",
       title: "",
       studyCountry: "",
       titleInstitution: "",
@@ -39,6 +48,7 @@ export default function ProfesionalProfileHookForm() {
 
   const [email, setEmail] = useState(session?.user.email);
   const [statusSelected, setStatusSelected] = useState<string>(``);
+  const [subAreaSelected, setSubAreaSelected] = useState<string>("");
   const [countrySelected, setCountrySelected] = useState<string>("");
   const [stateSelected, setStateSelected] = useState<string>("");
   const [citySelected, setCitySelected] = useState<string>("");
@@ -48,19 +58,20 @@ export default function ProfesionalProfileHookForm() {
   const [studyCountry, setStudyCountry] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Cargar datos en el formulario cuando estén disponibles
+  // Cargar datos básicos que no dependen de listas externas
   useEffect(() => {
-    if (data?.payload && data.payload[0] && countryList.length > 0) {
+    if (data?.payload && data.payload[0]) {
       const userData = data.payload[0];
       const mainStudy = data.payload[1];
-      
+
       // Formatear fecha si existe
       let formattedBirthDate = "";
       if (userData.birth_date) {
         const fecha = new Date(userData.birth_date);
-        formattedBirthDate = fecha.toISOString().split('T')[0]; // formato YYYY-MM-DD para input date
+        formattedBirthDate = fecha.toISOString().split("T")[0];
       }
-      
+
+      // Actualizar campos básicos inmediatamente
       reset({
         name: userData.name || "",
         last_name: userData.last_name || "",
@@ -70,39 +81,48 @@ export default function ProfesionalProfileHookForm() {
         country: userData.country || "",
         state: userData.state || "",
         city: userData.city || "",
+        sub_area: mainStudy?.sub_area || "",
         title: mainStudy?.title || "",
         studyCountry: mainStudy?.country || "",
         titleInstitution: mainStudy?.institution || "",
         titleStatus: mainStudy?.status || "",
       });
-      
-      // Actualizar estados locales
+
+      // Actualizar estados que no dependen de listas externas
       setEmail(session?.user.email || "");
       setStatusSelected(mainStudy?.status || "");
+      setSubAreaSelected(mainStudy?.sub_area || "");
       setStudyCountry(mainStudy?.country || "");
-      
+    }
+  }, [data, session, reset]);
+
+  // Cargar datos geográficos cuando los países estén disponibles
+  useEffect(() => {
+    if (data?.payload && data.payload[0] && countryList.length > 0) {
+      const userData = data.payload[0];
+
       // Manejar país, estado y ciudad con datos reales
       if (userData.country) {
         setCountrySelected(userData.country);
-        
+
         // Cargar estados del país seleccionado
         const states = State.getStatesOfCountry(userData.country);
         setStateList(states);
-        
+
         if (userData.state && states.length > 0) {
           setStateSelected(userData.state);
-          
+
           // Cargar ciudades del estado seleccionado
           const cities = City.getCitiesOfState(userData.country, userData.state);
           setCityList(cities);
-          
+
           if (userData.city) {
             setCitySelected(userData.city);
           }
         }
       }
     }
-  }, [data, session, reset, countryList]);
+  }, [data, countryList]);
 
   // Función para formatear fecha para mostrar
   const getFormattedDate = () => {
@@ -115,6 +135,10 @@ export default function ProfesionalProfileHookForm() {
 
   const handleStatusSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusSelected(e.target.value);
+  };
+
+  const handleSubAreaSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSubAreaSelected(e.target.value);
   };
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -143,7 +167,6 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const handleStudyCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-
     const countryName = e.target.value;
     setStudyCountry(countryName);
   };
@@ -154,14 +177,20 @@ export default function ProfesionalProfileHookForm() {
       const response = await useHandleSubmitText(data, "/api/platform/profesional");
 
       if (response.ok) {
-        mutate();
+        // Invalidar múltiples caches relacionados con el profesional
+        await Promise.all([
+          mutate(), // Cache local del useProfesional
+          globalMutate("/api/platform/profesional/"), // Cache global del endpoint principal
+          globalMutate("/api/platform/profesional/complete"), // Cache del perfil completo si existe
+        ]);
+        
         closeModal();
       } else {
         // Manejar error si es necesario
-        console.error('Error al enviar datos');
+        console.error("Error al enviar datos");
       }
     } catch (error) {
-      console.error('Error en el envío:', error);
+      console.error("Error en el envío:", error);
     } finally {
       setIsSubmitting(false);
     }
@@ -214,16 +243,18 @@ export default function ProfesionalProfileHookForm() {
               <div className='h-full bg-blue-600 animate-ping'></div>
             </div>
           )}
-          
+
           <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Datos Personales</h2>
           {/* Mensaje de estado si se está enviando */}
           {isSubmitting && (
             <div className='w-full bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 flex items-center gap-2'>
-              <span className="loading loading-spinner loading-sm text-blue-600"></span>
+              <span className='loading loading-spinner loading-sm text-blue-600'></span>
               <span className='text-blue-700 font-medium'>Guardando datos personales...</span>
             </div>
           )}
-          <form onSubmit={onSubmit} className={`form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full ${isSubmitting ? 'opacity-75 pointer-events-none' : ''}`}>
+          <form
+            onSubmit={onSubmit}
+            className={`form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full ${isSubmitting ? "opacity-75 pointer-events-none" : ""}`}>
             <div className='block'>
               <label htmlFor='name' className='block'>
                 Nombre/s
@@ -241,22 +272,14 @@ export default function ProfesionalProfileHookForm() {
               <label htmlFor='birthDate' className='block'>
                 Fecha de nacimiento
               </label>
-              {data?.payload && data.payload[0]?.birth_date ? (
-                <span>Fecha Registrada: {getFormattedDate()}</span>
-              ) : null}
+              {data?.payload && data.payload[0]?.birth_date ? <span>Fecha Registrada: {getFormattedDate()}</span> : null}
               <input type='date' {...register("birthDate")} className='w-xs' />
             </div>
             <div>
               <label htmlFor='email' className='block'>
                 Email
               </label>
-              <input 
-                type='email' 
-                {...register("email")} 
-                className='w-xs' 
-                disabled 
-                value={email}
-              />
+              <input type='email' {...register("email")} className='w-xs' disabled value={email} />
             </div>
             <div>
               <label htmlFor='phone' className='block'>
@@ -292,9 +315,7 @@ export default function ProfesionalProfileHookForm() {
                 value={stateSelected}
                 onChange={handleStateChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>
-                  {countrySelected ? 'Seleccione Un Estado' : 'Primero seleccione un País'}
-                </option>
+                <option value=''>{countrySelected ? "Seleccione Un Estado" : "Primero seleccione un País"}</option>
                 {stateList.map((state, index) => (
                   <option key={index} value={state.isoCode as string}>
                     {state.name as string}
@@ -312,9 +333,7 @@ export default function ProfesionalProfileHookForm() {
                 value={citySelected}
                 onChange={handleCityChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>
-                  {stateSelected ? 'Seleccione Una Ciudad' : 'Primero seleccione un Estado'}
-                </option>
+                <option value=''>{stateSelected ? "Seleccione Una Ciudad" : "Primero seleccione un Estado"}</option>
                 {cityList.map((city, index) => (
                   <option key={index} value={city.name as string}>
                     {city.name as string}
@@ -322,6 +341,25 @@ export default function ProfesionalProfileHookForm() {
                 ))}
               </select>
             </div>
+            <div>
+              <label htmlFor='sub_area' className='block'>
+                Categoria de Profesión *
+              </label>
+              <select
+                id='sub_area'
+                {...register("sub_area", { required: true })}
+                value={subAreaSelected}
+                onChange={handleSubAreaSelected}
+                className='select select-bordered w-full max-w-xs mb-2 input'>
+                <option value=''>Seleccione una categoría</option>
+                {subAreaOptions.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {errors.sub_area && <span className='text-red-500 text-sm'>Categoria de Profesión es requerida</span>}
             <div>
               <label htmlFor='title' className='block'>
                 Estudio Principal
@@ -371,28 +409,20 @@ export default function ProfesionalProfileHookForm() {
               </select>
             </div>
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-              <button 
-                className='btn bg-[var(--soft-arci)]' 
-                type='submit'
-                disabled={isSubmitting}
-              >
+              <button className='btn bg-[var(--soft-arci)]' type='submit' disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
-                    <span className="loading loading-spinner loading-sm"></span>
+                    <span className='loading loading-spinner loading-sm'></span>
                     Guardando...
                   </>
                 ) : (
-                  'Confirmar datos personales'
+                  "Confirmar datos personales"
                 )}
               </button>
             </div>
           </form>
           <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-            <button 
-              className='btn btn-wide bg-[var(--orange-arci)]' 
-              onClick={closeModal}
-              disabled={isSubmitting}
-            >
+            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal} disabled={isSubmitting}>
               Cancelar
             </button>
           </div>

@@ -338,4 +338,5 @@ enum process_status_profesional {
 enum Sub_area {
   doctor
   nurse
+  pharmacist
 }

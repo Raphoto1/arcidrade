@@ -168,3 +168,38 @@ export const medicalOptions: any = [
   { id: 72, name: "toxicologia" },
   { id: 73, name: "urologia" },
 ];
+
+export const nurseOptions: any = [
+  { "id": 1, "name": "Enfermería Obstétrico-Ginecológica (Matrona)" },
+  { "id": 2, "name": "Enfermería de Salud Mental" },
+  { "id": 3, "name": "Enfermería del Trabajo" },
+  { "id": 4, "name": "Enfermería Geriátrica" },
+  { "id": 5, "name": "Enfermería Familiar y Comunitaria" },
+  { "id": 6, "name": "Enfermería Pediátrica" },
+  { "id": 7, "name": "Enfermería de Cuidados Intensivos" },
+  { "id": 8, "name": "Enfermería Oncológica" },
+  { "id": 9, "name": "Enfermería Quirúrgica" },
+  { "id": 10, "name": "Enfermería de Urgencias" },
+  { "id": 11, "name": "Enfermería Neonatal" },
+  { "id": 12, "name": "Enfermería de Rehabilitación" },
+  { "id": 13, "name": "Enfermería de Cuidados Paliativos" },
+  { "id": 14, "name": "Enfermería Forense" },
+  { "id": 15, "name": "Enfermería de Investigación" },
+  { "id": 16, "name": "Enfermería de Gestión de Casos" },
+  { "id": 17, "name": "Enfermería de Salud Pública" },
+  { "id": 18, "name": "Enfermería de Telemedicina" },
+  { "id": 19, "name": "Enfermería de Dermatología" },
+  { "id": 20, "name": "Enfermería de Cardiología" },
+  { "id": 21, "name": "Enfermería de Nefrología" },
+  { "id": 22, "name": "Enfermería Escolar" },
+  { "id": 23, "name": "Enfermería Militar" },
+  { "id": 24, "name": "Enfermería de Práctica Avanzada" },
+  { "id": 25, "name": "Técnico de Rayos X" }
+]
+
+export const pharmacistOptions: any = [
+  { "id": 1, "name": "Farmacia De Oficina de Farmacia" },
+  { "id": 2, "name": "Farmacia Hospitalaria" },
+  { "id": 3, "name": "Industria Farmacéutica" },
+  { "id": 4, "name": "Farmacia de Atención Primaria" },
+]

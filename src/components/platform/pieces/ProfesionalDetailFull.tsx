@@ -10,6 +10,7 @@ import { Country } from "country-state-city";
 import { useProfesionalFull } from "@/hooks/usePlatPro";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
+import { useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function ProfesionalDetailFull() {
   const { data, error, isLoading } = useProfesionalFull();
@@ -133,6 +134,10 @@ export default function ProfesionalDetailFull() {
             <div className='flex justify-between'>
               <h3 className='font-light'>Ciudad</h3>
               <p className='text-(--main-arci)'>{personalData.city}</p>
+            </div>
+            <div className='flex justify-between'>
+              <h3 className='font-light'>Categoría de Profesión</h3>
+              <p className='text-(--main-arci)'>{useHandleCategoryName(mainStudy.sub_area)}</p>
             </div>
             <div className='flex justify-between'>
               <h3 className='font-light'>Profesión</h3>
