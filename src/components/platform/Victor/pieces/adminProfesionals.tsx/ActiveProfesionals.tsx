@@ -127,7 +127,7 @@ export default function ActiveProfesionals() {
       {!isLoading && !error && (
         <div className='w-full'>
           {filteredProfesionals.length > 0 ? (
-            <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
+            <div className='grid grid-cols-1 gap-4'>
               {filteredProfesionals.map((profesional: any, index: number) => (
                 <ProfesionalPill 
                   key={profesional.referCode || `profesional-${index}`} 

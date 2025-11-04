@@ -15,39 +15,103 @@ export default function ProfesionalProfileHookForm() {
   const { data: session } = useSession();
   const { data, error, isLoading, mutate } = useProfesional();
 
-  const fecha = new Date(data?.payload[0].birth_date);
-  const fechaFormateada2 = fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
-
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm({
     defaultValues: {
-      name: data?.payload[0].name,
-      last_name: data?.payload[0].last_name,
-      birthDate: data?.payload[0].birth_date,
-      email: session?.user.email,
-      phone: data?.payload[0].phone,
-      country: data?.payload[0].country,
-      state: data?.payload[0].state,
-      city: data?.payload[0].city,
-      title: data?.payload[1].title,
-      studyCountry: data?.payload[1].country,
-      titleInstitution: data?.payload[1].institution,
-      titleStatus: data?.payload[1].status,
+      name: "",
+      last_name: "",
+      birthDate: "",
+      email: "",
+      phone: "",
+      country: "",
+      state: "",
+      city: "",
+      title: "",
+      studyCountry: "",
+      titleInstitution: "",
+      titleStatus: "",
     },
   });
 
   const [email, setEmail] = useState(session?.user.email);
   const [statusSelected, setStatusSelected] = useState<string>(``);
   const [countrySelected, setCountrySelected] = useState<string>("");
-  const [stateSelected, setStateSelected] = useState<string>("seleccione un Pais");
-  const [citySelected, setCitySelected] = useState<string>("Seleccione un Estado");
+  const [stateSelected, setStateSelected] = useState<string>("");
+  const [citySelected, setCitySelected] = useState<string>("");
   const [countryList, setCountryList] = useState<ICountry[]>([]);
   const [stateList, setStateList] = useState<IState[]>([]);
   const [cityList, setCityList] = useState<ICity[]>([]);
   const [studyCountry, setStudyCountry] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Cargar datos en el formulario cuando estén disponibles
+  useEffect(() => {
+    if (data?.payload && data.payload[0] && countryList.length > 0) {
+      const userData = data.payload[0];
+      const mainStudy = data.payload[1];
+      
+      // Formatear fecha si existe
+      let formattedBirthDate = "";
+      if (userData.birth_date) {
+        const fecha = new Date(userData.birth_date);
+        formattedBirthDate = fecha.toISOString().split('T')[0]; // formato YYYY-MM-DD para input date
+      }
+      
+      reset({
+        name: userData.name || "",
+        last_name: userData.last_name || "",
+        birthDate: formattedBirthDate,
+        email: session?.user.email || "",
+        phone: userData.phone || "",
+        country: userData.country || "",
+        state: userData.state || "",
+        city: userData.city || "",
+        title: mainStudy?.title || "",
+        studyCountry: mainStudy?.country || "",
+        titleInstitution: mainStudy?.institution || "",
+        titleStatus: mainStudy?.status || "",
+      });
+      
+      // Actualizar estados locales
+      setEmail(session?.user.email || "");
+      setStatusSelected(mainStudy?.status || "");
+      setStudyCountry(mainStudy?.country || "");
+      
+      // Manejar país, estado y ciudad con datos reales
+      if (userData.country) {
+        setCountrySelected(userData.country);
+        
+        // Cargar estados del país seleccionado
+        const states = State.getStatesOfCountry(userData.country);
+        setStateList(states);
+        
+        if (userData.state && states.length > 0) {
+          setStateSelected(userData.state);
+          
+          // Cargar ciudades del estado seleccionado
+          const cities = City.getCitiesOfState(userData.country, userData.state);
+          setCityList(cities);
+          
+          if (userData.city) {
+            setCitySelected(userData.city);
+          }
+        }
+      }
+    }
+  }, [data, session, reset, countryList]);
+
+  // Función para formatear fecha para mostrar
+  const getFormattedDate = () => {
+    if (data?.payload && data.payload[0]?.birth_date) {
+      const fecha = new Date(data.payload[0].birth_date);
+      return fecha.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
+    }
+    return "";
+  };
 
   const handleStatusSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setStatusSelected(e.target.value);
@@ -85,11 +149,21 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
-    const response = await useHandleSubmitText(data, "/api/platform/profesional");
+    setIsSubmitting(true);
+    try {
+      const response = await useHandleSubmitText(data, "/api/platform/profesional");
 
-    if (response.ok) {
-      mutate();
-      closeModal();
+      if (response.ok) {
+        mutate();
+        closeModal();
+      } else {
+        // Manejar error si es necesario
+        console.error('Error al enviar datos');
+      }
+    } catch (error) {
+      console.error('Error en el envío:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   });
 
@@ -99,12 +173,57 @@ export default function ProfesionalProfileHookForm() {
     setCountryList(countryData);
   }, []);
 
+  // Mostrar loading mientras cargan los datos
+  if (isLoading) {
+    return (
+      <div className='flex w-full justify-center items-center'>
+        <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
+          <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
+            <div className='flex justify-center items-center p-8'>
+              <div className='loading loading-spinner loading-lg'></div>
+              <span className='ml-2'>Cargando datos...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // Mostrar error si hay algún problema
+  if (error) {
+    return (
+      <div className='flex w-full justify-center items-center'>
+        <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
+          <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
+            <div className='alert alert-error'>
+              <p>Error al cargar los datos del profesional</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className='flex w-full justify-center items-center'>
       <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
-        <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
+        <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center relative'>
+          {/* Indicador de carga sutil en la parte superior */}
+          {isSubmitting && (
+            <div className='absolute top-0 left-0 right-0 bg-blue-500 h-1 animate-pulse rounded-t-sm z-10'>
+              <div className='h-full bg-blue-600 animate-ping'></div>
+            </div>
+          )}
+          
           <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Datos Personales</h2>
-          <form onSubmit={onSubmit} className='form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full'>
+          {/* Mensaje de estado si se está enviando */}
+          {isSubmitting && (
+            <div className='w-full bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 flex items-center gap-2'>
+              <span className="loading loading-spinner loading-sm text-blue-600"></span>
+              <span className='text-blue-700 font-medium'>Guardando datos personales...</span>
+            </div>
+          )}
+          <form onSubmit={onSubmit} className={`form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full ${isSubmitting ? 'opacity-75 pointer-events-none' : ''}`}>
             <div className='block'>
               <label htmlFor='name' className='block'>
                 Nombre/s
@@ -122,15 +241,22 @@ export default function ProfesionalProfileHookForm() {
               <label htmlFor='birthDate' className='block'>
                 Fecha de nacimiento
               </label>
-              {data?.payload[0].birth_date ? <span>Fecha Registrada: {fechaFormateada2}</span> : null}
-
+              {data?.payload && data.payload[0]?.birth_date ? (
+                <span>Fecha Registrada: {getFormattedDate()}</span>
+              ) : null}
               <input type='date' {...register("birthDate")} className='w-xs' />
             </div>
             <div>
               <label htmlFor='email' className='block'>
                 Email
               </label>
-              <input type='email' {...register("email")} className='w-xs' disabled />
+              <input 
+                type='email' 
+                {...register("email")} 
+                className='w-xs' 
+                disabled 
+                value={email}
+              />
             </div>
             <div>
               <label htmlFor='phone' className='block'>
@@ -166,7 +292,9 @@ export default function ProfesionalProfileHookForm() {
                 value={stateSelected}
                 onChange={handleStateChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Un Estado</option>
+                <option value=''>
+                  {countrySelected ? 'Seleccione Un Estado' : 'Primero seleccione un País'}
+                </option>
                 {stateList.map((state, index) => (
                   <option key={index} value={state.isoCode as string}>
                     {state.name as string}
@@ -184,7 +312,9 @@ export default function ProfesionalProfileHookForm() {
                 value={citySelected}
                 onChange={handleCityChange}
                 className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Una Ciudad</option>
+                <option value=''>
+                  {stateSelected ? 'Seleccione Una Ciudad' : 'Primero seleccione un Estado'}
+                </option>
                 {cityList.map((city, index) => (
                   <option key={index} value={city.name as string}>
                     {city.name as string}
@@ -241,13 +371,28 @@ export default function ProfesionalProfileHookForm() {
               </select>
             </div>
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-              <button className='btn bg-[var(--soft-arci)]' type='submit'>
-                Confirmar datos personales
+              <button 
+                className='btn bg-[var(--soft-arci)]' 
+                type='submit'
+                disabled={isSubmitting}
+              >
+                {isSubmitting ? (
+                  <>
+                    <span className="loading loading-spinner loading-sm"></span>
+                    Guardando...
+                  </>
+                ) : (
+                  'Confirmar datos personales'
+                )}
               </button>
             </div>
           </form>
           <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal}>
+            <button 
+              className='btn btn-wide bg-[var(--orange-arci)]' 
+              onClick={closeModal}
+              disabled={isSubmitting}
+            >
               Cancelar
             </button>
           </div>

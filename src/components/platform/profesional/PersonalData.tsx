@@ -172,9 +172,12 @@ export default function PersonalData() {
           {/* --------------------------------------------------agregar Eliminar Titulo------------------------------- */}
           {studyData?.status === "graduated" ? (
             <div className='flex gap-2'>
+              {studyData?.link || studyData?.file ? (
               <ModalForFormsRedBtn title='Eliminar Título'>
                 <ConfirmDeleteMainStudyForm />
               </ModalForFormsRedBtn>
+
+              ): null}
               <ModalForForm title={studyData?.link || studyData?.file ? "Actualizar Título" : "Agregar Título"}>
                 <FileMainStudyForm />
               </ModalForForm>
