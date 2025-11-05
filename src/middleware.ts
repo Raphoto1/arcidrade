@@ -31,9 +31,8 @@ export default withAuth(
         '/api/platform/profesional/', // Ver profesional específico por ID
       ];
 
-      // Rutas donde profesionales pueden ver procesos e instituciones
+      // Rutas donde profesionales pueden ver datos de instituciones
       const profesionalViewRoutes = [
-        '/api/platform/process',        // Ver procesos disponibles
         '/api/platform/institution',   // Ver datos de instituciones
         '/api/platform/profesional/',  // Ver su propio perfil
       ];
@@ -41,12 +40,21 @@ export default withAuth(
       // Rutas donde profesionales pueden aplicar a procesos
       const profesionalApplyRoutes = [
         '/api/platform/process/apply', // Aplicar a procesos
-        '/api/platform/process/status', // Actualizar estado de aplicación
       ];
 
-      // Rutas de gestión que solo instituciones/managers pueden modificar
-      const institutionManagementRoutes = [
-        '/api/platform/process' // Solo si es POST/PUT/DELETE para crear/modificar procesos
+      // Rutas para actualizar status de aplicaciones (solo profesionales)
+      const profesionalStatusUpdateRoutes = [
+        '/api/platform/process/status', // Solo para POST/PUT (actualizar status)
+      ];
+
+      // Rutas de procesos - manejo especial por método HTTP
+      const processRoutes = [
+        '/api/platform/process'
+      ];
+
+      // Rutas de status de procesos para consultas (profesionales e instituciones pueden ver)
+      const processStatusRoutes = [
+        '/api/platform/process/status'
       ];
 
       // Rutas específicas para campaign y managers
@@ -73,9 +81,17 @@ export default withAuth(
         pathname.startsWith(route)
       );
 
-      const isInstitutionManagementRoute = institutionManagementRoutes.some(route => 
+      const isProfesionalStatusUpdateRoute = profesionalStatusUpdateRoutes.some(route => 
         pathname.startsWith(route)
       );
+
+      const isProcessStatusRoute = processStatusRoutes.some(route => 
+        pathname.startsWith(route)
+      );
+
+      const isProcessRoute = processRoutes.some(route => 
+        pathname === route || pathname.startsWith(route + '/')
+      ) && !isProcessStatusRoute && !isProfesionalApplyRoute && !isProfesionalStatusUpdateRoute;
 
       const isCampaignRoute = campaignRoutes.some(route => 
         pathname.startsWith(route)
@@ -116,8 +132,35 @@ export default withAuth(
         );
       }
 
-      // Validar acceso a procesos (profesionales pueden ver, instituciones pueden gestionar)
-      if (isInstitutionManagementRoute) {
+      // Validar actualizaciones de status por profesionales (POST/PUT)
+      if (isProfesionalStatusUpdateRoute) {
+        const method = req.method;
+        if (['POST', 'PUT', 'DELETE'].includes(method)) {
+          if (!['profesional', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.json(
+              { error: "No autorizado - Solo profesionales pueden actualizar status de aplicaciones" },
+              { status: 403 }
+            );
+          }
+        }
+      }
+
+      // Validar acceso a rutas de status de procesos para consultas (GET)
+      if (isProcessStatusRoute) {
+        const method = req.method;
+        // Para GET, tanto profesionales como instituciones pueden ver
+        if (method === 'GET') {
+          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.json(
+              { error: "No autorizado - Solo profesionales e instituciones pueden ver procesos por status" },
+              { status: 403 }
+            );
+          }
+        }
+      }
+
+      // Validar acceso a rutas de procesos (manejo especial por método HTTP)
+      if (isProcessRoute) {
         const method = req.method;
         
         // GET: Tanto profesionales como instituciones pueden ver
