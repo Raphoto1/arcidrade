@@ -33,13 +33,30 @@ export default withAuth(
       ];
       
       if (profesionalProfileRoutes.some(route => pathname.startsWith(route))) {
-        if (['profesional', 'manager', 'victor'].includes(token.area as string)) {
-          return NextResponse.next();
-        } else {
-          return NextResponse.json(
-            { error: "No autorizado - Solo profesionales pueden gestionar su perfil" },
-            { status: 403 }
-          );
+        const method = req.method;
+        
+        // GET: Tanto profesionales como instituciones pueden ver datos de perfil
+        if (method === 'GET') {
+          if (['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.next();
+          } else {
+            return NextResponse.json(
+              { error: "No autorizado - Solo profesionales e instituciones pueden ver datos de perfil" },
+              { status: 403 }
+            );
+          }
+        }
+        
+        // POST/PUT/DELETE: Solo profesionales pueden modificar su perfil
+        if (['POST', 'PUT', 'DELETE'].includes(method)) {
+          if (['profesional', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.next();
+          } else {
+            return NextResponse.json(
+              { error: "No autorizado - Solo profesionales pueden gestionar su perfil" },
+              { status: 403 }
+            );
+          }
         }
       }
 
