@@ -20,7 +20,7 @@ export default function PendingProcess() {
       <div className='pb-2'>
         <h1 className='text-2xl fontArci text-center'>Solicitudes Pendientes</h1>
       </div>
-      <div className="w-full">
+      <div className="w-full gap-2 flex flex-col">
         {filteredProcesses.map((process: any) => (
           <ProcessPill key={process.id} process={process} />
         ))}

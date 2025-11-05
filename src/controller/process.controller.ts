@@ -48,6 +48,7 @@ export const createProcess = async (data: any) => {
     start_date: new Date(data.start_date),
     description: data.description,
     status: pStatus,
+    area: data.subArea,
   };
 
   const processCreated = await createProcessService(mainDataPack);
@@ -165,6 +166,7 @@ export const updateProcessById = async (processId: number, data: any) => {
     type: data.processType,
     start_date: new Date(data.start_date),
     description: data.description,
+    area: data.subArea,
   };
   await updateProcessService(processId, mainDataPack);
 

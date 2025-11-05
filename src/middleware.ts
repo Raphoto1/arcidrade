@@ -24,6 +24,25 @@ export default withAuth(
         );
       }
 
+      // Rutas de gestión de perfil de profesional (validación prioritaria)
+      const profesionalProfileRoutes = [
+        '/api/platform/profesional/speciality',
+        '/api/platform/profesional/certification', 
+        '/api/platform/profesional/complete',
+        '/api/platform/profesional/experience'
+      ];
+      
+      if (profesionalProfileRoutes.some(route => pathname.startsWith(route))) {
+        if (['profesional', 'manager', 'victor'].includes(token.area as string)) {
+          return NextResponse.next();
+        } else {
+          return NextResponse.json(
+            { error: "No autorizado - Solo profesionales pueden gestionar su perfil" },
+            { status: 403 }
+          );
+        }
+      }
+
       // Rutas de solo lectura que instituciones pueden ver de profesionales
       const institutionViewProfesionalRoutes = [
         '/api/platform/profesional/all',
@@ -31,7 +50,7 @@ export default withAuth(
         '/api/platform/profesional/', // Ver profesional específico por ID
       ];
 
-      // Rutas donde profesionales pueden ver datos de instituciones
+      // Rutas donde profesionales pueden ver datos de instituciones y gestionar su perfil
       const profesionalViewRoutes = [
         '/api/platform/institution',   // Ver datos de instituciones
         '/api/platform/profesional/',  // Ver su propio perfil

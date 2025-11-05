@@ -3,7 +3,7 @@ import Grid from "../pieces/Grid";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import Process from "../institution/Process";
-import { formatDateToString, useCalcApprovalDate } from "@/hooks/useUtils";
+import { formatDateToString, useCalcApprovalDate, useHandleCategoryName } from "@/hooks/useUtils";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmArchiveProcessForm from "@/components/forms/platform/process/ConfirmArchiveProcessForm";
 import ProcessDetail from "./ProcessDetail";
@@ -29,9 +29,15 @@ export default function ProcessBasic(props: any) {
   return (
     <div className='flex flex-col justify-between align-middle bg-gray-100 items-center'>
       <div className='controls flex flex-col md:flex-row justify-between align-middle bg-gray-100 p-2 w-full'>
-        <div className='flex justify-start align-middle bg-gray-100 items-center'>
-          <h2 className='text-xl fontRoboto text-center text-(--dark-gray)'>Cargo:</h2>
-          <p className='text-center fontRoboto text-(--main-arci) align-middle capitalize'>{props.process.position}</p>
+        <div className='flex flex-col justify-start align-middle bg-gray-100 items-center'>
+          <div className="flex justify-center align-middle items-baseline gap-2">
+            <h2 className='text-xl fontRoboto text-center text-(--dark-gray)'>Cargo:</h2>
+            <p className='text-center fontRoboto text-(--main-arci) align-middle capitalize'>{props.process.position}</p>
+          </div>
+          <div className="flex justify-center align-middle items-baseline gap-2">
+            <h2 className='text-xl fontRoboto text-center text-(--dark-gray)'>Categoria del Profesional:</h2>
+            <p className='text-center fontRoboto text-(--main-arci) align-middle capitalize'>{useHandleCategoryName(props.process.area) || "No especificada"}</p>
+          </div>
         </div>
         <div className='botones'>
           <div className='flex flex-col md:flex-row justify-end align-middle bg-gray-100 pr-2'>

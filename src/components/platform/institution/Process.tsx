@@ -6,7 +6,7 @@ import EmptyCard from "@/components/pieces/EmptyCard";
 import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
 import SearchCandidates from "../pieces/SearchCandidates";
 import { useProcess, useProfesionalsListedInProcess } from "@/hooks/useProcess";
-import { useCalcApprovalDate, formatDateToString, useHandleStatusName } from "@/hooks/useUtils";
+import { useCalcApprovalDate, formatDateToString, useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
 import ModalForForms from "@/components/modals/ModalForForms";
 import UpdateProcessForm from "@/components/forms/platform/process/UpdateProcessForm";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
@@ -61,6 +61,10 @@ export default function Process(props: any) {
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Area:</h4>
                   <p className='text-md text-[var(--main-arci)]'>Medico</p>
                 </div> */}
+                <div className='flex justify-between border-b-2'>
+                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Categoria del Profesional:</h4>
+                  <p className='text-md text-[var(--main-arci)]'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
+                </div>
                 <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidad Principal:</h4>
                   <p className='text-md text-[var(--main-arci)] text-end'>{processData?.main_speciality}</p>

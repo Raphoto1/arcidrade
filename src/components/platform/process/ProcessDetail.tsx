@@ -1,4 +1,4 @@
-import { formatDateToString, useHandleStatusName } from "@/hooks/useUtils";
+import { formatDateToString, useHandleCategoryName, useHandleStatusName } from "@/hooks/useUtils";
 import React, { useMemo } from "react";
 
 import ModalForForms from "@/components/modals/ModalForForms";
@@ -26,6 +26,10 @@ export default function ProcessDetail(props: any) {
 
           <div className='flex w-full flex-col md:flex-row gap-2'>
             <div className='cube1 md:w-1/3 bg-white rounded-md px-1'>
+               <div className='flex justify-between border-b-2'>
+                <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Categoria del Profesional:</h4>
+                <p className='text-md text-[var(--main-arci)]'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
+              </div>
               <div className='flex justify-between border-b-2'>
                 <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidad Principal:</h4>
                 <p className='text-md text-[var(--main-arci)]'>{processData?.main_speciality}</p>

@@ -12,6 +12,7 @@ import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmArchiveProcessForm from "@/components/forms/platform/process/ConfirmArchiveProcessForm";
 import ModalForForms from "@/components/modals/ModalForForms";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
+import { useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function ProcessInstitution(props: any) {
   const process = props.process;
@@ -24,6 +25,7 @@ export default function ProcessInstitution(props: any) {
         <div className='w-2/3'>
           <h3 className='text-sm text-(--orange-arci)'>{process.type === "arcidrade" && "Proceso Arcidrade"}</h3>
           <h2 className='text-(--main-arci) text-bold text-wrap font-bold'>{institutionData?.name}</h2>
+          <p className='text-sm w-100 text-(--main-arci)'>{useHandleCategoryName(process?.area)||'No registrado'}</p>
           <p className='text-sm w-100 text-(--main-arci)'>{process?.position}</p>
           <span className='text-sm text-gray-600 w-100 capitalize'>{process?.main_speciality}</span>
           <p className='font-light'>{formatDateToString(process?.start_date)}</p>

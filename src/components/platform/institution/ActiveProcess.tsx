@@ -8,7 +8,6 @@ import { useActiveProcesses, useProcesses } from "@/hooks/useProcess";
 
 export default function ActiveProcess() {
   const { data, error, isLoading } = useActiveProcesses();
-  console.log('active process data', data);
   
   if (isLoading) return <div>Cargando...</div>;
   return (

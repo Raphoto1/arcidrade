@@ -24,7 +24,7 @@ export const POST = async (req: NextRequest, { params }: any) => {
     const body = await req.json();
     // console.log(body);
     const update = await updateProcessById(id, body);
-    return NextResponse.json({ message: `certificación  con ID ${id} actualizado` }, { status: 200 });
+    return NextResponse.json({ message: `proceso con ID ${id} actualizado` }, { status: 200 });
   } catch (error) {
     console.error("Error in Profesional API: delete", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });

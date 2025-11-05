@@ -6,7 +6,7 @@ import EmptyCard from "@/components/pieces/EmptyCard";
 import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
 import SearchCandidates from "../../pieces/SearchCandidates";
 import { useProcess, useProfesionalsListedInProcess } from "@/hooks/useProcess";
-import { useCalcApprovalDate, formatDateToString, useHandleStatusName } from "@/hooks/useUtils";
+import { useCalcApprovalDate, formatDateToString, useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
 import ModalForForms from "@/components/modals/ModalForForms";
 import UpdateProcessForm from "@/components/forms/platform/process/UpdateProcessForm";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
@@ -89,6 +89,10 @@ export default function ProcessVictor(props: any) {
             <div className='flex w-full flex-col md:flex-row gap-2'>
               <div className='cube1 md:w-1/ bg-white rounded-md px-1'>
                 <p className='text-success text-end capitalize'>{processData?.status}</p>
+                <div className='flex justify-between border-b-2'>
+                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Categoria del Profesional:</h4>
+                  <p className='text-md text-[var(--main-arci)]'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
+                </div>
                 <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidad Principal:</h4>
                   <p className='text-md text-[var(--main-arci)] text-end'>{processData?.main_speciality}</p>
@@ -191,9 +195,9 @@ export default function ProcessVictor(props: any) {
                 </ModalForFormsRedBtn>
               </>
             )}
-                      <ModalForForms title={"Solicitar Contacto"}>
-                        <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
-                      </ModalForForms>
+            <ModalForForms title={"Solicitar Contacto"}>
+              <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
+            </ModalForForms>
           </div>
         </div>
       </div>

@@ -13,7 +13,7 @@ export default function ArchivedProcess() {
       <div className='pb-2'>
         <h1 className='text-2xl fontArci text-center'>Procesos Archivados</h1>
       </div>
-      <div className='w-full'>
+      <div className='w-full gap-2 flex flex-col'>
         {archivedProcesses.map((process: any) => (
           <ProcessPill key={process.id} process={process} />
         ))}

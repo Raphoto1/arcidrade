@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
 import { useHandleSubmitText } from "@/hooks/useFetch";
-import { optionsTitleStatus, medicalOptions } from "@/static/data/staticData";
+import { optionsTitleStatus, medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
 import { useProcess } from "@/hooks/useProcess";
 
 function validateStartDate(value: string) {
@@ -20,6 +20,8 @@ function SpecialitySelector({
   onRemove,
   register,
   error,
+  options,
+  disabled = false,
 }: {
   selected: string;
   idx: number;
@@ -27,16 +29,22 @@ function SpecialitySelector({
   onRemove: () => void;
   register: any;
   error?: any;
+  options: any[];
+  disabled?: boolean;
 }) {
   return (
     <div className='flex items-center gap-2 mb-2'>
       <select
-        {...register(`title_category_${idx}`, { required: "Este campo es obligatorio" })}
+        {...register(`title_category_${idx}`, { 
+          required: !disabled ? "Este campo es obligatorio" : false 
+        })}
         value={selected}
         onChange={(e) => onChange(e.target.value)}
-        className='select select-bordered w-full'>
+        className='select select-bordered w-full'
+        disabled={disabled}
+      >
         <option value=''>Seleccione una especialidad</option>
-        {medicalOptions.map((speciality: any, index: any) => (
+        {options.map((speciality: any, index: any) => (
           <option key={index} value={speciality.name}>
             {speciality.name}
           </option>
@@ -58,7 +66,30 @@ export default function UpdateProcessForm({ id }: { id: number }) {
   const process = data?.payload;
 
   const [titleCategorySelected, setTitleCategorySelected] = useState<string[]>([""]);
+  const [subAreaSelected, setSubAreaSelected] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Opciones de categorías de profesional
+  const subAreaOptions = [
+    { value: "doctor", label: "Médico" },
+    { value: "nurse", label: "Enfermería" },
+    { value: "pharmacist", label: "Farmacia" }
+  ];
+
+  // Función para obtener las especialidades según la categoría seleccionada
+  const getSpecialityOptions = () => {
+    switch (subAreaSelected) {
+      case "doctor":
+        return medicalOptions;
+      case "nurse":
+        return nurseOptions;
+      case "pharmacist":
+        return pharmacistOptions;
+      default:
+        // Por defecto muestra opciones médicas para procesos con subArea null
+        return medicalOptions;
+    }
+  };
 
   const {
     register,
@@ -72,6 +103,9 @@ export default function UpdateProcessForm({ id }: { id: number }) {
     if (process) {
       const extras = Array.isArray(process.extra_specialities) ? process.extra_specialities.map((e: any) => e.speciality) : [];
       const allSpecialities = [process.main_speciality, ...extras].filter(Boolean);
+      
+      // Si area es null o undefined, usar "doctor" por defecto
+      const defaultSubArea = process.area || "doctor";
 
       reset({
         start_date: process?.start_date ? process?.start_date.slice(0, 10) : "",
@@ -79,10 +113,15 @@ export default function UpdateProcessForm({ id }: { id: number }) {
         titleStatus: process.profesional_status || "",
         description: process.description || "",
         processType: process.type || "auto",
+        subArea: defaultSubArea,
       });
+      
+      // Establecer el valor en el formulario y en el estado
+      setValue("subArea", defaultSubArea);
       setTitleCategorySelected(allSpecialities.length ? allSpecialities : [""]);
+      setSubAreaSelected(defaultSubArea);
     }
-  }, [process, reset]);
+  }, [process, reset, setValue]);
 
   const handleAddSpecialty = () => {
     setTitleCategorySelected([...titleCategorySelected, ""]);
@@ -101,11 +140,18 @@ export default function UpdateProcessForm({ id }: { id: number }) {
     setValue(`title_category_${index}`, value);
   };
 
+  const handleSubAreaSelected = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setSubAreaSelected(e.target.value);
+    // Reiniciar especialidades cuando cambie la categoría del profesional
+    setTitleCategorySelected([""]);
+  };
+
   const onSubmit = handleSubmit(async (formData) => {
     setIsSubmitting(true);
     const payload = {
       ...formData,
       id: process.id,
+      subArea: subAreaSelected,
       main_speciality: titleCategorySelected[0],
       extra_specialities: titleCategorySelected.slice(1).map((value, index) => ({
         field: `title_category_${index + 1}`,
@@ -153,6 +199,26 @@ export default function UpdateProcessForm({ id }: { id: number }) {
             </div>
 
             <div>
+              <label htmlFor='subArea' className='block font-semibold mb-1'>
+                Categoría del Profesional
+              </label>
+              <select 
+                {...register("subArea", { required: "Este campo es obligatorio" })}
+                value={subAreaSelected} 
+                onChange={handleSubAreaSelected} 
+                className='select select-bordered w-full'
+              >
+                <option value=''>Seleccione una categoría</option>
+                {subAreaOptions.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {errors.subArea?.message && <span className='text-xs text-red-500'>{String(errors.subArea.message)}</span>}
+            </div>
+
+            <div>
               <label className='block font-semibold mb-1'>Especialidad principal</label>
               {titleCategorySelected.map((selected, idx) => (
                 <SpecialitySelector
@@ -163,6 +229,8 @@ export default function UpdateProcessForm({ id }: { id: number }) {
                   onRemove={() => handleRemoveSpecialty(idx)}
                   register={register}
                   error={errors[`title_category_${idx}`]?.message}
+                  options={getSpecialityOptions()}
+                  disabled={false}
                 />
               ))}
               <button
