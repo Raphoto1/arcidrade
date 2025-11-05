@@ -8,6 +8,7 @@ export const GET = async (request: NextRequest) => {
     const limit = parseInt(searchParams.get('limit') || '9', 10);
     const search = searchParams.get('search') || undefined;
     const speciality = searchParams.get('speciality') || undefined;
+    const subArea = searchParams.get('subArea') || undefined;
 
     // Validar parámetros
     if (page < 1 || limit < 1 || limit > 50) {
@@ -16,14 +17,13 @@ export const GET = async (request: NextRequest) => {
       }, { status: 400 });
     }
 
-    const result = await getAllProfesionalsPaginated(page, limit, search, speciality);
+    const result = await getAllProfesionalsPaginated(page, limit, search, speciality, subArea);
     
     return NextResponse.json({ 
       message: "Profesionales paginados obtenidos exitosamente", 
       ...result 
     });
   } catch (error) {
-    console.error("Error in Profesional Paginated API:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 };

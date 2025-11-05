@@ -16,6 +16,7 @@ import ModalForFormsRedBtn from "../modals/ModalForFormsRedBtn";
 import ConfirmDeleteProfesionalToProcessForm from "../forms/platform/process/ConfirmDeleteProfesionalToProcessForm";
 import ModalForForms from "../modals/ModalForForms";
 import { fakerES as faker } from "@faker-js/faker";
+import { useHandleCategoryName } from "@/hooks/useUtils";
 
 export default function ProfesionalCard(props: any) {
   const isFake = props.isFake;
@@ -135,6 +136,7 @@ export default function ProfesionalCard(props: any) {
         )}
         <div className='flex justify-between card-actions items-end'>
           <div className='extraInfo font-roboto-condensed text-red-700'>
+            <p className='capitalize'>{useHandleCategoryName(mainStudyInfo.sub_area) || "Sin registro"}</p>
             <p className='capitalize'>{mainStudyInfo.title || "sin título"}</p>
           </div>
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>

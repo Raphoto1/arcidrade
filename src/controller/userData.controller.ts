@@ -142,13 +142,13 @@ export const getAllProfesionals = async () => {
   }
 };
 
-export const getAllProfesionalsPaginated = async (page: number = 1, limit: number = 9, search?: string, speciality?: string) => {
+export const getAllProfesionalsPaginated = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string) => {
   try {
-    const response = await getAllProfesionalsPaginatedService(page, limit, search, speciality);
+    const response = await getAllProfesionalsPaginatedService(page, limit, search, speciality, subArea);
     return response;
   } catch (error) {
-    console.error(error);
-    throw new Error("error al obtener profesionales paginados");
+    console.error('Error al obtener profesionales paginados:', error);
+    throw error; // Pasar el error original
   }
 };
 
@@ -336,9 +336,6 @@ export const uploadUserAvatar = async (file: File) => {
 //speciality_______________________________________________________________________________________
 export const createSpeciality = async (data: any) => {
   try {
-    console.log('Datos recibidos en createSpeciality:', data);
-    console.log('subArea recibido:', data.subArea);
-    
     //se crea pack
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;

@@ -77,10 +77,6 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
         subArea: subArea || selectedSubArea,
       };
 
-      console.log('Payload enviado:', payload);
-      console.log('subArea desde props:', subArea);
-      console.log('selectedSubArea:', selectedSubArea);
-
       const response = await useHandleSubmitText(payload, "/api/platform/profesional/speciality/");
       if (response.ok) {
         mutate();

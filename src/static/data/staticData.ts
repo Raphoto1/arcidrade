@@ -203,3 +203,9 @@ export const pharmacistOptions: any = [
   { "id": 3, "name": "Industria Farmacéutica" },
   { "id": 4, "name": "Farmacia de Atención Primaria" },
 ]
+
+export const subAreaOptions = [
+  { value: 'doctor', label: 'Doctor' },
+  { value: 'nurse', label: 'Enfermería' },
+  { value: 'pharmacist', label: 'Farmacéutico' }
+];

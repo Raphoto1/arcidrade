@@ -53,8 +53,8 @@ export const getAllProfesionalsService = async () => {
   return response;
 }
 
-export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string) => {
-  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality);
+export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string) => {
+  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality, subArea);
   return response;
 }
 
@@ -103,7 +103,6 @@ export const updateUserMainStudyService = async (data: any, userId: string) => {
     const result = await updateProfesionalMainStudyDao(data, userId);
     return result;
   } catch (error) {
-    console.error('Error in updateUserMainStudyService:', error);
     throw error;
   }
 };
