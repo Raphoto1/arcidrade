@@ -184,6 +184,7 @@ export default withAuth(
 export const config = { 
   matcher: [
     "/platform/:path*",      // Protege todas las rutas del frontend
-    "/api/platform/:path*"   // Protege todas las rutas de API
+    "/api/platform/:path*",  // Protege todas las rutas de API
+    "/api/upload/:path*"     // Protege rutas de upload
   ] 
 };
