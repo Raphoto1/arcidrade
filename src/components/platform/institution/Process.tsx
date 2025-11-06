@@ -57,10 +57,6 @@ export default function Process(props: any) {
             <div className='flex w-full flex-col md:flex-row gap-2'>
               <div className='cube1 md:w-1/3 bg-white rounded-md px-1'>
                 <p className='text-success text-end capitalize'>{processData?.status}</p>
-                {/* <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Area:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>Medico</p>
-                </div> */}
                 <div className='flex justify-between border-b-2'>
                   <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Categoria del Profesional:</h4>
                   <p className='text-md text-[var(--main-arci)]'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
@@ -145,6 +141,7 @@ export default function Process(props: any) {
               processId={processData.id}
               processPosition={processData.position}
               addedBy={"institution"}
+              isSelected={profesional.process_status === "selected"}
             />
           ))}
           {profesionals.length >= 3 || processData?.status === "completed" ? null : (

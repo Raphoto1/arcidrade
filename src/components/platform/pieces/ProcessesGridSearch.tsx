@@ -6,7 +6,7 @@ import { ImSearch } from "react-icons/im";
 import EmptyCard from "@/components/pieces/EmptyCard";
 
 import Grid from "./Grid";
-import { useActiveProcesses } from "@/hooks/useProcess";
+import { useAllActiveProcesses } from '@/hooks/useProcess';
 import { medicalOptions } from "@/static/data/staticData";
 
 export default function ProcessesGridSearch(props: any) {
@@ -16,15 +16,33 @@ export default function ProcessesGridSearch(props: any) {
   const [specialityFilter, setSpecialityFilter] = useState("");
 
   // Obtener únicamente procesos activos
-  const { data, error, isLoading } = useActiveProcesses();
+  const { data, error, isLoading } = useAllActiveProcesses();
+
+  // Debug: Verificar qué datos estamos recibiendo
+  console.log('ProcessesGridSearch Debug:', {
+    data,
+    error,
+    isLoading,
+    payload: data?.payload,
+    isArray: Array.isArray(data?.payload),
+    payloadLength: data?.payload?.length
+  });
 
   // Filtrar procesos basado en la búsqueda
   const filteredProcesses = useMemo(() => {
-    if (!data?.payload || !Array.isArray(data.payload)) return [];
+    if (!data?.payload || !Array.isArray(data.payload)) {
+      console.log('No hay datos válidos:', { payload: data?.payload, isArray: Array.isArray(data?.payload) });
+      return [];
+    }
 
-    return data.payload.filter((process: any) => {
+    console.log('Datos recibidos:', data.payload);
+
+    const filtered = data.payload.filter((process: any) => {
       // Verificar que el proceso sea válido y tenga un ID
-      if (!process || !process.id) return false;
+      if (!process || !process.id) {
+        console.log('Proceso inválido:', process);
+        return false;
+      }
 
       const matchesSearch =
         !searchTerm ||
@@ -37,9 +55,25 @@ export default function ProcessesGridSearch(props: any) {
         process.main_speciality?.toLowerCase().includes(specialityFilter.toLowerCase()) ||
         process.extra_specialities?.some((spec: any) => spec.speciality?.toLowerCase().includes(specialityFilter.toLowerCase()));
 
-      return matchesSearch && matchesSpeciality;
+      const matches = matchesSearch && matchesSpeciality;
+      console.log('Proceso:', process.position, 'Matches:', matches);
+
+      return matches;
     });
+
+    console.log('Procesos filtrados:', filtered);
+    return filtered;
   }, [data, searchTerm, specialityFilter]);
+
+  console.log('Estado final de renderizado:', {
+    isLoading,
+    error,
+    hasData: !!data,
+    payloadLength: data?.payload?.length,
+    filteredLength: filteredProcesses.length,
+    searchTerm,
+    specialityFilter
+  });
 
   return (
     <div className='grid justify-center'>

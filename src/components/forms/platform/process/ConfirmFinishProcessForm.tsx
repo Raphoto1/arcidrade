@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { useAllPendingProcesses } from "@/hooks/useProcess";
+import { 
+  useProcesses, 
+  useActiveProcesses, 
+  usePendingProcesses, 
+  useFinishedProcesses, 
+  usePausedProcesses,
+  useArchivedProcesses 
+} from "@/hooks/useProcess";
 
 export default function ConfirmFinishProcessForm(props: any) {
   const { closeModal } = useModal();
-  const { mutate } = useAllPendingProcesses();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Hooks para actualizar todas las listas de procesos
+  const { mutate: mutateProcesses } = useProcesses();
+  const { mutate: mutateActiveProcesses } = useActiveProcesses();
+  const { mutate: mutatePendingProcesses } = usePendingProcesses();
+  const { mutate: mutateFinishedProcesses } = useFinishedProcesses();
+  const { mutate: mutatePausedProcesses } = usePausedProcesses();
+  const { mutate: mutateArchivedProcesses } = useArchivedProcesses();
 
   const handleDelete = async () => {
     setIsSubmitting(true);
@@ -25,8 +39,18 @@ export default function ConfirmFinishProcessForm(props: any) {
       }
       
       const result = await response.json();
+      
+      // Actualizar todas las listas de procesos para reflejar el cambio
+      await Promise.all([
+        mutateProcesses(),
+        mutateActiveProcesses(),
+        mutatePendingProcesses(),
+        mutateFinishedProcesses(),
+        mutatePausedProcesses(),
+        mutateArchivedProcesses()
+      ]);
+      
       closeModal();
-      mutate();
     } catch (error) {
       console.error("Error al finalizar proceso:", error);
       // Aquí podrías agregar un toast o notificación de error

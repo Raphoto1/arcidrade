@@ -26,6 +26,10 @@ export default function ProcessBasic(props: any) {
     return formatDateToString(process.start_date);
   }, [process.start_date]);
 
+  const formattedEndDate = useMemo(() => {
+    return formatDateToString(process.end_date);
+  }, [process.end_date]);
+
   return (
     <div className='flex flex-col justify-between align-middle bg-gray-100 items-center'>
       <div className='controls flex flex-col md:flex-row justify-between align-middle bg-gray-100 p-2 w-full'>
@@ -43,6 +47,12 @@ export default function ProcessBasic(props: any) {
           <div className='flex flex-col md:flex-row justify-end align-middle bg-gray-100 pr-2'>
             <p className='fontRoboto text-center text-(--dark-gray)'>Fecha Inicio de Proceso: </p>
             <p className='text-center fontRoboto text-(--main-arci) align-middle pr-2'>{formattedStartDate}</p>
+            {props.process.end_date && (
+              <>
+                <p className='fontRoboto text-center text-(--dark-gray)'>Fecha Fin de Proceso: </p>
+                <p className='text-center fontRoboto text-(--main-arci) align-middle pr-2'>{formattedEndDate}</p>
+              </>
+            )}
             <p className='fontRoboto text-center text-(--dark-gray)'>Plazo: </p>
             <p className='text-center fontRoboto text-(--main-arci) align-middle'>{diasRestantesFormateados}</p>
           </div>

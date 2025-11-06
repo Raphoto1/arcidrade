@@ -17,9 +17,6 @@ export default function GenerateInvitations() {
         <ModalForForms title='Generar Invitacion'>
           <GenerateInvitationVictor />
         </ModalForForms>
-        <ModalForPreview title='Administrar Invitaciones'>
-          <AdminInvitations />
-        </ModalForPreview>
         <ModalForForms title='Generar Invitacion Sin Suscripción'>
           <GenerateSingleInvitation />
         </ModalForForms>
@@ -29,6 +26,9 @@ export default function GenerateInvitations() {
         <ModalForForms title='Generar Invitaciones Masivas Con Suscripción'>
           <GenerateMasiveInvitationsSus />
         </ModalForForms>
+        <ModalForPreview title='Administrar Invitaciones'>
+          <AdminInvitations />
+        </ModalForPreview>
       </div>
     </div>
   );

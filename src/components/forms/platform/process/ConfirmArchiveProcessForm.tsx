@@ -1,11 +1,25 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { useProfesional } from "@/hooks/usePlatPro";
+import { 
+  useProcesses, 
+  useActiveProcesses, 
+  usePendingProcesses, 
+  useFinishedProcesses, 
+  usePausedProcesses,
+  useArchivedProcesses 
+} from "@/hooks/useProcess";
 
 export default function ConfirmArchiveProcessForm(props: any) {
-  const { mutate } = useProfesional();
   const { closeModal } = useModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Hooks para actualizar todas las listas de procesos
+  const { mutate: mutateProcesses } = useProcesses();
+  const { mutate: mutateActiveProcesses } = useActiveProcesses();
+  const { mutate: mutatePendingProcesses } = usePendingProcesses();
+  const { mutate: mutateFinishedProcesses } = useFinishedProcesses();
+  const { mutate: mutatePausedProcesses } = usePausedProcesses();
+  const { mutate: mutateArchivedProcesses } = useArchivedProcesses();
 
   const handleDelete = async () => {
     setIsSubmitting(true);
@@ -25,7 +39,17 @@ export default function ConfirmArchiveProcessForm(props: any) {
       }
       
       const result = await response.json();
-      mutate();
+      
+      // Actualizar todas las listas de procesos para reflejar el cambio
+      await Promise.all([
+        mutateProcesses(),
+        mutateActiveProcesses(),
+        mutatePendingProcesses(),
+        mutateFinishedProcesses(),
+        mutatePausedProcesses(),
+        mutateArchivedProcesses()
+      ]);
+      
       closeModal();
     } catch (error) {
       console.error("Error al archivar proceso:", error);

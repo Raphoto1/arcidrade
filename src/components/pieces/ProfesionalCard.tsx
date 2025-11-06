@@ -101,7 +101,7 @@ export default function ProfesionalCard(props: any) {
         )}
 
         {props.isSelected && (
-          <div className='Badge w-15 h-15 ml-2 flex justify-center align-middle items-center'>
+          <div className='Badge w-15 h-15 ml-2 flex justify-center align-middle items-center z-30'>
             <div className='badge badge-success badge-xs'>
               <CiMedal />
               Seleccionado
