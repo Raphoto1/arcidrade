@@ -141,11 +141,20 @@ export const getProcessById = async (processId: number) => {
 };
 
 export const updateProcessStatusById = async (processId: number, status: string) => {
+  if (status === 'completed') {
   const dataPack = {
     status: status,
-  };
+    end_date: new Date(),
+    };  
   const result = await updateProcessService(processId, dataPack);
   return result;
+  } else {
+    const dataPack = {
+      status: status,
+    };
+    const result = await updateProcessService(processId, dataPack);
+    return result;
+  }
 };
 
 export const updateProcessStatusByManagerById = async (processId: number, status: string) => {

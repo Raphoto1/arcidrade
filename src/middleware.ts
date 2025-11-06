@@ -80,7 +80,7 @@ export default withAuth(
 
       // Rutas para actualizar status de aplicaciones (solo profesionales)
       const profesionalStatusUpdateRoutes = [
-        '/api/platform/process/status', // Solo para POST/PUT (actualizar status)
+        '/api/platform/process/application/status', // Solo para POST/PUT (actualizar status de aplicaciones)
       ];
 
       // Rutas de procesos - manejo especial por método HTTP
@@ -90,7 +90,7 @@ export default withAuth(
 
       // Rutas de status de procesos para consultas (profesionales e instituciones pueden ver)
       const processStatusRoutes = [
-        '/api/platform/process/status'
+        '/api/platform/process/status/'  // Para consultar procesos por status como /status/completed, /status/active, etc.
       ];
 
       // Rutas específicas para campaign y managers
@@ -123,10 +123,10 @@ export default withAuth(
 
       const isProcessStatusRoute = processStatusRoutes.some(route => 
         pathname.startsWith(route)
-      );
+      ) || pathname.includes('/api/platform/process/status/'); // Asegurar que incluya rutas como /status/completed
 
       const isProcessRoute = processRoutes.some(route => 
-        pathname === route || pathname.startsWith(route + '/')
+        pathname === route || (pathname.startsWith(route + '/') && !pathname.includes('/status/'))
       ) && !isProcessStatusRoute && !isProfesionalApplyRoute && !isProfesionalStatusUpdateRoute;
 
       const isCampaignRoute = campaignRoutes.some(route => 
@@ -192,6 +192,18 @@ export default withAuth(
               { status: 403 }
             );
           }
+          // Si pasa la validación, permitir el acceso
+          return NextResponse.next();
+        }
+        // Para otros métodos (POST, PUT, DELETE) en rutas de status
+        if (['POST', 'PUT', 'DELETE'].includes(method)) {
+          if (!['institution', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.json(
+              { error: "No autorizado - Solo instituciones pueden modificar status de procesos" },
+              { status: 403 }
+            );
+          }
+          return NextResponse.next();
         }
       }
 

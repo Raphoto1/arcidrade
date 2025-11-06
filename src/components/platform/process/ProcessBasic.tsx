@@ -79,7 +79,7 @@ export default function ProcessBasic(props: any) {
               <ProfesionalCard userId={profesional.profesional_id} isFake={props.isFake} isSelected={profesional.process_status === "selected"} />
             </div>
           ))}
-          {profesionals.length >= 3 ? null : (
+          {profesionals.length >= 3 || process.status === "completed" ? null : (
             <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
               <InstitutionGridSearchSelection isFake={props.isFake} processId={process?.id} processPosition={process?.position} />
             </ModalForPreviewBtnLong>

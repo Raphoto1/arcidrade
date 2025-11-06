@@ -10,8 +10,6 @@ export async function GET(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   const status = request.nextUrl.pathname.split("/").pop() ?? "";
-  console.log('entro a estatus');
-  
   if (!status) {
     return NextResponse.json({ message: "Status parameter missing", payload: {} }, { status: 400 });
   }

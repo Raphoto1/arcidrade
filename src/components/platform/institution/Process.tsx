@@ -102,11 +102,14 @@ export default function Process(props: any) {
           </div>
 
           <div className='flex flex-col gap-2 h-auto'>
-            {profesionals.length >= 3 ? (
-              <ModalForPreviewBtnLong title={"Se ha superado el limite de 3 candidatos"}>
+            {profesionals.length >= 3 || processData?.status === "completed" ? (
+              <ModalForPreviewBtnLong title={processData?.status === "completed" ? "Proceso Completado" : "Se ha superado el limite de 3 candidatos"}>
                 <div className='flex flex-col items-center'>
                   <p className='text-sm fontRoboto text-[var(--dark-gray)]'>
-                    Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos
+                    {processData?.status === "completed" 
+                      ? "El proceso ha sido completado. No es posible agregar más candidatos."
+                      : "Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos"
+                    }
                   </p>
                 </div>
               </ModalForPreviewBtnLong>
@@ -144,7 +147,7 @@ export default function Process(props: any) {
               addedBy={"institution"}
             />
           ))}
-          {profesionals.length >= 3 ? null : (
+          {profesionals.length >= 3 || processData?.status === "completed" ? null : (
             <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
               <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
             </ModalForPreviewBtnLong>

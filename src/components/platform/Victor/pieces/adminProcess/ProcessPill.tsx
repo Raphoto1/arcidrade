@@ -72,9 +72,9 @@ export default function ProcessPill(props: any) {
               </ModalForFormsRedBtn>
             </>
           )}
-                    <ModalForForms title={"Solicitar Contacto"}>
-                      <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
-                    </ModalForForms>
+          <ModalForForms title={"Solicitar Contacto"}>
+            <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
+          </ModalForForms>
         </div>
       </div>
       <div className='w-full flex justify-center'>

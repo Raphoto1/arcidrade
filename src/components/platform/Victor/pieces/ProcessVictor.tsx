@@ -22,6 +22,7 @@ import { useInstitutionById } from "@/hooks/usePlatInst";
 import ModalForFormsYellowBtn from "@/components/modals/ModalForFormsYellowBtn";
 import ConfirmPauseProcessForm from "@/components/forms/platform/process/ConfirmPauseProcessForm";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
+import ConfirmExtendPeriodForm from "@/components/forms/platform/victor/ConfirmExtendPeriodForm";
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
@@ -168,7 +169,7 @@ export default function ProcessVictor(props: any) {
                   <ConfirmPauseProcessForm id={processData?.id} />
                 </ModalForFormsYellowBtn>
                 <ModalForForms title={"Extender Plazo"}>
-                  <div>En desarrollo</div>
+                  <ConfirmExtendPeriodForm />
                 </ModalForForms>
               </>
             )}
