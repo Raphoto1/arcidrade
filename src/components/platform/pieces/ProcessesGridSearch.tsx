@@ -1,5 +1,5 @@
 'use client'
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 
 import InstitutionProcessCard from "@/components/pieces/InstitutionProcessCard";
 import { ImSearch } from "react-icons/im";
@@ -7,40 +7,53 @@ import EmptyCard from "@/components/pieces/EmptyCard";
 
 import Grid from "./Grid";
 import { useAllActiveProcesses } from '@/hooks/useProcess';
-import { medicalOptions } from "@/static/data/staticData";
+import { medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
 
 export default function ProcessesGridSearch(props: any) {
   const isFake = props.isFake
   const applyButton = props.applyButton || false
   const [searchTerm, setSearchTerm] = useState("");
   const [specialityFilter, setSpecialityFilter] = useState("");
+  const [selectedSubArea, setSelectedSubArea] = useState("");
+
+  // Opciones de categorías de profesional
+  const subAreaOptions = [
+    { value: "doctor", label: "Médico" },
+    { value: "nurse", label: "Enfermería" },
+    { value: "pharmacist", label: "Farmacia" }
+  ];
+
+  // Función para obtener las especialidades según la categoría seleccionada
+  const getSpecialityOptions = () => {
+    switch (selectedSubArea) {
+      case "doctor":
+        return medicalOptions;
+      case "nurse":
+        return nurseOptions;
+      case "pharmacist":
+        return pharmacistOptions;
+      default:
+        return medicalOptions; // Por defecto mostrar opciones médicas
+    }
+  };
 
   // Obtener únicamente procesos activos
   const { data, error, isLoading } = useAllActiveProcesses();
 
-  // Debug: Verificar qué datos estamos recibiendo
-  console.log('ProcessesGridSearch Debug:', {
-    data,
-    error,
-    isLoading,
-    payload: data?.payload,
-    isArray: Array.isArray(data?.payload),
-    payloadLength: data?.payload?.length
-  });
+  // Resetear especialidad cuando cambia la categoría del profesional
+  useEffect(() => {
+    setSpecialityFilter("");
+  }, [selectedSubArea]);
 
   // Filtrar procesos basado en la búsqueda
   const filteredProcesses = useMemo(() => {
     if (!data?.payload || !Array.isArray(data.payload)) {
-      console.log('No hay datos válidos:', { payload: data?.payload, isArray: Array.isArray(data?.payload) });
       return [];
     }
 
-    console.log('Datos recibidos:', data.payload);
-
-    const filtered = data.payload.filter((process: any) => {
+    return data.payload.filter((process: any) => {
       // Verificar que el proceso sea válido y tenga un ID
       if (!process || !process.id) {
-        console.log('Proceso inválido:', process);
         return false;
       }
 
@@ -55,50 +68,57 @@ export default function ProcessesGridSearch(props: any) {
         process.main_speciality?.toLowerCase().includes(specialityFilter.toLowerCase()) ||
         process.extra_specialities?.some((spec: any) => spec.speciality?.toLowerCase().includes(specialityFilter.toLowerCase()));
 
-      const matches = matchesSearch && matchesSpeciality;
-      console.log('Proceso:', process.position, 'Matches:', matches);
+      const matchesSubArea =
+        !selectedSubArea ||
+        process.area === selectedSubArea;
 
-      return matches;
+      return matchesSearch && matchesSpeciality && matchesSubArea;
     });
-
-    console.log('Procesos filtrados:', filtered);
-    return filtered;
-  }, [data, searchTerm, specialityFilter]);
-
-  console.log('Estado final de renderizado:', {
-    isLoading,
-    error,
-    hasData: !!data,
-    payloadLength: data?.payload?.length,
-    filteredLength: filteredProcesses.length,
-    searchTerm,
-    specialityFilter
-  });
+  }, [data, searchTerm, specialityFilter, selectedSubArea]);
 
   return (
     <div className='grid justify-center'>
       <div className='grid grid-cols-1 bg-gray-200 rounded-md md:justify-center md:align-middle md:items-center pt-4'>
-        <div className="p-4 md:flex md:justify-center md:items-center">
+        <div className="p-4 md:flex md:justify-center md:items-center gap-4">
           {/* Barra de búsqueda */}
-          <div className='barraDeBusqueda flex justify-center mb-4 items-center pr-2'>
+          <div className='barraDeBusqueda flex justify-center mb-4 md:mb-0 items-center'>
             <input
               type='text'
               placeholder='Buscar procesos por cargo, descripción...'
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className='p-2 border border-gray-300 rounded-md mr-2 w-96'
+              className='p-2 border border-gray-300 rounded-md mr-2 w-96 focus:ring-2 focus:ring-blue-500 focus:border-blue-500'
             />
-            <ImSearch size={30} />
+            <ImSearch size={30} className="text-gray-600" />
+          </div>
+          {/* Filtro por categoría del profesional */}
+          <div className='flex flex-col justify-center mb-4 md:mb-0'>
+            <label className='text-sm font-medium text-gray-700 mb-1'>Categoría</label>
+            <select
+              name='subAreaFilter'
+              value={selectedSubArea}
+              onChange={(e) => setSelectedSubArea(e.target.value)}
+              className='p-2 border border-gray-300 rounded-md w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'>
+              <option value=''>Todas las categorías</option>
+              {subAreaOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
           </div>
           {/* Filtro por especialidad */}
-          <div className='flex flex-col justify-center'>
+          <div className='flex flex-col justify-center mb-4 md:mb-0'>
+            <label className='text-sm font-medium text-gray-700 mb-1'>
+              {selectedSubArea ? `Especialidad ${subAreaOptions.find(opt => opt.value === selectedSubArea)?.label}` : 'Especialidad'}
+            </label>
             <select
               name='specialityFilter'
               value={specialityFilter}
               onChange={(e) => setSpecialityFilter(e.target.value)}
-              className='select select-bordered w-full mb-2'>
+              className='p-2 border border-gray-300 rounded-md w-56 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'>
               <option value=''>Todas las especialidades</option>
-              {medicalOptions.map((specialty: any) => (
+              {getSpecialityOptions().map((specialty: any) => (
                 <option key={specialty.id} value={specialty.name}>
                   {specialty.name.charAt(0).toUpperCase() + specialty.name.slice(1)}
                 </option>
