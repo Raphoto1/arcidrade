@@ -24,6 +24,11 @@ export default withAuth(
         );
       }
 
+      // Victor tiene acceso total a toda la API - bypass todas las validaciones
+      if (token.area === 'victor') {
+        return NextResponse.next();
+      }
+
       // Rutas de gestión de perfil de profesional (validación prioritaria)
       const profesionalProfileRoutes = [
         '/api/platform/profesional/speciality',

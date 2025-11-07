@@ -63,9 +63,10 @@ export default function ConfirmExtendPeriodForm(props: any) {
               key={option.value}
               className={`flex items-center p-3 border rounded-lg cursor-pointer transition-all hover:bg-gray-50 ${
                 selectedPeriod === option.value 
-                  ? 'border-[var(--main-arci)] bg-blue-50 ring-2 ring-[var(--main-arci)] ring-opacity-20' 
+                  ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-opacity-20' 
                   : 'border-gray-300'
               }`}
+              onClick={() => setSelectedPeriod(option.value)}
             >
               <input
                 type="radio"
@@ -73,12 +74,23 @@ export default function ConfirmExtendPeriodForm(props: any) {
                 value={option.value}
                 checked={selectedPeriod === option.value}
                 onChange={(e) => setSelectedPeriod(Number(e.target.value))}
-                className="mr-3 text-[var(--main-arci)] focus:ring-[var(--main-arci)]"
+                className="mr-3 h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
               />
               <div className='flex-1'>
-                <div className='font-medium text-gray-900'>{option.label}</div>
-                <div className='text-sm text-gray-500'>{option.description}</div>
+                <div className={`font-medium ${selectedPeriod === option.value ? 'text-blue-900' : 'text-gray-900'}`}>
+                  {option.label}
+                </div>
+                <div className={`text-sm ${selectedPeriod === option.value ? 'text-blue-700' : 'text-gray-500'}`}>
+                  {option.description}
+                </div>
               </div>
+              {selectedPeriod === option.value && (
+                <div className="ml-2">
+                  <svg className="h-5 w-5 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                  </svg>
+                </div>
+              )}
             </label>
           ))}
         </div>

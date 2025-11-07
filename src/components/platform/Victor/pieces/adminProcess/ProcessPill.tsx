@@ -11,6 +11,7 @@ import ConfirmPauseProcessForm from "@/components/forms/platform/process/Confirm
 import React from "react";
 import ModalForForms from "@/components/modals/ModalForForms";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
+import ConfirmExtendPeriodForm from "@/components/forms/platform/victor/ConfirmExtendPeriodForm";
 
 export default function ProcessPill(props: any) {
   const process = props.process;
@@ -45,7 +46,7 @@ export default function ProcessPill(props: any) {
                 <ConfirmPauseProcessForm id={process?.id} />
               </ModalForFormsYellowBtn>
               <ModalForForms title={"Extender Plazo"}>
-                <div>En desarrollo</div>
+                <ConfirmExtendPeriodForm id={process?.id} />
               </ModalForForms>
             </>
           )}
@@ -55,7 +56,7 @@ export default function ProcessPill(props: any) {
                 <ConfirmActivateProcessForm id={process?.id} />
               </ModalForFormsGreenBtn>
               <ModalForForms title={"Extender Plazo"}>
-                <div>En desarrollo</div>
+                <ConfirmExtendPeriodForm id={process?.id} />
               </ModalForForms>
             </>
           )}

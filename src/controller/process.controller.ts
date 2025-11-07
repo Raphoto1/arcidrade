@@ -33,8 +33,8 @@ import { getProfesionalsByAddedByDao } from "@/dao/process.dao";
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  console.log('userId en controller', userId);
-  
+  console.log("userId en controller", userId);
+
   let pStatus = "pending";
   if (session?.user?.area == "victor") {
     pStatus = "active";
@@ -54,7 +54,6 @@ export const createProcess = async (data: any) => {
   const processCreated = await createProcessService(mainDataPack);
 
   if (data.title_category_1 || data.title_category_2) {
-
     if (data.title_category_1) {
       const extraSpecialityPack = {
         process_id: processCreated.id,
@@ -111,22 +110,22 @@ export const getAllActiveProcesses = async () => {
 export const getAllPendingProcesses = async () => {
   const result = await getAllProcessesByStatusService("pending");
   return result;
-}
+};
 
 export const getAllPausedProcesses = async () => {
   const result = await getAllProcessesByStatusService("paused");
   return result;
-}
+};
 
 export const getAllArchivedProcesses = async () => {
   const result = await getAllProcessesByStatusService("archived");
   return result;
-}
+};
 
 export const getAllCompletedProcesses = async () => {
   const result = await getAllProcessesByStatusService("completed");
   return result;
-}
+};
 
 export const getProccessesActiveByUserId = async (userId: string | undefined) => {
   const result = await getActiveProcessesByUserIdService(userId);
@@ -139,13 +138,13 @@ export const getProcessById = async (processId: number) => {
 };
 
 export const updateProcessStatusById = async (processId: number, status: string) => {
-  if (status === 'completed') {
-  const dataPack = {
-    status: status,
-    end_date: new Date(),
-    };  
-  const result = await updateProcessService(processId, dataPack);
-  return result;
+  if (status === "completed") {
+    const dataPack = {
+      status: status,
+      end_date: new Date(),
+    };
+    const result = await updateProcessService(processId, dataPack);
+    return result;
   } else {
     const dataPack = {
       status: status,
@@ -216,16 +215,12 @@ export const addProfesionalToProcess = async (processId: number, professionalId:
 
     // Obtener todas las postulaciones del profesional en este proceso
     const existingEntries = await getProfesionalsSelectedByProcessIdService(processId);
-    
+
     // Filtrar las entradas que corresponden a este profesional
-    const professionalEntries = existingEntries.filter((entry: any) => 
-      entry.profesional_id === professionalId
-    );
+    const professionalEntries = existingEntries.filter((entry: any) => entry.profesional_id === professionalId);
 
     // Verificar si ya existe una entrada con el mismo added_by
-    const duplicateEntry = professionalEntries.find((entry: any) => 
-      entry.added_by === added_by
-    );
+    const duplicateEntry = professionalEntries.find((entry: any) => entry.added_by === added_by);
 
     if (duplicateEntry) {
       throw new Error(`Professional with ID ${professionalId} is already added to process ID ${processId} by ${added_by}`);
@@ -237,9 +232,9 @@ export const addProfesionalToProcess = async (processId: number, professionalId:
     }
 
     // Validar que added_by sea uno de los valores permitidos
-    const allowedAddedByValues = ['profesional', 'institution', 'arcidrade'];
+    const allowedAddedByValues = ["profesional", "institution", "arcidrade"];
     if (added_by && !allowedAddedByValues.includes(added_by)) {
-      throw new Error(`Invalid added_by value: ${added_by}. Allowed values are: ${allowedAddedByValues.join(', ')}`);
+      throw new Error(`Invalid added_by value: ${added_by}. Allowed values are: ${allowedAddedByValues.join(", ")}`);
     }
 
     const dataPack = {
@@ -249,7 +244,7 @@ export const addProfesionalToProcess = async (processId: number, professionalId:
       is_arcidrade: is_arcidrade,
       added_by: added_by,
     };
-    
+
     const result = await addPProfesionalToProcessService(dataPack);
     return result;
   } catch (error) {
@@ -291,7 +286,7 @@ export const getProcessesWhereProfesionalIsListed = async (professionalId: strin
 export const updateProfesionalFromProcessVictor = async (processId: number, data: any) => {
   try {
     const { profesional_id, is_arci, added_by, process_status, feedback } = data;
-    
+
     // Verificar que el proceso existe
     const process = await getProcessByIdService(processId);
     if (!process) {
@@ -313,18 +308,18 @@ export const updateProfesionalFromProcessVictor = async (processId: number, data
     if (is_arci !== undefined) {
       updateData.is_arcidrade = Boolean(is_arci); // Corregir nombre del campo
     }
-    
+
     if (process_status !== undefined) {
       updateData.process_status = process_status;
     }
-    
+
     if (feedback !== undefined) {
       updateData.feedback = feedback;
     }
 
     // Actualizar el registro
     const result = await updateProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by, updateData);
-    
+
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -356,11 +351,11 @@ export const updateProfesionalFromProcessInstitution = async (processId: number,
     // Actualizar el registro
     const result = await updateProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by, updateData);
     return result;
-} catch (error) {
-      const errorMessage = error instanceof Error ? error.message : String(error);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error updating professional in process: ${errorMessage}`);
-}
-}
+  }
+};
 
 export const deleteProcessById = async (processId: number) => {
   try {
@@ -372,23 +367,23 @@ export const deleteProcessById = async (processId: number) => {
   }
 };
 
-export const getAllProcesses = async() => {
-  const result = await getAllProcessesService()
+export const getAllProcesses = async () => {
+  const result = await getAllProcessesService();
   return result;
-}
+};
 
 export const getAllProfesionalsPostulatedByAddedBy = async (addedBy: string | null) => {
   switch (addedBy) {
-    case 'profesional':
+    case "profesional":
       return await getAllProfesionalAddedByProfesionalService();
-    case 'institution':
+    case "institution":
       return await getAllProfesionalAddedByInstitutionService();
-        case null:
+    case null:
       return await getAllProfesionalAddedByService();
     default:
       throw new Error(`Invalid addedBy value: ${addedBy}`);
   }
-}
+};
 
 export const deleteProfesionalFromProcessVictor = async (processId: number, data: any) => {
   try {
@@ -398,5 +393,46 @@ export const deleteProfesionalFromProcessVictor = async (processId: number, data
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error removing professional from process: ${errorMessage}`);
+  }
+};
+
+export const updatePeriodOfProcessById = async (processId: number, data: any) => {
+  try {
+    const { extensionDays } = data;
+    
+    // Validar que extensionDays sea un número válido
+    if (!extensionDays || isNaN(Number(extensionDays))) {
+      throw new Error('extensionDays must be a valid number');
+    }
+    
+    // Obtener el proceso actual
+    const currentProcess = await getProcessByIdService(processId);
+    if (!currentProcess) {
+      throw new Error(`Process with ID ${processId} not found`);
+    }
+    
+    // Validar que el proceso tenga una fecha de inicio
+    if (!currentProcess.start_date) {
+      throw new Error(`Process with ID ${processId} does not have a start_date`);
+    }
+    
+    // Calcular la nueva fecha sumando los días de extensión al start_date
+    const currentStartDate = new Date(currentProcess.start_date);
+    const newStartDate = new Date(currentStartDate);
+    newStartDate.setDate(currentStartDate.getDate() + Number(extensionDays));
+    
+    // Preparar los datos para la actualización
+    const updatePack: any = {
+      extended: true,
+      start_date: newStartDate,
+      updated_at: new Date()
+    };
+    
+    // Actualizar el período del proceso
+    const result = await updateProcessService(processId, updatePack);
+    return result;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error updating process period: ${errorMessage}`);
   }
 };

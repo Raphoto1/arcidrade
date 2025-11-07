@@ -169,7 +169,7 @@ export default function ProcessVictor(props: any) {
                   <ConfirmPauseProcessForm id={processData?.id} />
                 </ModalForFormsYellowBtn>
                 <ModalForForms title={"Extender Plazo"}>
-                  <ConfirmExtendPeriodForm />
+                  <ConfirmExtendPeriodForm id={processData?.id} />
                 </ModalForForms>
               </>
             )}
