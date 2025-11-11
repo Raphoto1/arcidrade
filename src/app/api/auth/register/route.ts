@@ -23,7 +23,7 @@ export async function POST(request: Request) {
       // console.error('failMail', failMail);
     }
     if (invitation_sender_role === "campaign") {
-      const lead = await registerLeads(invitation_sender_id, user.email);
+      const lead = await registerLeads(invitation_sender_id, user.email, "sent_subscription");
     }
     return NextResponse.json({ message: "Invitación enviada satisfactoriamente" }, { status: 201 });
   }

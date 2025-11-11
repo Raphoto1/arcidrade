@@ -212,18 +212,18 @@ model Goals {
 model Campaign_data {
   id          Int      @id @default(autoincrement())
   user_id     String
-  name        String
-  last_name   String
-  company     String
-  role        String
-  description String
-  status      String
-  country     String
-  state       String
-  city        String
-  file        String
-  link        String
-  avatar      String
+  name        String?
+  last_name   String?
+  company     String?
+  role        String?
+  description String?
+  status      String?
+  country     String?
+  state       String?
+  city        String?
+  file        String?
+  link        String?
+  avatar      String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   auth        Auth     @relation(fields: [user_id], references: [referCode])
@@ -232,9 +232,9 @@ model Campaign_data {
 model Leads_send {
   id          Int      @id @default(autoincrement())
   user_id     String
-  campaign_id String
-  email       String
-  status      String
+  campaign_id String?
+  email       String?
+  status      String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
   auth        Auth     @relation(fields: [user_id], references: [referCode])

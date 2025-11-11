@@ -50,14 +50,14 @@ export async function failedMail(email: string, userId: string) {
   }
 }
 
-export async function registerLeads(user_id: string, email: string) {
+export async function registerLeads(user_id: string, email: string, status: string = 'sent') {
   try {
     const lead = await prisma.leads_send.create({
       data: {
         email: email as string,
         user_id: user_id as string,
         campaign_id: 'basic',
-        status: 'sent',
+        status: status as string,
       },
     });
 

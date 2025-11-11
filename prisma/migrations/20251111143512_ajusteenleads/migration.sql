@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Leads_send" ALTER COLUMN "campaign_id" DROP NOT NULL,
+ALTER COLUMN "email" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL;

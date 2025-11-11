@@ -1,5 +1,6 @@
 'use client';
 import React, { useState } from 'react';
+import { useSession } from 'next-auth/react';
 import { trackInvitationSent } from '@/utils/analytics';
 
 interface ContactData {
@@ -8,10 +9,14 @@ interface ContactData {
 }
 
 export default function GenerateSingleInvitation() {
+  const { data: session } = useSession();
   const [contact, setContact] = useState<ContactData>({ nombre: '', email: '' });
   const [isSending, setIsSending] = useState(false);
   const [lastResult, setLastResult] = useState<{ success: boolean; message: string } | null>(null);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
+
+  // Determinar si el usuario es Campaign
+  const isCampaignUser = session?.user?.area === 'campaign';
 
   // Función para validar email
   const isValidEmail = (email: string): boolean => {
@@ -66,13 +71,18 @@ export default function GenerateSingleInvitation() {
       });
 
       if (response.ok) {
+        const responseData = await response.json();
+        const successMessage = isCampaignUser && responseData.leadRegistered
+          ? `✅ Invitación enviada y lead registrado exitosamente para ${contact.email}`
+          : `✅ Invitación enviada exitosamente a ${contact.email}`;
+          
         setLastResult({
           success: true,
-          message: `✅ Invitación enviada exitosamente a ${contact.email}`
+          message: successMessage
         });
         
         // Track analytics
-        trackInvitationSent('single_invitation');
+        trackInvitationSent(isCampaignUser ? 'campaign_website_invitation' : 'victor_website_invitation');
         
         // Limpiar el formulario después del envío exitoso
         setContact({ nombre: '', email: '' });
@@ -119,6 +129,13 @@ export default function GenerateSingleInvitation() {
           <p className="text-gray-600">
             Envía una invitación personalizada a un usuario para unirse a la plataforma ARCIDRADE.
           </p>
+          {session?.user?.email && (
+            <div className="mt-3 p-3 bg-blue-50 border border-blue-200 rounded-lg">
+              <p className="text-sm text-blue-800">
+                <strong>Enviando desde:</strong> no_reply@arcidrade.com ({session.user.area})
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Form */}
@@ -216,6 +233,9 @@ export default function GenerateSingleInvitation() {
             {lastResult.success && (
               <div className="mt-3 text-sm text-green-700">
                 <p>La persona recibirá un correo con las instrucciones para acceder a la plataforma.</p>
+                {isCampaignUser && (
+                  <p>• El lead ha sido registrado automáticamente en tu campaña.</p>
+                )}
               </div>
             )}
           </div>
@@ -228,7 +248,14 @@ export default function GenerateSingleInvitation() {
             <p>• El usuario recibirá un correo electrónico con las instrucciones de acceso</p>
             <p>• Podrá crear su cuenta y completar su perfil profesional</p>
             <p>• Tendrá acceso a todas las funcionalidades de la plataforma ARCIDRADE</p>
-            <p>• Podrás rastrear su progreso desde el panel de administración</p>
+            {isCampaignUser ? (
+              <>
+                <p>• <strong>Lead automático:</strong> Se registrará en tu campaña para seguimiento</p>
+                <p>• <strong>Panel Campaign:</strong> Podrás ver el progreso desde tu dashboard</p>
+              </>
+            ) : (
+              <p>• Podrás rastrear su progreso desde el panel de administración</p>
+            )}
           </div>
         </div>
 
