@@ -11,22 +11,18 @@ export async function POST(request: NextRequest) {
     if (!session || !session.user?.email) {
       return NextResponse.json({ message: "No autorizado" }, { status: 401 });
     }
-
     // Obtener datos del cuerpo de la petición
     const body = await request.json();
     const { email, nombre, segundoNombre, apellido, institucion } = body;
-
     // Validar que el email sea requerido
     if (!email) {
       return NextResponse.json({ message: "El email es requerido" }, { status: 400 });
     }
-
     // Validar formato de email
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       return NextResponse.json({ message: "Formato de email inválido" }, { status: 400 });
     }
-
     // Enviar email invitando a visitar la página (SIN registrar en BD)
     try {
       const emailSent = await sendWebsiteInvitationMail({
@@ -35,7 +31,6 @@ export async function POST(request: NextRequest) {
         apellido: apellido || undefined,
         institucion: institucion || undefined,
       });
-
       if (!emailSent) {
         console.error(`Failed to send website invitation email to: ${email}`);
         return NextResponse.json({ message: "Error al enviar el email de invitación" }, { status: 500 });
@@ -50,16 +45,13 @@ export async function POST(request: NextRequest) {
           // Continuamos aunque falle el registro del lead, porque el email ya se envió
         }
       }
-
       // Crear un mensaje personalizado basado en los datos disponibles
       let displayName = "Usuario";
       if (nombre || apellido) {
         const nameParts = [nombre, segundoNombre, apellido].filter(Boolean);
         displayName = nameParts.join(" ");
       }
-
       const responseMessage = session.user.area === "campaign" ? "Invitación enviada y lead registrado exitosamente" : "Invitación enviada exitosamente";
-
       return NextResponse.json({
         message: responseMessage,
         recipient: {
@@ -71,12 +63,10 @@ export async function POST(request: NextRequest) {
       });
     } catch (emailError) {
       console.error("Error sending website invitation email:", emailError);
-
       return NextResponse.json({ message: "Error al enviar el email de invitación" }, { status: 500 });
     }
   } catch (error) {
     console.error("Error in website invitation API:", error);
-
     return NextResponse.json({ message: "Error interno del servidor" }, { status: 500 });
   }
 }
