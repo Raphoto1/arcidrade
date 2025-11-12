@@ -126,7 +126,6 @@ export default function VictorHeroHeader() {
         {/* Informe General */}
         <div className='w-full md:w-1/3'>
           <GeneralReport />
-          div{" "}
         </div>
       </div>
     </div>
