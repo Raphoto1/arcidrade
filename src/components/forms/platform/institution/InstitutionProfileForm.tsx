@@ -30,6 +30,7 @@ export default function InstitutionProfileForm() {
   const [countryList, setCountryList] = useState<ICountry[]>([]);
   const [stateList, setStateList] = useState<IState[]>([]);
   const [cityList, setCityList] = useState<ICity[]>([]);
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
 
   const { data, error, isLoading, mutate } = useInstitution();
   const { data: session } = useSession();
@@ -122,132 +123,143 @@ export default function InstitutionProfileForm() {
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
           <h2 className='text-2xl text-start font-[var(--font-oswald)] mb-4'>Perfil Institucional</h2>
           <form onSubmit={onSubmit}>
+            {/* Campo Obligatorio */}
             <div className='mb-2'>
               <label htmlFor='name' className='block'>
-                Nombre de la Institución
+                Nombre de la Institución *
               </label>
               <input type='text' className='input input-bordered w-full max-w-xs' {...register("name", { required: true })} />
               {errors.name && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
             </div>
 
-            <div className='mb-2'>
-              <label htmlFor='foundationDate' className='block'>
-                Fecha de Fundación
-              </label>
-              <input
-                type='date'
-                className='input input-bordered w-full max-w-xs'
-                {...register("foundationDate", { required: true })}
-              />
-              {errors.foundationDate && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
+            {/* Botón para mostrar campos opcionales */}
+            <div className='mt-6 border-t pt-4'>
+              <button
+                type='button'
+                onClick={() => setShowOptionalFields(!showOptionalFields)}
+                className='flex items-center justify-between w-full text-left text-lg font-semibold text-gray-700 hover:text-blue-600 transition-colors'
+              >
+                <span>Datos adicionales opcionales</span>
+                <span className={`transform transition-transform ${showOptionalFields ? 'rotate-180' : ''}`}>
+                  ▼
+                </span>
+              </button>
             </div>
 
-            <div className='mb-2'>
-              <label htmlFor='email' className='block'>
-                Email
-              </label>
-              <input disabled type='email' className='input input-bordered w-full max-w-xs' {...register("email", { required: true })} />
-              {errors.email && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+            {/* Campos opcionales colapsables */}
+            {showOptionalFields && (
+              <div className='mt-4 space-y-4 border-l-2 border-gray-200 pl-4'>
+                <div className='mb-2'>
+                  <label htmlFor='foundationDate' className='block'>
+                    Fecha de Fundación
+                  </label>
+                  <input
+                    type='date'
+                    className='input input-bordered w-full max-w-xs'
+                    {...register("foundationDate")}
+                  />
+                </div>
 
-            <div className='mb-2'>
-              <label htmlFor='contactNumber' className='block'>
-                Número de Contacto
-              </label>
-              <input type='tel' className='input input-bordered w-full max-w-xs' {...register("contactNumber", { required: true })} />
-              {errors.contactNumber && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='email' className='block'>
+                    Email
+                  </label>
+                  <input disabled type='email' className='input input-bordered w-full max-w-xs' {...register("email")} />
+                </div>
 
-            <div className='mb-2'>
-              <label htmlFor='web' className='block'>
-                web
-              </label>
-              <input type='web' className='input input-bordered w-full max-w-xs' {...register("web", { required: true })} />
-              {errors.web && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='contactNumber' className='block'>
+                    Número de Contacto
+                  </label>
+                  <input type='tel' className='input input-bordered w-full max-w-xs' {...register("contactNumber")} />
+                </div>
 
-            <div className='mb-2'>
-              <label htmlFor='country' className='block'>
-                País
-              </label>
-              <select
-                id='country'
-                {...register("country", { required: true })}
-                value={countrySelected}
-                onChange={handleCountryChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione un país</option>
-                {countryList.map((country, index) => (
-                  <option key={index} value={country.isoCode}>
-                    {country.name}
-                  </option>
-                ))}
-              </select>
-              {errors.country && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='web' className='block'>
+                    Sitio Web
+                  </label>
+                  <input type='url' className='input input-bordered w-full max-w-xs' {...register("web")} />
+                </div>
 
-            <div className='mb-2'>
-              <label htmlFor='state' className='block'>
-                Estado
-              </label>
-              <select
-                id='state'
-                {...register("state")}
-                value={stateSelected}
-                onChange={handleStateChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione un estado</option>
-                {stateList.map((state, index) => (
-                  <option key={index} value={state.isoCode}>
-                    {state.name}
-                  </option>
-                ))}
-              </select>
-              {errors.state && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='country' className='block'>
+                    País
+                  </label>
+                  <select
+                    id='country'
+                    {...register("country")}
+                    value={countrySelected}
+                    onChange={handleCountryChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione un país</option>
+                    {countryList.map((country, index) => (
+                      <option key={index} value={country.isoCode}>
+                        {country.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div className='mb-2'>
-              <label htmlFor='city' className='block'>
-                Ciudad
-              </label>
-              <select
-                id='city'
-                {...register("city")}
-                value={citySelected}
-                onChange={handleCityChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione una ciudad</option>
-                {cityList.map((city, index) => (
-                  <option key={index} value={city.name}>
-                    {city.name}
-                  </option>
-                ))}
-              </select>
-              {errors.city && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='state' className='block'>
+                    Estado
+                  </label>
+                  <select
+                    id='state'
+                    {...register("state")}
+                    value={stateSelected}
+                    onChange={handleStateChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione un estado</option>
+                    {stateList.map((state, index) => (
+                      <option key={index} value={state.isoCode}>
+                        {state.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div className='mb-2'>
-              <label htmlFor='specialization' className='block'>
-                Especialización Principal
-              </label>
-              <select id="specialization" {...register("specialization", { required: true })} className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione una especialización</option>
-                {medicalOptions.map((option:any, index:number) => (
-                  <option key={index} value={option.name}>
-                    {option.name}
-                  </option>
-                ))}
-              </select>
-              {errors.specialization && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='city' className='block'>
+                    Ciudad
+                  </label>
+                  <select
+                    id='city'
+                    {...register("city")}
+                    value={citySelected}
+                    onChange={handleCityChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione una ciudad</option>
+                    {cityList.map((city, index) => (
+                      <option key={index} value={city.name}>
+                        {city.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div className='mb-4'>
-              <label htmlFor='nif' className='block'>
-                NIF
-              </label>
-              <input type='text' className='input input-bordered w-full max-w-xs' {...register("nif")} />
-              {errors.nif && <span className="text-red-500 text-xs">Este campo es obligatorio</span>}
-            </div>
+                <div className='mb-2'>
+                  <label htmlFor='specialization' className='block'>
+                    Especialización Principal
+                  </label>
+                  <select id="specialization" {...register("specialization")} className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione una especialización</option>
+                    {medicalOptions.map((option:any, index:number) => (
+                      <option key={index} value={option.name}>
+                        {option.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div className='mb-4'>
+                  <label htmlFor='nif' className='block'>
+                    NIF
+                  </label>
+                  <input type='text' className='input input-bordered w-full max-w-xs' {...register("nif")} />
+                </div>
+              </div>
+            )}
 
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
               <button className='btn bg-[var(--soft-arci)]' type='submit'>

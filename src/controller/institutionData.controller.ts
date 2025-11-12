@@ -70,14 +70,14 @@ export const createInstitutionData = async (data: any) => {
     const uploadPack = {
       name: data.name,
       fake_name: fake_name,
-      established: new Date(data.foundationDate),
-      phone: data.contactNumber,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      main_speciality: data.specialization,
-      company_id: data.nif,
-      website: data.web,
+      established: data.foundationDate ? new Date(data.foundationDate) : null,
+      phone: data.contactNumber || null,
+      country: data.country || null,
+      state: data.state || null,
+      city: data.city || null,
+      main_speciality: data.specialization || null,
+      company_id: data.nif || null,
+      website: data.web || null,
     };
     const response = await updateInstitutionDataService(uploadPack, userId);
     return response;
@@ -87,14 +87,14 @@ export const createInstitutionData = async (data: any) => {
       user_id: userId,
       name: data.name,
       fake_name: fake_name,
-      established: new Date(data.foundationDate),
-      phone: data.contactNumber,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      main_speciality: data.specialization,
-      company_id: data.nif,
-      website: data.web,
+      established: data.foundationDate ? new Date(data.foundationDate) : null,
+      phone: data.contactNumber || null,
+      country: data.country || null,
+      state: data.state || null,
+      city: data.city || null,
+      main_speciality: data.specialization || null,
+      company_id: data.nif || null,
+      website: data.web || null,
       avatar: "", // Provide a default or from data if available
       status: "active", // Or another default status
     };
