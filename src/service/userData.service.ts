@@ -229,32 +229,21 @@ export const getUserStatsService = async () => {
     // Usar la instancia de prisma directamente desde utils
     const { default: prisma } = await import("@/utils/db");
     
-    // Obtener conteo de usuarios por status
-    const stats = await prisma.auth.groupBy({
-      by: ['status'],
-      _count: {
-        status: true,
-      },
-    });
-
-    // Obtener conteo total
-    const totalCount = await prisma.auth.count();
+    // Obtener conteos directamente por cada status
+    const [invited, registered, active, total] = await Promise.all([
+      prisma.auth.count({ where: { status: 'invited' } }),
+      prisma.auth.count({ where: { status: 'registered' } }),
+      prisma.auth.count({ where: { status: 'active' } }),
+      prisma.auth.count()
+    ]);
 
     // Convertir a formato más manejable
     const formattedStats = {
-      invited: 0,
-      registered: 0,
-      active: 0,
-      total: totalCount
+      invited,
+      registered,
+      active,
+      total
     };
-
-    // Llenar las estadísticas
-    stats.forEach((stat) => {
-      const status = stat.status.toLowerCase();
-      if (formattedStats.hasOwnProperty(status)) {
-        formattedStats[status as keyof typeof formattedStats] = stat._count.status;
-      }
-    });
 
     return formattedStats;
   } catch (error) {
