@@ -1,11 +1,9 @@
 import React, { useMemo } from "react";
 import Image from "next/image";
-import { useProcessStats } from "@/hooks/useProcessStats";
 import { useSentInvitations } from "@/hooks/useInvitation";
-import ProcessStatsExample from "@/components/examples/ProcessStatsExample";
+import GeneralReport from "./GeneralReport";
 
 export default function VictorHeroHeader() {
-  const { processStats, isLoading, error } = useProcessStats();
   const { data: invitationsData, isLoading: invitationsLoading, error: invitationsError } = useSentInvitations('invited');
 
   // Contar invitaciones por tipo
@@ -28,9 +26,7 @@ export default function VictorHeroHeader() {
     return stats;
   }, [invitationsData]);
 
-  
-
-  if (isLoading) {
+  if (invitationsLoading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="loading loading-spinner loading-lg"></div>
@@ -38,8 +34,8 @@ export default function VictorHeroHeader() {
     );
   }
 
-  if (error) {
-    console.error("Error loading processes:", error);
+  if (invitationsError) {
+    console.error("Error loading invitations:", invitationsError);
   }
 
   return (
@@ -53,10 +49,13 @@ export default function VictorHeroHeader() {
       />
       {/* Degradado inferior hacia transparente */}
       <div className='absolute bottom-0 left-0 right-0 h-[160px] bg-gradient-to-t from-white via-transparent to-transparent' />
-      {/* Contenido principal */}
-      <div className='HeroArea w-full flex justify-center items-center align-middle p-2 md:pr-5 relative z-10'>
-        <div className='invitations bg-gray-200 p-4 rounded-sm z-10 md:w-1/3 hidden md:block'>
-          <h1 className='text-xl font-bold font-var(--font-oswald) mb-4'>Invitaciones Pendientes</h1>
+      
+      {/* Contenido principal - Stack en móvil, horizontal en desktop */}
+      <div className='HeroArea w-full flex flex-col md:flex-row justify-center items-center align-middle p-2 md:pr-5 relative z-10 gap-4 md:gap-0'>
+        
+        {/* Sección de Invitaciones */}
+        <div className='invitations bg-gray-200 p-4 rounded-sm z-10 w-full md:w-1/3'>
+          <h1 className='text-lg md:text-xl font-bold font-var(--font-oswald) mb-4'>Invitaciones Pendientes</h1>
           
           <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
             <h3 className='text-[var(--main-arci)] font-medium'>Profesionales</h3>
@@ -110,8 +109,10 @@ export default function VictorHeroHeader() {
             </p>
           </div>
         </div>
-        <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 md:w-1/3'>
-          <div className='relative w-40 h-40'>
+
+        {/* Avatar de Victor */}
+        <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 w-full md:w-1/3'>
+          <div className='relative w-32 md:w-40 h-32 md:h-40'>
             <Image
               src='https://img.daisyui.com/images/stock/photo-1625726411847-8cbb60cc71e6.webp'
               className='w-full h-full rounded-full object-cover'
@@ -120,32 +121,12 @@ export default function VictorHeroHeader() {
               alt='Victor Profile Image'
             />
           </div>
-          <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2 capitalize'>Victor</h2>
+          <h2 className='text-lg md:text-xl font-bold font-var(--font-oswald) text-center p-2 capitalize'>Victor</h2>
         </div>
-        <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3'>
-          <h1 className='text-xl font-bold font-var(--font-oswald) mb-4'>Informe General</h1>
-          
-          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
-            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Activos</h3>
-            <p className="font-bold text-green-600">{processStats.active}</p>
-          </div>
-          
-          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
-            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Pendientes</h3>
-            <p className="font-bold text-yellow-600">{processStats.pending}</p>
-          </div>
-          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
-            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Finalizados</h3>
-            <p className="font-bold text-gray-600">{processStats.completed}</p>
-          </div>
-          <div className='flex justify-between align-middle items-center p-2 w-full bg-white rounded-md m-2'>
-            <h3 className='text-[var(--main-arci)] font-medium'>Procesos Archivados</h3>
-            <p className="font-bold text-gray-500">{processStats.archived}</p>
-          </div>
-          <div className='flex justify-between align-middle items-center p-2 w-full bg-[var(--main-arci)] bg-opacity-10 rounded-md m-2 border border-[var(--main-arci)] border-opacity-20'>
-            <h3 className='text-[var(--soft-arci)] font-bold'>Total de Procesos</h3>
-            <p className="font-bold text-[var(--soft-arci)] text-lg">{processStats.total}</p>
-          </div>
+
+        {/* Informe General */}
+        <div className="w-full md:w-1/3">
+          <GeneralReport />
         </div>
       </div>
     </div>

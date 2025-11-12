@@ -222,3 +222,43 @@ export const updateUserExperienceService = async (id: number, data: any) => {
   const result = await updateUserExperienceByIdDao(id, data);
   return result;
 };
+
+// Nuevo servicio para obtener estadísticas de usuarios
+export const getUserStatsService = async () => {
+  try {
+    // Usar la instancia de prisma directamente desde utils
+    const { default: prisma } = await import("@/utils/db");
+    
+    // Obtener conteo de usuarios por status
+    const stats = await prisma.auth.groupBy({
+      by: ['status'],
+      _count: {
+        status: true,
+      },
+    });
+
+    // Obtener conteo total
+    const totalCount = await prisma.auth.count();
+
+    // Convertir a formato más manejable
+    const formattedStats = {
+      invited: 0,
+      registered: 0,
+      active: 0,
+      total: totalCount
+    };
+
+    // Llenar las estadísticas
+    stats.forEach((stat) => {
+      const status = stat.status.toLowerCase();
+      if (formattedStats.hasOwnProperty(status)) {
+        formattedStats[status as keyof typeof formattedStats] = stat._count.status;
+      }
+    });
+
+    return formattedStats;
+  } catch (error) {
+    console.error("Error getting user stats:", error);
+    throw error;
+  }
+};
