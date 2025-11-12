@@ -57,6 +57,7 @@ export default function ProfesionalProfileHookForm() {
   const [cityList, setCityList] = useState<ICity[]>([]);
   const [studyCountry, setStudyCountry] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOptionalFields, setShowOptionalFields] = useState(false);
 
   // Cargar datos básicos que no dependen de listas externas
   useEffect(() => {
@@ -285,138 +286,152 @@ export default function ProfesionalProfileHookForm() {
             </div>
             {errors.name && <span className='text-red-500 text-sm'>Nombre es Requerido</span>}
 
-            {/* Separador para campos opcionales */}
-            <h3 className='text-lg font-semibold mt-6 mb-4 text-gray-700 border-t pt-4'>
-              Los siguientes datos son opcionales
-            </h3>
+            {/* Botón para mostrar campos opcionales */}
+            <div className='mt-6 border-t pt-4'>
+              <button
+                type='button'
+                onClick={() => setShowOptionalFields(!showOptionalFields)}
+                className='flex items-center justify-between w-full text-left text-lg font-semibold text-gray-700 hover:text-blue-600 transition-colors'
+              >
+                <span>Datos adicionales opcionales</span>
+                <span className={`transform transition-transform ${showOptionalFields ? 'rotate-180' : ''}`}>
+                  ▼
+                </span>
+              </button>
+            </div>
 
-            <div>
-              <label htmlFor='last_name' className='block'>
-                Apellido/s
-              </label>
-              <input type='text' {...register("last_name")} className='w-xs' />
-            </div>
-            <div>
-              <label htmlFor='birthDate' className='block'>
-                Fecha de nacimiento
-              </label>
-              {data?.payload && data.payload[0]?.birth_date ? <span>Fecha Registrada: {getFormattedDate()}</span> : null}
-              <input type='date' {...register("birthDate")} className='w-xs' />
-            </div>
-            <div>
-              <label htmlFor='email' className='block'>
-                Email
-              </label>
-              <input type='email' {...register("email")} className='w-xs' disabled value={email} />
-            </div>
-            <div>
-              <label htmlFor='phone' className='block'>
-                Telefono o celular de contacto
-              </label>
-              <input type='text' {...register("phone")} className='w-xs' />
-            </div>
-            <div>
-              <label htmlFor='country' className='block'>
-                Pais de Nacionalidad
-              </label>
-              <select
-                id='country'
-                {...register("country")}
-                value={countrySelected}
-                onChange={handleCountryChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Un Pais</option>
-                {countryList.map((country, index) => (
-                  <option key={index} value={country.isoCode as string}>
-                    {country.name as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor='state' className='block'>
-                Estado de Nacionalidad
-              </label>
-              <select
-                id='state'
-                {...register("state")}
-                value={stateSelected}
-                onChange={handleStateChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>{countrySelected ? "Seleccione Un Estado" : "Primero seleccione un País"}</option>
-                {stateList.map((state, index) => (
-                  <option key={index} value={state.isoCode as string}>
-                    {state.name as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor='city' className='block'>
-                Ciudad de Nacionalidad
-              </label>
-              <select
-                id='city'
-                {...register("city")}
-                value={citySelected}
-                onChange={handleCityChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>{stateSelected ? "Seleccione Una Ciudad" : "Primero seleccione un Estado"}</option>
-                {cityList.map((city, index) => (
-                  <option key={index} value={city.name as string}>
-                    {city.name as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor='title' className='block'>
-                Estudio Principal
-              </label>
-              <input type='text' {...register("title")} className='w-xs' />
-            </div>
-            <div>
-              <label htmlFor='studyCountry' className='block'>
-                Pais del estudio Principal
-              </label>
-              <select
-                id='studyCountry'
-                {...register("studyCountry")}
-                name='studyCountry'
-                value={studyCountry}
-                onChange={handleStudyCountryChange}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Un Pais</option>
-                {countryList.map((country, index) => (
-                  <option key={index} value={country.name as string}>
-                    {country.name as string}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div>
-              <label htmlFor='titleInstitution' className='block'>
-                Institucion que otorga el titulo
-              </label>
-              <input type='text' {...register("titleInstitution")} className='w-xs' />
-            </div>
-            <div>
-              <label htmlFor='titleStatus' className='block'>
-                Estado del titulo
-              </label>
-              <select
-                {...register("titleStatus")}
-                value={statusSelected}
-                onChange={handleStatusSelected}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione Un Status</option>
-                {optionsTitleStatus.map((status, index) => (
-                  <option key={index} value={status.value as string}>
-                    {status.label as string}
-                  </option>
-                ))}
-              </select>
-            </div>
+            {/* Campos opcionales colapsables */}
+            {showOptionalFields && (
+              <div className='mt-4 space-y-4 border-l-2 border-gray-200 pl-4'>
+                <div>
+                  <label htmlFor='last_name' className='block'>
+                    Apellido/s
+                  </label>
+                  <input type='text' {...register("last_name")} className='w-xs' />
+                </div>
+                <div>
+                  <label htmlFor='birthDate' className='block'>
+                    Fecha de nacimiento
+                  </label>
+                  {data?.payload && data.payload[0]?.birth_date ? <span>Fecha Registrada: {getFormattedDate()}</span> : null}
+                  <input type='date' {...register("birthDate")} className='w-xs' />
+                </div>
+                <div>
+                  <label htmlFor='email' className='block'>
+                    Email
+                  </label>
+                  <input type='email' {...register("email")} className='w-xs' disabled value={email} />
+                </div>
+                <div>
+                  <label htmlFor='phone' className='block'>
+                    Telefono o celular de contacto
+                  </label>
+                  <input type='text' {...register("phone")} className='w-xs' />
+                </div>
+                <div>
+                  <label htmlFor='country' className='block'>
+                    Pais de Nacionalidad
+                  </label>
+                  <select
+                    id='country'
+                    {...register("country")}
+                    value={countrySelected}
+                    onChange={handleCountryChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione Un Pais</option>
+                    {countryList.map((country, index) => (
+                      <option key={index} value={country.isoCode as string}>
+                        {country.name as string}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor='state' className='block'>
+                    Estado de Nacionalidad
+                  </label>
+                  <select
+                    id='state'
+                    {...register("state")}
+                    value={stateSelected}
+                    onChange={handleStateChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>{countrySelected ? "Seleccione Un Estado" : "Primero seleccione un País"}</option>
+                    {stateList.map((state, index) => (
+                      <option key={index} value={state.isoCode as string}>
+                        {state.name as string}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor='city' className='block'>
+                    Ciudad de Nacionalidad
+                  </label>
+                  <select
+                    id='city'
+                    {...register("city")}
+                    value={citySelected}
+                    onChange={handleCityChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>{stateSelected ? "Seleccione Una Ciudad" : "Primero seleccione un Estado"}</option>
+                    {cityList.map((city, index) => (
+                      <option key={index} value={city.name as string}>
+                        {city.name as string}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor='title' className='block'>
+                    Estudio Principal
+                  </label>
+                  <input type='text' {...register("title")} className='w-xs' />
+                </div>
+                <div>
+                  <label htmlFor='studyCountry' className='block'>
+                    Pais del estudio Principal
+                  </label>
+                  <select
+                    id='studyCountry'
+                    {...register("studyCountry")}
+                    name='studyCountry'
+                    value={studyCountry}
+                    onChange={handleStudyCountryChange}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione Un Pais</option>
+                    {countryList.map((country, index) => (
+                      <option key={index} value={country.name as string}>
+                        {country.name as string}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label htmlFor='titleInstitution' className='block'>
+                    Institucion que otorga el titulo
+                  </label>
+                  <input type='text' {...register("titleInstitution")} className='w-xs' />
+                </div>
+                <div>
+                  <label htmlFor='titleStatus' className='block'>
+                    Estado del titulo
+                  </label>
+                  <select
+                    {...register("titleStatus")}
+                    value={statusSelected}
+                    onChange={handleStatusSelected}
+                    className='select select-bordered w-full max-w-xs mb-2 input'>
+                    <option value=''>Seleccione Un Status</option>
+                    {optionsTitleStatus.map((status, index) => (
+                      <option key={index} value={status.value as string}>
+                        {status.label as string}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+            )}
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
               <button className='btn bg-[var(--soft-arci)]' type='submit' disabled={isSubmitting}>
                 {isSubmitting ? (
