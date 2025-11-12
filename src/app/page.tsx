@@ -10,19 +10,33 @@ import BrColors from "@/components/pieces/BrColors";
 import ThreeColumnGrid from "@/components/Grids/ThreeColumnGrid";
 import InstitutionGridSearch from "@/components/platform/institution/InstitutionGridSearch";
 import ProfesionalGridSearch from "@/components/platform/institution/ProfesionalGridSearch";
+import { generatePageMetadata } from "@/config/metadata";
+import HomeStructuredData from "@/components/seo/HomeStructuredData";
+
+// SEO optimizada para la página principal
+export const metadata = generatePageMetadata(
+  "Conecta Talento Sanitario con Instituciones de Salud",
+  "Arcidrade es la plataforma líder que conecta profesionales de la salud con instituciones sanitarias. Encuentra oportunidades laborales en el sector sanitario o descubre el mejor talento médico para tu institución.",
+  [
+    "empleo sanitario",
+    "trabajos medicina",
+    "oportunidades salud",
+    "contratación médica",
+    "red profesional sanitaria",
+    "bolsa de empleo médico",
+    "profesionales sanitarios",
+    "instituciones salud",
+    "trabajo enfermería",
+    "carreras medicina"
+  ],
+  undefined,
+  "/"
+);
 
 export default function Home() {
   return (
     <main className='flex flex-col items-center gap- min-h-screen justify-center'>
-      {/* <div>
-        Usuarios Para prueba
-        <div>
-          DEVNODE
-          <p>Institution: rafa@creativerafa.com pass:12345</p>
-          <p>Profesional: rrhhmmtt@gmail.com pass:12345</p>
-          <p>admin: sdsQ@huss.com pass:12345</p>
-        </div>
-      </div> */}
+      <HomeStructuredData />
       <Carrousel />
       <Steps />
       <GridHomeWindows />

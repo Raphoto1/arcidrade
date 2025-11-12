@@ -9,6 +9,7 @@ import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/pieces/Footer";
 import GlobalContext from "@/context/GlobalContext";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
+import { defaultMetadata, organizationStructuredData, websiteStructuredData } from "@/config/metadata";
 
 const robotoCond = Roboto_Condensed({
   variable: "--font-roboto-condensed",
@@ -20,10 +21,7 @@ const oswald = Oswald({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "Arcidrade",
-  description: "Plataforma para conectar instituciones sanitarias y profesionales",
-};
+export const metadata: Metadata = defaultMetadata;
 
 export default function RootLayout({
   children,
@@ -34,6 +32,18 @@ export default function RootLayout({
     <html lang='es'>
       <head>
         <GoogleAnalytics />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationStructuredData),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteStructuredData),
+          }}
+        />
       </head>
       <body className={`${robotoCond.variable} ${oswald.variable} antialiased`}>
         <GlobalContext>

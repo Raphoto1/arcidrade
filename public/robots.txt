@@ -1,0 +1,37 @@
+User-agent: *
+Allow: /
+Allow: /about
+Allow: /auth/login
+Allow: /services
+
+# Block authenticated areas
+Disallow: /platform/
+Disallow: /api/
+Disallow: /auth/genInvitation/
+Disallow: /auth/logOut/
+Disallow: /resetPassword/
+Disallow: /completeInvitation/
+Disallow: /test/
+
+# Block backup and admin files
+Disallow: *.js$
+Disallow: *.json$
+Disallow: /backup-database.js
+Disallow: /check-users.js
+Disallow: /restore-backup.js
+Disallow: /simple-backup.js
+
+# Allow CSS and other assets
+Allow: *.css$
+Allow: *.png$
+Allow: *.jpg$
+Allow: *.jpeg$
+Allow: *.gif$
+Allow: *.svg$
+Allow: *.webp$
+
+# Sitemap location
+Sitemap: https://arcidrade.com/sitemap.xml
+
+# Crawl delay (optional - adjust as needed)
+Crawl-delay: 1
