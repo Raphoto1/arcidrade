@@ -50,21 +50,21 @@ export const createUserData = async (data: any) => {
           user_id: session.user.id,
           fake_name: fakeNameProfesional,
           name: data.name,
-          last_name: data.last_name,
-          phone: data.phone,
-          birth_date: new Date(data.birthDate),
-          country: data.country,
-          state: data.state,
-          city: data.city,
+          last_name: data.last_name || null,
+          phone: data.phone || null,
+          birth_date: data.birthDate ? new Date(data.birthDate) : null,
+          country: data.country || null,
+          state: data.state || null,
+          city: data.city || null,
         };
 
         const profesionalMainStudyPack = {
           user_id: session.user.id,
-          title: data.title,
-          status: data.titleStatus,
-          institution: data.titleInstitution,
-          country: data.studyCountry,
-          sub_area: data.sub_area,
+          title: data.title || null,
+          status: data.titleStatus || null,
+          institution: data.titleInstitution || null,
+          country: data.studyCountry || null,
+          sub_area: data.sub_area, // Este campo es requerido
         };
         //se envian los paquetes al service
         const resultUserData = await createUserDataService(profesionalDataPack);

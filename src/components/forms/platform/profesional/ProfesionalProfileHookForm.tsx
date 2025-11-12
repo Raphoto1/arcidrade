@@ -255,13 +255,41 @@ export default function ProfesionalProfileHookForm() {
           <form
             onSubmit={onSubmit}
             className={`form justify-center align-middle pl-2 min-w-full md:grid md:min-w-full ${isSubmitting ? "opacity-75 pointer-events-none" : ""}`}>
+            
+            {/* Campos Obligatorios */}
+            <div>
+              <label htmlFor='sub_area' className='block'>
+                Categoria de Profesión *
+              </label>
+              <select
+                id='sub_area'
+                {...register("sub_area", { required: true })}
+                value={subAreaSelected}
+                onChange={handleSubAreaSelected}
+                className='select select-bordered w-full max-w-xs mb-2 input'>
+                <option value=''>Seleccione una categoría</option>
+                {subAreaOptions.map((option, index) => (
+                  <option key={index} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+            {errors.sub_area && <span className='text-red-500 text-sm'>Categoria de Profesión es requerida</span>}
+            
             <div className='block'>
               <label htmlFor='name' className='block'>
-                Nombre/s
+                Nombre/s *
               </label>
               <input type='text' className='w-xs' {...register("name", { required: true })} />
             </div>
-            {errors.name && <span>Nombre es Requerido</span>}
+            {errors.name && <span className='text-red-500 text-sm'>Nombre es Requerido</span>}
+
+            {/* Separador para campos opcionales */}
+            <h3 className='text-lg font-semibold mt-6 mb-4 text-gray-700 border-t pt-4'>
+              Los siguientes datos son opcionales
+            </h3>
+
             <div>
               <label htmlFor='last_name' className='block'>
                 Apellido/s
@@ -341,25 +369,6 @@ export default function ProfesionalProfileHookForm() {
                 ))}
               </select>
             </div>
-            <div>
-              <label htmlFor='sub_area' className='block'>
-                Categoria de Profesión *
-              </label>
-              <select
-                id='sub_area'
-                {...register("sub_area", { required: true })}
-                value={subAreaSelected}
-                onChange={handleSubAreaSelected}
-                className='select select-bordered w-full max-w-xs mb-2 input'>
-                <option value=''>Seleccione una categoría</option>
-                {subAreaOptions.map((option, index) => (
-                  <option key={index} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {errors.sub_area && <span className='text-red-500 text-sm'>Categoria de Profesión es requerida</span>}
             <div>
               <label htmlFor='title' className='block'>
                 Estudio Principal

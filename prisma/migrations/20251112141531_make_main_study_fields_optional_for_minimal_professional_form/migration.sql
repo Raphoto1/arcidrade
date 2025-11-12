@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Main_study" ALTER COLUMN "title" DROP NOT NULL,
+ALTER COLUMN "status" DROP NOT NULL,
+ALTER COLUMN "institution" DROP NOT NULL,
+ALTER COLUMN "country" DROP NOT NULL;

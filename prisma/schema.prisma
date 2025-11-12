@@ -67,10 +67,10 @@ model Profesional_data {
 model Main_study {
   id          Int       @id @default(autoincrement())
   user_id     String    @unique
-  title       String
-  status      String
-  institution String
-  country     String
+  title       String?
+  status      String?
+  institution String?
+  country     String?
   start_date  DateTime?
   end_date    DateTime?
   description String?
