@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { updateTypeOfProcessById } from "@/controller/process.controller";
 
-export const PUT = async (request) => {
+export const PUT = async (request: NextRequest) => {
     try {
         const body = await request.json();
         const processId = Number(body.id);
