@@ -81,6 +81,7 @@ export default withAuth(
       // Rutas donde profesionales pueden aplicar a procesos
       const profesionalApplyRoutes = [
         '/api/platform/process/apply', // Aplicar a procesos
+        '/api/platform/process/candidates', // Agregarse como candidato a procesos
       ];
 
       // Rutas para actualizar status de aplicaciones (solo profesionales)
@@ -92,6 +93,9 @@ export default withAuth(
       const processRoutes = [
         '/api/platform/process'
       ];
+
+      // Ruta específica para candidates (manejo especial)
+      const candidatesRoute = '/api/platform/process/candidates';
 
       // Rutas de status de procesos para consultas (profesionales e instituciones pueden ver)
       const processStatusRoutes = [
@@ -131,8 +135,10 @@ export default withAuth(
       ) || pathname.includes('/api/platform/process/status/'); // Asegurar que incluya rutas como /status/completed
 
       const isProcessRoute = processRoutes.some(route => 
-        pathname === route || (pathname.startsWith(route + '/') && !pathname.includes('/status/'))
+        pathname === route || (pathname.startsWith(route + '/') && !pathname.includes('/status/') && !pathname.startsWith(candidatesRoute))
       ) && !isProcessStatusRoute && !isProfesionalApplyRoute && !isProfesionalStatusUpdateRoute;
+
+      const isCandidatesRoute = pathname.startsWith(candidatesRoute);
 
       const isCampaignRoute = campaignRoutes.some(route => 
         pathname.startsWith(route)
@@ -165,12 +171,16 @@ export default withAuth(
         }
       }
 
-      // Validar aplicaciones de profesionales a procesos
-      if (isProfesionalApplyRoute && !['profesional', 'manager', 'victor'].includes(token.area as string)) {
-        return NextResponse.json(
-          { error: "No autorizado - Solo profesionales pueden aplicar a procesos" },
-          { status: 403 }
-        );
+      // Validar aplicaciones de profesionales a procesos (solo POST y solo para /api/platform/process/apply)
+      if (isProfesionalApplyRoute) {
+        const method = req.method;
+        // Solo aplicar restricción a POST en rutas que NO sean candidates
+        if (method === 'POST' && !pathname.startsWith('/api/platform/process/candidates') && !['profesional', 'manager', 'victor'].includes(token.area as string)) {
+          return NextResponse.json(
+            { error: "No autorizado - Solo profesionales pueden aplicar a procesos" },
+            { status: 403 }
+          );
+        }
       }
 
       // Validar actualizaciones de status por profesionales (POST/PUT)
@@ -205,6 +215,44 @@ export default withAuth(
           if (!['institution', 'manager', 'victor'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo instituciones pueden modificar status de procesos" },
+              { status: 403 }
+            );
+          }
+          return NextResponse.next();
+        }
+      }
+
+      // Validar acceso a rutas de candidates
+      if (isCandidatesRoute) {
+        const method = req.method;
+        
+        // GET: Tanto profesionales como instituciones pueden ver candidatos
+        if (method === 'GET') {
+          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.json(
+              { error: "No autorizado - Solo profesionales e instituciones pueden ver candidatos" },
+              { status: 403 }
+            );
+          }
+          return NextResponse.next();
+        }
+        
+        // POST: Profesionales pueden agregarse e instituciones pueden agregar otros
+        if (method === 'POST') {
+          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.json(
+              { error: "No autorizado - Solo profesionales e instituciones pueden gestionar candidatos" },
+              { status: 403 }
+            );
+          }
+          return NextResponse.next();
+        }
+        
+        // PUT/DELETE: Solo instituciones pueden modificar/eliminar
+        if (['PUT', 'DELETE'].includes(method)) {
+          if (!['institution', 'manager', 'victor'].includes(token.area as string)) {
+            return NextResponse.json(
+              { error: "No autorizado - Solo instituciones pueden modificar candidatos" },
               { status: 403 }
             );
           }

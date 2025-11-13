@@ -78,7 +78,7 @@ export default function InstitutionProcessCard(props: any) {
                 <ProcessDetail processData={{ ...processPack }} isFake />
               </ModalForPreview>
             ) : (
-              <ModalForPreview title={"Ver Detalle full"}>
+              <ModalForPreview title={"Ver Detalle"}>
                 {processPack && Object.keys(processPack).length > 0 ? (
                     <ProcessDetail processData={{ ...processPack }} btnActive={btnActive} isFake={false} profesionalId={profesionalIdBySession } />
                 ) : (
@@ -86,7 +86,7 @@ export default function InstitutionProcessCard(props: any) {
                 )}
               </ModalForPreview>
             )}
-            {props.applyButton && session?.user.area === "profesional" && (
+            {btnActive && session?.user.area === "profesional" && (
               <ModalForFormsGreenBtn title={"Aplicar al Proceso"}>
                 <ConfirmAddProfesionalToProcessForm ProcessId={processData?.payload.id} UserID={session?.user.id} addedBy={"profesional"} processPosition={processData?.payload.position} />
               </ModalForFormsGreenBtn>

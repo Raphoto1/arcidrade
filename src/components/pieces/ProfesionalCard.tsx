@@ -124,8 +124,7 @@ export default function ProfesionalCard(props: any) {
       </div>
 
       <div className='card-body'>
-        <h2 className='card-title font-oswald text-xl text-[var(--main-arci)]'>Dr. {displayName}</h2>
-
+        <h2 className='card-title font-oswald text-xl text-[var(--main-arci)]'>{ useHandleCategoryName(mainStudyInfo.sub_area)} {displayName}</h2>
         <p className='description h-10 font-roboto-condensed line-clamp-2'>{profesionalInfo.description || "Sin descripción"}</p>
         {isFake ? <div></div> : (
           profesionalInfo.description ? (

@@ -23,6 +23,8 @@ import ModalForFormsYellowBtn from "@/components/modals/ModalForFormsYellowBtn";
 import ConfirmPauseProcessForm from "@/components/forms/platform/process/ConfirmPauseProcessForm";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
 import ConfirmExtendPeriodForm from "@/components/forms/platform/victor/ConfirmExtendPeriodForm";
+import ConfirmMakeProcessArciForm from "@/components/forms/platform/victor/ConfirmMakeProcessArciForm";
+import ConfirmMakeProcessAutoForm from "@/components/forms/platform/victor/ConfirmMakeProcessAutoForm";
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
@@ -153,6 +155,13 @@ export default function ProcessVictor(props: any) {
                 />
               </ModalForPreviewBtnLong>
             )}
+            {processData?.type === "auto" ? (
+              <ModalForForms title={"Convertir en Proceso Arcidrade"}>
+                <ConfirmMakeProcessArciForm id={processData?.id} processTitle={processData?.title} />
+              </ModalForForms>
+            ):<ModalForForms title={"Convertir en Proceso Autogestionado"}>
+                <ConfirmMakeProcessAutoForm id={processData?.id} processTitle={processData?.title} />
+              </ModalForForms>}
             {processData?.status == "archived" ? null : (
               <ModalForFormsRedBtn title={"Eliminar Proceso"}>
                 <ConfirmArchiveProcessForm id={processData?.id} />

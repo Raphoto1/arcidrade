@@ -399,35 +399,35 @@ export const deleteProfesionalFromProcessVictor = async (processId: number, data
 export const updatePeriodOfProcessById = async (processId: number, data: any) => {
   try {
     const { extensionDays } = data;
-    
+
     // Validar que extensionDays sea un número válido
     if (!extensionDays || isNaN(Number(extensionDays))) {
-      throw new Error('extensionDays must be a valid number');
+      throw new Error("extensionDays must be a valid number");
     }
-    
+
     // Obtener el proceso actual
     const currentProcess = await getProcessByIdService(processId);
     if (!currentProcess) {
       throw new Error(`Process with ID ${processId} not found`);
     }
-    
+
     // Validar que el proceso tenga una fecha de inicio
     if (!currentProcess.start_date) {
       throw new Error(`Process with ID ${processId} does not have a start_date`);
     }
-    
+
     // Calcular la nueva fecha sumando los días de extensión al start_date
     const currentStartDate = new Date(currentProcess.start_date);
     const newStartDate = new Date(currentStartDate);
     newStartDate.setDate(currentStartDate.getDate() + Number(extensionDays));
-    
+
     // Preparar los datos para la actualización
     const updatePack: any = {
       extended: true,
       start_date: newStartDate,
-      updated_at: new Date()
+      updated_at: new Date(),
     };
-    
+
     // Actualizar el período del proceso
     const result = await updateProcessService(processId, updatePack);
     return result;
@@ -435,4 +435,9 @@ export const updatePeriodOfProcessById = async (processId: number, data: any) =>
     const errorMessage = error instanceof Error ? error.message : String(error);
     throw new Error(`Error updating process period: ${errorMessage}`);
   }
+};
+
+export const updateTypeOfProcessById = async (processId: number, type: any) => {
+  const response = await updateProcessService(processId, { type: type });
+  return response;
 };

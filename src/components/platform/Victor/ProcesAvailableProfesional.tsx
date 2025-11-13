@@ -19,9 +19,6 @@ export default function ProcesAvailableInstitution() {
           <ProcessProfesional key={profesional.id} processData={profesional.process_id} userId={profesional.profesional_id} />
         ))}
       </div>
-      <div className='flex justify-center pt-2'>
-        <button className='btn bg-[var(--main-arci)] text-white text-sm h-auto'>Administrar Solicitudes</button>
-      </div>
     </div>
   );
 }
