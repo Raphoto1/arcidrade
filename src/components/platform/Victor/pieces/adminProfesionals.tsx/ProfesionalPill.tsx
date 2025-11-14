@@ -1,7 +1,9 @@
 import React from "react";
-import { useHandleStatusName, formatDateToString, useFullName } from "@/hooks/useUtils";
+import { useHandleStatusName, formatDateToString, useFullName, useHandleCategoryName } from "@/hooks/useUtils";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import ProfesionalDetailFullById from "@/components/platform/pieces/ProfesionalDetailFullById";
+import ModalForForms from "@/components/modals/ModalForForms";
+import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
 
 interface ProfesionalPillProps {
   profesional?: {
@@ -27,6 +29,7 @@ interface ProfesionalPillProps {
       title?: string;
       institution?: string;
       status?: string;
+      sub_area?: string;
     };
     study_specialization?: Array<{
       title?: string;
@@ -57,17 +60,17 @@ export default function ProfesionalPill({ profesional }: ProfesionalPillProps) {
       </div>
     );
   }
-  
+
   // Extraer datos de las estructuras - algunas son objetos, otras arrays
   const profesionalData = profesional.profesional_data || {};
   const mainStudy = profesional.main_study || {};
   const specialization = profesional.study_specialization?.[0] || {};
   const certification = profesional.profesional_certifications?.[0] || {};
-  
+
   // Usar las utilidades existentes
   const fullName = useFullName(profesionalData.name, profesionalData.last_name) || "Sin nombre";
   const status = useHandleStatusName(profesional.status);
-  
+
   // Otros datos formatados
   const specialty = specialization.title || mainStudy.title || "No especificada";
   const institution = specialization.institution || mainStudy.institution || certification.institution || "No registrada";
@@ -83,38 +86,50 @@ export default function ProfesionalPill({ profesional }: ProfesionalPillProps) {
           <h3 className='text-(--main-arci) text-bold text-nowrap font-bold mb-2 truncate' title={fullName}>
             {fullName}
           </h3>
-          
+
           <div className='space-y-1'>
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Especialidad:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={specialty}>{specialty}</p>
+              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Categoria de Profesion:</p>
+              <p className='font-light text-[var(--main-arci)] truncate' title={mainStudy.sub_area}>
+                {useHandleCategoryName(mainStudy.sub_area)}
+              </p>
             </div>
-            
+            <div className='flex'>
+              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Especialidad:</p>
+              <p className='font-light text-[var(--main-arci)] truncate' title={specialty}>
+                {specialty}
+              </p>
+            </div>
+
             <div className='flex'>
               <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Institución:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={institution}>{institution}</p>
+              <p className='font-light text-[var(--main-arci)] truncate' title={institution}>
+                {institution}
+              </p>
             </div>
-            
+
             <div className='flex'>
               <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Status:</p>
               <p className='font-light text-[var(--main-arci)]'>{status}</p>
             </div>
-            
+
             <div className='flex'>
               <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Email:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={email}>{email}</p>
+              <p className='font-light text-[var(--main-arci)] truncate' title={email}>
+                {email}
+              </p>
             </div>
-            
+
             <div className='flex'>
               <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Ciudad:</p>
               <p className='font-light text-[var(--main-arci)]'>{city}</p>
             </div>
-            
+
             <div className='flex'>
               <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Teléfono:</p>
               <p className='font-light text-[var(--main-arci)]'>{phone}</p>
             </div>
-            
+
             <div className='flex'>
               <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Código:</p>
               <p className='font-light text-[var(--main-arci)] text-xs truncate' title={referCode}>
@@ -123,23 +138,17 @@ export default function ProfesionalPill({ profesional }: ProfesionalPillProps) {
             </div>
           </div>
         </div>
-        
+
         <div className='w-1/3 p-3 flex flex-col justify-center gap-2'>
-          <ModalForPreview title="Detalle">
+          <ModalForPreview title='Detalle'>
             <ProfesionalDetailFullById userId={profesional.referCode} />
           </ModalForPreview>
-          <button className='btn btn-sm bg-[var(--orange-arci)] text-white hover:bg-[var(--orange-arci)]/80'>
-            Pausar
-          </button>
-          <button className='btn btn-sm bg-warning text-white hover:bg-warning/80'>
-            Contacto
-          </button>
-          <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>
-            Solicitudes
-          </button>
-          <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>
-            Procesos
-          </button>
+          <button className='btn btn-sm bg-[var(--orange-arci)] text-white hover:bg-[var(--orange-arci)]/80'>Pausar</button>
+          <ModalForForms title='Solicitar Contacto'>
+            <ConfirmAskContactForm referCode={referCode} name={fullName} />
+          </ModalForForms>
+          <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>Solicitudes</button>
+          <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>Procesos</button>
         </div>
       </div>
     </div>
