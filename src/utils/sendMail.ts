@@ -13,13 +13,27 @@ const SubjectInvitation = "Le han invitado a ARCIDRADE";
 const transporter = nodemailer.createTransport({
   host: SMTP_SERVER_HOST,
   port: Number(MAIL_PORT) || 587,
-  secure: Number(MAIL_PORT) === 465, // true for 465, false for other ports
+  secure: Number(MAIL_PORT) === 465,
   auth: {
     user: NO_REPLY_MAIL,
     pass: NO_REPLY_MAIL_PASSWORD,
   },
   tls: {
     rejectUnauthorized: false,
+    minVersion: 'TLSv1.2',
+  },
+  // Configuración para MailChannels
+  pool: true,
+  maxConnections: 5,
+  maxMessages: 100,
+  rateDelta: 1000,
+  rateLimit: 5,
+  // Headers anti-spam
+  headers: {
+    'X-Priority': '3',
+    'X-Mailer': 'ARCIDRADE Platform v1.0',
+    'Importance': 'Normal',
+    'Precedence': 'bulk',
   },
 });
 
@@ -41,10 +55,19 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
 
 
   const info = await transporter.sendMail({
-    from: NO_REPLY_MAIL,
+    from: `"ARCIDRADE Platform" <${NO_REPLY_MAIL}>`,
+    replyTo: 'contacto@arcidrade.com',
     to: sendTo,
     subject: SubjectInvitation,
-    text: `Con este Link podras continuar con tu registro`,
+    text: `Hola,\n\nHas recibido una invitación para unirte a ARCIDRADE.\n\nPara completar tu registro, por favor visita el siguiente enlace:\n${completeRegistrationUrl}\n\nEste enlace es seguro y te permitirá crear tu cuenta en nuestra plataforma.\n\nSi no solicitaste esta invitación, puedes ignorar este mensaje.\n\nSaludos,\nEquipo ARCIDRADE\ncontacto@arcidrade.com\nhttps://arcidrade.com`,
+    headers: {
+      'X-Entity-Ref-ID': `inv-${referCode}`,
+      'List-Unsubscribe': '<mailto:contacto@arcidrade.com?subject=unsubscribe>',
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+      'Message-ID': `<inv-${referCode}-${Date.now()}@arcidrade.com>`,
+      'X-Campaign-ID': 'invitation-single',
+    },
     html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -164,7 +187,10 @@ export async function sendInvitationMail({ sendTo, referCode }: { sendTo?: strin
             <p>Gracias por tu interés en nuestra comunidad. Si tienes alguna pregunta o necesitas ayuda, no dudes en contactarnos.</p>
             <div class="contact-info">
                 <p>📧 contacto@arcidrade.com</p>
+                <p>🌐 www.arcidrade.com</p>
             </div>
+            <p style="font-size: 11px; margin-top: 16px; opacity: 0.7; color: #ffffff;">ARCIDRADE - Plataforma de conexión profesional</p>
+            <p style="font-size: 11px; margin-top: 8px; opacity: 0.7; color: #ffffff;">Si no deseas recibir estos correos, <a href="mailto:contacto@arcidrade.com?subject=Unsubscribe" style="color: #bcceec; text-decoration: underline;">haz clic aquí</a></p>
         </div>
     </div>
 </body>
@@ -218,10 +244,19 @@ export async function sendMassInvitationMail({
 
   try {
     const info = await transporter.sendMail({
-      from: NO_REPLY_MAIL,
+      from: `"ARCIDRADE Platform" <${NO_REPLY_MAIL}>`,
+      replyTo: 'contacto@arcidrade.com',
       to: sendTo,
-      subject: "🎯 Te han invitado a unirte a Arcidrade - Completa tu registro",
-      text: `${greeting} Te han invitado a unirte a Arcidrade. Completa tu registro en: ${completeRegistrationUrl}`,
+      subject: "Te han invitado a unirte a Arcidrade - Completa tu registro",
+      text: `${greeting}\n\nHas recibido una invitación especial para formar parte de ARCIDRADE, la plataforma líder que conecta profesionales, instituciones y oportunidades de desarrollo.\n\nPara completar tu registro, visita:\n${completeRegistrationUrl}\n\nEste enlace es seguro y personalizado para ti.\n\n¿Por qué unirte a ARCIDRADE?\n- Descubre oportunidades profesionales\n- Conecta con otros profesionales\n- Impulsa tu carrera\n- Obtén reconocimiento\n\nSi tienes alguna pregunta, contáctanos en contacto@arcidrade.com\n\nSaludos,\nEquipo ARCIDRADE\nhttps://arcidrade.com`,
+      headers: {
+        'X-Entity-Ref-ID': `mass-inv-${referCode}`,
+        'List-Unsubscribe': '<mailto:contacto@arcidrade.com?subject=unsubscribe>',
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+        'Message-ID': `<mass-inv-${referCode}-${Date.now()}@arcidrade.com>`,
+        'X-Campaign-ID': 'invitation-mass',
+      },
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -455,10 +490,15 @@ export async function sendWebsiteInvitationMail({
   }
 
   const info = await transporter.sendMail({
-    from: NO_REPLY_MAIL,
+    from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+    replyTo: 'contacto@arcidrade.com',
     to: sendTo,
-    subject: "Descubre ARCIDRADE - La plataforma para profesionales de la salud",
+    subject: "Descubre ARCIDRADE - Plataforma para profesionales de la salud",
     text: `Te invitamos a conocer ARCIDRADE, la plataforma que conecta profesionales de la salud con las mejores oportunidades. Visita: ${websiteUrl}`,
+    headers: {
+      'List-Unsubscribe': '<mailto:contacto@arcidrade.com?subject=unsubscribe>',
+      'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+    },
     html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -669,10 +709,17 @@ export async function sendResetPasswordMail({ sendTo, referCode }: { sendTo?: st
   const resetPasswordUrl = `${baseUrl}/resetPassword/${referCode}`;
 
   const info = await transporter.sendMail({
-    from: NO_REPLY_MAIL,
+    from: `"ARCIDRADE Seguridad" <${NO_REPLY_MAIL}>`,
+    replyTo: 'contacto@arcidrade.com',
     to: sendTo,
     subject: "Recuperación de Contraseña - ARCIDRADE",
-    text: `Use este enlace para restablecer su contraseña`,
+    text: `Use este enlace para restablecer su contraseña: ${resetPasswordUrl}`,
+    headers: {
+      'X-Entity-Ref-ID': `pwd-reset-${referCode}`,
+      'X-Priority': '1',
+      'Importance': 'high',
+      'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+    },
     html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -852,10 +899,15 @@ export async function sendContactMail(contactData: ContactFormData) {
   try {
     // Email de notificación para el equipo de ARCIDRADE
     const adminInfo = await transporter.sendMail({
-      from: NO_REPLY_MAIL,
+      from: `"${contactData.name}" <${NO_REPLY_MAIL}>`,
+      replyTo: contactData.email,
       to: "contacto@arcidrade.com",
       subject: `[CONTACTO] ${subjectText} - ${contactData.name}`,
-      text: `Nuevo mensaje de contacto recibido`,
+      text: `Nuevo mensaje de contacto recibido de ${contactData.name} (${contactData.email})`,
+      headers: {
+        'X-Entity-Ref-ID': `contact-${Date.now()}`,
+        'X-Priority': '2',
+      },
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1023,10 +1075,16 @@ export async function sendContactMail(contactData: ContactFormData) {
 
     // Email de confirmación para el usuario
     const userInfo = await transporter.sendMail({
-      from: NO_REPLY_MAIL,
+      from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+      replyTo: 'contacto@arcidrade.com',
       to: contactData.email,
       subject: `Gracias por contactarnos - ${subjectText}`,
-      text: `Hemos recibido tu mensaje y te responderemos pronto.`,
+      text: `Hola ${contactData.name}, hemos recibido tu mensaje y te responderemos pronto.`,
+      headers: {
+        'X-Entity-Ref-ID': `contact-confirm-${Date.now()}`,
+        'List-Unsubscribe': '<mailto:contacto@arcidrade.com?subject=unsubscribe>',
+        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+      },
       html: `<!DOCTYPE html>
 <html lang="es">
 <head>
@@ -1223,10 +1281,16 @@ export async function sendContactAdminMail(contactData: ContactFormData) {
 
         // Email al usuario solicitando que contacte al administrador
         const userNotificationInfo = await transporter.sendMail({
-            from: NO_REPLY_MAIL,
+            from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+            replyTo: 'contacto@arcidrade.com',
             to: contactData.email,
             subject: "Contacto requerido con Administrador - ARCIDRADE",
-            text: `Hola ${contactData.name}, necesitas contactarte con nuestro administrador para completar tu solicitud.`,
+            text: `Hola ${contactData.name}, necesitas contactarte con nuestro administrador para completar tu solicitud. Contáctanos en: contacto@arcidrade.com`,
+            headers: {
+              'X-Entity-Ref-ID': `contact-admin-${Date.now()}`,
+              'X-Priority': '2',
+              'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+            },
             html: `<!DOCTYPE html>
 <html lang="es">
 <head>

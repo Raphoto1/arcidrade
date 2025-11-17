@@ -2,6 +2,7 @@ import { listInvitedInvitationsService, listRegisteredInvitationsService } from 
 import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import prisma from "@/utils/db";
+import { updateUserStatusByIdService } from "../service/userData.service";
 
 export const listInvitations = async () => {
   const chkUser = await getServerSession(authOptions);
@@ -171,3 +172,31 @@ export const getCampaignLeadsStats = async () => {
     throw new Error("Error al obtener estadísticas de leads");
   }
 };
+
+export const desactivateUser = async (id: string) => {
+  const chkUser = await getServerSession(authOptions);
+  if (!chkUser) throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  try {
+    const result = await updateUserStatusByIdService('desactivated', id);
+    return result;
+    //cambiar statuus en auth a desactivated
+  } catch (error) {
+    console.error("Error desactivating user:", error);
+    throw new Error("Error al desactivar el usuario");
+  }
+}
+
+export const activateUser = async (id: string) => {
+  const chkUser = await getServerSession(authOptions);
+  if (!chkUser) throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  try {
+    const result = await updateUserStatusByIdService('active', id);
+    return result;
+    //cambiar statuus en auth a desactivated
+  } catch (error) {
+    console.error("Error activating user:", error);
+    throw new Error("Error al activar el usuario");
+  }
+}

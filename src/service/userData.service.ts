@@ -82,6 +82,17 @@ export const updateUserDataService = async (data?: any) => {
   return result;
 };
 
+export const updateUserDataByIdService = async (data: any, userId: string) => {
+  const result = await updateProfesionalDataDao(data, userId);
+  return result;
+};
+
+export const updateUserStatusByIdService = async (status: string, userId: string) => {
+  const data = { status };
+  const result = await updateProfesionalDataDao(data, userId);
+  return result;
+};
+
 export const createUserDataMainStudy = async (data: any) => {
   //obtener id para crear o actualizar
   const session = await getServerSession(authOptions);

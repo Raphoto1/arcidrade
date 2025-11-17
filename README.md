@@ -379,6 +379,38 @@ La plataforma incluye sistema de analytics para:
 
 ---
 
+## 📧 **Configuración de Email**
+
+### **Solución Rápida para Problemas de Entregabilidad**
+
+Si los emails están siendo rechazados o llegan a spam, consulta:
+
+📋 **[QUICK-FIX-EMAILS.md](./QUICK-FIX-EMAILS.md)** - Solución en 3 pasos (15 min)
+- Configuración SPF
+- Configuración DKIM  
+- Configuración DMARC
+
+📖 **[EMAIL-DELIVERY-SETUP.md](./EMAIL-DELIVERY-SETUP.md)** - Guía completa detallada
+- Configuración DNS completa
+- Mejores prácticas
+- Troubleshooting avanzado
+- Herramientas de verificación
+
+### **Probar Configuración**
+
+```bash
+# Ejecutar test de configuración de email
+node test-email-config.js
+```
+
+Este script verifica:
+- ✅ Conexión SMTP
+- ✅ Envío de email de prueba
+- ✅ Headers anti-spam
+- ✅ Score de mail-tester.com
+
+---
+
 ## 📝 **Licencia**
 
 Este proyecto está bajo licencia MIT. Ver `LICENSE` para más detalles.
@@ -388,9 +420,9 @@ Este proyecto está bajo licencia MIT. Ver `LICENSE` para más detalles.
 ## 📞 **Soporte**
 
 Para soporte técnico o consultas sobre ARCIDRADE:
-- **Email:** soporte@arcidrade.com
-- **Documentación:** [docs.arcidrade.com](https://docs.arcidrade.com)
-- **Issues:** [GitHub Issues](https://github.com/owner/arcidrade/issues)
+- **Email:** contacto@arcidrade.com
+- **Email Técnico:** soporte@arcidrade.com
+- **Issues:** [GitHub Issues](https://github.com/Raphoto1/arcidrade/issues)
 
 ---
 
