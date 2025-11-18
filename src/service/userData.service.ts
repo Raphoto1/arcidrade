@@ -89,7 +89,7 @@ export const updateUserDataByIdService = async (data: any, userId: string) => {
 };
 
 export const updateUserStatusByIdService = async (status: string, userId: string) => {
-  const result = await updateProfesionalAuthStatusDao( userId, status);
+  const result = await updateProfesionalAuthStatusDao( userId, status as any);
   return result;
 };
 
