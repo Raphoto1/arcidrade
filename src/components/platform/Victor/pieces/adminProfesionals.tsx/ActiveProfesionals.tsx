@@ -22,7 +22,7 @@ export default function ActiveProfesionals() {
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
   
-  const { data, error, isLoading } = usePaginatedProfesionals(currentPage, itemsPerPage);
+  const { data, error, isLoading } = usePaginatedProfesionals(currentPage, itemsPerPage, undefined, undefined, undefined, 'active');
   
   // Calcular subAreas disponibles para el filtro
   const availableSubAreas = useMemo(() => {
@@ -262,6 +262,7 @@ export default function ActiveProfesionals() {
                 <ProfesionalPill 
                   key={profesional.referCode || `profesional-${index}`} 
                   profesional={profesional}
+                  isPaused={false}
                 />
               ))}
             </div>

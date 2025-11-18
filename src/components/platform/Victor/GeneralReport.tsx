@@ -127,8 +127,10 @@ export default function GeneralReport() {
               </div>
               
               <div className='flex justify-between items-center p-1.5 bg-white rounded text-xs'>
-                <span className='text-gray-600'>-</span>
-                <span className="font-bold text-transparent">-</span>
+                <span className='text-gray-600'>Pausados</span>
+                <span className="font-bold text-red-600">
+                  {userLoading ? <span className="loading loading-spinner loading-xs"></span> : userError ? "-" : userStats.deactivated}
+                </span>
               </div>
             </div>
             

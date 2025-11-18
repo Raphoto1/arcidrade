@@ -142,9 +142,9 @@ export const getAllProfesionals = async () => {
   }
 };
 
-export const getAllProfesionalsPaginated = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string) => {
+export const getAllProfesionalsPaginated = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string) => {
   try {
-    const response = await getAllProfesionalsPaginatedService(page, limit, search, speciality, subArea);
+    const response = await getAllProfesionalsPaginatedService(page, limit, search, speciality, subArea, status);
     return response;
   } catch (error) {
     console.error('Error al obtener profesionales paginados:', error);

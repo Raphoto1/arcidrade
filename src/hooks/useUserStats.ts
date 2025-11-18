@@ -4,6 +4,7 @@ interface UserStats {
   invited: number;
   registered: number;
   active: number;
+  deactivated: number;
   total: number;
 }
 
@@ -31,6 +32,7 @@ export const useUserStats = () => {
     invited: data?.payload?.invited || 0,
     registered: data?.payload?.registered || 0,
     active: data?.payload?.active || 0,
+    deactivated: data?.payload?.deactivated || 0,
     total: data?.payload?.total || 0,
   };
 

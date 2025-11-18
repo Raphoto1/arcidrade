@@ -173,6 +173,13 @@ export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefi
   try {
     const profesionalData = await prisma.profesional_data.findFirst({
       where: { user_id },
+      include: {
+        auth: {
+          select: {
+            status: true,
+          }
+        }
+      }
     });
     
     return profesionalData;
@@ -200,14 +207,14 @@ export const getAllProfesionalsDao = async () => {
   }
 };
 
-export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string) => {
+export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string) => {
   try {
     const skip = (page - 1) * limit;
     
     // Construir el where clause base
     const whereClause: any = {
       area: "profesional",
-      status: "active",
+      status: status || "active", // Usar el status proporcionado o 'active' por defecto
     };
 
     // Array para condiciones OR y AND
@@ -349,7 +356,8 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
       hasMore: skip + limit < total,
       search: search || '',
       speciality: speciality || '',
-      subArea: subArea || ''
+      subArea: subArea || '',
+      status: status || 'active'
     };
   } catch (error) {
     console.error('Error al obtener profesionales paginados:', error);

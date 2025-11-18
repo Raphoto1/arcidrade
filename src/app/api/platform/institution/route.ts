@@ -5,6 +5,7 @@ import { NextResponse } from "next/server";
 export const GET = async (request: Request) => {
   try {
     const mainUserData = await getInstitutionData();
+
     return NextResponse.json({ message: "Profesional data success", payload: mainUserData });
   } catch (error) {
     console.error("Error in Profesional API:", error);

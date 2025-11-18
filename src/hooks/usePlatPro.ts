@@ -63,12 +63,13 @@ export const useAllProfesionals = () => {
   return { data, error, isLoading, mutate };
 };
 
-export const usePaginatedProfesionals = (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string) => {
+export const usePaginatedProfesionals = (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status: string = 'active') => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : '';
   const specialityParam = speciality ? `&speciality=${encodeURIComponent(speciality)}` : '';
   const subAreaParam = subArea ? `&subArea=${encodeURIComponent(subArea)}` : '';
+  const statusParam = status ? `&status=${encodeURIComponent(status)}` : '';
   const { data, error, isLoading, mutate } = useSWR<any>(
-    `/api/platform/profesional/paginated?page=${page}&limit=${limit}${searchParam}${specialityParam}${subAreaParam}`, 
+    `/api/platform/profesional/paginated?page=${page}&limit=${limit}${searchParam}${specialityParam}${subAreaParam}${statusParam}`, 
     fetcher
   );
   return { data, error, isLoading, mutate };

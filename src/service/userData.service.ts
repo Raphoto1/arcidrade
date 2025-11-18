@@ -26,6 +26,7 @@ import {
   getProfesionalFullByIdDao,
   getAllProfesionalsDao,
   getAllProfesionalsPaginatedDao,
+  updateProfesionalAuthStatusDao,
 } from "@/dao/dao";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
@@ -53,8 +54,8 @@ export const getAllProfesionalsService = async () => {
   return response;
 }
 
-export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string) => {
-  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality, subArea);
+export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string) => {
+  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality, subArea, status);
   return response;
 }
 
@@ -88,8 +89,7 @@ export const updateUserDataByIdService = async (data: any, userId: string) => {
 };
 
 export const updateUserStatusByIdService = async (status: string, userId: string) => {
-  const data = { status };
-  const result = await updateProfesionalDataDao(data, userId);
+  const result = await updateProfesionalAuthStatusDao( userId, status);
   return result;
 };
 
@@ -241,10 +241,11 @@ export const getUserStatsService = async () => {
     const { default: prisma } = await import("@/utils/db");
     
     // Obtener conteos directamente por cada status
-    const [invited, registered, active, total] = await Promise.all([
+    const [invited, registered, active, deactivated, total] = await Promise.all([
       prisma.auth.count({ where: { status: 'invited' } }),
       prisma.auth.count({ where: { status: 'registered' } }),
       prisma.auth.count({ where: { status: 'active' } }),
+      prisma.auth.count({ where: { status: 'desactivated' } }),
       prisma.auth.count()
     ]);
 
@@ -253,6 +254,7 @@ export const getUserStatsService = async () => {
       invited,
       registered,
       active,
+      deactivated,
       total
     };
 

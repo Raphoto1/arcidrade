@@ -14,11 +14,30 @@ import InstitutionDescriptionForm from "@/components/forms/platform/institution/
 
 export default function HeroHeaderInstitution() {
   const { data, isLoading, error, mutate } = useInstitution();
+  
   if (isLoading) return <div>Cargando...</div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
 
+  const isDeactivated = data?.payload?.auth?.status === 'desactivated';
+
   return (
     <div className='relative w-full md:h-[320px] overflow-hidden'>
+      {/* Aviso de cuenta desactivada */}
+      {isDeactivated && (
+        <div className='absolute top-0 left-0 right-0 z-50 bg-red-600 text-white p-4'>
+          <div className='container mx-auto flex items-center justify-center gap-3'>
+            <svg className='h-6 w-6 flex-shrink-0' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+              <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' />
+            </svg>
+            <p className='text-sm md:text-base font-medium'>
+              Su cuenta ha sido desactivada. Por favor, contacte al administrador o escriba a{' '}
+              <a href='mailto:contacto@arcidrade.com' className='underline hover:text-red-200 font-bold'>
+                contacto@arcidrade.com
+              </a>
+            </p>
+          </div>
+        </div>
+      )}
       {/* Imagen de fondo con opacidad */}
       <div
         className='absolute inset-0 bg-cover bg-center opacity-10'

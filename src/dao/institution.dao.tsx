@@ -25,6 +25,13 @@ export const getInstitutionDataByRefferCodeDao = async (user_id: string | undefi
   try {
     const institutionData = await prisma.institution_Data.findFirst({
       where: { user_id },
+      include: {
+        auth: {
+          select: {
+            status: true,
+          }
+        }
+      }
     });
     return institutionData;
   } catch (error) {

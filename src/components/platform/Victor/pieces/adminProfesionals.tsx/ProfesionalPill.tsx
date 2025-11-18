@@ -4,7 +4,10 @@ import ModalForPreview from "@/components/modals/ModalForPreview";
 import ProfesionalDetailFullById from "@/components/platform/pieces/ProfesionalDetailFullById";
 import ModalForForms from "@/components/modals/ModalForForms";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
-
+import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
+import ConfirmPauseUserForm from "@/components/forms/platform/victor/ConfirmPauseUserForm";
+import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
+import ConfirmActivateUserForm from "../../../../forms/platform/victor/ConfirmActivateUserForm";
 interface ProfesionalPillProps {
   profesional?: {
     referCode: string;
@@ -47,9 +50,10 @@ interface ProfesionalPillProps {
       description?: string;
     }>;
   };
+  isPaused?: boolean;
 }
 
-export default function ProfesionalPill({ profesional }: ProfesionalPillProps) {
+export default function ProfesionalPill({ profesional, isPaused = false }: ProfesionalPillProps) {
   // Validación de seguridad: si no hay profesional, mostrar componente vacío
   if (!profesional) {
     return (
@@ -143,10 +147,18 @@ export default function ProfesionalPill({ profesional }: ProfesionalPillProps) {
           <ModalForPreview title='Detalle'>
             <ProfesionalDetailFullById userId={profesional.referCode} />
           </ModalForPreview>
-          <button className='btn btn-sm bg-[var(--orange-arci)] text-white hover:bg-[var(--orange-arci)]/80'>Pausar</button>
-          <ModalForForms title='Solicitar Contacto'>
-            <ConfirmAskContactForm referCode={referCode} name={fullName} />
-          </ModalForForms>
+          {isPaused ? (
+            <ModalForFormsGreenBtn title='Activar Profesional'>
+              <ConfirmActivateUserForm userId={profesional.referCode} userName={fullName} userEmail={email} />
+            </ModalForFormsGreenBtn>
+          ) : (
+            <ModalForFormsRedBtn title='Pausar Profesional'>
+              <ConfirmPauseUserForm userId={profesional.referCode} userName={fullName} userEmail={email} />
+            </ModalForFormsRedBtn>
+          )}
+            <ModalForForms title='Solicitar Contacto'>
+              <ConfirmAskContactForm referCode={referCode} name={fullName} />
+            </ModalForForms>
           <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>Solicitudes</button>
           <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>Procesos</button>
         </div>
