@@ -13,6 +13,7 @@ interface UserDescriptionFormProps {
 
 export default function UserDescriptionForm({ userId, area }: UserDescriptionFormProps) {
   const { closeModal } = useModal();
+  const [isSubmitting, setIsSubmitting] = React.useState(false);
   
   // Usar el hook apropiado según el área
   const professionalData = useProfesionalById(area === 'profesional' ? userId : '');
@@ -50,19 +51,49 @@ export default function UserDescriptionForm({ userId, area }: UserDescriptionFor
   }, [description, reset]);
 
   const onSubmit = handleSubmit(async (formData) => {
-    const bodyData = {
-      ...formData,
-      userId,
-      area
-    };
-    
-    const response = await useHandleSubmitText(bodyData, "/api/platform/victor/adminUser/description");
+    setIsSubmitting(true);
+    try {
+      const bodyData = {
+        ...formData,
+        userId,
+        area
+      };
+      
+      const response = await useHandleSubmitText(bodyData, "/api/platform/victor/adminUser/description");
 
-    if (response.ok) {
-      mutate();
-      closeModal();
+      if (response.ok) {
+        mutate();
+        closeModal();
+      }
+    } catch (error) {
+      console.error('Error al actualizar descripción:', error);
+    } finally {
+      setIsSubmitting(false);
     }
   });
+
+  if (isLoading) {
+    return (
+      <div className='flex w-full justify-center items-center min-h-[300px]'>
+        <div className='flex flex-col items-center gap-3'>
+          <div className='loading loading-spinner loading-lg text-[var(--main-arci)]'></div>
+          <p className='text-gray-600'>Cargando descripción...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className='flex w-full justify-center items-center min-h-[300px]'>
+        <div className='flex flex-col items-center gap-3'>
+          <p className='text-red-600'>Error al cargar los datos</p>
+          <button className='btn btn-outline' onClick={closeModal}>Cerrar</button>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div>
       <div className='flex w-full justify-center items-center'>
@@ -77,8 +108,19 @@ export default function UserDescriptionForm({ userId, area }: UserDescriptionFor
               </div>
 
               <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-                <button className='btn bg-[var(--soft-arci)]' type='submit'>
-                  Confirmar descripción
+                <button 
+                  className='btn bg-[var(--main-arci)] text-white' 
+                  type='submit'
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <div className='flex items-center gap-2'>
+                      <div className='loading loading-spinner loading-sm'></div>
+                      Guardando...
+                    </div>
+                  ) : (
+                    'Confirmar descripción'
+                  )}
                 </button>
               </div>
             </form>

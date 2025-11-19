@@ -17,6 +17,16 @@ interface InvitationPillProps {
 }
 
 export default function InvitationPill({ invitationData }: InvitationPillProps) {
+  const [copied, setCopied] = React.useState(false);
+
+  const handleCopyUrl = () => {
+    const url = `${window.location.origin}/completeInvitation/${invitationData.referCode}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  };
+
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col'>
       <div className='w-full h-auto flex'>
@@ -39,9 +49,15 @@ export default function InvitationPill({ invitationData }: InvitationPillProps) 
             <p className='font-light text-[var(--main-arci)]'>{invitationData.status || 'Pendiente'}</p>
           </div>
         </div>
-        <div className='w-1/3 p-1'>
+        <div className='w-1/3 p-1 flex flex-col gap-2'>
           {/* <button className='btn bg-warning w-full text-white h-auto '>Pausar Invitación</button>
           <button className='btn bg-[var(--orange-arci)] w-full text-white h-auto '>Archivar</button> */}
+          <button 
+            className='btn bg-[var(--main-arci)] hover:bg-[var(--soft-arci)] w-full text-white h-auto text-xs'
+            onClick={handleCopyUrl}
+          >
+            {copied ? '✓ Copiado!' : '📋 Copiar URL de completar suscripción'}
+          </button>
           <ModalForFormsGreenBtn title='Reenviar Invitación'>
             <ConfirmResendInvitationForm id={invitationData.referCode} email={invitationData.email} />
           </ModalForFormsGreenBtn>

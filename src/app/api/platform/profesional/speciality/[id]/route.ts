@@ -44,6 +44,7 @@ export const POST = async (req: NextRequest, { params }: any) => {
       institution: data.titleInstitution,
       title: data.title,
       title_category: data.title_category,
+      sub_area: data.sub_area,
       status: data.titleStatus,
       country: data.country,
       start_date: startDateFix,

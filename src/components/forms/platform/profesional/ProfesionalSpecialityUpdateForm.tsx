@@ -100,9 +100,11 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
     try {
       const payload = {
         ...formData,
-        // Incluir subArea si se seleccionó en el formulario
-        ...(selectedSubArea && !subArea && { subArea: selectedSubArea }),
+        // Incluir subArea si fue seleccionado o si ya existía
+        ...(selectedSubArea && { sub_area: selectedSubArea }),
       };
+
+      console.log('Payload enviado:', payload);
 
       const response = await useHandleSubmitText(payload, path);
       if (response.ok) {
@@ -179,9 +181,10 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
               <label htmlFor="title_category" className="block font-semibold mb-1">Categoría más cercana</label>
               <select
                 id="title_category"
-                {...register("title_category", { required: true })}
-                value={titleCategorySelected}
-                onChange={handleTitleCategorySelected}
+                {...register("title_category", { 
+                  required: true,
+                  onChange: (e) => setTitleCategorySelected(e.target.value)
+                })}
                 className="select select-bordered w-full"
                 disabled={(!selectedSubArea && !subArea) || isSubmitting}
               >
