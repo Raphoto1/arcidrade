@@ -9,6 +9,7 @@ import ConfirmPauseUserForm from "@/components/forms/platform/victor/ConfirmPaus
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 import ConfirmActivateUserForm from "../../../../forms/platform/victor/ConfirmActivateUserForm";
+import UserDescriptionVictorForm from "@/components/forms/platform/victor/UserDescriptionVictorForm";
 
 export default function InstitutionPill({ institution }: { institution: any }) {
   const { data, isLoading, error } = useInstitutionFullById(institution);
@@ -56,6 +57,9 @@ export default function InstitutionPill({ institution }: { institution: any }) {
           <ModalForPreview title={"Ver Detalle"}>
             <InstitutionDetailFullById userId={institutionPack?.referCode} />
           </ModalForPreview>
+          <ModalForForms title='Actualizar descripción'>
+            <UserDescriptionVictorForm userId={institutionPack?.referCode} area={"institution"} />
+          </ModalForForms>
           {institutionPack?.status === "desactivated" ? (
             <ModalForFormsGreenBtn title='Activar Institución'>
               <ConfirmActivateUserForm

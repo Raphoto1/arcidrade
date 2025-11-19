@@ -8,6 +8,7 @@ import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmPauseUserForm from "@/components/forms/platform/victor/ConfirmPauseUserForm";
 import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 import ConfirmActivateUserForm from "../../../../forms/platform/victor/ConfirmActivateUserForm";
+import UserDescriptionVictorForm from "@/components/forms/platform/victor/UserDescriptionVictorForm";
 interface ProfesionalPillProps {
   profesional?: {
     referCode: string;
@@ -55,6 +56,8 @@ interface ProfesionalPillProps {
 
 export default function ProfesionalPill({ profesional, isPaused = false }: ProfesionalPillProps) {
   // Validación de seguridad: si no hay profesional, mostrar componente vacío
+  console.log(profesional);
+  
   if (!profesional) {
     return (
       <div className='w-full h-auto bg-gray-100 rounded-md flex flex-col shadow-sm border border-gray-200'>
@@ -73,7 +76,7 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
 
   // Usar las utilidades existentes
   const fullName = useFullName(profesionalData.name, profesionalData.last_name) || "Sin nombre";
-  const status = useHandleStatusName(profesional.status);
+  const status = useHandleStatusName(mainStudy.status);
 
   // Otros datos formatados
   const specialty = specialization.title || mainStudy.title || "No especificada";
@@ -147,6 +150,9 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
           <ModalForPreview title='Detalle'>
             <ProfesionalDetailFullById userId={profesional.referCode} />
           </ModalForPreview>
+          <ModalForForms title='Actualizar descripción'>
+            <UserDescriptionVictorForm userId={profesional.referCode} area={"profesional"} />
+          </ModalForForms>
           {isPaused ? (
             <ModalForFormsGreenBtn title='Activar Profesional'>
               <ConfirmActivateUserForm userId={profesional.referCode} userName={fullName} userEmail={email} />
@@ -156,11 +162,9 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
               <ConfirmPauseUserForm userId={profesional.referCode} userName={fullName} userEmail={email} />
             </ModalForFormsRedBtn>
           )}
-            <ModalForForms title='Solicitar Contacto'>
-              <ConfirmAskContactForm referCode={referCode} name={fullName} />
-            </ModalForForms>
-          <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>Solicitudes</button>
-          <button className='btn btn-sm bg-[var(--main-arci)] text-white hover:bg-[var(--main-arci)]/80'>Procesos</button>
+          <ModalForForms title='Solicitar Contacto'>
+            <ConfirmAskContactForm referCode={referCode} name={fullName} />
+          </ModalForForms>
         </div>
       </div>
     </div>

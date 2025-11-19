@@ -3,6 +3,9 @@ import { authOptions } from "@/utils/authOptions";
 import { getServerSession } from "next-auth";
 import prisma from "@/utils/db";
 import { updateUserStatusByIdService } from "../service/userData.service";
+import { updateInstitutionDataService } from "@/service/institutionData.service";
+import { updateUserDataByIdService } from "@/service/userData.service";
+
 
 export const listInvitations = async () => {
   const chkUser = await getServerSession(authOptions);
@@ -198,5 +201,22 @@ export const activateUser = async (id: string) => {
   } catch (error) {
     console.error("Error activating user:", error);
     throw new Error("Error al activar el usuario");
+  }
+}
+
+export const updateUserDescription = async (id: string, area: string, description: string) => {
+  const chkUser = await getServerSession(authOptions);
+  if (!chkUser) throw new Error("No autorizado");
+  switch (area) {
+    case 'institution':
+      const resultAdmin = await updateInstitutionDataService({ description: description }, id);
+      return resultAdmin;
+      break;
+    case 'profesional':
+      const resultProf = await updateUserDataByIdService({ description: description },id);
+      return resultProf;
+      break;
+    default:
+      throw new Error("Área no válida");
   }
 }
