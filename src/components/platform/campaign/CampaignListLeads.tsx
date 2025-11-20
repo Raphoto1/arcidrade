@@ -18,6 +18,7 @@ interface Lead {
 export default function CampaignListLeads() {
   const { data, error, isLoading, mutate } = useCampaignLeads();
   const [activeTab, setActiveTab] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   // Procesar los leads por status
   const leadsByStatus = useMemo(() => {
@@ -62,13 +63,28 @@ export default function CampaignListLeads() {
     return tabs;
   }, [leadsByStatus]);
 
-  // Obtener leads para la tab activa
+  // Obtener leads para la tab activa y aplicar filtro de búsqueda
   const currentLeads = useMemo(() => {
+    let leads: Lead[] = [];
+    
     if (activeTab === "all") {
-      return data?.payload || [];
+      leads = data?.payload || [];
+    } else {
+      leads = leadsByStatus[activeTab] || [];
     }
-    return leadsByStatus[activeTab] || [];
-  }, [activeTab, leadsByStatus, data]);
+
+    // Filtrar por búsqueda si hay query
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      leads = leads.filter((lead) => 
+        lead.email.toLowerCase().includes(query) ||
+        lead.nombre?.toLowerCase().includes(query) ||
+        lead.apellido?.toLowerCase().includes(query)
+      );
+    }
+
+    return leads;
+  }, [activeTab, leadsByStatus, data, searchQuery]);
 
   // Función para formatear fecha
   const formatDate = (dateString: string) => {
@@ -201,8 +217,40 @@ export default function CampaignListLeads() {
           </div>
         </div>
 
-        {/* Dropdown de Filtros */}
+        {/* Buscador y Filtros */}
         <div className='bg-[var(--soft-arci)] p-3 rounded-sm mb-4'>
+          {/* Campo de búsqueda */}
+          <div className='mb-3'>
+            <div className='relative'>
+              <input
+                type='text'
+                placeholder='Buscar por email, nombre o apellido...'
+                className='input input-bordered w-full bg-white text-[var(--main-arci)] border-[var(--main-arci)]/20 focus:border-[var(--main-arci)] fontRoboto pr-10'
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+              {searchQuery ? (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className='absolute right-3 top-1/2 transform -translate-y-1/2 text-[var(--main-arci)]/40 hover:text-[var(--main-arci)] transition-colors'
+                  title='Limpiar búsqueda'>
+                  <svg className='w-5 h-5' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+                    <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M6 18L18 6M6 6l12 12' />
+                  </svg>
+                </button>
+              ) : (
+                <svg
+                  className='absolute right-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-[var(--main-arci)]/40'
+                  fill='none'
+                  viewBox='0 0 24 24'
+                  stroke='currentColor'>
+                  <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
+                </svg>
+              )}
+            </div>
+          </div>
+
+          {/* Dropdown de filtro por status */}
           <div className='flex flex-col sm:flex-row gap-3 items-start sm:items-center justify-between'>
             <label htmlFor='status-filter' className='text-sm font-medium text-[var(--main-arci)] fontArci'>
               Filtrar por Status:
@@ -226,9 +274,16 @@ export default function CampaignListLeads() {
 
           {/* Resumen rápido del filtro actual */}
           <div className='mt-2 text-xs text-[var(--dark-gray)] fontRoboto'>
-            {activeTab === "all"
-              ? `Mostrando todos los ${stats.total} leads generados`
-              : `Mostrando ${currentLeads.length} leads con status "${getStatusLabel(activeTab)}"`}
+            {searchQuery ? (
+              <>
+                Mostrando {currentLeads.length} {currentLeads.length === 1 ? "resultado" : "resultados"} para "{searchQuery}"
+                {activeTab !== "all" && ` en ${getStatusLabel(activeTab)}`}
+              </>
+            ) : activeTab === "all" ? (
+              `Mostrando todos los ${stats.total} leads generados`
+            ) : (
+              `Mostrando ${currentLeads.length} leads con status "${getStatusLabel(activeTab)}"`
+            )}
           </div>
         </div>
 
@@ -248,10 +303,19 @@ export default function CampaignListLeads() {
               </div>
               <h3 className='text-xl font-semibold text-[var(--main-arci)] mb-2 fontArci'>No hay leads disponibles</h3>
               <p className='text-[var(--dark-gray)] max-w-md mx-auto fontRoboto'>
-                {activeTab === "all"
+                {searchQuery
+                  ? `No se encontraron resultados para "${searchQuery}"`
+                  : activeTab === "all"
                   ? "Aún no has generado ningún lead. Comienza enviando invitaciones para ver tus contactos aquí."
                   : `No se encontraron leads con el status "${getStatusLabel(activeTab)}".`}
               </p>
+              {searchQuery && (
+                <button
+                  onClick={() => setSearchQuery("")}
+                  className='btn btn-sm bg-[var(--main-arci)] hover:bg-[var(--main-arci)]/90 text-white mt-4'>
+                  Limpiar búsqueda
+                </button>
+              )}
               {activeTab === "all" && (
                 <ModalForFormsGreenBtn title='➕ Enviar Invitaciones'>
                   <GenerateSingleInvitation />

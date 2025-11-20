@@ -9,7 +9,6 @@ export default function CampaignManageGrid() {
     <div className='grid grid-cols-1  md:grid-cols-4 gap-4 p-4 md:max-h-3/4'>
       <CampaignData />
       <CampaignGenerateInvitations />
-      <CampaignListLeads />
     </div>
   )
 }
