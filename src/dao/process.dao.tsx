@@ -86,6 +86,47 @@ export const getProcessesFilteredByStatusDao = async (status: process_status) =>
   }
 };
 
+export const getPublicProcessesFilteredByStatusDao = async (status: process_status) => {
+  try {
+    const filteredProcesses = await prisma.process.findMany({
+      where: { status: status },
+      select: {
+        id: true,
+        position: true,
+        description: true,
+        main_speciality: true,
+        profesional_status: true,
+        type: true,
+        status: true,
+        start_date: true,
+        area: true,
+        created_at: true,
+        extra_specialities: {
+          select: {
+            id: true,
+            speciality: true,
+          }
+        },
+        auth: {
+          select: {
+            institution_data: {
+              select: {
+                fake_name: true,
+                avatar: true,
+                country: true,
+              }
+            }
+          }
+        }
+      },
+    });
+    return filteredProcesses;
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    throw new Error(`Error fetching public filtered processes: ${errorMessage}`);
+  }
+};
+
 export const createProcessDao = async (data: any) => {
   try {
     const newProcess = await prisma.process.create({

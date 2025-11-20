@@ -121,3 +121,12 @@ export const useAllCompletedProcesses= () => {
   );
   return { data, error, isLoading, mutate };
 }
+
+// Hook para obtener procesos públicos (sin autenticación)
+export const usePublicActiveProcesses = () => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    `/api/public/process/active`,
+    fetcher
+  );
+  return { data, error, isLoading, mutate };
+}

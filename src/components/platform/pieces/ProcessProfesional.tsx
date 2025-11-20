@@ -20,18 +20,18 @@ export default function ProcessProfesional(props: any) {
   const userId = props.userId;
   const { data: processPack } = useProcess(processData);
   const { data: profesionalPack } = useProfesionalById(userId);
-  const { data: institutionPack } = useInstitutionById(processPack?.payload.user_id);
+  const { data: institutionPack } = useInstitutionById(processPack?.payload?.user_id || null);
 
 
 
 
-  const fullName = useFullName(profesionalPack?.payload.profesional_data?.name, profesionalPack?.payload.profesional_data?.last_name);
+  const fullName = useFullName(profesionalPack?.payload?.profesional_data?.name, profesionalPack?.payload?.profesional_data?.last_name);
   return (
     <div>
       <div className=' bg-gray-50 w-full rounded-sm p-2 grid grid-cols-2 gap-2 shadow-xl mt-2 justify-between items-center'>
         <div className='w-2/3'>
           <h2 className='text-(--main-arci) text-bold text-wrap font-bold'>{fullName}</h2>
-          <p className='text-sm text-(--orange-arci) text-wrap w-full'>{institutionPack?.payload.name}</p>
+          <p className='text-sm text-(--orange-arci) text-wrap w-full'>{institutionPack?.payload?.name || "Institución"}</p>
           <span className='text-sm text-gray-600 w-100'>{processPack?.payload.position}</span>
           <p className='font-light'>{formatDateToString(processPack?.payload.created_at)}</p>
         </div>

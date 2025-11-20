@@ -16,13 +16,16 @@ export const useInstitution = () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/institution/", fetcher);
   return { data, error, isLoading, mutate };
 };
-export const useInstitutionById = (id: string) => {
+export const useInstitutionById = (id: string | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(id ? `/api/platform/institution/${id}` : null, fetcher);
   return { data, error, isLoading, mutate };
 };
 
-export const useInstitutionFullById = (id: string) => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/institution/complete/${id}`, fetcher);
+export const useInstitutionFullById = (id: string | null) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    id ? `/api/platform/institution/complete/${id}` : null, 
+    fetcher
+  );
   return { data, error, isLoading, mutate };
 }
 

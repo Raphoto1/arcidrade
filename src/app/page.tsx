@@ -12,6 +12,7 @@ import InstitutionGridSearch from "@/components/platform/institution/Institution
 import ProfesionalGridSearch from "@/components/platform/institution/ProfesionalGridSearch";
 import { generatePageMetadata } from "@/config/metadata";
 import HomeStructuredData from "@/components/seo/HomeStructuredData";
+import OffersPublic from "@/components/home/OffersPublic";
 
 // SEO optimizada para la página principal
 export const metadata = generatePageMetadata(
@@ -45,14 +46,7 @@ export default function Home() {
       <GridHomeWindowsCities />
       <BrColors title={"Principales Especialidades"} />
       <GridHomeWindowsSpecialities />
-      {/* <BrColors title={"Profesionales"} />
-      <div className='w-full flex flex-col items-center justify-center p-4'>
-        <InstitutionGridSearch isFake={true} />
-      </div>
-            <BrColors title={"Instituciones"} />
-      <div className='w-full flex flex-col items-center justify-center p-4'>
-        <ProfesionalGridSearch isFake={true} />
-      </div> */}
+      {/* <OffersPublic />   */}
     </main>
   );
 }
