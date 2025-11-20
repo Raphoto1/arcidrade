@@ -13,6 +13,8 @@ import ProcessListVictor from "./pieces/ProcessListVictor";
 import ProfesionalsListVictor from "./pieces/ProfesionalsListVictor";
 import InstitutionsListVictor from "./pieces/InstitutionsListVictor";
 import PausedProcess from "./PausedProcess";
+import ModalForForms from "@/components/modals/ModalForForms";
+import CreateProcessForm from "@/components/forms/platform/process/CreateProcessForm";
 
 export default function Victor() {
   return (
@@ -20,6 +22,9 @@ export default function Victor() {
       <VictorHeroHeader />
       <VictorManageGrid />
       <AdminButtons />
+      <ModalForForms title='Crear Proceso'>
+        <CreateProcessForm />
+      </ModalForForms>
       <AskedProcess />
       <ActiveProcess />
       <PausedProcess />

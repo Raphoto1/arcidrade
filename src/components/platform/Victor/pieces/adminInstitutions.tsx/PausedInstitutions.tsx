@@ -13,7 +13,7 @@ export default function PausedInstitutions() {
         <h1 className='text-2xl fontArci text-center'>Instituciones Pausadas</h1>
       </div>
       <div className='barraDeBusqueda flex justify-center mb-4 items-center'>
-        <input type='text' placeholder='Buscar ofertas...' className='p-2 border border-gray-300 rounded-md mr-2' />
+        <input type='text' placeholder='Buscar instituciones...' className='p-2 border border-gray-300 rounded-md mr-2' />
         <ImSearch size={30} />
       </div>
       <div>

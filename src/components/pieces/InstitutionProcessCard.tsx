@@ -55,7 +55,7 @@ export default function InstitutionProcessCard(props: any) {
       </div>
 
       <div className='card-body'>
-        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>{isFake ? institutionInfo.fake_name : institutionInfo.name || "noname"}</h2>
+        <h2 className='card-title font-oswald text-xl text-(--main-arci)'>{isFake ? institutionInfo.fake_name : institutionInfo.name || "Arcidrade"}</h2>
         <p className='description h-10 font-roboto-condensed line-clamp-2'>{processData?.payload.description || "Sin descripción"}</p>
         {isFake ? (
           <div></div>

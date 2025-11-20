@@ -18,7 +18,7 @@ function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; 
       <button className={`text-left p-3 hover:bg-base-200 rounded-lg w-full ${isSelected ? "bg-base-200" : ""}`} onClick={() => onSelect(process)}>
         <div className='flex flex-col'>
           <span className='font-semibold text-[var(--main-arci)]'>{process.position}</span>
-          <span className='text-sm font-medium text-gray-700'>Cliente: {institutionData?.name || "Cargando cliente..."}</span>
+          <span className='text-sm font-medium text-gray-700'>Cliente: {institutionData?.name || "Arcidrade"}</span>
           <span className='text-sm text-gray-600'>Especialidad: {process.main_speciality}</span>
           <span className='text-xs text-gray-500'>Estado: {process.status || "Activo"}</span>
         </div>
