@@ -69,10 +69,10 @@ export default function InstitutionProcessCardPublic(props: any) {
           
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
             <a 
-              href='/auth/signin' 
+              href='/auth/genInvitation' 
               className='btn btn-sm bg-[var(--main-arci)] hover:bg-[var(--main-arci)]/90 text-white'
             >
-              Iniciar Sesión
+              Regístrese
             </a>
             <span className='text-xs text-center mt-1 text-[var(--dark-gray)]'>
               para aplicar

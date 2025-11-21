@@ -166,7 +166,8 @@ export const medicalOptions: any = [
   { id: 70, name: "tisioneumonologia" },
   { id: 71, name: "tocoginecologia" },
   { id: 72, name: "toxicologia" },
-  { id: 73, name: "urologia" },
+  { id: 73, name: "traumatologia" },
+  { id: 74, name: "urologia" },
 ];
 
 export const nurseOptions: any = [
