@@ -113,7 +113,7 @@ export default function PersonalData() {
           </div>
           <div className='flex justify-between'>
             <h3 className='text-light'>Fecha de Nacimiento:</h3>
-            <p className='text-(--main-arci)'>{fechaFormateada}</p>
+            <p className='text-(--main-arci) text-end'>{fechaFormateada}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Email:</h3>
@@ -121,7 +121,7 @@ export default function PersonalData() {
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Numero de Contacto:</h3>
-            <p className='text-(--main-arci)'>{personalData?.phone || "No Registra Información"}</p>
+            <p className='text-(--main-arci) text-end'>{personalData?.phone || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Pais:</h3>

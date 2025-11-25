@@ -98,7 +98,8 @@ export default function HeroHeader() {
       </div>
       {/* Opciones */}
       <div className='options grid justify-center relative z-10 md:pr-5'>
-        <h3 className='text-xl text-center capitalize'>{data?.payload[1].title || "Título Principal"}</h3>
+        <h3 className='text-xl text-center capitalize'>{data?.payload[1].title || "Título Princial"}</h3>
+        {data?.payload[1].title ?null: <h3>Mejore sus posibilidades de ser encontrado agregando más información</h3>}
         <div className='flex justify-center'>
           {/* <button className='btn bg-[var(--main-arci)] text-white'>Buscando Ofertas</button>
           <button className='btn bg-[var(--main-arci)] text-white'>Disponible Para trabajar</button> */}
