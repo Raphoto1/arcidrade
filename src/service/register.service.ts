@@ -1,5 +1,6 @@
 import prisma from "@/utils/db";
 import { AreasAvailable, SenderNum, StatusAvailable } from "@/generated/prisma";
+import { encrypt } from "@/utils/encrypter";
 
 enum area {
   institution,
@@ -68,5 +69,83 @@ export async function registerLeads(user_id: string, email: string, status: stri
   } catch (error) {
     console.error("Error Al Registrar Lead", error);
     return null;
+  }
+}
+
+export async function registerDirectUser(
+  email: string, 
+  password: string, 
+  nombre: string, 
+  sub_area: string,
+  accountType: string = 'profesional',
+  institutionName?: string
+) {
+  try {
+    // Verificar si el email ya existe
+    const existingUser = await prisma.auth.findUnique({
+      where: { email: email }
+    });
+
+    if (existingUser) {
+      throw new Error("El email ya está registrado");
+    }
+
+    // Encriptar contraseña
+    const hashedPassword = await encrypt(password);
+
+    // Determinar el área según el tipo de cuenta
+    const userArea = accountType === 'institution' ? 'institution' : 'profesional';
+
+    // Crear usuario con estado "active" (usuario registrado directamente)
+    const user = await prisma.auth.create({
+      data: {
+        email: email,
+        area: userArea as AreasAvailable,
+        status: "active" as StatusAvailable,
+        password: hashedPassword,
+        invitation_sender: "external" as SenderNum,
+        invitation_sender_id: "external",
+      },
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    if (accountType === 'institution') {
+      // Crear perfil de institución
+      await prisma.institution_Data.create({
+        data: {
+          user_id: user.referCode,
+          fake_name: institutionName || nombre,
+          name: institutionName || nombre,
+          country: "", // Vacío por ahora
+        },
+      });
+    } else {
+      // Crear perfil de profesional
+      await prisma.profesional_data.create({
+        data: {
+          user_id: user.referCode,
+          name: nombre,
+          last_name: "", // Vacío por ahora
+        },
+      });
+
+      // Crear main_study con sub_area solo para profesionales
+      await prisma.main_study.create({
+        data: {
+          user_id: user.referCode,
+          sub_area: sub_area as any, // El enum Sub_area
+          title: "", // Vacío por ahora
+          status: "", // Vacío por ahora
+        },
+      });
+    }
+
+    return user;
+  } catch (error: any) {
+    console.error("Error al registrar usuario directo:", error);
+    throw error;
   }
 }

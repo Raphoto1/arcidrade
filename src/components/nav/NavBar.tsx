@@ -61,7 +61,7 @@ function NavBar() {
             <Link href={"/auth/login"} className='btn'>
               Ingresar
             </Link>
-            <Link href={"/auth/genInvitation"} className='btn'>
+            <Link href={"/auth/register"} className='btn'>
               Registrarse
             </Link>{" "}
           </div>
@@ -101,7 +101,7 @@ function NavBar() {
                   <Link href={"/auth/login"} onClick={closeDropdown}>Iniciar sesión</Link>
                 </li>
                 <li>
-                  <Link href={"/auth/genInvitation"} onClick={closeDropdown}>Registrarse</Link>
+                  <Link href={"/auth/register"} onClick={closeDropdown}>Registrarse</Link>
                 </li>
               </>
             )}
