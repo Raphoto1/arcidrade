@@ -10,6 +10,7 @@ import Footer from "@/components/pieces/Footer";
 import GlobalContext from "@/context/GlobalContext";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { defaultMetadata, organizationStructuredData, websiteStructuredData } from "@/config/metadata";
+import CookieBanner from "@/components/CookieBanner";
 
 const robotoCond = Roboto_Condensed({
   variable: "--font-roboto-condensed",
@@ -52,6 +53,7 @@ export default function RootLayout({
           <SpeedInsights />
           <Analytics />
           <Footer />
+          <CookieBanner />
         </GlobalContext>
       </body>
     </html>
