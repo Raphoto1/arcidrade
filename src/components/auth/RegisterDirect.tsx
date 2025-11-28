@@ -40,6 +40,64 @@ export default function RegisterDirect() {
       return;
     }
 
+    // Validación de nombre sospechoso (demasiadas mayúsculas/minúsculas mezcladas)
+    const nameToValidate = formData.accountType === 'institution' 
+      ? formData.institutionName 
+      : formData.nombre;
+
+    if (nameToValidate.trim()) {
+      const trimmedName = nameToValidate.trim();
+      
+      // 1. Solo permite letras (con acentos), espacios, guiones y apóstrofes
+      const validCharsPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s'-]+$/;
+      if (!validCharsPattern.test(trimmedName)) {
+        alert('El nombre solo debe contener letras, espacios, guiones y apóstrofes.');
+        return;
+      }
+
+      // 2. Debe tener al menos una vocal (nombres reales siempre tienen vocales)
+      const hasVowel = /[aeiouáéíóúAEIOUÁÉÍÓÚ]/.test(trimmedName);
+      if (!hasVowel) {
+        alert('El nombre ingresado no parece válido. Por favor ingresa un nombre real.');
+        return;
+      }
+
+      // 3. No permite más de 3 consonantes seguidas (español/inglés típicamente max 3)
+      const tooManyConsonants = /[bcdfghjklmnpqrstvwxyzBCDFGHJKLMNPQRSTVWXYZ]{4,}/.test(trimmedName);
+      if (tooManyConsonants) {
+        alert('El nombre ingresado no parece válido. Demasiadas consonantes consecutivas.');
+        return;
+      }
+
+      // 4. Detecta patrones sospechosos de mayúsculas/minúsculas mezcladas (3+ cambios)
+      const suspiciousPattern = /([a-z][A-Z]|[A-Z][a-z]){3,}/;
+      if (suspiciousPattern.test(trimmedName)) {
+        alert('El nombre tiene un formato sospechoso. Por favor ingresa un nombre con formato estándar.');
+        return;
+      }
+
+      // 5. Ratio de mayúsculas (máximo 35% del nombre)
+      const lettersOnly = trimmedName.replace(/[^a-zA-Z]/g, '');
+      const uppercaseRatio = (lettersOnly.match(/[A-Z]/g) || []).length / lettersOnly.length;
+      if (uppercaseRatio > 0.35 && lettersOnly.length > 3) {
+        alert('El nombre tiene demasiadas mayúsculas. Por favor usa formato estándar.');
+        return;
+      }
+
+      // 6. Mínimo 2 caracteres de letras (sin contar espacios/símbolos)
+      if (lettersOnly.length < 2) {
+        alert('El nombre debe tener al menos 2 letras.');
+        return;
+      }
+
+      // 7. No permite más de un símbolo seguido (guión, apóstrofe)
+      const repeatedSymbols = /[-']{2,}/.test(trimmedName);
+      if (repeatedSymbols) {
+        alert('El nombre tiene símbolos repetidos. Por favor verifica el formato.');
+        return;
+      }
+    }
+
     if (formData.accountType === 'institution') {
       if (!formData.institutionName.trim()) {
         alert('Por favor ingrese el nombre de la institución');
