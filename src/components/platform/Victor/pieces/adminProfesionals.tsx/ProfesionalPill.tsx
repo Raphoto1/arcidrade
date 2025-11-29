@@ -9,6 +9,7 @@ import ConfirmPauseUserForm from "@/components/forms/platform/victor/ConfirmPaus
 import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 import ConfirmActivateUserForm from "../../../../forms/platform/victor/ConfirmActivateUserForm";
 import UserDescriptionVictorForm from "@/components/forms/platform/victor/UserDescriptionVictorForm";
+import ConfirmDeleteUserForm from "@/components/forms/platform/victor/ConfirmDeleteUserForm";
 interface ProfesionalPillProps {
   profesional?: {
     referCode: string;
@@ -165,6 +166,9 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
           <ModalForForms title='Solicitar Contacto'>
             <ConfirmAskContactForm referCode={referCode} name={fullName} />
           </ModalForForms>
+          <ModalForFormsRedBtn title='Eliminar Usuario'>
+            <ConfirmDeleteUserForm userId={profesional.referCode} userName={fullName} userEmail={email} />
+          </ModalForFormsRedBtn>
         </div>
       </div>
     </div>

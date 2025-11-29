@@ -204,6 +204,24 @@ export const activateUser = async (id: string) => {
   }
 }
 
+export const deleteUser = async (id: string) => {
+  const chkUser = await getServerSession(authOptions);
+  if (!chkUser) throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  try {
+    // Eliminar el usuario de Auth - con CASCADE se eliminarán todos los datos relacionados
+    const result = await prisma.auth.delete({
+      where: {
+        referCode: id
+      }
+    });
+    return { success: true, message: "Usuario eliminado correctamente" };
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    throw new Error("Error al eliminar el usuario");
+  }
+}
+
 export const updateUserDescription = async (id: string, area: string, description: string) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");

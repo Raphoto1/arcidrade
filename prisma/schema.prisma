@@ -4,8 +4,9 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // directUrl = env("DIRECT_DATABASE_URL")
 }
 
 model Auth {
@@ -40,7 +41,7 @@ model fail_mail {
   user_id    String   @unique
   created_at DateTime @default(now())
   updated_at DateTime @updatedAt
-  auth       Auth     @relation(fields: [user_id], references: [referCode])
+  auth       Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Profesional_data {
@@ -61,7 +62,7 @@ model Profesional_data {
   avatar      String?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
-  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Main_study {
@@ -79,7 +80,7 @@ model Main_study {
   sub_area    Sub_area?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
-  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Study_specialization {
@@ -99,7 +100,7 @@ model Study_specialization {
   is_main        Boolean   @default(false)
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
-  auth           Auth      @relation(fields: [user_id], references: [referCode])
+  auth           Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Study_speciality_favorite {
@@ -107,7 +108,7 @@ model Study_speciality_favorite {
   user_id             String
   study_speciality_id Int     @unique
   study_fav           Boolean @default(false)
-  auth                Auth    @relation(fields: [user_id], references: [referCode])
+  auth                Auth    @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Profesional_certifications {
@@ -124,7 +125,7 @@ model Profesional_certifications {
   link        String?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
-  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Experience {
@@ -143,7 +144,7 @@ model Experience {
   link        String?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
-  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Institution_Data {
@@ -164,7 +165,7 @@ model Institution_Data {
   company_id      String?
   description     String?
   main_speciality String?
-  auth            Auth      @relation(fields: [user_id], references: [referCode])
+  auth            Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Institution_specialization {
@@ -176,7 +177,7 @@ model Institution_specialization {
   created_at     DateTime @default(now())
   updated_at     DateTime @updatedAt
   title_category String?
-  auth           Auth     @relation(fields: [user_id], references: [referCode])
+  auth           Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Institution_Certifications {
@@ -192,7 +193,7 @@ model Institution_Certifications {
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   year        DateTime?
-  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Goals {
@@ -206,7 +207,7 @@ model Goals {
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   year        DateTime?
-  auth        Auth      @relation(fields: [user_id], references: [referCode])
+  auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Campaign_data {
@@ -226,7 +227,7 @@ model Campaign_data {
   avatar      String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  auth        Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Leads_send {
@@ -237,7 +238,7 @@ model Leads_send {
   status      String?
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
-  auth        Auth     @relation(fields: [user_id], references: [referCode])
+  auth        Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model Process {
@@ -256,7 +257,7 @@ model Process {
   user_id             String
   created_at          DateTime              @default(now())
   updated_at          DateTime              @updatedAt
-  auth                Auth                  @relation(fields: [user_id], references: [referCode])
+  auth                Auth                  @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
   extra_specialities  extra_specialities[]
   profesionals_listed profesionals_listed[]
 }
