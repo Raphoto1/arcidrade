@@ -38,12 +38,35 @@ import { getInstitutionDataByUserIdService, updateInstitutionCertificationServic
 import { getInstitutionCertification, updateInstitutionCertification } from "./institutionData.controller";
 //user__________________________________________________________________________________
 export const createUserData = async (data: any) => {
+  console.log('[createUserData] Iniciando creación de datos de usuario');
+  
   //se extrae el session
   const session = await getServerSession(authOptions);
+  
+  if (!session) {
+    console.error('[createUserData] No hay sesión activa');
+    throw new Error("No hay sesión de usuario activa");
+  }
+  
+  console.log('[createUserData] Usuario:', session.user.id, 'Área:', session.user.area);
+  
   //se revisa si es profesional o institution
   switch (session?.user.area) {
     case "profesional":
       try {
+        console.log('[createUserData] Procesando como profesional');
+        
+        // Validar campo requerido
+        if (!data.sub_area) {
+          console.error('[createUserData] Campo requerido faltante: sub_area');
+          throw new Error("El campo 'Categoría de Profesión' es requerido");
+        }
+        
+        if (!data.name) {
+          console.error('[createUserData] Campo requerido faltante: name');
+          throw new Error("El campo 'Nombre' es requerido");
+        }
+        
         //se organiza la data para enviar a cada tabla
         const fakeNameProfesional = await faker.person.firstName();
         const profesionalDataPack = {
@@ -66,14 +89,31 @@ export const createUserData = async (data: any) => {
           country: data.studyCountry || null,
           sub_area: data.sub_area, // Este campo es requerido
         };
+        
+        console.log('[createUserData] Paquete datos profesional:', JSON.stringify(profesionalDataPack, null, 2));
+        console.log('[createUserData] Paquete estudio principal:', JSON.stringify(profesionalMainStudyPack, null, 2));
+        
         //se envian los paquetes al service
+        console.log('[createUserData] Guardando datos profesional...');
         const resultUserData = await createUserDataService(profesionalDataPack);
+        console.log('[createUserData] ✓ Datos profesional guardados');
+        
+        console.log('[createUserData] Guardando estudio principal...');
         const resultMainStudy = await createUserDataMainStudy(profesionalMainStudyPack);
+        console.log('[createUserData] ✓ Estudio principal guardado');
+        
+        console.log('[createUserData] Actualizando estado de autenticación...');
         const updateAuthStatus = await updateProfesionalAuthStatusDao(session.user.id, "active");
+        console.log('[createUserData] ✓ Estado actualizado');
+        
+        console.log('[createUserData] ✓✓ Proceso completado exitosamente');
         return true;
       } catch (error) {
-        console.error(error);
-        throw new Error("error en userdatacontroller");
+        console.error('[createUserData] ✗ Error en el proceso:');
+        console.error('[createUserData] Error type:', error instanceof Error ? error.constructor.name : typeof error);
+        console.error('[createUserData] Error message:', error instanceof Error ? error.message : String(error));
+        console.error('[createUserData] Error stack:', error instanceof Error ? error.stack : 'No stack available');
+        throw error instanceof Error ? error : new Error(String(error));
       }
       break;
     case "institution":

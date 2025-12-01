@@ -58,6 +58,8 @@ export default function ProfesionalProfileHookForm() {
   const [studyCountry, setStudyCountry] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOptionalFields, setShowOptionalFields] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
   // Cargar datos básicos que no dependen de listas externas
   useEffect(() => {
@@ -173,11 +175,21 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const onSubmit = handleSubmit(async (data) => {
+    console.log('[ProfesionalProfileForm] Iniciando envío del formulario');
+    console.log('[ProfesionalProfileForm] Datos a enviar:', data);
+    
     setIsSubmitting(true);
+    setSubmitError(null);
+    setSubmitSuccess(false);
+    
     try {
+      console.log('[ProfesionalProfileForm] Llamando a la API...');
       const response = await useHandleSubmitText(data, "/api/platform/profesional");
+      console.log('[ProfesionalProfileForm] Respuesta recibida - Status:', response.status);
 
       if (response.ok) {
+        console.log('[ProfesionalProfileForm] ✓ Guardado exitoso');
+        
         // Invalidar múltiples caches relacionados con el profesional
         await Promise.all([
           mutate(), // Cache local del useProfesional
@@ -185,15 +197,34 @@ export default function ProfesionalProfileHookForm() {
           globalMutate("/api/platform/profesional/complete"), // Cache del perfil completo si existe
         ]);
         
-        closeModal();
+        setSubmitSuccess(true);
+        
+        // Esperar un poco para mostrar el mensaje de éxito antes de cerrar
+        setTimeout(() => {
+          closeModal();
+        }, 1500);
       } else {
-        // Manejar error si es necesario
-        console.error("Error al enviar datos");
+        const errorData = await response.json();
+        console.error('[ProfesionalProfileForm] ✗ Error del servidor:', errorData);
+        
+        const errorMessage = errorData.details 
+          ? `${errorData.error}: ${errorData.details}`
+          : errorData.error || "Error al guardar los datos. Por favor, intenta de nuevo.";
+        
+        setSubmitError(errorMessage);
       }
     } catch (error) {
-      console.error("Error en el envío:", error);
+      console.error('[ProfesionalProfileForm] ✗ Excepción durante el envío:', error);
+      console.error('[ProfesionalProfileForm] Error stack:', error instanceof Error ? error.stack : 'No stack');
+      
+      const errorMessage = error instanceof Error 
+        ? `Error: ${error.message}`
+        : "Error de conexión. Por favor, verifica tu conexión e intenta de nuevo.";
+      
+      setSubmitError(errorMessage);
     } finally {
       setIsSubmitting(false);
+      console.log('[ProfesionalProfileForm] Proceso finalizado');
     }
   });
 
@@ -246,6 +277,40 @@ export default function ProfesionalProfileHookForm() {
           )}
 
           <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Datos Personales</h2>
+          
+          {/* Mensaje de éxito */}
+          {submitSuccess && (
+            <div className='w-full bg-green-50 border border-green-200 rounded-md p-3 mb-4 flex items-center gap-2'>
+              <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              </svg>
+              <span className='text-green-700 font-medium'>¡Datos guardados exitosamente!</span>
+            </div>
+          )}
+          
+          {/* Mensaje de error */}
+          {submitError && (
+            <div className='w-full bg-red-50 border border-red-200 rounded-md p-3 mb-4'>
+              <div className='flex items-start gap-2'>
+                <svg className="w-5 h-5 text-red-600 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <div className='flex-1'>
+                  <p className='text-red-700 font-medium'>Error al guardar</p>
+                  <p className='text-red-600 text-sm mt-1'>{submitError}</p>
+                </div>
+                <button
+                  onClick={() => setSubmitError(null)}
+                  className='text-red-400 hover:text-red-600 shrink-0'
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          )}
+          
           {/* Mensaje de estado si se está enviando */}
           {isSubmitting && (
             <div className='w-full bg-blue-50 border border-blue-200 rounded-md p-3 mb-4 flex items-center gap-2'>
