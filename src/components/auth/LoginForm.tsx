@@ -1,5 +1,5 @@
 "use client";
-import { redirect } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { useForgotPassword } from "@/hooks/useInvitation";
@@ -7,6 +7,7 @@ import { useForgotPassword } from "@/hooks/useInvitation";
 import Loading from "@/app/auth/loading";
 
 export default function LoginForm() {
+  const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showForgotPassword, setShowForgotPassword] = useState(false);
   const [forgotPasswordEmail, setForgotPasswordEmail] = useState("");
@@ -22,14 +23,19 @@ export default function LoginForm() {
       data[key] = value;
     });
     setLoading(true);
-    const response = await signIn("credentials", { ...data, redirect: false });
+    
+    try {
+      const response = await signIn("credentials", { ...data, redirect: false });
 
-    if (response?.error) {
+      if (response?.error) {
+        setLoading(false);
+        alert("Credenciales inválidas");
+      } else {
+        router.push("/platform");
+      }
+    } catch (error) {
       setLoading(false);
-      alert("Credenciales inválidas");
-    } else {
-      setLoading(false);
-      redirect("/platform");
+      alert("Error durante el inicio de sesión");
     }
   };
 

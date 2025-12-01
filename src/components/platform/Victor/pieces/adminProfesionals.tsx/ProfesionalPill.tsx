@@ -97,50 +97,50 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
 
           <div className='space-y-1'>
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Categoria de Profesion:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={mainStudy.sub_area}>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Categoria de Profesion:</p>
+              <p className='font-light text-(--main-arci) truncate' title={mainStudy.sub_area}>
                 {useHandleCategoryName(mainStudy.sub_area)}
               </p>
             </div>
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Especialidad:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={specialty}>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Especialidad:</p>
+              <p className='font-light text-(--main-arci) truncate' title={specialty}>
                 {specialty}
               </p>
             </div>
 
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Institución:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={institution}>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Institución:</p>
+              <p className='font-light text-(--main-arci) truncate' title={institution}>
                 {institution}
               </p>
             </div>
 
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Status:</p>
-              <p className='font-light text-[var(--main-arci)]'>{status}</p>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Status:</p>
+              <p className='font-light text-(--main-arci)'>{status}</p>
             </div>
 
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Email:</p>
-              <p className='font-light text-[var(--main-arci)] truncate' title={email}>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Email:</p>
+              <p className='font-light text-(--main-arci) truncate' title={email}>
                 {email}
               </p>
             </div>
 
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Ciudad:</p>
-              <p className='font-light text-[var(--main-arci)]'>{city}</p>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Ciudad:</p>
+              <p className='font-light text-(--main-arci)'>{city}</p>
             </div>
 
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Teléfono:</p>
-              <p className='font-light text-[var(--main-arci)]'>{phone}</p>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Teléfono:</p>
+              <p className='font-light text-(--main-arci)'>{phone}</p>
             </div>
 
             <div className='flex'>
-              <p className='text-sm text-gray-600 w-32 flex-shrink-0'>Código:</p>
-              <p className='font-light text-[var(--main-arci)] text-xs truncate' title={referCode}>
+              <p className='text-sm text-gray-600 w-32 shrink-0'>Código:</p>
+              <p className='font-light text-(--main-arci) text-xs truncate' title={referCode}>
                 {referCode.length > 15 ? referCode.substring(0, 15) + "..." : referCode}
               </p>
             </div>
