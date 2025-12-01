@@ -45,7 +45,7 @@ export const POST = async (request: Request) => {
         errorMessage: error instanceof Error ? error.message : String(error),
         errorStack: error instanceof Error ? error.stack : undefined,
         userEmail: session?.user?.email || body?.email || undefined,
-        userName: session?.user?.name || body?.name || undefined,
+        userName: body?.name || undefined,
         endpoint: 'POST /api/platform/profesional',
         requestBody: body,
         timestamp: new Date().toLocaleString('es-ES', { 
