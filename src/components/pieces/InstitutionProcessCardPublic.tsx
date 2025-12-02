@@ -69,7 +69,7 @@ export default function InstitutionProcessCardPublic(props: any) {
           
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
             <a 
-              href='/auth/genInvitation' 
+              href='/auth/register' 
               className='btn btn-sm bg-[var(--main-arci)] hover:bg-[var(--main-arci)]/90 text-white'
             >
               Regístrese
