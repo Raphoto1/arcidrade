@@ -44,6 +44,9 @@ function NavBar() {
           <li>
             <Link href={"/services"}>Servicios</Link>
           </li>
+          <li>
+            <Link href={"/offers"}>Ofertas</Link>
+          </li>
         </ul>
       </div>
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
@@ -86,6 +89,9 @@ function NavBar() {
             <li>
               <Link href={"/services"} onClick={closeDropdown}>Servicios</Link>
             </li>
+                      <li>
+            <Link href={"/offers"}>Ofertas</Link>
+          </li>
             {session ? (
               <>
                 <li>

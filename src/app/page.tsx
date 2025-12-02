@@ -1,5 +1,6 @@
 //app imports
 import Image from "next/image";
+import Link from "next/link";
 //project imports
 import Carrousel from "@/components/home/Carousel";
 import Steps from "@/components/home/Steps";
@@ -28,7 +29,7 @@ export const metadata = generatePageMetadata(
     "profesionales sanitarios",
     "instituciones salud",
     "trabajo enfermería",
-    "carreras medicina"
+    "carreras medicina",
   ],
   undefined,
   "/"
@@ -39,6 +40,12 @@ export default function Home() {
     <main className='flex flex-col items-center gap- min-h-screen justify-center'>
       <HomeStructuredData />
       <Carrousel />
+      <p className='text-sm md:text-base text-gray-600'>
+        ¿Ya te registraste?{" "}
+        <Link href='/auth/login' className='text-[var(--main-arci)] font-semibold hover:underline'>
+          Ingresa aquí
+        </Link>
+      </p>
       <Steps />
       <GridHomeWindows />
       <ThreeColumnGrid />
@@ -46,7 +53,7 @@ export default function Home() {
       <GridHomeWindowsCities />
       <BrColors title={"Principales Especialidades"} />
       <GridHomeWindowsSpecialities />
-      <OffersPublic />  
+      <OffersPublic />
     </main>
   );
 }

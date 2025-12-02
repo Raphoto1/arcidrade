@@ -163,6 +163,22 @@ export default function RegisterDirect() {
       
       <div className='flex justify-center items-center h-1/2 p-2 min-w-sm md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-full max-w-2xl align-middle items-center rounded-sm p-6 md:justify-center'>
+                      <div className='text-center mt-4 flex flex-col gap-3'>
+              <button
+                type='button'
+                onClick={() => router.push('/auth/login')}
+                className='text-base font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
+              >
+                ¿Ya tienes cuenta? Inicia sesión
+              </button>
+              <button
+                type='button'
+                onClick={() => router.push('/auth/genInvitation')}
+                className='text-base font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
+              >
+                ¿Recibiste una invitación? Complétala aquí
+              </button>
+            </div>
           <h2 className='text-2xl font-bold text-start font-var(--font-oswald) mb-4'>Registrarse en Arcidrade</h2>
           
           <form onSubmit={handleSubmit} className='form justify-center align-middle'>
@@ -354,23 +370,6 @@ export default function RegisterDirect() {
                 disabled={loading}
               >
                 Cancelar
-              </button>
-            </div>
-
-            <div className='text-center mt-4 flex flex-col gap-3'>
-              <button
-                type='button'
-                onClick={() => router.push('/auth/login')}
-                className='text-base font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
-              >
-                ¿Ya tienes cuenta? Inicia sesión
-              </button>
-              <button
-                type='button'
-                onClick={() => router.push('/auth/genInvitation')}
-                className='text-base font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
-              >
-                ¿Recibiste una invitación? Complétala aquí
               </button>
             </div>
           </form>
