@@ -28,7 +28,7 @@ export default function Footer() {
         </a>
       </div>
       </div>
-      <nav className='grid-flow-col gap-4 md:place-self-center md:justify-self-end md:justify-center md:align-center md:items-center'>
+      <nav className='grid-flow-col gap-4 justify-center align-middle items-center md:place-self-center md:justify-self-end md:justify-center md:align-center md:items-center'>
         <ModalForFormsMailButton title='Contáctanos'>
           <Contact />
         </ModalForFormsMailButton>

@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/db';
 
+// Marcar esta ruta como pública (sin caché)
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export async function GET() {
   const startTime = Date.now();
   const checks = {
@@ -55,7 +59,7 @@ export async function GET() {
 
   const totalResponseTime = Date.now() - startTime;
 
-  return NextResponse.json({
+  const response = NextResponse.json({
     status: overallStatus,
     timestamp: new Date().toISOString(),
     totalResponseTime: `${totalResponseTime}ms`,
@@ -65,4 +69,11 @@ export async function GET() {
   }, { 
     status: overallStatus === 'healthy' ? 200 : 503 
   });
+
+  // Headers para permitir acceso público
+  response.headers.set('Access-Control-Allow-Origin', '*');
+  response.headers.set('Access-Control-Allow-Methods', 'GET');
+  response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate');
+  
+  return response;
 }

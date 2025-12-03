@@ -167,14 +167,14 @@ export default function RegisterDirect() {
               <button
                 type='button'
                 onClick={() => router.push('/auth/login')}
-                className='text-base font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
+                className='text-xl font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
               >
                 ¿Ya tienes cuenta? Inicia sesión
               </button>
               <button
                 type='button'
                 onClick={() => router.push('/auth/genInvitation')}
-                className='text-base font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
+                className='text-xl font-semibold text-[var(--main-arci)] hover:text-[var(--soft-arci)] hover:underline transition-colors'
               >
                 ¿Recibiste una invitación? Complétala aquí
               </button>
