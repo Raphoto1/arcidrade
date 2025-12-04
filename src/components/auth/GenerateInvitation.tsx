@@ -38,7 +38,10 @@ export default function GenerateInvitation() {
       setIsLoading(true);
       const response = await useHandleSubmitText(data, "/api/auth/register");
       setIsLoading(false);
-      showAlert('success', "Invitación generada satisfactoriamente, por favor revise su correo y siga las Instrucciones, si no lo encuentra revise en su carpeta de spam");
+      const successMessage = session?.user.area === 'campaign' 
+        ? "Invitación generada satisfactoriamente, por favor revise su correo y siga las Instrucciones, si no lo encuentra revise en su carpeta de spam"
+        : "Email de verificación enviado satisfactoriamente, por favor revise su correo y siga las Instrucciones, si no lo encuentra revise en su carpeta de spam";
+      showAlert('success', successMessage);
       form.reset();
       router.refresh()
     } catch (error: any) {
@@ -68,7 +71,10 @@ export default function GenerateInvitation() {
       });
 
       if (response.ok) {
-        showAlert('success', 'Invitación reenviada exitosamente, revisa también en tu carpeta de spam');
+        const resendMessage = session?.user.area === 'campaign' 
+          ? 'Invitación reenviada exitosamente, revisa también en tu carpeta de spam'
+          : 'Email de verificación reenviado exitosamente, revisa también en tu carpeta de spam';
+        showAlert('success', resendMessage);
         setResendEmail('');
         setShowResendForm(false);
       } else {
@@ -104,7 +110,19 @@ export default function GenerateInvitation() {
         {isLoading && <Loading />}
         <div className='flex-col justify-center h-full bg-gray-200 w-full align-middle items-center rounded-sm p-4'>
         { session?.user.email ?<div><h1>Correo Autorizado para Enviar Invitación</h1><span>{session.user.email}</span></div> : null }
-        <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Generar Invitación</h2>
+        <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>{session?.user.area === 'campaign' ? 'Generar Invitación' : 'Verificar Email'}</h2>
+        
+        {/* Mensaje explicativo solo para usuarios no-campaign */}
+        {session?.user.area !== 'campaign' && (
+          <div className='mb-4 p-3 bg-blue-50 border-l-4 border-[var(--main-arci)] rounded'>
+            <p className='text-sm text-gray-700'>
+              <strong>📧 Verificación requerida:</strong> Para completar tu suscripción necesitamos verificar tu email, 
+              ya que será nuestro principal canal de comunicación para enviarte notificaciones importantes, 
+              actualizaciones de procesos y oportunidades.
+            </p>
+          </div>
+        )}
+
         <form onSubmit={handleSubmit} className='form justify-center align-middle'>
           <div className="md:grid md:w-full md:h-full grid">
             <label htmlFor='email' className="font-">Email</label>
@@ -125,7 +143,7 @@ export default function GenerateInvitation() {
             className='btn btn-wide bg-[var(--main-arci)] text-white hover:bg-[var(--soft-arci)] font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105'
             type='submit'
           >
-            📧 Generar Invitación
+            {session?.user.area === 'campaign' ? '📧 Generar Invitación' : '📧 Verificar Email'}
           </button>
         </form>
 
@@ -135,14 +153,14 @@ export default function GenerateInvitation() {
             className='btn btn-outline btn-wide text-[var(--main-arci)] border-[var(--main-arci)] hover:bg-[var(--main-arci)] hover:text-white'
             onClick={() => setShowResendForm(!showResendForm)}
           >
-            🔄 {showResendForm ? 'Cancelar Reenvío' : 'Reenviar Invitación'}
+            🔄 {showResendForm ? 'Cancelar Reenvío' : (session?.user.area === 'campaign' ? 'Reenviar Invitación' : 'Reenviar Email de Verificación')}
           </button>
         </div>
 
         {/* Formulario de reenvío */}
         {showResendForm && (
           <div className='mt-4 p-4 bg-blue-50 rounded-lg'>
-            <h3 className='text-lg font-semibold mb-3 text-[var(--main-arci)]'>Reenviar Invitación</h3>
+            <h3 className='text-lg font-semibold mb-3 text-[var(--main-arci)]'>{session?.user.area === 'campaign' ? 'Reenviar Invitación' : 'Reenviar Email de Verificación'}</h3>
             <form onSubmit={handleResendInvitation} className='flex flex-col gap-3'>
               <div>
                 <label htmlFor='resendEmail' className='block mb-1 font-medium'>

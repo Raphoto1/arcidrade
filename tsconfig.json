@@ -1,7 +1,11 @@
 {
   "compilerOptions": {
     "target": "ES2017",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
+    ],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -19,13 +23,34 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],
-      "@backendTypes/*": ["./src/types/backendTypes/*"],
- "@context/*": ["./src/context/*"]
-
+      "@/*": [
+        "./src/*"
+      ],
+      "@backendTypes/*": [
+        "./src/types/backendTypes/*"
+      ],
+      "@context/*": [
+        "./src/context/*"
+      ]
     },
-    "typeRoots": ["./node_modules/@types", "./src/types"]
+    "typeRoots": [
+      "./node_modules/@types",
+      "./src/types"
+    ]
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/api/auth/invitations/[id]/route.js", "./src/types", "src/app/api/auth/[...nextauth]/route.ts", "src/utils/authOptions.js", "src/utils/fetcher.js"],
-  "exclude": ["node_modules"]
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    "src/app/api/auth/invitations/[id]/route.js",
+    "./src/types",
+    "src/app/api/auth/[...nextauth]/route.ts",
+    "src/utils/authOptions.js",
+    "src/utils/fetcher.js",
+    ".next/dev/types/**/*.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
 }

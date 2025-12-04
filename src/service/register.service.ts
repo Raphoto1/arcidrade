@@ -1,6 +1,7 @@
 import prisma from "@/utils/db";
 import { AreasAvailable, SenderNum, StatusAvailable } from "@/generated/prisma";
 import { encrypt } from "@/utils/encrypter";
+import { fakerES as faker } from "@faker-js/faker";
 
 enum area {
   institution,
@@ -113,20 +114,23 @@ export async function registerDirectUser(
     }
 
     if (accountType === 'institution') {
-      // Crear perfil de institución
+      // Crear perfil de institución con fake_name generado
+      const fakeInstitutionName = faker.company.name();
       await prisma.institution_Data.create({
         data: {
           user_id: user.referCode,
-          fake_name: institutionName || nombre,
+          fake_name: fakeInstitutionName,
           name: institutionName || nombre,
           country: "", // Vacío por ahora
         },
       });
     } else {
-      // Crear perfil de profesional
+      // Crear perfil de profesional con fake_name generado
+      const fakeProfessionalName = faker.person.firstName();
       await prisma.profesional_data.create({
         data: {
           user_id: user.referCode,
+          fake_name: fakeProfessionalName,
           name: nombre,
           last_name: "", // Vacío por ahora
         },

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preview Email Templates - ARCIDRADE</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+        .preview-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            color: #384c9b;
+            margin-bottom: 40px;
+        }
+        .template-section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .template-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #384c9b;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #384c9b;
+        }
+        .template-preview {
+            border: 1px solid #ddd;
+            background: #fff;
+            padding: 20px;
+            overflow-x: auto;
+        }
+        .nav-links {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .nav-links a {
+            display: block;
+            color: #384c9b;
+            text-decoration: none;
+            padding: 5px 0;
+            font-size: 14px;
+        }
+        .nav-links a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav-links">
+        <strong>Navegación:</strong>
+        <a href="#invitation">Invitación Simple</a>
+        <a href="#mass-invitation">Invitación Masiva</a>
+        <a href="#website-invitation">Invitación Website</a>
+        <a href="#reset-password">Reset Password</a>
+        <a href="#contact">Contacto Usuario</a>
+        <a href="#contact-admin">Contacto Admin</a>
+        <a href="#error-log">Error Log</a>
+    </div>
+
+    <div class="preview-container">
+        <h1>📧 Preview de Templates de Email - ARCIDRADE</h1>
+
+        <!-- Template 1: Invitation -->
+        <div class="template-section" id="invitation">
+            <div class="template-title">1. Invitación Simple (sendInvitationMail)</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=invitation" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <!-- Template 2: Mass Invitation -->
+        <div class="template-section" id="mass-invitation">
+            <div class="template-title">2. Invitación Masiva (sendMassInvitationMail)</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=mass-invitation" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <!-- Template 3: Website Invitation -->
+        <div class="template-section" id="website-invitation">
+            <div class="template-title">3. Invitación a Visitar Website (sendWebsiteInvitationMail)</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=website-invitation" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <!-- Template 4: Reset Password -->
+        <div class="template-section" id="reset-password">
+            <div class="template-title">4. Recuperación de Contraseña (sendResetPasswordMail)</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=reset-password" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <!-- Template 5: Contact -->
+        <div class="template-section" id="contact">
+            <div class="template-title">5. Confirmación de Contacto (Usuario)</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=contact" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <!-- Template 6: Contact Admin -->
+        <div class="template-section" id="contact-admin">
+            <div class="template-title">6. Solicitud de Contacto con Admin</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=contact-admin" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+
+        <!-- Template 7: Error Log -->
+        <div class="template-section" id="error-log">
+            <div class="template-title">7. Log de Error (Desarrollo)</div>
+            <div class="template-preview">
+                <iframe src="/api/platform/preview-email?template=error-log" width="100%" height="600" frameborder="0"></iframe>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Nota: Ahora los templates se cargan desde /api/platform/preview-email
+        // que está protegido con autenticación de sesión
+    </script>
+</body>
+</html>

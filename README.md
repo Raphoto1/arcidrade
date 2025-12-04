@@ -381,6 +381,51 @@ La plataforma incluye sistema de analytics para:
 
 ## 📧 **Configuración de Email**
 
+### **Arquitectura de Email**
+
+El sistema de emails está organizado en plantillas separadas para mejor mantenibilidad:
+
+```
+src/utils/
+├── sendMail.ts                    # Funciones de envío (390 líneas)
+└── emailTemplates/                # Plantillas HTML separadas
+    ├── invitationTemplate.ts      # Invitación simple
+    ├── massInvitationTemplate.ts  # Invitación masiva
+    ├── websiteInvitationTemplate.ts # Invitación a website
+    ├── resetPasswordTemplate.ts   # Recuperación de contraseña
+    ├── contactTemplate.ts         # Confirmación de contacto
+    ├── contactAdminNotificationTemplate.ts # Notificación admin
+    ├── contactAdminTemplate.ts    # Solicitud de contacto
+    ├── errorLogTemplate.ts        # Log de errores
+    └── index.ts                   # Exportaciones centralizadas
+```
+
+### **Preview de Templates de Email**
+
+Para previsualizar los templates de email durante el desarrollo:
+
+**Ruta protegida:** `/api/platform/preview-email?template=<nombre>`
+
+**Templates disponibles:**
+- `invitation` - Invitación simple a registrarse
+- `mass-invitation` - Invitación masiva con personalización
+- `website-invitation` - Invitación a visitar el website
+- `reset-password` - Recuperación de contraseña
+- `contact` - Confirmación de contacto (usuario)
+- `contact-admin-notification` - Notificación interna a admin
+- `contact-admin` - Solicitud de contacto con admin
+- `error-log` - Log de errores del sistema
+
+**Ejemplo de uso:**
+```
+http://localhost:3000/api/platform/preview-email?template=invitation
+```
+
+**⚠️ Nota de seguridad:** Esta ruta requiere autenticación de sesión. Solo usuarios autenticados en la plataforma pueden acceder a los previews.
+
+**Página de visualización HTML:**
+Abre `preview-email-templates.html` en tu navegador para ver todos los templates en un solo lugar con navegación entre ellos.
+
 ### **Solución Rápida para Problemas de Entregabilidad**
 
 Si los emails están siendo rechazados o llegan a spam, consulta:

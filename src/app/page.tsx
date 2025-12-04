@@ -40,9 +40,9 @@ export default function Home() {
     <main className='flex flex-col items-center gap- min-h-screen justify-center'>
       <HomeStructuredData />
       <Carrousel />
-      <p className='text-sm md:text-base text-gray-600'>
+      <p className='text-sm md:text-base text-gray-600 md:mt-4'>
         ¿Ya te registraste?{" "}
-        <Link href='/auth/login' className='text-[var(--main-arci)] font-semibold hover:underline'>
+        <Link href='/auth/login' className='text-(--main-arci) font-bold hover:underline'>
           Ingresa aquí
         </Link>
       </p>
