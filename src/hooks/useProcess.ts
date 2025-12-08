@@ -1,59 +1,67 @@
-import useSWR from "swr";
+import useSWR, { SWRConfiguration } from "swr";
+import { fetcher } from "@/utils/fetcher";
 
 type ProfesionalResponse = {
   payload: any; // Idealmente reemplazar con un tipo más preciso
 };
 
-const fetcher = async (url: string): Promise<ProfesionalResponse> => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    throw new Error("Error en la petición");
-  }
-  return res.json();
+// Configuración optimizada de SWR
+const swrConfig: SWRConfiguration = {
+  revalidateOnFocus: false,
+  revalidateOnReconnect: true,
+  dedupingInterval: 60000, // 1 minuto
+  focusThrottleInterval: 300000, // 5 minutos
+  errorRetryCount: 3,
+  errorRetryInterval: 5000, // 5 segundos
+  onError: (error) => {
+    console.error('[SWR] Error fetching process data:', error.message);
+  },
 };
 
 export const useProcesses = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/", fetcher, swrConfig);
   return { data, error, isLoading, mutate };
 };
 
 export const useActiveProcesses = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/active", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/active", fetcher, swrConfig);
   return { data, error, isLoading, mutate };
 };
 
 export const useFinishedProcesses = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/completed", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/completed", fetcher, swrConfig);
   return { data, error, isLoading, mutate };
 }
 
 export const usePausedProcesses = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/paused", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/paused", fetcher, swrConfig);
   return { data, error, isLoading, mutate };
 }
 
 export const useActiveProcessesByUser = (userId: string | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     userId ? `/api/platform/process/status/active/${userId}` : null,
-    userId ? fetcher : null
+    userId ? fetcher : null,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 };
 
 export const usePendingProcesses = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/pending", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/pending", fetcher, swrConfig);
   return { data, error, isLoading, mutate };
 };
 
 export const useArchivedProcesses = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/archived", fetcher);
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/process/status/archived", fetcher, swrConfig);
   return { data, error, isLoading, mutate };
 };
 
 export const useProcess = (processId: number | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     processId ? `/api/platform/process/${processId}` : null,
-    fetcher
+    fetcher,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 };
@@ -61,7 +69,8 @@ export const useProcess = (processId: number | null) => {
 export const useProfesionalsListedInProcess = (processId: number | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     processId ? `/api/platform/process/candidates/${processId}` : null,
-    fetcher
+    fetcher,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 };
@@ -69,7 +78,8 @@ export const useProfesionalsListedInProcess = (processId: number | null) => {
 export const useAllProfesionalsPostulatedByAddedBy = (addedBy: string | null) => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     addedBy ? `/api/platform/process/all/candidates/${addedBy}` : null,
-    fetcher
+    fetcher,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 };
@@ -77,7 +87,8 @@ export const useAllProfesionalsPostulatedByAddedBy = (addedBy: string | null) =>
 export const useAllProcesses= () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     `/api/platform/process/all`,
-    fetcher
+    fetcher,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 }
@@ -85,7 +96,8 @@ export const useAllProcesses= () => {
 export const useAllPendingProcesses= () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     `/api/platform/process/all/pending`,
-    fetcher
+    fetcher,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 }
@@ -93,7 +105,8 @@ export const useAllPendingProcesses= () => {
 export const useAllActiveProcesses= () => {
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
     `/api/platform/process/all/active`,
-    fetcher
+    fetcher,
+    swrConfig
   );
   return { data, error, isLoading, mutate };
 }

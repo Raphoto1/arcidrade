@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import InstitutionCard from "../../pieces/InstitutionCard";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import { ImSearch } from "react-icons/im";
-import { FiFilter, FiX } from "react-icons/fi";
+import { FiFilter, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePaginatedProfesionals } from "@/hooks/usePlatPro";
 import { medicalOptions, nurseOptions, pharmacistOptions, subAreaOptions } from "@/static/data/staticData";
 
@@ -18,7 +18,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
   const [selectedSpeciality, setSelectedSpeciality] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const itemsPerPage = 9;
+  const itemsPerPage = 6;
   
   // Función para obtener las opciones de especialidad según el subArea
   const getSpecialityOptions = () => {
@@ -30,7 +30,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
       case 'pharmacist':
         return pharmacistOptions;
       default:
-        return medicalOptions; // Por defecto médico
+        return medicalOptions;
     }
   };
   
@@ -59,13 +59,8 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
     itemsPerPage,
     debouncedSearchTerm,
     selectedSpeciality,
-    selectedSubArea ? selectedSubArea : undefined // Solo enviar si hay algo seleccionado
+    selectedSubArea ? selectedSubArea : undefined
   );
-
-  // Función para cargar más elementos
-  const loadMore = () => {
-    setCurrentPage(prev => prev + 1);
-  };
 
   // Manejar cambio en el input de búsqueda
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -94,6 +89,8 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
 
   // Mostrar error solo si hay error
   if (error) return <div className="text-center p-4 text-red-500">Error al cargar profesionales</div>;
+
+  const totalPages = paginatedData?.totalPages || 1;
 
   return (
     <div className='grid justify-center'>
@@ -150,7 +147,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 >
                   <option value="">Todas las categorías</option>
-                  {subAreaOptions.map((option) => (
+                  {subAreaOptions.map(option => (
                     <option key={option.value} value={option.value}>
                       {option.label}
                     </option>
@@ -167,11 +164,8 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                   value={selectedSpeciality}
                   onChange={handleSpecialityChange}
                   className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-                  disabled={!selectedSubArea}
                 >
-                  <option value="">
-                    {selectedSubArea ? 'Todas las especialidades' : 'Selecciona una categoría primero'}
-                  </option>
+                  <option value="">Todas las especialidades</option>
                   {getSpecialityOptions().map((option: any) => (
                     <option key={option.id} value={option.name}>
                       {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
@@ -182,7 +176,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
 
               {/* Botón limpiar filtros */}
               <div className="flex items-end">
-                <button 
+                <button
                   onClick={clearAllFilters}
                   disabled={!hasActiveFilters}
                   className="btn btn-outline btn-sm disabled:opacity-50 disabled:cursor-not-allowed"
@@ -193,11 +187,11 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
             </div>
           </div>
         )}
-        
+
         {/* Mostrar filtros activos */}
         {hasActiveFilters && (
           <div className='text-center mb-2 text-sm text-gray-600 mx-4'>
-            <div className="flex flex-wrap justify-center gap-2">
+            <div className='flex flex-wrap justify-center gap-2'>
               {debouncedSearchTerm && (
                 <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                   Búsqueda: "{debouncedSearchTerm}"
@@ -254,16 +248,6 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
             </div>
           )}
 
-          {/* Loader secundario para cambios de filtros sin overlay completo */}
-          {isLoading && currentPage === 1 && hasActiveFilters && (
-            <div className='absolute top-4 right-4 z-20'>
-              <div className='bg-white p-2 rounded-lg shadow-md flex items-center gap-2'>
-                <div className='loading loading-spinner loading-sm text-primary'></div>
-                <span className='text-xs text-gray-600'>Filtrando...</span>
-              </div>
-            </div>
-          )}
-
           <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
             {paginatedData?.data?.length > 0 ? (
               paginatedData.data.map((profesional: any, index: number) => (
@@ -286,41 +270,77 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
             )}
           </div>
         </div>
-        
-        {/* Botón Cargar Más */}
-        {paginatedData?.hasMore && (
-          <div className='flex justify-center mt-4 mb-4'>
-            <button 
-              onClick={loadMore}
-              disabled={isLoading}
-              className='btn btn-primary bg-[var(--orange-arci)] border-none hover:bg-[var(--orange-arci)]/80 disabled:opacity-50 min-w-[200px]'
-            >
-              {isLoading && currentPage > 1 ? (
-                <div className='flex items-center gap-2'>
-                  <div className='loading loading-spinner loading-sm'></div>
-                  <span>Cargando más...</span>
-                </div>
-              ) : (
-                'Cargar más profesionales'
-              )}
-            </button>
-          </div>
-        )}
 
-        {/* Loader para paginación adicional */}
-        {isLoading && currentPage > 1 && (
-          <div className='flex justify-center mt-2 mb-4'>
-            <div className='flex items-center gap-2 text-gray-600'>
-              <div className='loading loading-dots loading-sm'></div>
-              <span className='text-sm'>Cargando página {currentPage}...</span>
+        {/* Información y controles de paginación */}
+        {paginatedData && paginatedData.total > 0 && (
+          <div className='flex flex-col items-center gap-4 mt-6 mb-4'>
+            {/* Información de paginación */}
+            <div className='text-sm text-gray-600'>
+              Mostrando {(currentPage - 1) * itemsPerPage + 1} a {Math.min(currentPage * itemsPerPage, paginatedData.total)} de {paginatedData.total} profesionales
             </div>
-          </div>
-        )}
 
-        {/* Información de elementos mostrados */}
-        {paginatedData && (
-          <div className='text-center text-sm text-gray-600 mb-4'>
-            Página {paginatedData.page} de {paginatedData.totalPages} - {paginatedData.total} profesionales en total
+            {/* Controles de paginación */}
+            {totalPages > 1 && (
+              <div className='flex items-center gap-2'>
+                {/* Botón anterior */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1 || isLoading}
+                  className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                  <FiChevronLeft size={16} />
+                  Anterior
+                </button>
+
+                {/* Números de página */}
+                <div className='flex gap-1'>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      disabled={isLoading}
+                      className={`btn btn-sm min-w-[40px] ${
+                        currentPage === page 
+                          ? 'bg-[var(--main-arci)] text-white border-none' 
+                          : 'btn-outline'
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Botón siguiente */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages || isLoading}
+                  className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                  Siguiente
+                  <FiChevronRight size={16} />
+                </button>
+              </div>
+            )}
+
+            {/* Selector de página directa */}
+            <div className='flex items-center gap-2'>
+              <label className='text-sm text-gray-600'>Ir a página:</label>
+              <input
+                type='number'
+                min='1'
+                max={totalPages}
+                value={currentPage}
+                onChange={(e) => {
+                  const page = parseInt(e.target.value);
+                  if (page >= 1 && page <= totalPages) {
+                    setCurrentPage(page);
+                  }
+                }}
+                disabled={isLoading}
+                className='input input-sm input-bordered w-16 text-center disabled:opacity-50 disabled:cursor-not-allowed'
+              />
+              <span className='text-sm text-gray-600'>de {totalPages}</span>
+            </div>
           </div>
         )}
       </div>

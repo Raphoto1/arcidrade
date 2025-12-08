@@ -1,9 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import InstitutionCard from "../../pieces/InstitutionCard";
-import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import { ImSearch } from "react-icons/im";
-import { FiFilter, FiX, FiGlobe } from "react-icons/fi";
+import { FiFilter, FiX, FiGlobe, FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { usePaginatedInstitutions } from "@/hooks/usePlatInst";
 import { medicalOptions } from "@/static/data/staticData";
 import { Country } from "country-state-city";
@@ -19,7 +18,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const [showFilters, setShowFilters] = useState(false);
-  const itemsPerPage = 9;
+  const itemsPerPage = 6;
 
   // Obtener lista de países usando country-state-city
   const countries = Country.getAllCountries()
@@ -50,11 +49,6 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
     isLoading,
   } = usePaginatedInstitutions(currentPage, itemsPerPage, debouncedSearchTerm, selectedCountry, selectedSpecialization);
 
-  // Función para cargar más elementos
-  const loadMore = () => {
-    setCurrentPage((prev) => prev + 1);
-  };
-
   // Manejar cambio en el input de búsqueda
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -82,6 +76,8 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
 
   // Mostrar error solo si hay error
   if (error) return <div className='text-center p-4 text-red-500'>Error al cargar instituciones</div>;
+
+  const totalPages = paginatedData?.totalPages || 1;
 
   return (
     <div className='grid justify-center'>
@@ -198,14 +194,14 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
           </div>
         )}
 
-        {/* Grid de profesionales con loader específico */}
+        {/* Grid de instituciones con loader específico */}
         <div className='relative min-h-[400px]'>
           {/* Loader superpuesto solo para la primera carga */}
           {isLoading && currentPage === 1 && (
             <div className='absolute inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center z-10 rounded-md'>
               <div className='flex flex-col items-center gap-2'>
                 <div className='loading loading-spinner loading-lg text-primary'></div>
-                <p className='text-gray-600'>Cargando profesionales...</p>
+                <p className='text-gray-600'>Cargando instituciones...</p>
               </div>
             </div>
           )}
@@ -223,22 +219,76 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
           </div>
         </div>
 
-        {/* Botón Cargar Más */}
-        {paginatedData?.hasMore && (
-          <div className='flex justify-center mt-4 mb-4'>
-            <button
-              onClick={() => setCurrentPage((prev) => prev + 1)}
-              disabled={isLoading}
-              className='btn btn-primary bg-[var(--orange-arci)] border-none hover:bg-[var(--orange-arci)]/80 disabled:opacity-50'>
-              {isLoading ? "Cargando..." : "Cargar más instituciones"}
-            </button>
-          </div>
-        )}
+        {/* Información y controles de paginación */}
+        {paginatedData && paginatedData.total > 0 && (
+          <div className='flex flex-col items-center gap-4 mt-6 mb-4'>
+            {/* Información de paginación */}
+            <div className='text-sm text-gray-600'>
+              Mostrando {(currentPage - 1) * itemsPerPage + 1} a {Math.min(currentPage * itemsPerPage, paginatedData.total)} de {paginatedData.total} instituciones
+            </div>
 
-        {/* Información de elementos mostrados */}
-        {paginatedData && (
-          <div className='text-center text-sm text-gray-600 mb-4'>
-            Página {paginatedData.page} de {paginatedData.totalPages} - {paginatedData.total} instituciones en total
+            {/* Controles de paginación */}
+            {totalPages > 1 && (
+              <div className='flex items-center gap-2'>
+                {/* Botón anterior */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                  disabled={currentPage === 1 || isLoading}
+                  className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                  <FiChevronLeft size={16} />
+                  Anterior
+                </button>
+
+                {/* Números de página */}
+                <div className='flex gap-1'>
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      disabled={isLoading}
+                      className={`btn btn-sm min-w-10 ${
+                        currentPage === page 
+                          ? 'bg-[var(--main-arci)] text-white border-none' 
+                          : 'btn-outline'
+                      } disabled:opacity-50 disabled:cursor-not-allowed`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Botón siguiente */}
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                  disabled={currentPage === totalPages || isLoading}
+                  className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
+                >
+                  Siguiente
+                  <FiChevronRight size={16} />
+                </button>
+              </div>
+            )}
+
+            {/* Selector de página directa */}
+            <div className='flex items-center gap-2'>
+              <label className='text-sm text-gray-600'>Ir a página:</label>
+              <input
+                type='number'
+                min='1'
+                max={totalPages}
+                value={currentPage}
+                onChange={(e) => {
+                  const page = parseInt(e.target.value);
+                  if (page >= 1 && page <= totalPages) {
+                    setCurrentPage(page);
+                  }
+                }}
+                disabled={isLoading}
+                className='input input-sm input-bordered w-16 text-center disabled:opacity-50 disabled:cursor-not-allowed'
+              />
+              <span className='text-sm text-gray-600'>de {totalPages}</span>
+            </div>
           </div>
         )}
       </div>

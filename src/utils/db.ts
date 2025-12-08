@@ -14,13 +14,26 @@ let pool: Pool;
 let adapter: PrismaPg;
 let prismaClient: PrismaClient;
 
+const poolConfig = {
+  connectionString,
+  max: 20,
+  min: 2,
+  idleTimeoutMillis: 120000, // 2 minutos - evita cortes inesperados
+  connectionTimeoutMillis: 10000, // 10 segundos para conectar
+  statement_timeout: 120000, // 2 minutos query timeout
+};
+
 if (process.env.NODE_ENV === 'production') {
   // En producción, usar el patrón normal
-  pool = new Pool({ 
-    connectionString,
-    max: 5,
-    idleTimeoutMillis: 30000,
-    connectionTimeoutMillis: 5000,
+  pool = new Pool(poolConfig)
+  
+  pool.on('error', (err) => {
+    console.error('[DB] Pool error:', err)
+  })
+  
+  pool.on('connect', () => {
+    // Set statement timeout on each connection
+    pool.query('SET statement_timeout = 120000')
   })
   
   adapter = new PrismaPg(pool)
@@ -28,15 +41,14 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   // En desarrollo, usar singleton global para evitar múltiples instancias con HMR
   if (!(global as any).prisma) {
-    pool = new Pool({ 
-      connectionString,
-      max: 5,
-      idleTimeoutMillis: 30000,
-      connectionTimeoutMillis: 5000,
-    })
+    pool = new Pool(poolConfig)
     
     pool.on('error', (err) => {
       console.error('[DB] Pool error:', err)
+    })
+    
+    pool.on('connect', () => {
+      pool.query('SET statement_timeout = 120000')
     })
     
     adapter = new PrismaPg(pool)
