@@ -14,23 +14,44 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password", placeholder: "Ingresa tu contraseña" },
       },
       async authorize(credentials: { email: string; password: string } | undefined) {
-        if (!credentials) return null;
+        if (!credentials?.email || !credentials?.password) return null;
 
-        const userFound = await prisma.auth.findUnique({
-          where: { email: credentials.email },
-        });
-        
-        if (!userFound) return null;
+        try {
+          const userFound = await prisma.auth.findUnique({
+            where: { email: credentials.email },
+            select: {
+              referCode: true,
+              email: true,
+              password: true,
+              area: true,
+              status: true,
+            }
+          });
+          
+          if (!userFound) {
+            return null;
+          }
 
-        const isMatch = await bcrypt.compare(credentials.password, userFound.password);
-        if (!isMatch) return null;
+          // Verificar que el usuario no esté desactivado
+          if (userFound.status === 'desactivated') {
+            return null;
+          }
 
-        return {
-          id: userFound.referCode,
-          email: userFound.email,
-          referCode: userFound.referCode,
-          area: userFound.area,
-        };
+          const isMatch = await bcrypt.compare(credentials.password, userFound.password);
+          if (!isMatch) {
+            return null;
+          }
+
+          return {
+            id: userFound.referCode,
+            email: userFound.email,
+            referCode: userFound.referCode,
+            area: userFound.area,
+          };
+        } catch (error) {
+          console.error('[AUTH] Authorization error:', error instanceof Error ? error.message : String(error));
+          return null;
+        }
       },
     }),
   ],

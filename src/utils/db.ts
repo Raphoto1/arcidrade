@@ -16,10 +16,10 @@ let prismaClient: PrismaClient;
 
 const poolConfig = {
   connectionString,
-  max: 20,
-  min: 2,
+  max: 30,
+  min: 5,
   idleTimeoutMillis: 120000, // 2 minutos - evita cortes inesperados
-  connectionTimeoutMillis: 10000, // 10 segundos para conectar
+  connectionTimeoutMillis: 15000, // 15 segundos para conectar (aumentado)
   statement_timeout: 120000, // 2 minutos query timeout
 };
 
