@@ -15,19 +15,28 @@ import UserDescription from "./UserDescription";
 
 export default function HeroHeader() {
   const { data, error, isLoading } = useProfesional();
-  console.log('hero en profesional', data);
   
-  if (isLoading) return <div>Cargando...</div>;
-  if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
+  if (isLoading) return <div className='p-4 text-center'>Cargando perfil...</div>;
+  if (error) {
+    return <div className='p-4 text-center text-error'>Error al cargar datos. Por favor, recarga la página.</div>;
+  }
+  
+  // Manejo seguro de la estructura de datos
+  const profesionalData = Array.isArray(data?.payload) ? data?.payload[0] : data?.payload;
+  
+  if (!profesionalData) {
+    return <div className='p-4 text-center text-warning'>No hay datos de perfil disponibles</div>;
+  }
+  
   //full name
   let fullName = "";
-  if (data?.payload[0].name == null) {
+  if (profesionalData?.name == null) {
     fullName = "No se ha completado el registro de datos personales";
   } else {
-    fullName = `${data?.payload[0].name} ${data?.payload[0].last_name}`;
+    fullName = `${profesionalData?.name} ${profesionalData?.last_name || ''}`.trim();
   }
 
-  const isDeactivated = data?.payload[0]?.auth?.status === 'desactivated';
+  const isDeactivated = profesionalData?.auth?.status === 'desactivated';
 
   //AJUSTAR IMAGEN DE FONDO Y ALINEADO EN MD
   return (
@@ -62,12 +71,12 @@ export default function HeroHeader() {
         <div className='vacio none md:visible md:w-1/3 z-10'></div>
         <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 md:w-1/3'>
           <div className='relative w-40 h-40'>
-            {data?.payload[0].avatar ? (
-              <Image src={data?.payload[0].avatar} className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
+            {profesionalData?.avatar ? (
+              <Image src={profesionalData?.avatar} className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
             ) : (
               <Image src='/logos/Logo Arcidrade Cond.png' className='w-full h-full rounded-full object-cover' width={500} height={500} alt='fillImage' />
             )}
-            {data?.payload[0].name != null ? (
+            {profesionalData?.name != null ? (
               <div className='absolute bottom-2 right-2 z-10'>
                 <ModalForFormsPlusButton title='Actualizar Imagen'>
                   <AvatarForm />
@@ -80,15 +89,15 @@ export default function HeroHeader() {
         <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3'>
           <h3 className='text-xl font-bold font-var(--font-oswald)'>Presentación</h3>
           <div className='max-h-fit'>
-            <p className='text-sm max-height-10 line-clamp-5'>{data?.payload[0].description || "Agrega una descripción para que todos te conozcan"}</p>
+            <p className='text-sm max-height-10 line-clamp-5'>{profesionalData?.description || "Agrega una descripción para que todos te conozcan"}</p>
           </div>
           <div className='flex gap-2 justify-end mt-5'>
-            {data?.payload[0].name != null ? (
+            {profesionalData?.name != null ? (
               <ModalForPreviewTextLink title='Ver Más...'>
-                <UserDescription description={data?.payload[0].description} />
+                <UserDescription description={profesionalData?.description} />
               </ModalForPreviewTextLink>
             ) : null}
-            {data?.payload[0].name != null ? (
+            {profesionalData?.name != null ? (
               <ModalForFormsSoftBlue title='Actualizar'>
                 <UserDescriptionForm />
               </ModalForFormsSoftBlue>
@@ -98,8 +107,8 @@ export default function HeroHeader() {
       </div>
       {/* Opciones */}
       <div className='options grid justify-center relative z-10 md:pr-5'>
-        <h3 className='text-xl text-center capitalize'>{data?.payload[1].title || "Título Princial"}</h3>
-        {data?.payload[1].title ?null: <h3>Mejore sus posibilidades de ser encontrado agregando más información</h3>}
+        <h3 className='text-xl text-center capitalize'>{Array.isArray(data?.payload) && data.payload[1]?.title || "Título Princial"}</h3>
+        {Array.isArray(data?.payload) && data.payload[1]?.title ? null: <h3>Mejore sus posibilidades de ser encontrado agregando más información</h3>}
         <div className='flex justify-center'>
           {/* <button className='btn bg-[var(--main-arci)] text-white'>Buscando Ofertas</button>
           <button className='btn bg-[var(--main-arci)] text-white'>Disponible Para trabajar</button> */}

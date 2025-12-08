@@ -20,7 +20,6 @@ export const POST = async (req: NextRequest, { params }: any) => {
         return NextResponse.json({ error: "Archivo inválido" }, { status: 400 });
       }
       const blob = await uploadUserExperienceFile(id, file);
-      console.log("blob en endpoint speci", blob);
       return NextResponse.json(blob);
     } else {
       return NextResponse.json({ error: "Error al agregar cv" }, { status: 400 });

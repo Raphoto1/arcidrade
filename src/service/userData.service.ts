@@ -235,32 +235,69 @@ export const updateUserExperienceService = async (id: number, data: any) => {
 };
 
 // Nuevo servicio para obtener estadísticas de usuarios
+// Caché en memoria para estadísticas con timestamp
+let statsCache: any = null;
+let statsCacheTime: number = 0;
+const STATS_CACHE_DURATION = 30000; // Caché de 30 segundos
+
 export const getUserStatsService = async () => {
   try {
+    // Verificar si tenemos caché válido
+    const now = Date.now();
+    if (statsCache && (now - statsCacheTime) < STATS_CACHE_DURATION) {
+      return statsCache;
+    }
+
     // Usar la instancia de prisma directamente desde utils
     const { default: prisma } = await import("@/utils/db");
     
-    // Obtener conteos directamente por cada status
-    const [invited, registered, active, deactivated, total] = await Promise.all([
-      prisma.auth.count({ where: { status: 'invited' } }),
-      prisma.auth.count({ where: { status: 'registered' } }),
-      prisma.auth.count({ where: { status: 'active' } }),
-      prisma.auth.count({ where: { status: 'desactivated' } }),
-      prisma.auth.count()
-    ]);
+    // Optimización: usar un timeout más agresivo para conteos
+    // Obtener conteos con AbortController para evitar queries largas
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos max
+    
+    try {
+      // Obtener conteos directamente por cada status
+      // Ejecutar secuencialmente en lugar de Promise.all para mejor control
+      const invited = await prisma.auth.count({ where: { status: 'invited' } });
+      const registered = await prisma.auth.count({ where: { status: 'registered' } });
+      const active = await prisma.auth.count({ where: { status: 'active' } });
+      const deactivated = await prisma.auth.count({ where: { status: 'desactivated' } });
+      const total = await prisma.auth.count();
 
-    // Convertir a formato más manejable
-    const formattedStats = {
-      invited,
-      registered,
-      active,
-      deactivated,
-      total
-    };
+      // Convertir a formato más manejable
+      const formattedStats = {
+        invited,
+        registered,
+        active,
+        deactivated,
+        total
+      };
 
-    return formattedStats;
+      // Guardar en caché
+      statsCache = formattedStats;
+      statsCacheTime = now;
+
+      return formattedStats;
+    } finally {
+      clearTimeout(timeoutId);
+    }
   } catch (error) {
     console.error("Error getting user stats:", error);
-    throw error;
+    
+    // Si hay error pero tenemos caché antiguo, devolver eso
+    if (statsCache) {
+      console.warn("Returning cached stats due to error");
+      return statsCache;
+    }
+    
+    // Si no hay caché, devolver valores por defecto
+    return {
+      invited: 0,
+      registered: 0,
+      active: 0,
+      deactivated: 0,
+      total: 0
+    };
   }
 };

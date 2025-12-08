@@ -9,13 +9,27 @@ interface UserStats {
 }
 
 const fetcher = async (url: string) => {
-  const res = await fetch(url);
-  if (!res.ok) {
-    const errorData = await res.json();
-    console.error(`Error ${res.status}:`, errorData);
-    throw new Error(`HTTP ${res.status}: ${errorData.error || 'Unknown error'}`);
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 segundos timeout
+
+  try {
+    const res = await fetch(url, {
+      signal: controller.signal,
+      headers: {
+        'Accept': 'application/json',
+      }
+    });
+    
+    if (!res.ok) {
+      const errorData = await res.json().catch(() => ({}));
+      console.error(`Error ${res.status}:`, errorData);
+      throw new Error(`HTTP ${res.status}: ${errorData.error || 'Unknown error'}`);
+    }
+    
+    return res.json();
+  } finally {
+    clearTimeout(timeoutId);
   }
-  return res.json();
 };
 
 export const useUserStats = () => {
@@ -25,6 +39,13 @@ export const useUserStats = () => {
     {
       refreshInterval: 30000, // Refrescar cada 30 segundos
       revalidateOnFocus: true,
+      dedupingInterval: 30000, // Deduplicar requests en 30 segundos
+      errorRetryCount: 2, // Máximo 2 reintentos
+      errorRetryInterval: 5000, // 5 segundos entre reintentos
+      shouldRetryOnError: true,
+      onError: (err) => {
+        console.warn('User stats fetch failed:', err.message);
+      }
     }
   );
 
@@ -39,7 +60,7 @@ export const useUserStats = () => {
   return {
     userStats,
     isLoading,
-    error: error || (!isLoading && !data?.success ? 'Error loading user stats' : null),
+    error: error || (!isLoading && !data?.success && data ? 'Error loading user stats' : null),
     mutate,
     rawData: data?.payload
   };

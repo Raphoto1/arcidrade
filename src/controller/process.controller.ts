@@ -33,7 +33,6 @@ import { getProfesionalsByAddedByDao } from "@/dao/process.dao";
 export const createProcess = async (data: any) => {
   const session = await getServerSession(authOptions);
   const userId = session?.user?.id;
-  console.log("userId en controller", userId);
 
   let pStatus = "pending";
   if (session?.user?.area == "victor") {

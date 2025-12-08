@@ -32,6 +32,11 @@ model Auth {
   study_speciality_favorite  Study_speciality_favorite[]
   study_specialization       Study_specialization[]
   fail_mail                  fail_mail?
+
+  // Índices para mejorar performance de queries
+  @@index([status])
+  @@index([area])
+  @@index([status, area])
 }
 
 model fail_mail {

@@ -57,7 +57,6 @@ interface ProfesionalPillProps {
 
 export default function ProfesionalPill({ profesional, isPaused = false }: ProfesionalPillProps) {
   // Validación de seguridad: si no hay profesional, mostrar componente vacío
-  console.log(profesional);
   
   if (!profesional) {
     return (

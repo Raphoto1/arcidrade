@@ -7,7 +7,6 @@ export const GET = async (req: NextRequest, { params }: any) => {
   try {
     const param = await params;
     const userId: string = param.user;
-    console.log('userId',userId);
     
     const process = await getProcessesWhereProfesionalIsListed(userId);
     return NextResponse.json({ message: "process data success", payload: process }, { status: 200 });

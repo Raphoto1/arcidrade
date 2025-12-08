@@ -68,7 +68,6 @@ export async function POST(request: NextRequest) {
           
           if (existingUser) {
             // Si el usuario ya existe, usar su referCode existente
-            console.log(`Usuario ${email} ya existe, usando referCode existente: ${existingUser.referCode}`);
             userToUse = existingUser;
           } else {
             // Crear usuario en la base de datos solo si no existe

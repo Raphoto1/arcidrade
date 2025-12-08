@@ -9,7 +9,29 @@ import ProfesionalGridSearch from "@/components/platform/institution/Profesional
 import ListedProcess from "./ListedProcess";
 export default function Profesional() {
   const {data, error, isLoading} = useProfesional();
-  const isDeactivated = data?.payload[0]?.auth?.status === 'desactivated';
+  
+  // Manejo seguro de la estructura de datos
+  const profesionalData = Array.isArray(data?.payload) ? data.payload[0] : data?.payload;
+  const isDeactivated = profesionalData?.auth?.status === 'desactivated';
+  
+  if (isLoading) {
+    return (
+      <div className='flex justify-center items-center min-h-screen'>
+        <div className="loading loading-spinner loading-lg"></div>
+      </div>
+    );
+  }
+  
+  if (error || !profesionalData) {
+    return (
+      <div className='flex justify-center items-center min-h-screen'>
+        <div className='text-center'>
+          <p className='text-error text-lg'>Error al cargar datos del profesional</p>
+          <p className='text-gray-500 text-sm mt-2'>Por favor, intenta nuevamente</p>
+        </div>
+      </div>
+    );
+  }
   
   return (
     <div className=''>
