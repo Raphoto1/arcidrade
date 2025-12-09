@@ -10,3 +10,4 @@ export { getResetPasswordTemplate } from './resetPasswordTemplate';
 export { getContactTemplate, getContactAdminNotificationTemplate } from './contactTemplate';
 export { getContactAdminTemplate } from './contactAdminTemplate';
 export { getErrorLogTemplate } from './errorLogTemplate';
+export { getPendingInvitationReminderTemplate } from './pendingInvitationReminderTemplate';

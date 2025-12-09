@@ -7,6 +7,8 @@ import ModalForPreview from "@/components/modals/ModalForPreview";
 import GenerateMasiveInvitationsNoSus from "@/components/forms/platform/victor/GenerateMasiveInvitationsNoSus";
 import GenerateMasiveInvitationsSus from "@/components/forms/platform/victor/GenerateMasiveInvitationsSus";
 import GenerateSingleInvitation from "@/components/forms/platform/victor/GenerateSingleInvitation";
+import RemindPendingInvitations from "@/components/platform/Victor/RemindPendingInvitations";
+import PreviewEmails from "@/components/platform/Victor/PreviewEmails";
 export default function GenerateInvitations() {
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-sm p-2 md:justify-center md:gap-4 md:h-auto'>
@@ -26,8 +28,14 @@ export default function GenerateInvitations() {
         <ModalForForms title='Generar Invitaciones Masivas Con Suscripción'>
           <GenerateMasiveInvitationsSus />
         </ModalForForms>
+        <ModalForForms title='Recordar Invitaciones Pendientes'>
+          <RemindPendingInvitations />
+        </ModalForForms>
         <ModalForPreview title='Administrar Invitaciones'>
           <AdminInvitations />
+        </ModalForPreview>
+        <ModalForPreview title='Previsualizar Emails'>
+          <PreviewEmails />
         </ModalForPreview>
       </div>
     </div>

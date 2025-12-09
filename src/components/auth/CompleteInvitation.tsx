@@ -141,6 +141,42 @@ export default function CompleteInvitation(idIn: any) {
       <div className='flex justify-center items-center h-1/2 p-2 min-w-sm md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
           <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Bienvenido a Arcidrade</h2>
+          
+          {/* Pasos de registro */}
+          <div className='mt-6 mb-6 bg-white rounded-lg p-4'>
+            <h3 className='text-lg font-semibold text-gray-800 mb-4'>Pasos para completar tu registro:</h3>
+            <div className='space-y-3'>
+              <div className='flex items-start gap-3'>
+                <div className='shrink-0 w-6 h-6 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold text-sm'>1</div>
+                <div>
+                  <p className='font-medium text-gray-800'>Establece tu contraseña</p>
+                  <p className='text-sm text-gray-600'>Crea una contraseña segura para proteger tu cuenta</p>
+                </div>
+              </div>
+              <div className='flex items-start gap-3'>
+                <div className='shrink-0 w-6 h-6 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold text-sm'>2</div>
+                <div>
+                  <p className='font-medium text-gray-800'>Agrega tus datos personales</p>
+                  <p className='text-sm text-gray-600'>Proporciona tu nombre, apellido e información de contacto</p>
+                </div>
+              </div>
+              <div className='flex items-start gap-3'>
+                <div className='shrink-0 w-6 h-6 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold text-sm'>3</div>
+                <div>
+                  <p className='font-medium text-gray-800'>Selecciona tu área profesional</p>
+                  <p className='text-sm text-gray-600'>Elige el área en la que deseas trabajar para mejores resultados</p>
+                </div>
+              </div>
+              <div className='flex items-start gap-3'>
+                <div className='shrink-0 w-6 h-6 flex items-center justify-center bg-blue-500 text-white rounded-full font-bold text-sm'>4</div>
+                <div>
+                  <p className='font-medium text-gray-800'>Añade más información</p>
+                  <p className='text-sm text-gray-600'>Completa tu perfil con experiencia y habilidades para mejorar tus oportunidades</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <form onSubmit={handleInvitation} className='form justify-center align-middle pl-2 md:grid md:min-w-full'>
             <div className='block mb-4'>
               <label htmlFor='email' className='block text-sm font-medium mb-2'>

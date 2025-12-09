@@ -8,7 +8,8 @@ import {
   getContactTemplate,
   getContactAdminNotificationTemplate,
   getContactAdminTemplate,
-  getErrorLogTemplate
+  getErrorLogTemplate,
+  getPendingInvitationReminderTemplate
 } from './emailTemplates';
 
 const SMTP_SERVER_HOST = process.env.SMTP_SERVER_HOST;
@@ -385,5 +386,56 @@ export async function sendErrorLogMail(errorData: ErrorLogData) {
       success: false, 
       error: error instanceof Error ? error.message : 'Unknown error' 
     };
+  }
+}
+
+export async function sendPendingInvitationReminder({ 
+  email, 
+  referCode,
+  area, 
+  topProcesses 
+}: { 
+  email: string;
+  referCode: string;
+  area: string;
+  topProcesses: Array<{ id: number; position: string }>;
+}) {
+  try {
+    const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
+
+    // Construir URL de manera más robusta
+    const baseUrl = process.env.PLAT_URL || process.env.NEXTAUTH_URL || 'http://localhost:3000';
+    const completeRegistrationUrl = `${baseUrl}/completeInvitation/${referCode}`;
+
+    // Usar la plantilla centralizada
+    const htmlContent = getPendingInvitationReminderTemplate(completeRegistrationUrl, topProcesses);
+
+    const info = await transporter.sendMail({
+      from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+      replyTo: 'contacto@arcidrade.com',
+      to: email,
+      subject: "Completa tu Suscripción - ARCIDRADE",
+      text: `Hola,\n\nTe invitamos a completar tu suscripción en ARCIDRADE. Actualmente tenemos ${topProcesses.length} procesos activos:\n\n${topProcesses.map((p, i) => `${i + 1}. ${p.position}`).join('\n')}\n\nCompleta tu registro ahora visitando: ${completeRegistrationUrl}`,
+      html: htmlContent,
+      headers: {
+        'X-Entity-Ref-ID': `pending-invitation-${referCode}`,
+        'List-Unsubscribe': '<mailto:contacto@arcidrade.com?subject=unsubscribe>',
+        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+        'Message-ID': `<pending-inv-${referCode}-${Date.now()}@arcidrade.com>`,
+        'X-Campaign-ID': 'pending-invitation-reminder',
+      }
+    });
+
+    return {
+      success: true,
+      messageId: info.messageId,
+      message: "Recordatorio de invitación enviado exitosamente"
+    };
+  } catch (error) {
+    console.error(`Error sending pending invitation reminder to ${email}:`, error);
+    throw error;
   }
 }
