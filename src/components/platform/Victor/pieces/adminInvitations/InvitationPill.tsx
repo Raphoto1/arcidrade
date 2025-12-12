@@ -1,5 +1,7 @@
 import ConfirmResendInvitationForm from '@/components/forms/platform/victor/ConfirmResendInvitationForm';
 import ModalForFormsGreenBtn from '@/components/modals/ModalForFormsGreenBtn';
+import ModalForFormsRedBtn from '@/components/modals/ModalForFormsRedBtn';
+import ConfirmDeleteUserInvitationForm from '@/components/forms/platform/victor/ConfirmDeleteUserInvitationForm';
 import { formatDateToString } from '@/hooks/useUtils'
 import React from 'react'
 
@@ -14,9 +16,10 @@ interface InvitationData {
 
 interface InvitationPillProps {
   invitationData: InvitationData;
+  onMutate?: () => any;
 }
 
-export default function InvitationPill({ invitationData }: InvitationPillProps) {
+export default function InvitationPill({ invitationData, onMutate }: InvitationPillProps) {
   const [copied, setCopied] = React.useState(false);
 
   const handleCopyUrl = () => {
@@ -61,6 +64,9 @@ export default function InvitationPill({ invitationData }: InvitationPillProps) 
           <ModalForFormsGreenBtn title='Reenviar Invitación'>
             <ConfirmResendInvitationForm id={invitationData.referCode} email={invitationData.email} />
           </ModalForFormsGreenBtn>
+          <ModalForFormsRedBtn title='Eliminar Invitación'>
+            <ConfirmDeleteUserInvitationForm userId={invitationData.referCode} userEmail={invitationData.email} onMutate={onMutate} />
+          </ModalForFormsRedBtn>
         </div>
       </div>
     </div>

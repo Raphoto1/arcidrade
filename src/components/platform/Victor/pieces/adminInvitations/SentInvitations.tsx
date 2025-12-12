@@ -182,7 +182,7 @@ export default function SentInvitations() {
       </div>
       <div className="flex flex-col gap-2">
         {filteredInvitations.map((invitation: any) => (
-          <InvitationPill key={invitation.referCode} invitationData={{ ...invitation }} />
+          <InvitationPill key={invitation.referCode} invitationData={{ ...invitation }} onMutate={mutate} />
         ))}
         {filteredInvitations.length === 0 && (
           <div className="text-center text-gray-500 py-4">
