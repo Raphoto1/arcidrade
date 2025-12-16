@@ -27,9 +27,7 @@ export default function UserDescriptionForm({ userId, area }: UserDescriptionFor
   const description = area === 'profesional' 
     ? data?.payload?.profesional_data?.description 
     : data?.payload?.institution_data?.description;
-  
-  console.log('data en desc', description);
-  
+
   const {
     register,
     handleSubmit,

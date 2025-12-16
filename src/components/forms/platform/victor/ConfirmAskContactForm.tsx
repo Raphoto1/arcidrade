@@ -12,11 +12,6 @@ export default function ConfirmAskContactForm(props: any) {
       setIsLoading(true);
       setError(null);
 
-      console.log('Enviando datos:', {
-        userId: props.referCode,
-        name: props.name
-      });
-
       const response = await fetch(`/api/contact/contactUser`, {
         method: "POST",
         headers: {

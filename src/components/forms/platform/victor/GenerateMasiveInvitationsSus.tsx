@@ -144,7 +144,6 @@ export default function GenerateMasiveInvitationsSus() {
     }
 
     setData(validData);
-    console.log(`Archivo procesado: ${validData.length} registros válidos cargados.`);
   };
 
   const sendInvitations = async () => {
@@ -189,7 +188,6 @@ export default function GenerateMasiveInvitationsSus() {
 
           if (response.ok) {
             newStats.successful++;
-            console.log(`✅ Invitación enviada a: ${invitation.email}`);
           } else {
             newStats.failed++;
             const errorMsg = `${invitation.email}: ${result.message || 'Error desconocido'}`;
@@ -216,7 +214,6 @@ export default function GenerateMasiveInvitationsSus() {
     }
 
     setIsProcessing(false);
-    console.log('🎉 Proceso completado:', newStats);
   };
 
   const handleDrop = (e: React.DragEvent) => {
