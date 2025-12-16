@@ -38,9 +38,12 @@ export default function ProcessesGridSearchPublic(props: any) {
   };
 
   // Obtener únicamente procesos activos públicos (sin autenticación)
-  const { data, error, isLoading } = isFake 
-    ? { data: { payload: [] }, error: null, isLoading: false }
-    : usePublicActiveProcesses();
+  const swr = usePublicActiveProcesses();
+  
+  // Si isFake es true, usar datos vacíos; si no, usar datos reales
+  const data = isFake ? { payload: [] } : swr.data;
+  const error = isFake ? null : swr.error;
+  const isLoading = isFake ? false : swr.isLoading;
 
   // Resetear especialidad cuando cambia la categoría del profesional
   useEffect(() => {
