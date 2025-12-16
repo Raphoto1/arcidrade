@@ -49,7 +49,22 @@ export const authOptions: NextAuthOptions = {
             area: userFound.area,
           };
         } catch (error) {
-          console.error('[AUTH] Authorization error:', error instanceof Error ? error.message : String(error));
+          // Diferenciar entre errores de conexión y otros errores
+          const errorMsg = error instanceof Error ? error.message : String(error);
+          const errorCode = (error as any)?.code;
+          
+          // Log detallado para debugging
+          console.error('[AUTH] Authorization error:', {
+            message: errorMsg,
+            code: errorCode,
+            email: credentials.email,
+            timestamp: new Date().toISOString(),
+            connectionError: errorMsg.includes('connect') || 
+                           errorMsg.includes('timeout') || 
+                           errorMsg.includes('ECONNREFUSED') ||
+                           errorMsg.includes('ECONNRESET')
+          });
+          
           return null;
         }
       },

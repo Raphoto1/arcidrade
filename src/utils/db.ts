@@ -19,22 +19,38 @@ const poolConfig = {
   max: 30,
   min: 5,
   idleTimeoutMillis: 120000, // 2 minutos - evita cortes inesperados
-  connectionTimeoutMillis: 15000, // 15 segundos para conectar (aumentado)
+  connectionTimeoutMillis: 15000, // 15 segundos para conectar
   statement_timeout: 120000, // 2 minutos query timeout
+  // Validar conexiones antes de usarlas
+  validationQuery: 'SELECT 1',
 };
+
+function setupPoolErrorHandling(pool: Pool) {
+  pool.on('error', (err) => {
+    console.error('[DB Pool Error]', {
+      message: err.message,
+      code: (err as any).code,
+      timestamp: new Date().toISOString()
+    })
+  })
+
+  pool.on('connect', () => {
+    // Set statement timeout on each connection
+    pool.query('SET statement_timeout = 120000').catch(err => {
+      console.error('[DB] Error setting statement_timeout:', err.message)
+    })
+  })
+
+  pool.on('remove', () => {
+    console.debug('[DB] Connection removed from pool')
+  })
+}
 
 if (process.env.NODE_ENV === 'production') {
   // En producción, usar el patrón normal
   pool = new Pool(poolConfig)
   
-  pool.on('error', (err) => {
-    console.error('[DB] Pool error:', err)
-  })
-  
-  pool.on('connect', () => {
-    // Set statement timeout on each connection
-    pool.query('SET statement_timeout = 120000')
-  })
+  setupPoolErrorHandling(pool)
   
   adapter = new PrismaPg(pool)
   prismaClient = new PrismaClient({ adapter })
@@ -43,13 +59,7 @@ if (process.env.NODE_ENV === 'production') {
   if (!(global as any).prisma) {
     pool = new Pool(poolConfig)
     
-    pool.on('error', (err) => {
-      console.error('[DB] Pool error:', err)
-    })
-    
-    pool.on('connect', () => {
-      pool.query('SET statement_timeout = 120000')
-    })
+    setupPoolErrorHandling(pool)
     
     adapter = new PrismaPg(pool)
     

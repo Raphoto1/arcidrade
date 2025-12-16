@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "postinstall": "prisma generate",
+    "test:database": "tsx scripts/test-database.ts",
     "clean": "rm -rf node_modules package-lock.json .next .turbo",
     "clean:win": "rmdir /s /q node_modules & del package-lock.json & rmdir /s /q .next & rmdir /s /q .turbo",
     "sync": "npm run clean && npm install && npm run build",
