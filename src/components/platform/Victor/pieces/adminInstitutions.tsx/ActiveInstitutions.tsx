@@ -16,7 +16,7 @@ export default function ActiveInstitutions() {
         <input type='text' placeholder='Buscar instituciones...' className='p-2 border border-gray-300 rounded-md mr-2' />
         <ImSearch size={30} />
       </div>
-      <div>
+      <div className="grid grid-cols-1 gap-2">
         {data?.payload?.map((institution: any) => (
           <InstitutionPill key={institution.referCode} institution={institution.referCode} />
         ))}

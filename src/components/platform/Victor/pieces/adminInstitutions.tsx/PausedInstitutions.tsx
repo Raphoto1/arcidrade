@@ -16,7 +16,7 @@ export default function PausedInstitutions() {
         <input type='text' placeholder='Buscar instituciones...' className='p-2 border border-gray-300 rounded-md mr-2' />
         <ImSearch size={30} />
       </div>
-      <div>
+      <div className="grid grid-cols-1 gap-2">
         {data?.payload.length === 0 && !isLoading && <p key="empty" className="text-center">No hay instituciones pausadas.</p>}
         {isLoading && <p key="loading" className="text-center">Cargando instituciones pausadas...</p>}
         {error && <p key="error" className="text-center text-red-500">Error al cargar las instituciones pausadas.</p>}
