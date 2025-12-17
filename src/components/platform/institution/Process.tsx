@@ -48,7 +48,7 @@ export default function Process(props: any) {
           <div className='topHat p-2 rounded-sm z-10 w-full pb-2'>
             <div className='flex justify-between pb-2'>
               <h1 className='text-2xl fontArci'>Detalle de Proceso:</h1>
-              <p className='fontRoboto text-xl text-[var(--main-arci)] capitalize'>{processData?.position}</p>
+              <p className='fontRoboto text-xl text-(--main-arci) capitalize'>{processData?.position}</p>
               <ModalForForms title='Editar'>
                 <UpdateProcessForm id={processData?.id} />
               </ModalForForms>
@@ -58,17 +58,17 @@ export default function Process(props: any) {
               <div className='cube1 md:w-1/3 bg-white rounded-md px-1'>
                 <p className='text-success text-end capitalize'>{processData?.status}</p>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Categoria del Profesional:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Categoria del Profesional:</h4>
+                  <p className='text-md text-(--main-arci)'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
                 </div>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidad Principal:</h4>
-                  <p className='text-md text-[var(--main-arci)] text-end'>{processData?.main_speciality}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Especialidad Principal:</h4>
+                  <p className='text-md text-(--main-arci) text-end'>{processData?.main_speciality}</p>
                 </div>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidades Secundarias:</h4>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Especialidades Secundarias:</h4>
                   <div>
-                    <p className='text-md text-[var(--main-arci)] text-end'>
+                    <p className='text-md text-(--main-arci) text-end'>
                       {processData?.extra_specialities?.length > 0
                         ? processData.extra_specialities.map((spec: any) => spec.speciality).join(", ")
                         : "No especificadas"}
@@ -76,16 +76,16 @@ export default function Process(props: any) {
                   </div>
                 </div>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Status de estudios del profesional:</h4>
-                  <p className='text-md text-[var(--main-arci)] text-end'>{useHandleStatusName(processData?.profesional_status)}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Status de estudios del profesional:</h4>
+                  <p className='text-md text-(--main-arci) text-end'>{useHandleStatusName(processData?.profesional_status)}</p>
                 </div>
                 <div className='flex justify-between'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Fecha de Inicio:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>{formattedStartDate}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Fecha de Inicio:</h4>
+                  <p className='text-md text-(--main-arci)'>{formattedStartDate}</p>
                 </div>
               </div>
               <div className='descrip md:w-2/3 bg-white rounded-md px-2'>
-                <h2 className='fontRoboto text-xl text-[var(--main-arci)]'>Descripción</h2>
+                <h2 className='fontRoboto text-xl text-(--main-arci)'>Descripción</h2>
                 <p className='text-sm'>{processData?.description}</p>
               </div>
             </div>
@@ -93,15 +93,15 @@ export default function Process(props: any) {
         </div>
         <div className='Der flex md:w-1/3 flex-col p-2'>
           <div className='flex w-full justify-between'>
-            <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Plazo: </h4>
-            <p className='text-md text-[var(--main-arci)]'>{diasRestantesFormateados}</p>
+            <h4 className='fontRoboto text-sm text-(--dark-gray)'>Plazo: </h4>
+            <p className='text-md text-(--main-arci)'>{diasRestantesFormateados}</p>
           </div>
 
           <div className='flex flex-col gap-2 h-auto'>
             {profesionals.length >= 3 || processData?.status === "completed" ? (
               <ModalForPreviewBtnLong title={processData?.status === "completed" ? "Proceso Completado" : "Se ha superado el limite de 3 candidatos"}>
                 <div className='flex flex-col items-center'>
-                  <p className='text-sm fontRoboto text-[var(--dark-gray)]'>
+                  <p className='text-sm fontRoboto text-(--dark-gray)'>
                     {processData?.status === "completed" 
                       ? "El proceso ha sido completado. No es posible agregar más candidatos."
                       : "Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos"
@@ -130,7 +130,7 @@ export default function Process(props: any) {
         </div>
       </div>
       <div className='w-full pt-2'>
-        <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados</h2>
+        <h2 className='text-xl font-bold text-(--main-arci) text-center'>Seleccionados</h2>
         <Grid>
           {profesionals?.map((profesional: any) => (
             <ProfesionalCard
@@ -153,7 +153,7 @@ export default function Process(props: any) {
       </div>
       {processData?.type == "arcidrade" ? (
         <div className='w-full pt-2'>
-          <h2 className='text-xl font-bold text-[var(--main-arci)] text-center'>Seleccionados Arcidrade</h2>
+          <h2 className='text-xl font-bold text-(--main-arci) text-center'>Seleccionados Arcidrade</h2>
           <Grid>
             {/*logica procesos arcidrade*/}
             {profesionalsArci?.map((profesional: any) => (

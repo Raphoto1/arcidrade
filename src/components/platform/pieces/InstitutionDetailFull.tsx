@@ -52,7 +52,7 @@ export default function InstitutionDetailFull() {
         </div>
         <h1 className='text-2xl fontArci text-center'>{InstitutionData.name || "Nombre Bastante Largo de Hospital"}</h1>
         <p className='text-center'>{InstitutionData.main_speciality || "Medico Profesional Full"}</p>
-        <button className='btn bg-[var(--main-arci)] text-white'>Agregar Al Proceso</button>
+        <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci text'>Presentación</h1>
@@ -66,8 +66,8 @@ export default function InstitutionDetailFull() {
           <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Institucionales</h2>
           <div className='w-full'>
             <div className='flex justify-between'>
-              <h3 className='font-light'>Nombre</h3>
-              <p className='text-(--main-arci)'>{InstitutionData.name || "Nombre de la institución"}</p>
+              <h3 className='font-light'>Nombre:</h3>
+              <p className='text-(--main-arci) text-end'>{InstitutionData.name || "Nombre de la institución"}</p>
             </div>
             <div className='flex justify-between'>
               <h3 className='text-light'>Fecha de Fundación</h3>
@@ -100,22 +100,22 @@ export default function InstitutionDetailFull() {
         <h1 className='text-2xl fontArci text'>Logros</h1>
         {goals.length === 0 ? (
           <div className='bg-white rounded-md p-1 mt-2'>
-            <p className='fontArci text-[var(--main-arci)]'>No hay logros registrados</p>
+            <p className='fontArci text-(--main-arci)'>No hay logros registrados</p>
           </div>
         ) : (
           goals.map((goal: any) => (
             <div key={goal.id} className='bg-white rounded-md p-1 mt-2'>
               <div className="flex justify-between">
                 <div className="gap-2">
-                  <h3 className='fontArci text-[var(--main-arci)] font-bold'>{goal.title}</h3>
+                  <h3 className='fontArci text-(--main-arci) font-bold'>{goal.title}</h3>
                   <p className='text-xs'>{handleDateToYear(goal.year)}</p>
                 </div>
                 <div className='flex justify-end'>
-                  {goal.link || goal.file ? <a href={goal.link || goal.file} target="_blank" className='btn bg-[var(--main-arci)] text-white justify-end'>Ver Respaldo</a> : null}
+                  {goal.link || goal.file ? <a href={goal.link || goal.file} target="_blank" className='btn bg-(--main-arci) text-white justify-end'>Ver Respaldo</a> : null}
                 </div>
               </div>
               <div>
-                <h3 className='text-[var(--main-arci)]'>Descripción:</h3>
+                <h3 className='text-(--main-arci)'>Descripción:</h3>
                 <p className='text-sm'>{goal.description}</p>
               </div>
             </div>
@@ -126,11 +126,11 @@ export default function InstitutionDetailFull() {
         <h1 className='text-2xl fontArci text'>Especialidades</h1>
         <div className='bg-white rounded-md p-1 mt-2'>
           {speciality.length === 0 ? (
-            <p className='fontArci text-[var(--main-arci)]'>No hay especialidades registradas</p>
+            <p className='fontArci text-(--main-arci)'>No hay especialidades registradas</p>
           ) : (
             speciality.map((spec: any) => (
               <div key={spec.id} className='mb-2'>
-                <h3 className='fontArci text-[var(--main-arci)] font-bold'>{spec.title}</h3>
+                <h3 className='fontArci text-(--main-arci) font-bold'>{spec.title}</h3>
                 <p className='text-sm'>{spec.title_category || "Categoría general no registrada"}</p>
               </div>
             ))
@@ -142,7 +142,7 @@ export default function InstitutionDetailFull() {
          <h1 className='text-2xl fontArci text'>Certifiaciones</h1>
        {certifications.length === 0 ? (
           <div className='bg-white rounded-md p-1 mt-2'>
-            <p className='fontArci text-[var(--main-arci)]'>No hay certificaciones registradas</p>
+            <p className='fontArci text-(--main-arci)'>No hay certificaciones registradas</p>
           </div>
         ) : (
           <div className='bg-white rounded-md p-1 mt-2'>
@@ -150,12 +150,12 @@ export default function InstitutionDetailFull() {
             {certifications.map((cert: any) => (
               <div key={cert.id} className='mb-2 flex justify-between'>
                 <div>
-                  <h3 className='fontArci text-[var(--main-arci)] font-bold'>{cert.title}</h3>
+                  <h3 className='fontArci text-(--main-arci) font-bold'>{cert.title}</h3>
                   <p className='text-sm'>Emitido por: {cert.institution || "Entidad no registrada"}</p>
                   <p className='text-sm'>Año de obtención: {handleDateToYear(cert.year)}</p>
                 </div>
                 <div>
-                  {cert.link || cert.file ? <a href={cert.link || cert.file} target="_blank" className='btn bg-[var(--main-arci)] text-white justify-end'>Ver Respaldo</a> : null}
+                  {cert.link || cert.file ? <a href={cert.link || cert.file} target="_blank" className='btn bg-(--main-arci) text-white justify-end'>Ver Respaldo</a> : null}
                 </div>
               </div>
             ))}
