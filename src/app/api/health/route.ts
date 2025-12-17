@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import prisma from '@/utils/db';
+import { withRetry } from '@/utils/retryUtils';
 
 // Marcar esta ruta como pública (sin caché)
 export const dynamic = 'force-dynamic';
@@ -28,9 +29,12 @@ export async function GET() {
   };
   
   try {
-    // Test 1: Query simple con $queryRaw
+    // Test 1: Query simple con $queryRaw con retry
     const dbStart = Date.now();
-    await withTimeout(prisma.$queryRaw`SELECT 1`, HEALTH_CHECK_TIMEOUT);
+    await withRetry(
+      () => withTimeout(prisma.$queryRaw`SELECT 1`, HEALTH_CHECK_TIMEOUT),
+      { maxAttempts: 2, initialDelayMs: 100, maxDelayMs: 500 }
+    );
     checks.database.responseTime = Date.now() - dbStart;
     checks.database.status = 'healthy';
   } catch (error) {
@@ -40,11 +44,14 @@ export async function GET() {
   }
 
   try {
-    // Test 2: Query con Prisma ORM
+    // Test 2: Query con Prisma ORM con retry
     const prismaStart = Date.now();
-    const result = await withTimeout(
-      prisma.$queryRaw<Array<{ result: number }>>`SELECT 1 as result`,
-      HEALTH_CHECK_TIMEOUT
+    const result = await withRetry(
+      () => withTimeout(
+        prisma.$queryRaw<Array<{ result: number }>>`SELECT 1 as result`,
+        HEALTH_CHECK_TIMEOUT
+      ),
+      { maxAttempts: 2, initialDelayMs: 100, maxDelayMs: 500 }
     );
     checks.prismaQuery.responseTime = Date.now() - prismaStart;
     checks.prismaQuery.status = 'healthy';
@@ -55,14 +62,17 @@ export async function GET() {
   }
 
   try {
-    // Test 3: Query a una tabla real (simula login)
+    // Test 3: Query a una tabla real (simula login) con retry
     const authStart = Date.now();
-    const auth = await withTimeout(
-      prisma.auth.findFirst({
-        select: { referCode: true },
-        where: { status: { not: 'desactivated' } }
-      }),
-      HEALTH_CHECK_TIMEOUT
+    const auth = await withRetry(
+      () => withTimeout(
+        prisma.auth.findFirst({
+          select: { referCode: true },
+          where: { status: { not: 'desactivated' } }
+        }),
+        HEALTH_CHECK_TIMEOUT
+      ),
+      { maxAttempts: 2, initialDelayMs: 100, maxDelayMs: 500 }
     );
     checks.authCount.responseTime = Date.now() - authStart;
     checks.authCount.status = 'healthy';
@@ -74,14 +84,17 @@ export async function GET() {
   }
 
   try {
-    // Test 4: Simular query de login (findUnique con select)
+    // Test 4: Simular query de login (findUnique con select) con retry
     const loginStart = Date.now();
-    await withTimeout(
-      prisma.auth.findUnique({
-        where: { email: 'health-check@test.invalid' },
-        select: { referCode: true, email: true, password: true, area: true, status: true }
-      }),
-      HEALTH_CHECK_TIMEOUT
+    await withRetry(
+      () => withTimeout(
+        prisma.auth.findUnique({
+          where: { email: 'health-check@test.invalid' },
+          select: { referCode: true, email: true, password: true, area: true, status: true }
+        }),
+        HEALTH_CHECK_TIMEOUT
+      ),
+      { maxAttempts: 2, initialDelayMs: 100, maxDelayMs: 500 }
     );
     checks.loginSimulation.responseTime = Date.now() - loginStart;
     checks.loginSimulation.status = 'healthy';

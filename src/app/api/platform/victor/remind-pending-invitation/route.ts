@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import prisma from "@/utils/db";
 import { sendPendingInvitationReminder } from "@/utils/sendMail";
+import { withPrismaRetry } from "@/utils/retryUtils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,17 +17,19 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Obtener usuarios con status 'invited'
-    const invitedUsers = await prisma.auth.findMany({
-      where: {
-        status: 'invited'
-      },
-      select: {
-        email: true,
-        referCode: true,
-        area: true
-      }
-    });
+    // Obtener usuarios con status 'invited' con retry logic
+    const invitedUsers = await withPrismaRetry(() =>
+      prisma.auth.findMany({
+        where: {
+          status: 'invited'
+        },
+        select: {
+          email: true,
+          referCode: true,
+          area: true
+        }
+      })
+    );
 
     if (invitedUsers.length === 0) {
       return NextResponse.json({
@@ -36,20 +39,22 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Obtener top 3 procesos activos
-    const topProcesses = await prisma.process.findMany({
-      where: {
-        status: 'active'
-      },
-      select: {
-        position: true,
-        id: true
-      },
-      orderBy: {
-        created_at: 'desc'
-      },
-      take: 3
-    });
+    // Obtener top 3 procesos activos con retry logic
+    const topProcesses = await withPrismaRetry(() =>
+      prisma.process.findMany({
+        where: {
+          status: 'active'
+        },
+        select: {
+          position: true,
+          id: true
+        },
+        orderBy: {
+          created_at: 'desc'
+        },
+        take: 3
+      })
+    );
 
     // Enviar emails a cada usuario invitado
     let sentCount = 0;

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { getUserStatsService } from "@/service/userData.service";
+import { withPrismaRetry } from "@/utils/retryUtils";
 
 export async function GET(request: NextRequest) {
   try {
@@ -23,7 +24,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const stats = await getUserStatsService();
+    const stats = await withPrismaRetry(() => getUserStatsService());
 
     return NextResponse.json({
       success: true,

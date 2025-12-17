@@ -366,7 +366,7 @@ export default function RegisterDirect() {
               <button 
                 type='button'
                 className='btn btn-wide bg-[var(--orange-arci)] text-white hover:bg-orange-600'
-                onClick={() => router.push('/auth')}
+                onClick={() => router.push('/')}
                 disabled={loading}
               >
                 Cancelar

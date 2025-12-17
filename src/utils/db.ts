@@ -16,11 +16,11 @@ let prismaClient: PrismaClient;
 
 const poolConfig = {
   connectionString,
-  max: 30,
-  min: 5,
-  idleTimeoutMillis: 120000, // 2 minutos - evita cortes inesperados
-  connectionTimeoutMillis: 15000, // 15 segundos para conectar
-  statement_timeout: 120000, // 2 minutos query timeout
+  max: 20, // Reducido de 30 para evitar agotamiento en Vercel
+  min: 2, // Reducido de 5 para evitar overhead
+  idleTimeoutMillis: 60000, // 60 segundos - tiempo razonable para que pool se mantenga
+  connectionTimeoutMillis: 10000, // Reducido de 15000 - falla rápido si no conecta
+  statement_timeout: 60000, // Reducido de 120000 - timeout más corto
   // Validar conexiones antes de usarlas
   validationQuery: 'SELECT 1',
 };
@@ -31,19 +31,24 @@ function setupPoolErrorHandling(pool: Pool) {
       message: err.message,
       code: (err as any).code,
       timestamp: new Date().toISOString()
-    })
-  })
+    });
+    
+    // Log critical errors separately for monitoring
+    if ((err as any).code === 'ECONNREFUSED' || (err as any).code === 'ETIMEDOUT') {
+      console.error('[DB CRITICAL] Connection pool failure - may need restart:', err.message);
+    }
+  });
 
   pool.on('connect', () => {
     // Set statement timeout on each connection
-    pool.query('SET statement_timeout = 120000').catch(err => {
+    pool.query('SET statement_timeout = 60000').catch(err => {
       console.error('[DB] Error setting statement_timeout:', err.message)
-    })
-  })
+    });
+  });
 
   pool.on('remove', () => {
     console.debug('[DB] Connection removed from pool')
-  })
+  });
 }
 
 if (process.env.NODE_ENV === 'production') {
@@ -53,7 +58,11 @@ if (process.env.NODE_ENV === 'production') {
   setupPoolErrorHandling(pool)
   
   adapter = new PrismaPg(pool)
-  prismaClient = new PrismaClient({ adapter })
+  prismaClient = new PrismaClient({ 
+    adapter,
+    // Log solo errores en producción
+    log: ['error'],
+  })
 } else {
   // En desarrollo, usar singleton global para evitar múltiples instancias con HMR
   if (!(global as any).prisma) {

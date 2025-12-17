@@ -4,6 +4,7 @@ import { authOptions } from '@/utils/authOptions';
 import { sendWebsiteInvitationMail, sendInvitationMail } from '@/utils/sendMail';
 import { registerUser } from '@/service/register.service';
 import prisma from '@/utils/db';
+import { withPrismaRetry } from '@/utils/retryUtils';
 
 export async function POST(request: NextRequest) {
   try {
@@ -57,12 +58,14 @@ export async function POST(request: NextRequest) {
       if (status === 'sent_subscription') {
         // Para suscripciones completas: crear usuario en BD y enviar email con link de registro
         try {
-          // Verificar si el usuario ya existe
-          const existingUser = await prisma.auth.findFirst({
-            where: { 
-              email: email.toLowerCase() 
-            }
-          });
+          // Verificar si el usuario ya existe con retry logic
+          const existingUser = await withPrismaRetry(() =>
+            prisma.auth.findFirst({
+              where: { 
+                email: email.toLowerCase() 
+              }
+            })
+          );
 
           let userToUse;
           
@@ -70,12 +73,14 @@ export async function POST(request: NextRequest) {
             // Si el usuario ya existe, usar su referCode existente
             userToUse = existingUser;
           } else {
-            // Crear usuario en la base de datos solo si no existe
-            userToUse = await registerUser(
-              email,
-              'professional', // área por defecto para Campaign
-              session.user.email,
-              session.user.referCode
+            // Crear usuario en la base de datos solo si no existe con retry logic
+            userToUse = await withPrismaRetry(() =>
+              registerUser(
+                email,
+                'professional', // área por defecto para Campaign
+                session.user.email,
+                session.user.referCode
+              )
             );
 
             if (!userToUse) {

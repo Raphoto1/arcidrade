@@ -1,10 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPublicProcessesByStatusService } from "@/service/process.service";
+import { withPrismaRetry } from "@/utils/retryUtils";
 
 export async function GET(request: NextRequest) {
   try {
-    // Llamar directamente al servicio público que incluye datos de institución
-    const allProcessList = await getPublicProcessesByStatusService("active");
+    // Llamar al servicio con retry logic para manejar errores transientes
+    const allProcessList = await withPrismaRetry(() => 
+      getPublicProcessesByStatusService("active")
+    );
     return NextResponse.json({ message: "Public process data success", payload: allProcessList });
   } catch (error) {
     const errorMsg = error instanceof Error ? error.message : String(error);

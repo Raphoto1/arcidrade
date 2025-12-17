@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { sendInvitationMail } from "@/utils/sendMail";
 import prisma from "@/utils/db";
+import { withPrismaRetry } from "@/utils/retryUtils";
 
 export async function POST(request: Request) {
   try {
@@ -14,13 +15,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Buscar el usuario por email
-    const user = await prisma.auth.findFirst({
-      where: {
-        email: email.toLowerCase().trim(),
-        status: "invited" // Solo reenviar a usuarios invitados
-      },
-    });
+    // Buscar el usuario por email con retry logic
+    const user = await withPrismaRetry(() =>
+      prisma.auth.findFirst({
+        where: {
+          email: email.toLowerCase().trim(),
+          status: "invited" // Solo reenviar a usuarios invitados
+        },
+      })
+    );
 
     if (!user) {
       return NextResponse.json(
