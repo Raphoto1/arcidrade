@@ -1,6 +1,7 @@
 /**
  * Retry utility with exponential backoff for database operations
  * Helps handle transient connection failures in production
+ * Special handling for Prisma P1001 (connection) errors
  */
 
 export interface RetryOptions {
@@ -16,6 +17,27 @@ const defaultOptions: Required<RetryOptions> = {
   maxDelayMs: 5000,
   backoffMultiplier: 2,
 };
+
+/**
+ * Check if error is a transient Prisma connection error (P1001)
+ */
+function isTransientConnectionError(error: any): boolean {
+  const message = error?.message || '';
+  const code = error?.code || '';
+  
+  // P1001: "failed to connect to upstream database"
+  // Also check for common transient errors
+  return (
+    code === 'P1001' ||
+    message.includes('failed to connect to upstream database') ||
+    message.includes('ECONNREFUSED') ||
+    message.includes('ETIMEDOUT') ||
+    message.includes('socket hang up') ||
+    message.includes('Connection timeout') ||
+    message.includes('EHOSTUNREACH') ||
+    message.includes('ENETUNREACH')
+  );
+}
 
 /**
  * Execute async function with exponential backoff retry
@@ -34,12 +56,21 @@ export async function withRetry<T>(
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       
-      // Log retry attempt
+      const isTransient = isTransientConnectionError(error);
+      
+      // Log retry attempt with context
       console.error(`[Retry] Attempt ${attempt}/${opts.maxAttempts} failed:`, {
         message: lastError.message,
+        code: (error as any)?.code,
+        isTransient: isTransient ? 'YES (will retry)' : 'NO (permanent error)',
         attempt,
-        nextRetryIn: delay + 'ms'
+        nextRetryIn: attempt < opts.maxAttempts ? delay + 'ms' : 'no more retries'
       });
+
+      // If it's not a transient error, fail immediately
+      if (!isTransient && attempt > 1) {
+        throw lastError;
+      }
 
       // Don't delay on last attempt
       if (attempt < opts.maxAttempts) {
@@ -56,6 +87,7 @@ export async function withRetry<T>(
 
 /**
  * Wrapper for Prisma operations with automatic retry
+ * Specifically handles P1001 and other connection errors
  */
 export async function withPrismaRetry<T>(
   operation: () => Promise<T>

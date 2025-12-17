@@ -16,13 +16,15 @@ let prismaClient: PrismaClient;
 
 const poolConfig = {
   connectionString,
-  max: 20, // Reducido de 30 para evitar agotamiento en Vercel
-  min: 2, // Reducido de 5 para evitar overhead
-  idleTimeoutMillis: 60000, // 60 segundos - tiempo razonable para que pool se mantenga
-  connectionTimeoutMillis: 10000, // Reducido de 15000 - falla rápido si no conecta
-  statement_timeout: 60000, // Reducido de 120000 - timeout más corto
+  max: 15, // Reducido de 30 para evitar agotamiento en Vercel
+  min: 1, // Reducido de 5 para evitar overhead
+  idleTimeoutMillis: 30000, // 30 segundos - descartar conexiones inactivas más rápido
+  connectionTimeoutMillis: 20000, // Aumentado a 20s para permitir reconexiones lentas
+  statement_timeout: 30000, // Reducido a 30s - timeout más corto para fallar rápido
   // Validar conexiones antes de usarlas
   validationQuery: 'SELECT 1',
+  // Detectar conexiones rotas más rápido
+  idleErrorTimeout: 5000, // Cierra conexiones idle con errores después de 5s
 };
 
 function setupPoolErrorHandling(pool: Pool) {
