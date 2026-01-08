@@ -2,12 +2,18 @@ import { PrismaClient } from "@/generated/prisma"
 import { PrismaPg } from '@prisma/adapter-pg'
 import { Pool } from 'pg'
 
-// Use DIRECT_DATABASE_URL for direct connection, fallback to DATABASE_URL
-const connectionString = process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL;
+// En producción (Vercel), usar DATABASE_URL (Prisma Accelerate)
+// En desarrollo, usar DIRECT_DATABASE_URL para conexión directa
+const isProduction = process.env.NODE_ENV === 'production';
+const connectionString = isProduction 
+  ? process.env.DATABASE_URL 
+  : (process.env.DIRECT_DATABASE_URL || process.env.DATABASE_URL);
 
 if (!connectionString) {
   throw new Error('DATABASE_URL or DIRECT_DATABASE_URL must be defined')
 }
+
+const useAccelerate = connectionString.includes('accelerate.prisma-data.net');
 
 // Crear el pool fuera del check global
 let pool: Pool;
@@ -54,29 +60,45 @@ function setupPoolErrorHandling(pool: Pool) {
 }
 
 if (process.env.NODE_ENV === 'production') {
-  // En producción (Vercel), crear pool optimizado para serverless
+  // En producción usar Prisma Accelerate (más confiable para Vercel)
   console.log('[DB] Initializing production database connection...');
+  console.log('[DB] Environment:', process.env.NODE_ENV);
+  console.log('[DB] Connection string prefix:', connectionString?.substring(0, 30));
+  console.log('[DB] Using Accelerate:', useAccelerate);
+  console.log('[DB] Has DATABASE_URL:', !!process.env.DATABASE_URL);
+  console.log('[DB] Has DIRECT_DATABASE_URL:', !!process.env.DIRECT_DATABASE_URL);
   
-  pool = new Pool(poolConfig)
-  
-  setupPoolErrorHandling(pool)
-  
-  adapter = new PrismaPg(pool)
-  prismaClient = new PrismaClient({ 
-    adapter,
-    // Log errores y warnings en producción para debugging
-    log: [
-      { level: 'error', emit: 'stdout' },
-      { level: 'warn', emit: 'stdout' },
-    ],
-  })
+  if (useAccelerate) {
+    // Con Prisma Accelerate, no necesitamos pool manual
+    console.log('[DB] Creating PrismaClient with Accelerate (no adapter)');
+    prismaClient = new PrismaClient({
+      log: [
+        { level: 'error', emit: 'stdout' },
+        { level: 'warn', emit: 'stdout' },
+      ],
+    });
+  } else {
+    console.log('[DB] Creating PrismaClient with Pool adapter (direct connection)');
+
+    // Fallback a conexión directa (menos recomendado para Vercel)
+    pool = new Pool(poolConfig);
+    setupPoolErrorHandling(pool);
+    adapter = new PrismaPg(pool);
+    prismaClient = new PrismaClient({ 
+      adapter,
+      log: [
+        { level: 'error', emit: 'stdout' },
+        { level: 'warn', emit: 'stdout' },
+      ],
+    });
+  }
   
   // En Vercel, cerrar conexiones cuando la función termina
   if (typeof process !== 'undefined' && process.on) {
     process.on('beforeExit', async () => {
       console.log('[DB] Closing database connections before exit...');
       await prismaClient.$disconnect();
-      await pool.end();
+      if (pool) await pool.end();
     });
   }
 } else {
