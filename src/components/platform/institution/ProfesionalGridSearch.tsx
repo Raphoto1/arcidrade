@@ -18,6 +18,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
   const [selectedCountry, setSelectedCountry] = useState("");
   const [selectedSpecialization, setSelectedSpecialization] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [isPageChanging, setIsPageChanging] = useState(false);
   const itemsPerPage = 6;
 
   // Obtener lista de países usando country-state-city
@@ -48,6 +49,15 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
     error,
     isLoading,
   } = usePaginatedInstitutions(currentPage, itemsPerPage, debouncedSearchTerm, selectedCountry, selectedSpecialization);
+
+  // Controlar el loader de cambio de página
+  useEffect(() => {
+    if (isLoading && currentPage > 1) {
+      setIsPageChanging(true);
+    } else {
+      setIsPageChanging(false);
+    }
+  }, [isLoading, currentPage]);
 
   // Manejar cambio en el input de búsqueda
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -196,7 +206,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
 
         {/* Grid de instituciones con loader específico */}
         <div className='relative min-h-[400px]'>
-          {/* Loader superpuesto solo para la primera carga */}
+          {/* Loader para primera carga */}
           {isLoading && currentPage === 1 && (
             <div className='absolute inset-0 bg-gray-200 bg-opacity-75 flex items-center justify-center z-10 rounded-md'>
               <div className='flex flex-col items-center gap-2'>
@@ -206,7 +216,17 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
             </div>
           )}
 
-          <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
+          {/* Loader para cambio de página */}
+          {isPageChanging && currentPage > 1 && (
+            <div className='absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-20 rounded-md'>
+              <div className='flex flex-col items-center gap-3'>
+                <div className='loading loading-spinner loading-lg' style={{ color: 'var(--main-arci)' }}></div>
+                <p className='text-gray-700 font-medium'>Cargando página {currentPage}...</p>
+              </div>
+            </div>
+          )}
+
+          <div className={`grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center transition-opacity duration-300 ${isPageChanging ? 'opacity-50' : 'opacity-100'}`}>
             {paginatedData?.data?.length > 0
               ? paginatedData.data.map((institution: any, index: number) => (
                   <InstitutionCard key={institution.referCode || index} userId={institution.referCode} isFake={isFake} />
@@ -233,7 +253,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
                 {/* Botón anterior */}
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1 || isLoading}
+                  disabled={currentPage === 1 || isLoading || isPageChanging}
                   className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   <FiChevronLeft size={16} />
@@ -246,7 +266,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      disabled={isLoading}
+                      disabled={isLoading || isPageChanging}
                       className={`btn btn-sm min-w-10 ${
                         currentPage === page 
                           ? 'bg-[var(--main-arci)] text-white border-none' 
@@ -261,7 +281,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
                 {/* Botón siguiente */}
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages || isLoading}
+                  disabled={currentPage === totalPages || isLoading || isPageChanging}
                   className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   Siguiente
@@ -284,7 +304,7 @@ export default function ProfesionalGridSearch({ isFake = true }: InstitutionGrid
                     setCurrentPage(page);
                   }
                 }}
-                disabled={isLoading}
+                disabled={isLoading || isPageChanging}
                 className='input input-sm input-bordered w-16 text-center disabled:opacity-50 disabled:cursor-not-allowed'
               />
               <span className='text-sm text-gray-600'>de {totalPages}</span>

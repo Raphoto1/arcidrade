@@ -18,6 +18,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
   const [selectedSpeciality, setSelectedSpeciality] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [isPageChanging, setIsPageChanging] = useState(false);
   const itemsPerPage = 6;
   
   // Función para obtener las opciones de especialidad según el subArea
@@ -61,6 +62,15 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
     selectedSpeciality,
     selectedSubArea ? selectedSubArea : undefined
   );
+
+  // Controlar el loader de cambio de página
+  useEffect(() => {
+    if (isLoading && currentPage > 1) {
+      setIsPageChanging(true);
+    } else {
+      setIsPageChanging(false);
+    }
+  }, [isLoading, currentPage]);
 
   // Manejar cambio en el input de búsqueda
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -231,7 +241,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
 
         {/* Grid de profesionales con loader específico */}
         <div className='relative min-h-[400px]'>
-          {/* Loader superpuesto para primera carga y aplicación de filtros */}
+          {/* Loader para primera carga y aplicación de filtros */}
           {isLoading && currentPage === 1 && (
             <div className="absolute inset-0 bg-gray-200 bg-opacity-90 flex items-center justify-center z-10 rounded-md">
               <div className='bg-white p-6 rounded-lg shadow-lg flex flex-col items-center gap-3'>
@@ -248,7 +258,17 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
             </div>
           )}
 
-          <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
+          {/* Loader para cambio de página */}
+          {isPageChanging && currentPage > 1 && (
+            <div className='absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-20 rounded-md'>
+              <div className='flex flex-col items-center gap-3'>
+                <div className='loading loading-spinner loading-lg' style={{ color: 'var(--main-arci)' }}></div>
+                <p className='text-gray-700 font-medium'>Cargando página {currentPage}...</p>
+              </div>
+            </div>
+          )}
+
+          <div className={`grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center transition-opacity duration-300 ${isPageChanging ? 'opacity-50' : 'opacity-100'}`}>
             {paginatedData?.data?.length > 0 ? (
               paginatedData.data.map((profesional: any, index: number) => (
                 <ProfesionalCard 
@@ -285,7 +305,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                 {/* Botón anterior */}
                 <button
                   onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                  disabled={currentPage === 1 || isLoading}
+                  disabled={currentPage === 1 || isLoading || isPageChanging}
                   className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   <FiChevronLeft size={16} />
@@ -298,7 +318,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                     <button
                       key={page}
                       onClick={() => setCurrentPage(page)}
-                      disabled={isLoading}
+                      disabled={isLoading || isPageChanging}
                       className={`btn btn-sm min-w-[40px] ${
                         currentPage === page 
                           ? 'bg-[var(--main-arci)] text-white border-none' 
@@ -313,7 +333,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                 {/* Botón siguiente */}
                 <button
                   onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                  disabled={currentPage === totalPages || isLoading}
+                  disabled={currentPage === totalPages || isLoading || isPageChanging}
                   className='btn btn-sm btn-outline gap-2 disabled:opacity-50 disabled:cursor-not-allowed'
                 >
                   Siguiente
@@ -336,7 +356,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                     setCurrentPage(page);
                   }
                 }}
-                disabled={isLoading}
+                disabled={isLoading || isPageChanging}
                 className='input input-sm input-bordered w-16 text-center disabled:opacity-50 disabled:cursor-not-allowed'
               />
               <span className='text-sm text-gray-600'>de {totalPages}</span>

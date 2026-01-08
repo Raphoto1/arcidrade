@@ -16,15 +16,13 @@ let prismaClient: PrismaClient;
 
 const poolConfig = {
   connectionString,
-  max: 15, // Reducido de 30 para evitar agotamiento en Vercel
-  min: 1, // Reducido de 5 para evitar overhead
-  idleTimeoutMillis: 30000, // 30 segundos - descartar conexiones inactivas más rápido
-  connectionTimeoutMillis: 20000, // Aumentado a 20s para permitir reconexiones lentas
-  statement_timeout: 30000, // Reducido a 30s - timeout más corto para fallar rápido
-  // Validar conexiones antes de usarlas
-  validationQuery: 'SELECT 1',
-  // Detectar conexiones rotas más rápido
-  idleErrorTimeout: 5000, // Cierra conexiones idle con errores después de 5s
+  max: 10, // Reducido a 10 para Vercel serverless (más conservador)
+  min: 0, // 0 para permitir que el pool se vacíe en funciones serverless
+  idleTimeoutMillis: 20000, // 20 segundos - más agresivo para liberar conexiones
+  connectionTimeoutMillis: 30000, // 30s para dar más tiempo en cold starts
+  statement_timeout: 30000, // 30s timeout para queries
+  // Permitir que el pool cierre conexiones más rápido
+  allowExitOnIdle: true,
 };
 
 function setupPoolErrorHandling(pool: Pool) {
@@ -32,7 +30,8 @@ function setupPoolErrorHandling(pool: Pool) {
     console.error('[DB Pool Error]', {
       message: err.message,
       code: (err as any).code,
-      timestamp: new Date().toISOString()
+      timestamp: new Date().toISOString(),
+      env: process.env.NODE_ENV
     });
     
     // Log critical errors separately for monitoring
@@ -41,20 +40,23 @@ function setupPoolErrorHandling(pool: Pool) {
     }
   });
 
-  pool.on('connect', () => {
+  pool.on('connect', (client) => {
+    console.log('[DB] New connection established');
     // Set statement timeout on each connection
-    pool.query('SET statement_timeout = 60000').catch(err => {
+    client.query('SET statement_timeout = 30000').catch(err => {
       console.error('[DB] Error setting statement_timeout:', err.message)
     });
   });
 
   pool.on('remove', () => {
-    console.debug('[DB] Connection removed from pool')
+    console.log('[DB] Connection removed from pool')
   });
 }
 
 if (process.env.NODE_ENV === 'production') {
-  // En producción, usar el patrón normal
+  // En producción (Vercel), crear pool optimizado para serverless
+  console.log('[DB] Initializing production database connection...');
+  
   pool = new Pool(poolConfig)
   
   setupPoolErrorHandling(pool)
@@ -62,12 +64,26 @@ if (process.env.NODE_ENV === 'production') {
   adapter = new PrismaPg(pool)
   prismaClient = new PrismaClient({ 
     adapter,
-    // Log solo errores en producción
-    log: ['error'],
+    // Log errores y warnings en producción para debugging
+    log: [
+      { level: 'error', emit: 'stdout' },
+      { level: 'warn', emit: 'stdout' },
+    ],
   })
+  
+  // En Vercel, cerrar conexiones cuando la función termina
+  if (typeof process !== 'undefined' && process.on) {
+    process.on('beforeExit', async () => {
+      console.log('[DB] Closing database connections before exit...');
+      await prismaClient.$disconnect();
+      await pool.end();
+    });
+  }
 } else {
   // En desarrollo, usar singleton global para evitar múltiples instancias con HMR
   if (!(global as any).prisma) {
+    console.log('[DB] Initializing development database connection...');
+    
     pool = new Pool(poolConfig)
     
     setupPoolErrorHandling(pool)
@@ -83,6 +99,7 @@ if (process.env.NODE_ENV === 'production') {
     ;(global as any).pgPool = pool
   } else {
     prismaClient = (global as any).prisma
+    console.log('[DB] Reusing existing database connection (HMR)');
   }
 }
 
