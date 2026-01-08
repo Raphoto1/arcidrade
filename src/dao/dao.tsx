@@ -2,6 +2,38 @@ import prisma from "@/utils/db";
 import { encrypt } from "@/utils/encrypter";
 import { StatusAvailable } from "@/generated/prisma";
 
+// Retry helper para operaciones de base de datos
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxAttempts: number = 3,
+  delayMs: number = 1000
+): Promise<T> {
+  let lastError: Error | null = null;
+  
+  for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    try {
+      return await operation();
+    } catch (error: any) {
+      lastError = error;
+      const isConnectionError = 
+        error.message?.includes('upstream database') ||
+        error.message?.includes('ETIMEDOUT') ||
+        error.message?.includes('ECONNREFUSED') ||
+        error.code === 'P1001';
+      
+      if (isConnectionError && attempt < maxAttempts) {
+        console.log(`[DAO Retry] Attempt ${attempt}/${maxAttempts} failed, retrying in ${delayMs}ms...`);
+        await new Promise(resolve => setTimeout(resolve, delayMs * attempt));
+        continue;
+      }
+      
+      throw error;
+    }
+  }
+  
+  throw lastError || new Error('Operation failed after retries');
+}
+
 // auth
 export const getInvitationByIdDao = async (id: string) => {
 
@@ -148,41 +180,45 @@ export const updateProfesionalAuthStatusDao = async (userId: string | undefined,
 }
 // Platform - Profesional_________________________________________________________________
 export const getProfesionalFullByIdDao = async (user_id: string | undefined) => {
-  try {
-    const fullUser = await prisma.auth.findFirst({
-      where: { referCode: user_id },
-      include: {
-        profesional_data: true,
-        main_study: true,
-        study_specialization: true,
-        profesional_certifications: true,
-        experience: true,
-      },
-    });
-    if (fullUser) {
-      const { password, ...safeUser } = fullUser;
-      return safeUser;
+  return await withRetry(async () => {
+    try {
+      const fullUser = await prisma.auth.findFirst({
+        where: { referCode: user_id },
+        include: {
+          profesional_data: true,
+          main_study: true,
+          study_specialization: true,
+          profesional_certifications: true,
+          experience: true,
+        },
+      });
+      if (fullUser) {
+        const { password, ...safeUser } = fullUser;
+        return safeUser;
+      }
+    } catch (error) {
+      console.error("Error en getProfesionalFullByIdDao:", error);
+      throw error;
     }
-  } catch (error) {
-
-    throw new Error("Error al obtener profesional full");
-  }
+  });
 };
 
 export const getProfesionalDataByRefferCodeDao = async (user_id: string | undefined) => {
-  try {
-    const profesionalData = await prisma.profesional_data.findFirst({
-      where: { user_id },
-      include: {
-        auth: true
-      }
-    });
-    
-    return profesionalData;
-  } catch (error) {
-    console.error("error de Profesional Data By Reffer Code Dao", error);
-    throw new Error("Error al obtener el estudio principal del profesional:");
-  }
+  return await withRetry(async () => {
+    try {
+      const profesionalData = await prisma.profesional_data.findFirst({
+        where: { user_id },
+        include: {
+          auth: true
+        }
+      });
+      
+      return profesionalData;
+    } catch (error) {
+      console.error("Error en getProfesionalDataByRefferCodeDao:", error);
+      throw error;
+    }
+  });
 };
 
 export const getAllProfesionalsDao = async () => {
