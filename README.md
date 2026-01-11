@@ -456,7 +456,81 @@ Este script verifica:
 
 ---
 
-## 📝 **Licencia**
+## � **Guías y Documentación**
+
+### **Guías de Configuración** (`guides/`)
+
+#### 🔧 **Configuración de Base de Datos**
+- **[DATABASE_DIAGNOSTICS.md](./guides/DATABASE_DIAGNOSTICS.md)** - Diagnóstico y optimización de conexiones a base de datos
+- **[P1001_QUICK_START.md](./guides/P1001_QUICK_START.md)** - Solución rápida para errores P1001 de conexión
+- **[P1001_IMPLEMENTATION_CHECKLIST.md](./guides/P1001_IMPLEMENTATION_CHECKLIST.md)** - Checklist completo de implementación para resolver P1001
+- **[PRISMA_P1001_FIX.md](./guides/PRISMA_P1001_FIX.md)** - Fix específico de Prisma para errores de conexión
+- **[SOLUCION_DEPLOY_DB.md](./guides/SOLUCION_DEPLOY_DB.md)** - Soluciones para problemas de base de datos en deploy
+
+#### 📧 **Configuración de Email**
+- **[EMAIL-DELIVERY-SETUP.md](./guides/EMAIL-DELIVERY-SETUP.md)** - Guía completa de configuración DNS y entregabilidad de email
+- **[MAILCHANNELS-SETUP.md](./guides/MAILCHANNELS-SETUP.md)** - Configuración de MailChannels para envío transaccional
+- **[QUICK-FIX-EMAILS.md](./guides/QUICK-FIX-EMAILS.md)** - Solución rápida en 3 pasos para problemas de entregabilidad
+
+#### 🚀 **Deploy y Producción**
+- **[VERCEL_SETUP_GUIDE.md](./guides/VERCEL_SETUP_GUIDE.md)** - Guía paso a paso para configurar variables de entorno en Vercel
+- **[DIAGNOSTICO_DEPLOY_ACTUALIZADO.md](./guides/DIAGNOSTICO_DEPLOY_ACTUALIZADO.md)** - Diagnóstico completo de problemas de deploy
+
+### **Scripts Utilitarios** (`scripts/`)
+
+#### 🔌 **Conexión y Diagnóstico**
+```bash
+# Probar conexión a base de datos
+node scripts/test-connection.mjs
+
+# Verificar usuarios en la base de datos
+node scripts/check-users.js
+```
+
+- **[test-connection.mjs](./scripts/test-connection.mjs)** - Prueba exhaustiva de conexión a base de datos con múltiples validaciones
+- **[test-db-connection.ts](./scripts/test-db-connection.ts)** - Test de conexión TypeScript para diagnóstico
+- **[check-users.js](./scripts/check-users.js)** - Verifica usuarios registrados en la base de datos
+- **[diagnose-p1001.sh](./scripts/diagnose-p1001.sh)** - Script de diagnóstico para errores P1001 (Linux/Mac)
+
+#### 💾 **Backup y Restauración**
+```bash
+# Crear backup completo de la base de datos
+node scripts/backup-database.js
+
+# Crear backup simplificado
+node scripts/simple-backup.js
+
+# Backup desde deploy/producción
+node scripts/backup-deploy.mjs
+
+# Restaurar desde backup
+node scripts/restore-backup.js
+```
+
+- **[backup-database.js](./scripts/backup-database.js)** - Backup completo de todas las tablas con timestamped
+- **[simple-backup.js](./scripts/simple-backup.js)** - Backup simplificado de tablas principales
+- **[backup-deploy.mjs](./scripts/backup-deploy.mjs)** - Backup específico para base de datos en producción
+- **[restore-backup.js](./scripts/restore-backup.js)** - Restaura base de datos desde archivo JSON de backup
+
+#### 📧 **Testing de Email**
+```bash
+# Probar configuración de email completa
+node scripts/test-email-config.js
+```
+
+- **[test-email-config.js](./scripts/test-email-config.js)** - Verificación completa de configuración SMTP y envío de emails de prueba
+
+#### 🗄️ **Base de Datos**
+```bash
+# Verificar estado de la base de datos
+node scripts/test-database.ts
+```
+
+- **[test-database.ts](./scripts/test-database.ts)** - Script TypeScript de diagnóstico avanzado de base de datos
+
+---
+
+## �📝 **Licencia**
 
 Este proyecto está bajo licencia MIT. Ver `LICENSE` para más detalles.
 
