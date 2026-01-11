@@ -42,14 +42,15 @@ export default function Victor() {
       <VictorHeroHeader />
       <VictorManageGrid />
       <AdminButtons />
-      <ModalForForms title='Crear Proceso'>
-        <CreateProcessForm />
-      </ModalForForms>
-      
+      <div className='max-w-2xl mx-auto my-4'>
+        <ModalForForms title='Crear Proceso Directo'>
+          <CreateProcessForm />
+        </ModalForForms>
+      </div>
       <Suspense fallback={<LoadingOffers />}>
         <Offers />
       </Suspense>
-      
+
       <Suspense fallback={<LoadingFallback />}>
         <AskedProcess />
       </Suspense>
