@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
 import React, { useState } from "react";
 import { useForgotPassword } from "@/hooks/useInvitation";
+import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 
 import Loading from "@/app/auth/loading";
 
@@ -64,7 +65,7 @@ export default function LoginForm() {
       {loading && <Loading />}
       <div className='flex justify-center items-center h-1/2 p-2 min-w-sm md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h2 className='text-2xl font-bold test-start font-var(--font-oswald)'>Entrar a Arcidrade</h2>
+          <h2 className='text-2xl font-bold text-center font-var(--font-oswald)'>Entrar a Arcidrade</h2>
           <form onSubmit={handleSubmit} className='form justify-center align-middle pl-2 md:grid md:min-w-full'>
             <div className='block mb-2'>
               <label htmlFor='email' className='block text-sm font-medium mb-2'>
@@ -87,7 +88,7 @@ export default function LoginForm() {
                   type={showPassword ? 'text' : 'password'}
                   name='password' 
                   id='password'
-                  className='input input-bordered w-full pr-12'
+                  className='input input-bordered w-full pr-1'
                   required
                 />
                 <button
@@ -96,14 +97,9 @@ export default function LoginForm() {
                   className='absolute inset-y-0 right-0 pr-3 flex items-center text-gray-500 hover:text-gray-700'
                 >
                   {showPassword ? (
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L12 12m-2.122-2.122L7.758 7.758M12 12l2.122-2.122m-2.122 2.122L7.758 16.242" />
-                    </svg>
+                    <AiOutlineEyeInvisible className="h-5 w-5" />
                   ) : (
-                    <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                    </svg>
+                    <AiOutlineEye className="h-5 w-5" />
                   )}
                 </button>
               </div>
@@ -114,7 +110,7 @@ export default function LoginForm() {
               <button
                 type='button'
                 onClick={() => setShowForgotPassword(true)}
-                className='text-sm text-[var(--soft-arci)] hover:text-[var(--main-arci)] hover:underline'
+                className='text-sm text-(--main-arci) hover:text-(--soft-arci) hover:underline'
               >
                 ¿Olvidaste tu contraseña?
               </button>
@@ -122,14 +118,14 @@ export default function LoginForm() {
 
             <div className='grid grid-cols-2 justify-center gap-2 items-center align-middle'>
               <button 
-                className='btn btn-wide bg-[var(--main-arci)] text-white hover:bg-[var(--soft-arci)] font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105' 
+                className='btn btn-wide bg-(--main-arci) text-white hover:bg-(--soft-arci) font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105' 
                 type='submit'
               >
                 🔐 Entrar
               </button>
               <button 
                 type='button'
-                className='btn btn-wide bg-[var(--orange-arci)] text-white hover:bg-orange-600'
+                className='btn btn-wide bg-(--orange-arci) text-white hover:bg-orange-600'
                 onClick={() => window.location.href = '/'}
               >
                 Cancelar
@@ -177,7 +173,7 @@ export default function LoginForm() {
                     </button>
                     <button
                       type="submit"
-                      className="btn bg-[var(--main-arci)] text-white hover:bg-[var(--soft-arci)] font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
+                      className="btn bg-(--main-arci) text-white hover:bg-(--soft-arci) font-semibold shadow-lg hover:shadow-xl transition-all duration-200"
                       disabled={forgotPasswordLoading}
                     >
                       {forgotPasswordLoading ? (
