@@ -14,7 +14,7 @@ export default function OfferDetail() {
           className='w-15 h-15 rounded-full'
           width={600}
           height={600}
-          objectFit='cover'
+          style={{ objectFit: 'cover' }}
           alt='fillImage'
         />
       </div>

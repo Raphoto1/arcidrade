@@ -23,7 +23,7 @@ export default function PersonalData() {
   const { data: session } = useSession();
 
   //loaders
-  if (isLoading) {
+  if (isLoading || !data) {
     return <div>Cargando... datos</div>;
   }
 
@@ -32,12 +32,12 @@ export default function PersonalData() {
     return <div className='text-red-600'>Error al cargar datos: {error.message}</div>;
   }
 
-  // data validation
-  if (!data?.payload || !Array.isArray(data.payload) || data.payload.length === 0) {
+  // data validation - permitir arrays vacíos para usuarios nuevos
+  if (!data?.payload || !Array.isArray(data.payload)) {
     return <div className='text-yellow-600'>No hay datos disponibles</div>;
   }
 
-  const personalData = data.payload[0];
+  const personalData = data.payload[0] || {};
   const studyData = data.payload[1] || {}; // Safe fallback
 
   //adjust birthdate with validation
@@ -65,7 +65,7 @@ export default function PersonalData() {
         <h1 className='text-2xl fontArci text-center'>Curriculum</h1>
       </div>
       <div className='fileSpace bg-gray-50 w-full rounded-sm p-2 grid grid-cols-3 gap-2 shadow-xl'>
-        <div className='flex max-w-xs flex-shrink-0 justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
+        <div className='flex max-w-xs shrink-0 justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
           <IoDocumentAttachOutline size={36} />
         </div>
         <div>
@@ -184,7 +184,7 @@ export default function PersonalData() {
         </div>
         <ModalForForm title='Cambiar Contraseña'>
           <div className='flex flex-col gap-4'>
-            <Link href={`/resetPassword/${session?.user.id}`} className='btn bg-[var(--soft-arci)] text-white hover:bg-[var(--main-arci)]'>
+            <Link href={`/resetPassword/${session?.user.id}`} className='btn bg-(--soft-arci) text-white hover:bg-(--main-arci)'>
               Cambiar Contraseña
             </Link>
           </div>

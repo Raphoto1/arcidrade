@@ -13,7 +13,7 @@ export default function RectangleWindow(props: {text: string, image: string, lin
         className='w-96 h-80 max-w-96'
         width={600}
         height={600}
-        objectFit='cover'
+        style={{ objectFit: 'cover' }}
         alt='fillImage'
       />
     </Link>

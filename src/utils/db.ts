@@ -69,15 +69,17 @@ if (process.env.NODE_ENV === 'production') {
   console.log('[DB] Has DIRECT_DATABASE_URL:', !!process.env.DIRECT_DATABASE_URL);
   
   if (useAccelerate) {
-    // Con Prisma Accelerate, pasar accelerateUrl al constructor
+    // Con Prisma Accelerate, pasar la URL como accelerateUrl
     console.log('[DB] Creating PrismaClient with Accelerate');
+    const { withAccelerate } = require('@prisma/extension-accelerate');
     prismaClient = new PrismaClient({
-      accelerateUrl: process.env.DATABASE_URL,
+      // @ts-ignore - accelerateUrl es válido pero puede no estar en tipos
+      accelerateUrl: connectionString,
       log: [
         { level: 'error', emit: 'stdout' },
         { level: 'warn', emit: 'stdout' },
       ],
-    });
+    }).$extends(withAccelerate()) as any;
   } else {
     console.log('[DB] Creating PrismaClient with Pool adapter (direct connection)');
 
