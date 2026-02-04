@@ -7,6 +7,7 @@ import Offers from "./Offers";
 import { useProfesional } from "@/hooks/usePlatPro";
 import ProfesionalGridSearch from "@/components/platform/institution/ProfesionalGridSearch";
 import ListedProcess from "./ListedProcess";
+import Loader from "@/components/pieces/Loader";
 export default function Profesional() {
   const {data, error, isLoading} = useProfesional();
   
@@ -17,7 +18,7 @@ export default function Profesional() {
   if (isLoading) {
     return (
       <div className='flex justify-center items-center min-h-screen'>
-        <div className="loading loading-spinner loading-lg"></div>
+        <Loader size="lg" text="Cargando perfil profesional..." />
       </div>
     );
   }

@@ -2,10 +2,11 @@ import React from "react";
 import Image from "next/image";
 import { useInstitutionById, useInstitutionFull, useInstitutionFullById } from "@/hooks/usePlatInst";
 import { Country, ICountry } from "country-state-city";
+import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function InstitutionDetailById(props: any) {
   const { data, error, isLoading, mutate } = useInstitutionFullById(props.userId);
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
   // console.log("data full", data);
   const InstitutionData = data?.payload.institution_data || {};
@@ -62,11 +63,11 @@ export default function InstitutionDetailById(props: any) {
         <h1 className='text-2xl fontArci text'>Logros</h1>
         <div className='bg-white rounded-md p-1 mt-2'>
           {goals.length === 0 ? (
-            <p className='fontArci text-[var(--main-arci)]'>No hay logros registrados</p>
+            <p className='fontArci text-(--main-arci)'>No hay logros registrados</p>
           ) : (
             goals.map((goal: any) => (
               <div key={goal.id} className='mb-2'>
-                <h3 className='fontArci text-[var(--main-arci)] font-bold'>{goal.title}</h3>
+                <h3 className='fontArci text-(--main-arci) font-bold'>{goal.title}</h3>
               </div>
             ))
           )}
@@ -76,11 +77,11 @@ export default function InstitutionDetailById(props: any) {
         <h1 className='text-2xl fontArci text'>Especialidades</h1>
         <div className='bg-white rounded-md p-1 mt-2'>
           {speciality.length === 0 ? (
-            <p className='fontArci text-[var(--main-arci)]'>No hay especialidades registradas</p>
+            <p className='fontArci text-(--main-arci)'>No hay especialidades registradas</p>
           ) : (
             speciality.map((spec: any) => (
               <div key={spec.id} className='mb-2'>
-                <h3 className='fontArci text-[var(--main-arci)] font-bold'>{spec.title}</h3>
+                <h3 className='fontArci text-(--main-arci) font-bold'>{spec.title}</h3>
                 <p className='text-sm'>{spec.title_category || "Categoría general no registrada"}</p>
               </div>
             ))
@@ -93,11 +94,11 @@ export default function InstitutionDetailById(props: any) {
           <h1 className='text-2xl fontArci'>Certificaciones</h1>
           <div className='bg-white rounded-md p-1 mt-2'>
             {certifications.length === 0 ? (
-              <p className='fontArci text-[var(--main-arci)]'>No hay certificaciones registradas</p>
+              <p className='fontArci text-(--main-arci)'>No hay certificaciones registradas</p>
             ) : (
               certifications.map((cert: any) => (
                 <div key={cert.id} className='mb-2'>
-                  <h3 className='fontArci text-[var(--main-arci)] font-bold'>{cert.title}</h3>
+                  <h3 className='fontArci text-(--main-arci) font-bold'>{cert.title}</h3>
                   <p className='text-sm'>Emitido por: {cert.institution || "Entidad no registrada"}</p>
                 </div>
               ))

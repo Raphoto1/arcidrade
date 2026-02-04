@@ -8,11 +8,12 @@ import InstitutionProfileForm from "@/components/forms/platform/institution/Inst
 import { useInstitution } from "@/hooks/usePlatInst";
 import { useSession } from "next-auth/react";
 import { medicalOptions } from "@/static/data/staticData";
+import { InlineLoader } from "@/components/pieces/Loader";
 export default function InstitutionData() {
   const { data, isLoading, error, mutate } = useInstitution();
   const { data: session } = useSession();
 
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
 
   const countryName: ICountry | undefined = data?.payload && data.payload.country ? Country.getCountryByCode(data.payload.country) : undefined;
   const fecha = new Date(data?.payload.established);

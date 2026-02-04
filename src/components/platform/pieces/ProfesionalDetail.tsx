@@ -5,6 +5,7 @@ import { fakerES as faker } from "@faker-js/faker";
 import { ICountry } from "country-state-city";
 import { Country } from "country-state-city";
 import { useHandleCategoryName } from "@/hooks/useUtils";
+import Loader from "@/components/pieces/Loader";
 
 export default function ProfesionalDetail() {
   const { data, error, isLoading } = useProfesionalFull();
@@ -73,7 +74,7 @@ export default function ProfesionalDetail() {
   if (isLoading) {
     return (
       <div className='flex justify-center items-center h-64'>
-        <span className='loading loading-spinner loading-lg'></span>
+        <Loader size="md" text="Cargando perfil..." />
       </div>
     );
   }
@@ -105,7 +106,7 @@ export default function ProfesionalDetail() {
           </div>
           <h1 className='text-2xl fontArci text-center'>{fullInitials}</h1>
           <p className='text-center'>{mainStudy.title || "Estudio Principal"}</p>
-          <button className='btn bg-[var(--main-arci)] text-white'>Agregar Al Proceso</button>
+          <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button>
         </div>
         <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
           <h1 className='text-2xl fontArci text'>Presentación</h1>
@@ -115,31 +116,31 @@ export default function ProfesionalDetail() {
             <div className='w-full'>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Nombre</h3>
-                <p className='text-[var(--main-arci)]'>Dr. {nameInitials}</p>
+                <p className='text-(--main-arci)'>Dr. {nameInitials}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Apellido</h3>
-                <p className='text-[var(--main-arci)]'>Dr. {lastNameInitials}</p>
+                <p className='text-(--main-arci)'>Dr. {lastNameInitials}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='text-light'>Fecha de Nacimiento</h3>
-                <p className='text-[var(--main-arci)]'>{fechaString || "fecha"}</p>
+                <p className='text-(--main-arci)'>{fechaString || "fecha"}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Categoria de Profesión</h3>
-                <p className='text-[var(--main-arci)]'>{useHandleCategoryName(mainStudy.sub_area)}</p>
+                <p className='text-(--main-arci)'>{useHandleCategoryName(mainStudy.sub_area)}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Profesión</h3>
-                <p className='text-[var(--main-arci)]'>{mainStudy.title}</p>
+                <p className='text-(--main-arci)'>{mainStudy.title}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Institución:</h3>
-                <p className='text-[var(--main-arci)]'>{mainStudy.institution}</p>
+                <p className='text-(--main-arci)'>{mainStudy.institution}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Status</h3>
-                <p className='text-[var(--main-arci)]'>{handleStatusName(mainStudy.status)}</p>
+                <p className='text-(--main-arci)'>{handleStatusName(mainStudy.status)}</p>
               </div>
             </div>
           </div>
@@ -150,8 +151,8 @@ export default function ProfesionalDetail() {
           <div className='flex flex-col gap-2'>
             {speciality?.map((item: any, index: number) => (
               <div key={index} className='bg-white rounded-md p-1'>
-                <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
-                <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
+                <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+                <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
                 <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
               </div>
             ))}
@@ -162,8 +163,8 @@ export default function ProfesionalDetail() {
           <div className='flex flex-col gap-2'>
             {certifications?.map((item: any, index: number) => (
               <div key={index} className='bg-white rounded-md p-1'>
-                <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
-                <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
+                <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+                <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
                 <p className='text-xs'>{handleDateToYear(item.endDate)}</p>
               </div>
             ))}
@@ -176,14 +177,14 @@ export default function ProfesionalDetail() {
           <div className='flex flex-col gap-2'>
             {experience?.map((item: any, index: number) => (
               <div key={index} className='bg-white rounded-md p-1'>
-                <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
-                <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
+                <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+                <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
                 <div>
                   <p className='text-xs'>{item.city}</p>
-                  <p className='text-xs text-[var(--soft-arci)]'>{`${handleDateToYear(item.start_date)} - ${handleDateToYear(item.end_date)}`}</p>
+                  <p className='text-xs text-(--soft-arci)'>{`${handleDateToYear(item.start_date)} - ${handleDateToYear(item.end_date)}`}</p>
                 </div>
                 <div>
-                  <h3 className='text-[var(--main-arci)]'>Descripción:</h3>
+                  <h3 className='text-(--main-arci)'>Descripción:</h3>
                   <p className='line-clamp-6'>{item.description}</p>
                 </div>
               </div>

@@ -2,6 +2,8 @@ import Experience from "../pieces/Experience";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ProfesionalExperienceForm from "@/components/forms/platform/profesional/ProfesionalExperienceForm";
 import { useProfesionalExperiences, useProfesional } from "@/hooks/usePlatPro";
+import { InlineLoader } from "@/components/pieces/Loader";
+
 export default function Experiences() {
   const { data, error, isLoading } = useProfesionalExperiences();
   const { data: UserData } = useProfesional();
@@ -12,7 +14,12 @@ export default function Experiences() {
       <div className='pb-1'>
         <h1 className='text-2xl fontArci text-center'>Experiencia</h1>
       </div>
-      <div className='max-h-110 overflow-auto'>
+      {isLoading ? (
+        <div className='flex justify-center items-center py-8'>
+          <InlineLoader size="md" />
+        </div>
+      ) : (
+        <div className='max-h-110 overflow-auto'>
         {experienceList?.map((item: any, index: number) => (
           <Experience
             key={item.id}
@@ -28,6 +35,7 @@ export default function Experiences() {
           />
         ))}
       </div>
+      )}
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
           {UserData?.payload[0].name ? (

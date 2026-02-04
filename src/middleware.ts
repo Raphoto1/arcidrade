@@ -17,15 +17,15 @@ export default withAuth(
       }
 
       // Verificar que el usuario tenga un área válida
-      if (!token?.area || !['profesional', 'institution', 'manager', 'collab', 'campaign', 'victor'].includes(token.area as string)) {
+      if (!token?.area || !['profesional', 'institution', 'manager', 'colab', 'campaign', 'victor'].includes(token.area as string)) {
         return NextResponse.json(
           { error: "No autorizado - Área de usuario inválida" },
           { status: 403 }
         );
       }
 
-      // Victor tiene acceso total a toda la API - bypass todas las validaciones
-      if (token.area === 'victor') {
+      // Victor y Colab tienen acceso total a toda la API - bypass todas las validaciones
+      if (token.area === 'victor' || token.area === 'colab') {
         return NextResponse.next();
       }
 
@@ -42,7 +42,7 @@ export default withAuth(
         
         // GET: Tanto profesionales como instituciones pueden ver datos de perfil
         if (method === 'GET') {
-          if (['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (['profesional', 'institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.next();
           } else {
             return NextResponse.json(
@@ -54,7 +54,7 @@ export default withAuth(
         
         // POST/PUT/DELETE: Solo profesionales pueden modificar su perfil
         if (['POST', 'PUT', 'DELETE'].includes(method)) {
-          if (['profesional', 'manager', 'victor'].includes(token.area as string)) {
+          if (['profesional', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.next();
           } else {
             return NextResponse.json(
@@ -149,7 +149,7 @@ export default withAuth(
       );
 
       // Validar acceso a visualización de profesionales (instituciones pueden ver)
-      if (isInstitutionViewRoute && !['institution', 'manager', 'victor'].includes(token.area as string)) {
+      if (isInstitutionViewRoute && !['institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
         return NextResponse.json(
           { error: "No autorizado - Solo instituciones pueden ver datos de profesionales" },
           { status: 403 }
@@ -162,7 +162,7 @@ export default withAuth(
         
         // GET: Profesionales e instituciones pueden ver
         if (method === 'GET') {
-          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['profesional', 'institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo profesionales e instituciones pueden ver esta información" },
               { status: 403 }
@@ -175,7 +175,7 @@ export default withAuth(
       if (isProfesionalApplyRoute) {
         const method = req.method;
         // Solo aplicar restricción a POST en rutas que NO sean candidates
-        if (method === 'POST' && !pathname.startsWith('/api/platform/process/candidates') && !['profesional', 'manager', 'victor'].includes(token.area as string)) {
+        if (method === 'POST' && !pathname.startsWith('/api/platform/process/candidates') && !['profesional', 'manager', 'victor', 'colab'].includes(token.area as string)) {
           return NextResponse.json(
             { error: "No autorizado - Solo profesionales pueden aplicar a procesos" },
             { status: 403 }
@@ -187,7 +187,7 @@ export default withAuth(
       if (isProfesionalStatusUpdateRoute) {
         const method = req.method;
         if (['POST', 'PUT', 'DELETE'].includes(method)) {
-          if (!['profesional', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['profesional', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo profesionales pueden actualizar status de aplicaciones" },
               { status: 403 }
@@ -201,7 +201,7 @@ export default withAuth(
         const method = req.method;
         // Para GET, tanto profesionales como instituciones pueden ver
         if (method === 'GET') {
-          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['profesional', 'institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo profesionales e instituciones pueden ver procesos por status" },
               { status: 403 }
@@ -212,7 +212,7 @@ export default withAuth(
         }
         // Para otros métodos (POST, PUT, DELETE) en rutas de status
         if (['POST', 'PUT', 'DELETE'].includes(method)) {
-          if (!['institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo instituciones pueden modificar status de procesos" },
               { status: 403 }
@@ -228,7 +228,7 @@ export default withAuth(
         
         // GET: Tanto profesionales como instituciones pueden ver candidatos
         if (method === 'GET') {
-          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['profesional', 'institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo profesionales e instituciones pueden ver candidatos" },
               { status: 403 }
@@ -239,7 +239,7 @@ export default withAuth(
         
         // POST: Profesionales pueden agregarse e instituciones pueden agregar otros
         if (method === 'POST') {
-          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['profesional', 'institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo profesionales e instituciones pueden gestionar candidatos" },
               { status: 403 }
@@ -250,7 +250,7 @@ export default withAuth(
         
         // PUT/DELETE: Solo instituciones pueden modificar/eliminar
         if (['PUT', 'DELETE'].includes(method)) {
-          if (!['institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo instituciones pueden modificar candidatos" },
               { status: 403 }
@@ -266,7 +266,7 @@ export default withAuth(
         
         // GET: Tanto profesionales como instituciones pueden ver
         if (method === 'GET') {
-          if (!['profesional', 'institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['profesional', 'institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo profesionales e instituciones pueden ver procesos" },
               { status: 403 }
@@ -276,7 +276,7 @@ export default withAuth(
         
         // POST/PUT/DELETE: Solo instituciones pueden modificar
         if (['POST', 'PUT', 'DELETE'].includes(method)) {
-          if (!['institution', 'manager', 'victor'].includes(token.area as string)) {
+          if (!['institution', 'manager', 'victor', 'colab'].includes(token.area as string)) {
             return NextResponse.json(
               { error: "No autorizado - Solo instituciones pueden gestionar procesos" },
               { status: 403 }
@@ -294,7 +294,7 @@ export default withAuth(
       }
 
       // Validar acceso a rutas de manager
-      if (isManagerRoute && !['manager', 'victor'].includes(token.area as string)) {
+      if (isManagerRoute && !['manager', 'victor', 'colab'].includes(token.area as string)) {
         return NextResponse.json(
           { error: "No autorizado - Solo managers pueden acceder a esta ruta" },
           { status: 403 }

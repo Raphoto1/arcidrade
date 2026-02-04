@@ -6,21 +6,32 @@ import { useActiveProcessesByUser } from "@/hooks/useProcess";
 import { useProfesional } from "@/hooks/usePlatPro";
 import { useSession } from "next-auth/react";
 import InstitutionProcessCard from "@/components/pieces/InstitutionProcessCard";
+import Loader from "@/components/pieces/Loader";
+
 export default function MyAplications() {
   const { data: session } = useSession()
   const userId = session?.user.id
-  const { data } = useActiveProcessesByUser(userId || null);
+  const { data, isLoading } = useActiveProcessesByUser(userId || null);
   const processData = data?.payload[0]
   
   // Filtrar solo los procesos agregados por profesional
   const profesionalApplications = data?.payload?.filter((process: any) => process.added_by === "profesional") || [];
   
+  if (isLoading) {
+    return (
+      <div className='grid grid-cols-1 gap-4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
+        <h2 className='text-2xl fontArci text-center'>Mis Postulaciones</h2>
+        <div className="w-full min-w-full flex justify-center py-8">
+          <Loader size="md" text="Cargando postulaciones..." />
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='grid grid-cols-1 gap-4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <h2 className='text-2xl fontArci text-center'>Mis Postulaciones</h2>
       <div className="w-full min-w-full flex justify-center">
-        
         <Grid>
           {profesionalApplications.length > 0 ? (
             profesionalApplications.map((process: any, index: number) => (

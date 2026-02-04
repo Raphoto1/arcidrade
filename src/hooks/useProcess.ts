@@ -1,4 +1,4 @@
-import useSWR, { SWRConfiguration } from "swr";
+import useSWR, { SWRConfiguration, mutate as globalMutate } from "swr";
 import { fetcher } from "@/utils/fetcher";
 
 type ProfesionalResponse = {
@@ -143,3 +143,25 @@ export const usePublicActiveProcesses = () => {
   );
   return { data, error, isLoading, mutate };
 }
+
+// Función helper para revalidar todos los endpoints de procesos
+export const revalidateAllProcesses = async () => {
+  // Revalidar solo los endpoints de listas de procesos
+  const endpoints = [
+    '/api/platform/process/',
+    '/api/platform/process/status/active',
+    '/api/platform/process/status/pending',
+    '/api/platform/process/status/paused',
+    '/api/platform/process/status/archived',
+    '/api/platform/process/status/completed',
+    '/api/platform/process/all',
+    '/api/platform/process/all/pending',
+    '/api/platform/process/all/active',
+    '/api/platform/process/all/paused',
+    '/api/platform/process/all/archived',
+    '/api/platform/process/all/completed',
+  ];
+
+  // Revalidar todos los endpoints en paralelo
+  await Promise.all(endpoints.map(endpoint => globalMutate(endpoint)));
+};

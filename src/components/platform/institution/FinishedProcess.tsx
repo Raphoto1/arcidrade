@@ -5,10 +5,11 @@ import ModalForForms from "@/components/modals/ModalForForms";
 import CreateProcessForm from "@/components/forms/platform/process/CreateProcessForm";
 import ProcessBasic from "../process/ProcessBasic";
 import { useActiveProcesses, useFinishedProcesses, useProcesses } from "@/hooks/useProcess";
+import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function FinishedProcess() {
   const { data, error, isLoading } = useFinishedProcesses();
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
   return (
     <div className='grid grid-cols-1 w-full md:w-3/4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
       <div className='collapse collapse-arrow bg-gray-300 rounded-t-md mb-2'>

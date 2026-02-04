@@ -1,9 +1,27 @@
-
 import { NextRequest, NextResponse } from "next/server";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { activateUser } from "../../../../../../controller/victor.controller";
 
 export async function PUT(request: NextRequest) {
     try {
+        const session = await getServerSession(authOptions);
+        
+        if (!session?.user) {
+            return NextResponse.json(
+                { error: "No autorizado" },
+                { status: 401 }
+            );
+        }
+
+        // Solo Victor y Manager pueden activar usuarios
+        if (!['victor', 'manager'].includes(session.user.area || '')) {
+            return NextResponse.json(
+                { error: "Acceso denegado. Solo Victor y Manager pueden acceder." },
+                { status: 403 }
+            );
+        }
+
         const body = await request.json();
         const userId = body.userId;
         const response = await activateUser(userId);

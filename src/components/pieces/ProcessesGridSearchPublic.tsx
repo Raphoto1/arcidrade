@@ -2,8 +2,10 @@
 import React, { useState, useMemo, useEffect } from "react";
 
 import InstitutionProcessCardPublic from "@/components/pieces/InstitutionProcessCardPublic";
+import InstitutionProcessCardSkeleton from "@/components/pieces/InstitutionProcessCardSkeleton";
 import { ImSearch } from "react-icons/im";
 import EmptyCard from "@/components/pieces/EmptyCard";
+import Loader from "@/components/pieces/Loader";
 
 import Grid from "@/components/platform/pieces/Grid";
 import { usePublicActiveProcesses } from '@/hooks/useProcess';
@@ -133,13 +135,17 @@ export default function ProcessesGridSearchPublic(props: any) {
         </div>
         {/* Resultados */}
         <div className='mb-4 text-center'>
-          <p className='text-gray-600'>{isLoading ? "Cargando..." : `${filteredProcesses.length} procesos encontrados`}</p>
+          <div className='text-gray-600'>{isLoading ? <Loader size="sm" text="Cargando..." /> : `${filteredProcesses.length} procesos encontrados`}</div>
         </div>
 
         {/* Grid de procesos */}
         <Grid>
           {isLoading ? (
-            <div className='col-span-full text-center py-8'>Cargando procesos...</div>
+            <>
+              <InstitutionProcessCardSkeleton />
+              <InstitutionProcessCardSkeleton />
+              <InstitutionProcessCardSkeleton />
+            </>
           ) : error ? (
             <div className='col-span-full text-center py-8 text-red-500'>Error al cargar procesos</div>
           ) : filteredProcesses.length > 0 ? (

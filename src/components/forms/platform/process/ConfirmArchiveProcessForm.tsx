@@ -1,25 +1,10 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { 
-  useProcesses, 
-  useActiveProcesses, 
-  usePendingProcesses, 
-  useFinishedProcesses, 
-  usePausedProcesses,
-  useArchivedProcesses 
-} from "@/hooks/useProcess";
+import { revalidateAllProcesses } from "@/hooks/useProcess";
 
 export default function ConfirmArchiveProcessForm(props: any) {
   const { closeModal } = useModal();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Hooks para actualizar todas las listas de procesos
-  const { mutate: mutateProcesses } = useProcesses();
-  const { mutate: mutateActiveProcesses } = useActiveProcesses();
-  const { mutate: mutatePendingProcesses } = usePendingProcesses();
-  const { mutate: mutateFinishedProcesses } = useFinishedProcesses();
-  const { mutate: mutatePausedProcesses } = usePausedProcesses();
-  const { mutate: mutateArchivedProcesses } = useArchivedProcesses();
 
   const handleDelete = async () => {
     setIsSubmitting(true);
@@ -40,15 +25,13 @@ export default function ConfirmArchiveProcessForm(props: any) {
       
       const result = await response.json();
       
-      // Actualizar todas las listas de procesos para reflejar el cambio
-      await Promise.all([
-        mutateProcesses(),
-        mutateActiveProcesses(),
-        mutatePendingProcesses(),
-        mutateFinishedProcesses(),
-        mutatePausedProcesses(),
-        mutateArchivedProcesses()
-      ]);
+      // Revalidar todas las listas de procesos
+      await revalidateAllProcesses();
+      
+      // Si hay un callback onSuccess, ejecutarlo (para actualizar el proceso individual)
+      if (props.onSuccess) {
+        await props.onSuccess();
+      }
       
       closeModal();
     } catch (error) {

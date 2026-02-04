@@ -8,6 +8,7 @@ import { useInstitution } from "@/hooks/usePlatInst";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import ModalForFormsSoftBlue from "@/components/modals/ModalForFormsSoftBlue";
+import { InlineLoader } from "@/components/pieces/Loader";
 import AvatarInstitutionForm from "@/components/forms/platform/institution/AvatarInstitutionForm";
 import UserDescription from "@/components/platform/pieces/UserDescription";
 import InstitutionDescriptionForm from "@/components/forms/platform/institution/InstitutionDescriptionForm";
@@ -15,18 +16,18 @@ import InstitutionDescriptionForm from "@/components/forms/platform/institution/
 export default function HeroHeaderInstitution() {
   const { data, isLoading, error, mutate } = useInstitution();
   
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
 
   const isDeactivated = data?.payload?.auth?.status === 'desactivated';
 
   return (
-    <div className='relative w-full md:h-[320px] overflow-hidden'>
+    <div className='relative w-full md:h-80 overflow-hidden'>
       {/* Aviso de cuenta desactivada */}
       {isDeactivated && (
         <div className='absolute top-0 left-0 right-0 z-50 bg-red-600 text-white p-4'>
           <div className='container mx-auto flex items-center justify-center gap-3'>
-            <svg className='h-6 w-6 flex-shrink-0' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
+            <svg className='h-6 w-6 shrink-0' fill='none' viewBox='0 0 24 24' stroke='currentColor'>
               <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' />
             </svg>
             <p className='text-sm md:text-base font-medium'>
@@ -47,7 +48,7 @@ export default function HeroHeaderInstitution() {
       />
 
       {/* Degradado inferior hacia transparente */}
-      <div className='absolute bottom-0 left-0 right-0 h-[150px] bg-gradient-to-t from-white via-transparent to-transparent' />
+      <div className='absolute bottom-0 left-0 right-0 h-37.5 bg-linear-to-t from-white via-transparent to-transparent' />
 
       {/* Contenido principal */}
       <div className='HeroArea w-full flex justify-center items-center align-middle p-2 relative z-10'>

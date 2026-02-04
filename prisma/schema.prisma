@@ -31,6 +31,7 @@ model Auth {
   study_speciality_favorite  Study_speciality_favorite[]
   study_specialization       Study_specialization[]
   fail_mail                  fail_mail?
+  colaborator_data                colaborator_data[]
 
   // Índices para mejorar performance de queries
   @@index([status])
@@ -287,11 +288,30 @@ model profesionals_listed {
   process        Process                    @relation(fields: [process_id], references: [id], onDelete: Cascade)
 }
 
+model colaborator_data {
+  id          Int      @id @default(autoincrement())
+  user_id     String
+  name        String?
+  last_name   String?
+  role        String?
+  description String?
+  status      String?
+  country     String?
+  state       String?
+  city        String?
+  file        String?
+  link        String?
+  avatar      String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+  auth        Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
+}
+
 enum AreasAvailable {
   institution
   profesional
   manager
-  collab
+  colab
   campaign
   victor
 }
@@ -308,6 +328,7 @@ enum SenderNum {
   victor
   campaign
   admin
+  colab
   external
 }
 

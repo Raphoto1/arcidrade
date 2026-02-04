@@ -1,4 +1,5 @@
 import useSWR from 'swr';
+import { useSession } from 'next-auth/react';
 
 interface UserStats {
   invited: number;
@@ -33,8 +34,15 @@ const fetcher = async (url: string) => {
 };
 
 export const useUserStats = () => {
+  const { data: session } = useSession();
+  
+  // Determinar el endpoint según el área del usuario
+  const endpoint = session?.user?.area === 'colab' 
+    ? '/api/platform/colab/user-stats'
+    : '/api/platform/victor/user-stats';
+
   const { data, error, isLoading, mutate } = useSWR(
-    '/api/platform/victor/user-stats',
+    endpoint,
     fetcher,
     {
       refreshInterval: 30000, // Refrescar cada 30 segundos

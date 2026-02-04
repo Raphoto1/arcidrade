@@ -10,10 +10,11 @@ import { ICountry } from "country-state-city/lib/interface";
 import { Country } from "country-state-city";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
+import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function InstitutionDetailFull() {
   const { data, error, isLoading, mutate } = useInstitutionFull();
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
 
   const InstitutionData = data?.payload.institution_data || {};

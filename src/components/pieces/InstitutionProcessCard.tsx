@@ -51,7 +51,7 @@ export default function InstitutionProcessCard(props: any) {
 
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
-      <div className='topHat bg-[var(--orange-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
+      <div className='topHat bg-(--orange-arci) w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
         <div className="pl-2">
           {processPack.status == 'pending' && <h1 className="text-xl font-bold text-white">Proceso sin Confirmar</h1>}
           <h2 className='font-oswald text-xl text-white capitalize'>{processPack.position || "Cargo Oferta"}</h2>

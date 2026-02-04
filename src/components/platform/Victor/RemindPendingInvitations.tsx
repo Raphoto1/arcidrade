@@ -49,7 +49,7 @@ export default function RemindPendingInvitations() {
         <button
           onClick={handleSendReminders}
           disabled={isLoading}
-          className='btn bg-[var(--main-arci)] text-white w-full mb-4 disabled:opacity-50'
+          className='btn bg-(--main-arci) text-white w-full mb-4 disabled:opacity-50'
         >
           {isLoading ? (
             <>

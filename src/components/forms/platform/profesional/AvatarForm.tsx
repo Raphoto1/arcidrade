@@ -39,13 +39,13 @@ export default function AvatarForm() {
               <input type='file' {...register("file")} />
             </div>
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-              <button className='btn bg-[var(--soft-arci)]' type='submit'>
+              <button className='btn bg-(--soft-arci)' type='submit'>
                 Agregar Imagen
               </button>
             </div>
           </form>
           <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal}>
+            <button className='btn btn-wide bg-(--orange-arci)' onClick={closeModal}>
               Cancelar
             </button>
           </div>

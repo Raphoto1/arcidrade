@@ -32,7 +32,7 @@ function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; 
     <li>
       <button className={`text-left p-3 hover:bg-base-200 rounded-lg w-full ${isSelected ? "bg-base-200" : ""}`} onClick={() => onSelect(process)}>
         <div className='flex flex-col'>
-          <span className='font-semibold text-[var(--main-arci)]'>{process.position}</span>
+          <span className='font-semibold text-(--main-arci)'>{process.position}</span>
           <span className='text-sm font-medium text-gray-700'>Cliente: {institutionData?.name || "Cargando cliente..."}</span>
           <span className='text-sm text-gray-600'>Especialidad: {process.main_speciality}</span>
           <span className='text-xs text-gray-500'>Estado: {process.status || "Pendiente"}</span>
@@ -210,7 +210,7 @@ export default function AskedProcess() {
                   </div>
                   <ul
                     tabIndex={0}
-                    className='dropdown-content z-[9999] menu p-2 shadow-2xl bg-base-100 rounded-box w-full max-h-60 overflow-auto border border-gray-200'>
+                    className='dropdown-content z-9999 menu p-2 shadow-2xl bg-base-100 rounded-box w-full max-h-60 overflow-auto border border-gray-200'>
                     {filteredProcesses.map((process: any) => (
                       <ProcessDropdownItem key={process.id} process={process} onSelect={handleProcessSelect} isSelected={selectedProcess?.id === process.id} />
                     ))}
@@ -219,7 +219,7 @@ export default function AskedProcess() {
               </div>
 
               {/* Filtro dropdown por institución */}
-              <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto md:flex-shrink-0'>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto md:shrink-0'>
                 <span className='text-sm font-medium text-gray-600'>Filtrar por institución:</span>
                 <div className='flex items-center gap-2'>
                   <div ref={filterDropdownRef} className={`dropdown dropdown-bottom relative z-40 ${isFilterDropdownOpen ? "dropdown-open" : ""}`}>
@@ -238,7 +238,7 @@ export default function AskedProcess() {
                     </div>
                     <ul
                       tabIndex={0}
-                      className='dropdown-content z-[9998] menu p-2 shadow-xl bg-base-100 rounded-box w-full max-h-48 overflow-auto border border-gray-200'>
+                      className='dropdown-content z-9998 menu p-2 shadow-xl bg-base-100 rounded-box w-full max-h-48 overflow-auto border border-gray-200'>
                       <li>
                         <button
                           className={`text-left p-2 hover:bg-base-200 rounded-lg w-full ${!institutionFilter ? "bg-base-200 font-semibold" : ""}`}

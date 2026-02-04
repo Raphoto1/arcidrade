@@ -25,6 +25,8 @@ import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAsk
 import ConfirmExtendPeriodForm from "@/components/forms/platform/victor/ConfirmExtendPeriodForm";
 import ConfirmMakeProcessArciForm from "@/components/forms/platform/victor/ConfirmMakeProcessArciForm";
 import ConfirmMakeProcessAutoForm from "@/components/forms/platform/victor/ConfirmMakeProcessAutoForm";
+import Loader from "@/components/pieces/Loader";
+
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(props.id);
@@ -47,12 +49,7 @@ export default function ProcessVictor(props: any) {
   }, [processData?.start_date]);
 
   if (isLoading) {
-    return (
-      <div className='flex justify-center items-center p-4'>
-        <div className='loading loading-spinner loading-lg'></div>
-        <span className='ml-2'>Cargando proceso...</span>
-      </div>
-    );
+    return <Loader size="lg" text="Cargando proceso..." className="p-4" />;
   }
 
   if (error) {
@@ -79,11 +76,11 @@ export default function ProcessVictor(props: any) {
           <div className='topHat p-2 rounded-sm z-10 w-full pb-2'>
             <div className='flex align-middle items-center gap-2 pb-2'>
               <h1 className='text-accent'>Cliente:</h1>
-              <p className='text-xl text-[var(--main-arci)]'>{institutionData?.name}</p>
+              <p className='text-xl text-(--main-arci)'>{institutionData?.name}</p>
             </div>
             <div className='flex justify-between pb-2'>
               <h1 className='text-2xl fontArci'>Detalle de Proceso:</h1>
-              <p className='fontRoboto text-xl text-[var(--main-arci)] capitalize'>{processData?.position}</p>
+              <p className='fontRoboto text-xl text-(--main-arci) capitalize'>{processData?.position}</p>
               <ModalForForms title='Editar'>
                 <UpdateProcessForm id={processData?.id} />
               </ModalForForms>
@@ -93,17 +90,17 @@ export default function ProcessVictor(props: any) {
               <div className='cube1 md:w-1/ bg-white rounded-md px-1'>
                 <p className='text-success text-end capitalize'>{processData?.status}</p>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Categoria del Profesional:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Categoria del Profesional:</h4>
+                  <p className='text-md text-(--main-arci)'>{useHandleCategoryName(processData?.area) || "No especificada"}</p>
                 </div>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidad Principal:</h4>
-                  <p className='text-md text-[var(--main-arci)] text-end'>{processData?.main_speciality}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Especialidad Principal:</h4>
+                  <p className='text-md text-(--main-arci) text-end'>{processData?.main_speciality}</p>
                 </div>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Especialidades Secundarias:</h4>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Especialidades Secundarias:</h4>
                   <div>
-                    <p className='text-md text-[var(--main-arci)] text-end'>
+                    <p className='text-md text-(--main-arci) text-end'>
                       {processData?.extra_specialities?.length > 0
                         ? processData.extra_specialities.map((spec: any) => spec.speciality).join(", ")
                         : "No especificadas"}
@@ -111,16 +108,16 @@ export default function ProcessVictor(props: any) {
                   </div>
                 </div>
                 <div className='flex justify-between border-b-2'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Status de estudios del profesional:</h4>
-                  <p className='text-md text-[var(--main-arci)] text-end'>{useHandleStatusName(processData?.profesional_status)}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Status de estudios del profesional:</h4>
+                  <p className='text-md text-(--main-arci) text-end'>{useHandleStatusName(processData?.profesional_status)}</p>
                 </div>
                 <div className='flex justify-between'>
-                  <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Fecha de Inicio:</h4>
-                  <p className='text-md text-[var(--main-arci)]'>{formattedStartDate}</p>
+                  <h4 className='fontRoboto text-sm text-(--dark-gray)'>Fecha de Inicio:</h4>
+                  <p className='text-md text-(--main-arci)'>{formattedStartDate}</p>
                 </div>
               </div>
               <div className='descrip md:w-2/3 bg-white rounded-md px-2'>
-                <h2 className='fontRoboto text-xl text-[var(--main-arci)]'>Descripción</h2>
+                <h2 className='fontRoboto text-xl text-(--main-arci)'>Descripción</h2>
                 <p className='text-sm'>{processData?.description}</p>
                 <ModalForPreviewTextLink title='ver mas...'>
                   <UserDescription description={processData?.description} />
@@ -131,15 +128,15 @@ export default function ProcessVictor(props: any) {
         </div>
         <div className='Der flex md:w-1/3 flex-col p-2'>
           <div className='flex w-full justify-between'>
-            <h4 className='fontRoboto text-sm text-[var(--dark-gray)]'>Plazo: </h4>
-            <p className='text-md text-[var(--main-arci)]'>{diasRestantesFormateados}</p>
+            <h4 className='fontRoboto text-sm text-(--dark-gray)'>Plazo: </h4>
+            <p className='text-md text-(--main-arci)'>{diasRestantesFormateados}</p>
           </div>
 
           <div className='flex flex-col gap-2 h-auto'>
             {profesionals.length >= 3 ? (
               <ModalForPreviewBtnLong title={"Se ha superado el limite de 3 candidatos"}>
                 <div className='flex flex-col items-center'>
-                  <p className='text-sm fontRoboto text-[var(--dark-gray)]'>
+                  <p className='text-sm fontRoboto text-(--dark-gray)'>
                     Se ha superado el limite de 3 candidatos, elimine por lo menos uno para poder Visualizar Nuevos Candidatos
                   </p>
                 </div>
@@ -169,13 +166,13 @@ export default function ProcessVictor(props: any) {
             )}
             {processData?.status == "pending" && (
               <ModalForFormsGreenBtn title={"Aceptar Proceso"}>
-                <ConfirmActivateProcessForm id={processData?.id} />
+                <ConfirmActivateProcessForm id={processData?.id} onSuccess={mutate} />
               </ModalForFormsGreenBtn>
             )}
             {processData?.status == "active" && (
               <>
                 <ModalForFormsYellowBtn title={"Pausar Proceso"}>
-                  <ConfirmPauseProcessForm id={processData?.id} />
+                  <ConfirmPauseProcessForm id={processData?.id} onSuccess={mutate} />
                 </ModalForFormsYellowBtn>
                 <ModalForForms title={"Extender Plazo"}>
                   <ConfirmExtendPeriodForm id={processData?.id} />
@@ -185,7 +182,7 @@ export default function ProcessVictor(props: any) {
             {processData?.status == "paused" && (
               <>
                 <ModalForFormsGreenBtn title={"Reactivar Proceso"}>
-                  <ConfirmActivateProcessForm id={processData?.id} />
+                  <ConfirmActivateProcessForm id={processData?.id} onSuccess={mutate} />
                 </ModalForFormsGreenBtn>
                 <ModalForForms title={"Extender Plazo"}>
                   <div>En desarrollo</div>
@@ -195,7 +192,7 @@ export default function ProcessVictor(props: any) {
             {processData?.status == "archived" && (
               <>
                 <ModalForFormsGreenBtn title={"Reactivar Proceso"}>
-                  <ConfirmActivateProcessForm id={processData?.id} />
+                  <ConfirmActivateProcessForm id={processData?.id} onSuccess={mutate} />
                 </ModalForFormsGreenBtn>
                 <ModalForForms title={"Extender Plazo"}>
                   <div>En desarrollo</div>
@@ -212,8 +209,8 @@ export default function ProcessVictor(props: any) {
         </div>
       </div>
       <div className='w-full pt-2'>
-        <h2 className='text-xl font-bold text-[var(--main-arci)] text-center mb-4'>Seleccionados</h2>
-        <div className={`w-full bg-gray-100 rounded-lg p-4 ${profesionals?.length > 0 ? "min-h-[200px]" : "h-auto"}`}>
+        <h2 className='text-xl font-bold text-(--main-arci) text-center mb-4'>Seleccionados</h2>
+        <div className={`w-full bg-gray-100 rounded-lg p-4 ${profesionals?.length > 0 ? "min-h-50" : "h-auto"}`}>
           {profesionals?.length > 0 ? (
             <Grid>
               {profesionals?.map((profesional: any) => (
@@ -246,8 +243,8 @@ export default function ProcessVictor(props: any) {
       </div>
       {processData?.type == "arcidrade" ? (
         <div className='w-full pt-2'>
-          <h2 className='text-xl font-bold text-[var(--main-arci)] text-center mb-4'>Seleccionados Arcidrade</h2>
-          <div className={`w-full bg-gray-100 rounded-lg p-4 ${profesionalsArci?.length > 0 ? "min-h-[200px]" : "h-auto"}`}>
+          <h2 className='text-xl font-bold text-(--main-arci) text-center mb-4'>Seleccionados Arcidrade</h2>
+          <div className={`w-full bg-gray-100 rounded-lg p-4 ${profesionalsArci?.length > 0 ? "min-h-50" : "h-auto"}`}>
             {profesionalsArci?.length > 0 ? (
               <Grid>
                 {/*logica procesos arcidrade*/}

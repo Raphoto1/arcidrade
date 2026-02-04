@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { optionsTitleStatus, medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
-import { useProcess } from "@/hooks/useProcess";
+import { useProcess, revalidateAllProcesses } from "@/hooks/useProcess";
 
 function validateStartDate(value: string) {
   const today = new Date();
@@ -163,6 +163,8 @@ export default function UpdateProcessForm({ id }: { id: number }) {
     if (response.ok) {
       reset();
       mutate();
+      // Revalidar todas las listas de procesos
+      await revalidateAllProcesses();
       closeModal();
     }
     setIsSubmitting(false);

@@ -15,15 +15,9 @@ import InstitutionsListVictor from "./pieces/InstitutionsListVictor";
 import PausedProcess from "./PausedProcess";
 import ModalForForms from "@/components/modals/ModalForForms";
 import CreateProcessForm from "@/components/forms/platform/process/CreateProcessForm";
+import Loader from "@/components/pieces/Loader";
 
-const LoadingFallback = () => (
-  <div className='p-4 text-center'>
-    <div className='inline-block'>
-      <div className='w-8 h-8 border-4 border-gray-300 border-t-blue-500 rounded-full animate-spin'></div>
-    </div>
-    <p className='text-gray-500 mt-2'>Cargando...</p>
-  </div>
-);
+const LoadingFallback = () => <Loader size="lg" text="Cargando..." className="p-4" />;
 
 const LoadingOffers = () => (
   <div className='grid grid-cols-1 gap-4 p-4 md:max-h-3/4 md:justify-center md:align-middle md:items-center'>
@@ -47,9 +41,6 @@ export default function Victor() {
           <CreateProcessForm />
         </ModalForForms>
       </div>
-      <Suspense fallback={<LoadingOffers />}>
-        <Offers />
-      </Suspense>
 
       <Suspense fallback={<LoadingFallback />}>
         <AskedProcess />

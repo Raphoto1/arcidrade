@@ -10,7 +10,7 @@ import { updateUserDataByIdService } from "@/service/userData.service";
 export const listInvitations = async () => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
   const result = await listInvitedInvitationsService();
   return result;
 };
@@ -18,7 +18,7 @@ export const listInvitations = async () => {
 export const getInvitationsByStatus = async (status: string) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
   switch (status) {
     case "invited":
       // Lógica para obtener invitaciones pendientes
@@ -46,7 +46,7 @@ export const getAllCampaignLeads = async (filters: {
 }) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
 
   const {
     status,
@@ -116,7 +116,7 @@ export const getAllCampaignLeads = async (filters: {
 export const getCampaignLeadsStats = async () => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
 
   try {
     // Estadísticas por estado
@@ -179,7 +179,7 @@ export const getCampaignLeadsStats = async () => {
 export const desactivateUser = async (id: string) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
   try {
     const result = await updateUserStatusByIdService('desactivated', id);
     return result;
@@ -193,7 +193,7 @@ export const desactivateUser = async (id: string) => {
 export const activateUser = async (id: string) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
   try {
     const result = await updateUserStatusByIdService('active', id);
     return result;
@@ -207,7 +207,7 @@ export const activateUser = async (id: string) => {
 export const deleteUser = async (id: string) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
-  if (chkUser.user.area !== "victor") throw new Error("No autorizado");
+  if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab") throw new Error("No autorizado");
   try {
     // Eliminar el usuario de Auth - con CASCADE se eliminarán todos los datos relacionados
     const result = await prisma.auth.delete({

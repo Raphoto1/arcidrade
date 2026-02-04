@@ -1,18 +1,20 @@
-'use client'
-import React from 'react'
+"use client";
+import React from "react";
 import { useSession } from "next-auth/react";
 
-import InstitutionMain from '@/components/platform/institution/InstitutionMain'
-import Profesional from '@/components/platform/profesional/Profesional'
-import Manager from '@/components/platform/Manager';
-import Campaign from '@/components/platform/campaign/Campaign';
-import Victor from '@/components/platform/Victor/Victor';
+import InstitutionMain from "@/components/platform/institution/InstitutionMain";
+import Profesional from "@/components/platform/profesional/Profesional";
+import Manager from "@/components/platform/Manager";
+import Campaign from "@/components/platform/campaign/Campaign";
+import Victor from "@/components/platform/Victor/Victor";
+import Colab from "@/components/platform/colab/Colab";
+import { PageSkeleton } from "@/components/pieces/HeroHeaderSkeleton";
 
 export default function Page() {
   const { data: session, status } = useSession();
 
-  if (status === 'loading') {
-    return <div>Cargando sesión...</div>;
+  if (status === "loading") {
+    return <PageSkeleton text="Cargando sesión..." />;
   }
 
   if (!session?.user?.area) {
@@ -20,16 +22,18 @@ export default function Page() {
   }
 
   switch (session.user.area) {
-    case 'institution':
+    case "institution":
       return <InstitutionMain />;
-    case 'profesional':
+    case "profesional":
       return <Profesional />;
-    case 'manager':
+    case "manager":
       return <Manager />;
-    case 'campaign':
+    case "campaign":
       return <Campaign />;
-    case 'victor':
+    case "victor":
       return <Victor />;
+    case "colab":
+      return <Colab />;
     default:
       return <div>No component found for this user area</div>;
   }

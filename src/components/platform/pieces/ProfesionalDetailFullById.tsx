@@ -11,6 +11,7 @@ import { useProfesionalById, useProfesionalFull } from "@/hooks/usePlatPro";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
 import { useHandleCategoryName } from "@/hooks/useUtils";
+import Loader from "@/components/pieces/Loader";
 
 export default function ProfesionalDetailFull(props: any) {
   const { data, error, isLoading } = useProfesionalById(props.userId);
@@ -51,7 +52,7 @@ export default function ProfesionalDetailFull(props: any) {
   if (isLoading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <span className="loading loading-spinner loading-lg"></span>
+        <Loader size="md" text="Cargando perfil completo..." />
       </div>
     );
   }
@@ -96,7 +97,7 @@ export default function ProfesionalDetailFull(props: any) {
         </div>
         <h1 className='text-2xl fontArci text-center'>{`${personalData.name} ${personalData.last_name} `}</h1>
         <p className='text-center'>{mainStudy.title}</p>
-        <button className='btn bg-[var(--main-arci)] text-white'>Agregar Al Proceso</button>
+        <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci text'>Presentación</h1>
@@ -107,7 +108,7 @@ export default function ProfesionalDetailFull(props: any) {
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <div className='fileSpace bg-gray-50 w-full rounded-sm p-2 grid grid-cols-3 gap-2 shadow-xl'>
-          <div className='flex max-w-xs flex-shrink-0 justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
+          <div className='flex max-w-xs shrink-0 justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
             <IoDocumentAttachOutline size={36} />
           </div>
           <div>
@@ -184,19 +185,19 @@ export default function ProfesionalDetailFull(props: any) {
         <div className='flex flex-col gap-2'>
           {speciality.map((item: any, index: number) => (
             <div key={index} className='bg-white rounded-md p-1'>
-              <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
-              <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
+              <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+              <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
               <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
               {item.link ? (
                 <div className='flex justify-end'>
-                  <a href={item.link} target='_blank' className='btn bg-[var(--main-arci)] text-white justify-end'>
+                  <a href={item.link} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
                     Ver Respaldo
                   </a>
                 </div>
               ) : null}
               {item.file ? (
                 <div className='flex justify-end'>
-                  <a href={item.file} target='_blank' className='btn bg-[var(--main-arci)] text-white justify-end'>
+                  <a href={item.file} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
                     Ver Respaldo
                   </a>
                 </div>
@@ -209,25 +210,25 @@ export default function ProfesionalDetailFull(props: any) {
         <h1 className='text-2xl fontArci text'>Certificaciones</h1>
         {certifications.map((item: any, index: number) => (
           <div key={index} className='bg-white rounded-md p-1'>
-            <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
-            <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
+            <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+            <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
             <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
             {item.link ? (
               <div className='flex justify-end'>
-                <a href={item.link} target='_blank' className='btn bg-[var(--main-arci)] text-white justify-end'>
+                <a href={item.link} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
                   Ver Respaldo
                 </a>
               </div>
             ) : null}
             {item.file ? (
               <div className='flex justify-end'>
-                <a href={item.file} target='_blank' className='btn bg-[var(--main-arci)] text-white justify-end'>
+                <a href={item.file} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
                   Ver Respaldo
                 </a>
               </div>
             ) : null}
             <div>
-              <h3 className='text-[var(--main-arci)]'>Descripción:</h3>
+              <h3 className='text-(--main-arci)'>Descripción:</h3>
               <p className='line-clamp-3'>{item.description}</p>
               <ModalForPreviewTextLink title='Ver Más...'>
                 <UserDescription description={item.description} />
@@ -243,25 +244,25 @@ export default function ProfesionalDetailFull(props: any) {
           {experience?.map((item: any, index: number) => (
             <div key={index} className='bg-white rounded-md p-1'>
               <div className='flex justify-between'>
-                <h3 className='fontArci text-[var(--main-arci)]'>{item.title}</h3>
+                <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
                 {item.link ? (
-                  <a href={item.link} target='_blank' className='btn bg-[var(--main-arci)] text-white justify-end'>
+                  <a href={item.link} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
                     Ver Respaldo
                   </a>
                 ) : null}
                 {item.file ? (
-                  <a href={item.file} target='_blank' className='btn bg-[var(--main-arci)] text-white justify-end'>
+                  <a href={item.file} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
                     Ver Respaldo
                   </a>
                 ) : null}
               </div>
-              <p className='text-sm text-[var(--soft-arci)]'>{item.institution}</p>
+              <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
               <div>
                 <p className='text-xs'>{item.city}</p>
-                <p className='text-xs text-[var(--soft-arci)]'>{`${handleDateToYear(item.start_date)} - ${handleDateToYear(item.end_date)}`}</p>
+                <p className='text-xs text-(--soft-arci)'>{`${handleDateToYear(item.start_date)} - ${handleDateToYear(item.end_date)}`}</p>
               </div>
               <div>
-                <h3 className='text-[var(--main-arci)]'>Descripción:</h3>
+                <h3 className='text-(--main-arci)'>Descripción:</h3>
                 <p className='line-clamp-6'>{item.description}</p>
                 <ModalForPreviewTextLink title='Ver Más...'>
                   <UserDescription description={item.description} />

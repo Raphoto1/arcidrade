@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useHandleSubmitText } from "./useFetch";
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
 
 type ResponseType = {
   payload: any; // Idealmente reemplazar con un tipo más preciso
@@ -96,6 +97,13 @@ export const useForgotPassword = async (email: string) => {
 };
 
 export const useSentInvitations = (status:string) => { 
-  const { data, error, isLoading, mutate } = useSWR<ResponseType>(`/api/platform/victor/invitations/?status=${status}`, fetcher);
+  const { data: session } = useSession();
+  
+  // Determinar el endpoint según el área del usuario
+  const endpoint = session?.user?.area === 'colab' 
+    ? `/api/platform/colab/invitations/?status=${status}`
+    : `/api/platform/victor/invitations/?status=${status}`;
+
+  const { data, error, isLoading, mutate } = useSWR<ResponseType>(endpoint, fetcher);
   return { data, error, isLoading, mutate };
 }

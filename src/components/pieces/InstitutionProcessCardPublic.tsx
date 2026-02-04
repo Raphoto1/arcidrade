@@ -18,7 +18,7 @@ export default function InstitutionProcessCardPublic(props: any) {
 
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
-      <div className='topHat bg-[var(--orange-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
+      <div className='topHat bg-(--orange-arci) w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
         <div className="pl-2">
           {processPack.status === 'pending' && <h1 className="text-xl font-bold text-white">Proceso sin Confirmar</h1>}
           <h2 className='font-oswald text-xl text-white capitalize'>{processPack.position || "Cargo Oferta"}</h2>
@@ -54,7 +54,7 @@ export default function InstitutionProcessCardPublic(props: any) {
         </p>
         
         {processPack.description && (
-          <div className='text-xs text-[var(--dark-gray)] italic'>
+          <div className='text-xs text-(--dark-gray) italic'>
             Ver más información disponible tras registro
           </div>
         )}
@@ -70,11 +70,11 @@ export default function InstitutionProcessCardPublic(props: any) {
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
             <a 
               href='/auth/register' 
-              className='btn btn-sm bg-[var(--main-arci)] hover:bg-[var(--main-arci)]/90 text-white'
+              className='btn btn-sm bg-(--main-arci) hover:bg-(--main-arci)/90 text-white'
             >
               Regístrese
             </a>
-            <span className='text-xs text-center mt-1 text-[var(--dark-gray)]'>
+            <span className='text-xs text-center mt-1 text-(--dark-gray)'>
               para aplicar
             </span>
           </div>
@@ -82,12 +82,12 @@ export default function InstitutionProcessCardPublic(props: any) {
 
         {processPack.extra_specialities && processPack.extra_specialities.length > 0 && (
           <div className='mt-2 border-t pt-2'>
-            <p className='text-xs font-semibold text-[var(--dark-gray)]'>Especialidades adicionales:</p>
+            <p className='text-xs font-semibold text-(--dark-gray)'>Especialidades adicionales:</p>
             <div className='flex flex-wrap gap-1 mt-1'>
               {processPack.extra_specialities.slice(0, 3).map((spec: any, index: number) => (
                 <span 
                   key={index} 
-                  className='badge badge-sm bg-[var(--soft-arci)] text-[var(--main-arci)] capitalize'
+                  className='badge badge-sm bg-(--soft-arci) text-(--main-arci) capitalize'
                 >
                   {spec.speciality}
                 </span>

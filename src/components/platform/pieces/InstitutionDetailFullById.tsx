@@ -11,10 +11,11 @@ import { Country } from "country-state-city";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
 import { da } from "@faker-js/faker";
+import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function InstitutionDetailFullById(props: any) {
   const { data, error, isLoading, mutate } = useInstitutionFullById(props.userId);
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
   if (error) return <div>Error en Base de datos... intente recargar la pagina</div>;
   // console.log("data full", data);
   const InstitutionData = data?.payload.institution_data || {};

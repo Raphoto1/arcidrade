@@ -152,8 +152,8 @@ export const getCampaignDataByUserIdAsAdmin = async (userId: string) => {
       throw new Error("No autorizado - Se requiere autenticación");
     }
 
-    // Solo Victor puede acceder a datos de otros usuarios
-    if (session.user.area !== "victor") {
+    // Solo Victor y Colab pueden acceder a datos de otros usuarios
+    if (session.user.area !== "victor" && session.user.area !== "colab") {
       throw new Error("No autorizado - Solo administradores pueden acceder a datos de otros usuarios");
     }
 
@@ -172,8 +172,8 @@ export const updateCampaignDataAsAdmin = async (userId: string, data: any) => {
       throw new Error("No autorizado - Se requiere autenticación");
     }
 
-    // Solo Victor puede modificar datos de otros usuarios
-    if (session.user.area !== "victor") {
+    // Solo Victor y Colab pueden modificar datos de otros usuarios
+    if (session.user.area !== "victor" && session.user.area !== "colab") {
       throw new Error("No autorizado - Solo administradores pueden modificar datos de otros usuarios");
     }
 

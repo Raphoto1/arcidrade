@@ -13,7 +13,7 @@ export default function GenerateInvitation() {
   const options = [
     { value: "institution", label: "Institución" },
     { value: "profesional", label: "Profesional" },
-    // { value: "manager", label: "Reclutador" },
+    { value: "colab", label: "Colaborador" },
     { value: "campaign", label: "Campaña" },
   ];
 
@@ -73,7 +73,7 @@ export default function GenerateInvitation() {
               ))}
             </div>
           </div>
-          <button className='btn bg-[var(--soft-arci)]'>Generar Invitación</button>
+          <button className='btn bg-(--soft-arci)'>Generar Invitación</button>
         </form>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { useSession } from "next-auth/react";
 
 const fetcher = async (url: string): Promise<any> => {
   const res = await fetch(url);
@@ -8,11 +9,13 @@ const fetcher = async (url: string): Promise<any> => {
   return res.json();
 };
 
-// Hook para obtener leads de campaña de Victor
+// Hook para obtener leads de campaña de Victor o Colab
 export const useVictorCampaignLeads = (type: "recent" | "stats" | "all" = "recent", filters?: {
   status?: string;
   limit?: number;
 }) => {
+  const { data: session } = useSession();
+  
   const searchParams = new URLSearchParams();
   searchParams.set("type", type);
   
@@ -21,8 +24,13 @@ export const useVictorCampaignLeads = (type: "recent" | "stats" | "all" = "recen
     if (filters.limit) searchParams.set("limit", filters.limit.toString());
   }
 
+  // Determinar el endpoint según el área del usuario
+  const baseEndpoint = session?.user?.area === 'colab' 
+    ? '/api/platform/colab/campaign/leads'
+    : '/api/platform/victor/campaign/leads';
+
   const { data, error, isLoading, mutate } = useSWR<any>(
-    `/api/platform/victor/campaign/leads?${searchParams.toString()}`, 
+    `${baseEndpoint}?${searchParams.toString()}`, 
     fetcher
   );
   
@@ -31,8 +39,15 @@ export const useVictorCampaignLeads = (type: "recent" | "stats" | "all" = "recen
 
 // Hook para obtener estadísticas de leads de campaña
 export const useVictorCampaignStats = () => {
+  const { data: session } = useSession();
+  
+  // Determinar el endpoint según el área del usuario
+  const baseEndpoint = session?.user?.area === 'colab' 
+    ? '/api/platform/colab/campaign/leads'
+    : '/api/platform/victor/campaign/leads';
+
   const { data, error, isLoading, mutate } = useSWR<any>(
-    "/api/platform/victor/campaign/leads?type=stats", 
+    `${baseEndpoint}?type=stats`, 
     fetcher
   );
   
@@ -46,6 +61,8 @@ export const useVictorCampaignData = (filters?: {
   page?: number;
   limit?: number;
 }) => {
+  const { data: session } = useSession();
+  
   const searchParams = new URLSearchParams();
   
   if (filters) {
@@ -55,8 +72,13 @@ export const useVictorCampaignData = (filters?: {
     if (filters.limit) searchParams.set("limit", filters.limit.toString());
   }
 
+  // Determinar el endpoint según el área del usuario
+  const baseEndpoint = session?.user?.area === 'colab' 
+    ? '/api/platform/colab/campaign'
+    : '/api/platform/victor/campaign';
+
   const { data, error, isLoading, mutate } = useSWR<any>(
-    `/api/platform/victor/campaign?${searchParams.toString()}`, 
+    `${baseEndpoint}?${searchParams.toString()}`, 
     fetcher
   );
   

@@ -36,6 +36,7 @@ import { deleteFileService, uploadFileService } from "@/service/File.service";
 import { updateProfesionalAuthStatusDao, updateProfesionalMainStudyDao } from "@/dao/dao";
 import { getInstitutionDataByUserIdService, updateInstitutionCertificationService, updateInstitutionDataService } from "@/service/institutionData.service";
 import { getInstitutionCertification, updateInstitutionCertification } from "./institutionData.controller";
+import { getColabDataService, updateColabDataService } from "@/service/colab.service";
 //user__________________________________________________________________________________
 export const createUserData = async (data: any) => {
   //se extrae el session
@@ -344,6 +345,17 @@ export const uploadUserAvatar = async (file: File) => {
       //obtengo la url del archivo y la cargo a la db
       const avatarUrl = await uploadResult?.url;
       const dbUpdate = await updateInstitutionDataService({ avatar: avatarUrl }, userId);
+      return dbUpdate;
+      //colab
+    } else if (session?.user.area === "colab") {
+      const chkColabAvatar = await getColabDataService(userId);
+      if (chkColabAvatar?.avatar) {
+        const deleteFile = await deleteFileService(chkColabAvatar.avatar);
+      }
+      const uploadResult = await uploadFileService(file, `avatar`, userId);
+      //obtengo la url del archivo y la cargo a la db
+      const avatarUrl = await uploadResult?.url;
+      const dbUpdate = await updateColabDataService({ avatar: avatarUrl }, userId);
       return dbUpdate;
     }
   } catch (error) {

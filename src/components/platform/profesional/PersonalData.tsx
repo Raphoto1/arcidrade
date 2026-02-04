@@ -17,6 +17,7 @@ import FileMainStudyForm from "@/components/forms/platform/profesional/FileMainS
 import ConfirmDeleteMainStudyForm from "@/components/forms/platform/profesional/ConfirmDeleteMainStudyForm";
 import { useProfesional } from "@/hooks/usePlatPro";
 import { useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
+import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function PersonalData() {
   const { data, error, isLoading } = useProfesional();
@@ -24,7 +25,7 @@ export default function PersonalData() {
 
   //loaders
   if (isLoading || !data) {
-    return <div>Cargando... datos</div>;
+    return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2 text-gray-600'>Cargando datos...</span></div>;
   }
 
   // error handling

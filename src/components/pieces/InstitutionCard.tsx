@@ -8,6 +8,7 @@ import UserDescription from "../platform/pieces/UserDescription";
 import ModalForPreview from "../modals/ModalForPreview";
 import InstitutionDetailById from "../platform/pieces/institutionDetailById";
 import InstitutionDetailFullById from "../platform/pieces/InstitutionDetailFullById";
+import { InlineLoader } from "./Loader";
 
 export default function InstitutionCard(props: any) {
   const isFake = props.isFake;
@@ -17,11 +18,11 @@ export default function InstitutionCard(props: any) {
   
   // Acceso seguro a los datos de la institución
   const institutionInfo = institutionData || {};
-  if (isLoading) return <div>Cargando...</div>;
+  if (isLoading) return <div className='p-4 text-center'><InlineLoader size='sm' /> <span className='ml-2 text-sm'>Cargando...</span></div>;
   if (error) return <div>Error al cargar la institución</div>;
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
-      <div className='topHat bg-[var(--orange-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
+      <div className='topHat bg-(--orange-arci) w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
         {props.btnActive ? (
           <div className='buttons w-15 h-15 ml-2 grid flex-col content-between'>
             <button className='btn btn-xs'>Responsive</button>

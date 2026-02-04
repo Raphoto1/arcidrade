@@ -79,7 +79,7 @@ export default function ProcessPill(props: any) {
         </div>
       </div>
       <div className='w-full flex justify-center'>
-        <span className='fontArci text-[var(--orange-arci)]'>{process?.type === "arcidrade" ? "Proceso Arcidrade" : null}</span>
+        <span className='fontArci text-(--orange-arci)'>{process?.type === "arcidrade" ? "Proceso Arcidrade" : null}</span>
       </div>
     </div>
   );

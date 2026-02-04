@@ -4,6 +4,7 @@ import Speciality from "../pieces/Speciality";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ProfesionalSpecialityForm from "@/components/forms/platform/profesional/ProfesionalSpecialityForm";
 import { useProfesional, useProfesionalSpecialities } from "@/hooks/usePlatPro";
+import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function Specialities() {
   const { data, error, isLoading } = useProfesionalSpecialities();
@@ -26,7 +27,12 @@ export default function Specialities() {
       <div className='pb-1'>
         <h1 className='text-2xl fontArci text-center'>Especialidades</h1>
       </div>
-      <div className='max-h-110 overflow-y-auto overflow-x-clip'>
+      {isLoading ? (
+        <div className='flex justify-center items-center py-8'>
+          <InlineLoader size="md" />
+        </div>
+      ) : (
+        <div className='max-h-110 overflow-y-auto overflow-x-clip'>
         {specialitiesList?.map((item: any, index: number) => (
           <Speciality
             key={item.id}
@@ -40,6 +46,7 @@ export default function Specialities() {
           />
         ))}
       </div>
+      )}
       <div className='m-1 flex justify-center items-center gap-1'>
         <div className='flex justify-center'>
           {UserData?.payload[0].name ? (

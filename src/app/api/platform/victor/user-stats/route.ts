@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Victor tiene acceso completo sobre toda la plataforma
+    // Victor y Manager tienen acceso completo sobre toda la plataforma
     // Solo permitir acceso a usuarios con area 'manager' o 'victor'
     if (session.user.area !== 'manager' && session.user.area !== 'victor') {
       return NextResponse.json(
