@@ -1,4 +1,5 @@
 import { getAllInstitutionsPaginated } from "@/controller/institutionData.controller";
+import { StatusAvailable } from "@/generated/prisma";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (request: NextRequest) => {
@@ -9,7 +10,7 @@ export const GET = async (request: NextRequest) => {
     const search = searchParams.get('search') || undefined;
     const country = searchParams.get('country') || undefined;
     const specialization = searchParams.get('specialization') || undefined;
-    const status = searchParams.get('status') || 'active';
+    const status = (searchParams.get('status') || 'active') as StatusAvailable;
 
     // Validar parámetros
     if (page < 1 || limit < 1 || limit > 50) {

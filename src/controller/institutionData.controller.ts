@@ -31,6 +31,7 @@ import { getServerSession } from "next-auth";
 import { updateUserData } from "./userData.controller";
 import { updateUserDataService } from "@/service/userData.service";
 import { updateInstitutionAuthStatusDao } from "@/dao/institution.dao";
+import { StatusAvailable } from "@/generated/prisma";
 
 export const getInstitutionData = async () => {
   const session = await getServerSession(authOptions);
@@ -303,7 +304,7 @@ export const getAllInstitutions = async () => {
   }
 };
 
-export const getAllInstitutionsPaginated = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string, status?: string) => {
+export const getAllInstitutionsPaginated = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string, status?: StatusAvailable) => {
   try {
     const response = await getAllInstitutionsPaginatedService(page, limit, search, country, specialization, status);
     return response;
