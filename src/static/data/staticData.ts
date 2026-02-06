@@ -79,6 +79,12 @@ export const servicesItems: any = [
     longText: "Estrategias de acceso a mercado, cumplimiento regulatorio y análisis competitivo en el sector salud. Alianzas con hospitales y distribuidores.",
     image: "https://images.pexels.com/photos/8376180/pexels-photo-8376180.jpeg",
   },
+    {
+    title: "Formación para Visitadores Médicos y Ventas",
+    extraText: "Cursos prácticos y en video para capacitar a visitadores médicos y equipos comerciales en implantes.",
+    longText: "Espacio dedicado a la formación profesional de visitadores médicos y equipos de ventas, con contenido estructurado y módulos en video para fortalecer habilidades técnicas y comerciales. Esta sección crecerá a medida que el proyecto avance.",
+    image: "https://images.pexels.com/photos/3985154/pexels-photo-3985154.jpeg",
+  },
 ];
 
 export const companyInfo: any = {

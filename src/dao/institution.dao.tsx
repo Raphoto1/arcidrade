@@ -300,14 +300,14 @@ export const getAllInstitutionsDao = async () => {
   }
 };
 
-export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
+export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string, status: StatusAvailable = "active") => {
   try {
     const skip = (page - 1) * limit;
 
     // Construir el where clause con búsqueda y filtros
     const whereClause: any = {
       area: "institution",
-      status: "active",
+      status,
     };
 
     // Array para condiciones OR y AND
@@ -425,6 +425,7 @@ export const getAllInstitutionsPaginatedDao = async (page: number = 1, limit: nu
       search: search || "",
       country: country || "",
       specialization: specialization || "",
+      status,
     };
   } catch (error) {
     throw new Error("Error al obtener instituciones paginadas");

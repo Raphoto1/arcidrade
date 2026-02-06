@@ -13,9 +13,17 @@ interface InstitutionGridSearchProps {
   processPosition?: string;
   isArci?: boolean;
   addedBy?: string;
+  existingCandidateIds?: string[];
 }
 //REVISAR ADDEDBY CON MIGRATION
-export default function InstitutionGridSearchSelection({ isFake = true, processId, processPosition, isArci, addedBy }: InstitutionGridSearchProps) {
+export default function InstitutionGridSearchSelection({
+  isFake = true,
+  processId,
+  processPosition,
+  isArci,
+  addedBy,
+  existingCandidateIds = [],
+}: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -77,6 +85,8 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
     selectedSpeciality, 
     selectedSubArea ? selectedSubArea : undefined // Solo enviar si hay algo seleccionado
   );
+
+  const existingCandidateIdSet = new Set(existingCandidateIds);
 
   // Función para cargar más elementos
   const loadMore = () => {
@@ -239,7 +249,7 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
         )}
 
         {/* Grid de profesionales con loader específico */}
-        <div className='relative min-h-[400px]'>
+        <div className='relative min-h-100'>
           {/* Loader superpuesto para primera carga y aplicación de filtros */}
           {isLoading && currentPage === 1 && (
             <div className='absolute inset-0 bg-gray-200 bg-opacity-90 flex items-center justify-center z-10 rounded-md'>
@@ -270,6 +280,10 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
           <div className='grid grid-cols-1 gap-4 p-4 bg-gray-200 rounded-md md:grid-cols-3 md:justify-center md:align-middle md:items-center'>
             {paginatedData?.data?.length > 0
               ? paginatedData.data.map((profesional: any, index: number) => (
+                (() => {
+                  const candidateId = profesional?.referCode;
+                  const isAlreadyAdded = candidateId ? existingCandidateIdSet.has(candidateId) : false;
+                  return (
                 <ProfesionalCard 
                   key={profesional.referCode || index} 
                   userId={profesional.referCode} 
@@ -280,8 +294,12 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
                   processPosition={processPosition} 
                   addedBy={addedBy || 'institution'} 
                   isArci={isArci || false} 
+                  disableAddCandidate={isAlreadyAdded}
+                  hideDeleteCandidate
                 />
-                ))
+                  );
+                })())
+              )
               : !isLoading && (
                   <div className='col-span-full text-center text-gray-500 py-8'>
                     {hasActiveFilters ? "No se encontraron profesionales que coincidan con los filtros aplicados" : "No hay profesionales disponibles"}
@@ -296,7 +314,7 @@ export default function InstitutionGridSearchSelection({ isFake = true, processI
             <button
               onClick={loadMore}
               disabled={isLoading}
-              className='btn btn-primary bg-[var(--orange-arci)] border-none hover:bg-[var(--orange-arci)]/80 disabled:opacity-50 min-w-[200px]'>
+              className='btn btn-primary bg-(--orange-arci) border-none hover:bg-(--orange-arci)/80 disabled:opacity-50 min-w-50'>
               {isLoading && currentPage > 1 ? (
                 <div className='flex items-center gap-2'>
                   <div className='loading loading-spinner loading-sm'></div>

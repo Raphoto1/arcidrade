@@ -11,3 +11,6 @@ export { getContactTemplate, getContactAdminNotificationTemplate } from './conta
 export { getContactAdminTemplate } from './contactAdminTemplate';
 export { getErrorLogTemplate } from './errorLogTemplate';
 export { getPendingInvitationReminderTemplate } from './pendingInvitationReminderTemplate';
+export { getProcessListedTemplate } from './processListedTemplate';
+export { getProcessApplicationTemplate } from './processApplicationTemplate';
+export { getProcessRejectedTemplate } from './processRejectedTemplate';

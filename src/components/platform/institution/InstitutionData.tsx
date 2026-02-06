@@ -35,7 +35,7 @@ export default function InstitutionData() {
         <div className='w-full'>
           <div className='flex justify-between'>
             <h3 className='font-light'>Nombre</h3>
-            <p className='text-(--main-arci)'>{data?.payload.name || "No Registra Información"}</p>
+            <p className='text-(--main-arci) text-wrap text-end'>{data?.payload.name || "No Registra Información"}</p>
           </div>
           <div className='flex justify-between'>
             <h3 className='text-light'>Fecha de Fundación</h3>

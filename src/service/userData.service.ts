@@ -3,6 +3,7 @@ import {
   createProfesionalMainStudyDao,
   createUserSpecializationDao,
   getProfesionalDataByRefferCodeDao,
+  getUserEmailByRefferCodeDao,
   getProfesionalMainStudyDao,
   getUserSpecializationByTitle,
   updateProfesionalDataDao,
@@ -36,6 +37,11 @@ import { getCertificationById } from "@/controller/userData.controller";
 export const getUserDataService = async (id?: string | null) => {
   if (!id) return null;
   return await getProfesionalDataByRefferCodeDao(id);
+};
+
+export const getUserEmailByReferCodeService = async (referCode?: string | null) => {
+  if (!referCode) return null;
+  return await getUserEmailByRefferCodeDao(referCode);
 };
 
 export const getUserFullByIdService = async (id?: string | null) => {

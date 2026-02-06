@@ -9,7 +9,10 @@ import {
   getContactAdminNotificationTemplate,
   getContactAdminTemplate,
   getErrorLogTemplate,
-  getPendingInvitationReminderTemplate
+  getPendingInvitationReminderTemplate,
+  getProcessListedTemplate,
+  getProcessApplicationTemplate,
+  getProcessRejectedTemplate
 } from './emailTemplates';
 
 const SMTP_SERVER_HOST = process.env.SMTP_SERVER_HOST;
@@ -21,6 +24,9 @@ const NO_REPLY_MAIL_PASSWORD = process.env.NO_REPLY_MAIL_PASSWORD;
 const MAIL_PORT = process.env.MAIL_PORT;
 
 const SubjectInvitation = "Le han invitado a ARCIDRADE";
+const SubjectProcessListed = "Has sido incluido en un proceso";
+const SubjectProcessApplication = "Tu aplicacion fue recibida";
+const SubjectProcessRejected = "Actualizacion sobre tu solicitud";
 
 const transporter = nodemailer.createTransport({
   host: SMTP_SERVER_HOST,
@@ -226,6 +232,123 @@ export async function sendResetPasswordMail({ sendTo, referCode }: { sendTo?: st
     html: getResetPasswordTemplate(resetPasswordUrl),
   });
   return info;
+}
+
+export async function sendProcessListedNotificationMail({
+  sendTo,
+  greeting,
+}: {
+  sendTo?: string;
+  greeting?: string;
+}) {
+  try {
+    const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
+  } catch (error) {
+    console.error("SMTP verification failed:", error);
+    return null;
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+      replyTo: 'contacto@arcidrade.com',
+      to: sendTo,
+      subject: SubjectProcessListed,
+      text: `${greeting || 'Hola'},\n\nTe informamos que fuiste incluido en un proceso de seleccion dentro de ARCIDRADE.\n\nEsto incrementa tus posibilidades de ser seleccionado. Te recomendamos estar pendiente de tu correo.\n\nEquipo ARCIDRADE\ncontacto@arcidrade.com\nhttps://arcidrade.com`,
+      headers: {
+        'X-Priority': '3',
+        'Importance': 'Normal',
+        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+      },
+      html: getProcessListedTemplate({ greeting }),
+    });
+
+    return info;
+  } catch (error) {
+    console.error("Error sending process listed email:", error);
+    return null;
+  }
+}
+
+export async function sendProcessApplicationMail({
+  sendTo,
+  greeting,
+}: {
+  sendTo?: string;
+  greeting?: string;
+}) {
+  try {
+    const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
+  } catch (error) {
+    console.error("SMTP verification failed:", error);
+    return null;
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+      replyTo: 'contacto@arcidrade.com',
+      to: sendTo,
+      subject: SubjectProcessApplication,
+      text: `${greeting || 'Hola'},\n\nTu aplicacion fue recibida con exito. Te informaremos cuando seas incluido en la lista final de profesionales del proceso.\n\nTe recomendamos completar y actualizar tu perfil con mas informacion para mejorar tus posibilidades.\n\nEquipo ARCIDRADE\ncontacto@arcidrade.com\nhttps://arcidrade.com`,
+      headers: {
+        'X-Priority': '3',
+        'Importance': 'Normal',
+        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+      },
+      html: getProcessApplicationTemplate({ greeting }),
+    });
+
+    return info;
+  } catch (error) {
+    console.error("Error sending process application email:", error);
+    return null;
+  }
+}
+
+export async function sendProcessRejectedMail({
+  sendTo,
+  greeting,
+}: {
+  sendTo?: string;
+  greeting?: string;
+}) {
+  try {
+    const isVerified = await transporter.verify();
+    if (!isVerified) {
+      throw new Error('SMTP transporter verification failed');
+    }
+  } catch (error) {
+    console.error("SMTP verification failed:", error);
+    return null;
+  }
+
+  try {
+    const info = await transporter.sendMail({
+      from: `"ARCIDRADE" <${NO_REPLY_MAIL}>`,
+      replyTo: 'contacto@arcidrade.com',
+      to: sendTo,
+      subject: SubjectProcessRejected,
+      text: `${greeting || 'Hola'},\n\nGracias por aplicar. En esta ocasion, tu solicitud no avanzo en el proceso.\n\nTe invitamos a estar atento a nuevas ofertas, donde tu perfil puede ser una excelente opcion.\n\nEquipo ARCIDRADE\ncontacto@arcidrade.com\nhttps://arcidrade.com`,
+      headers: {
+        'X-Priority': '3',
+        'Importance': 'Normal',
+        'X-Auto-Response-Suppress': 'OOF, DR, RN, NRN, AutoReply',
+      },
+      html: getProcessRejectedTemplate({ greeting }),
+    });
+
+    return info;
+  } catch (error) {
+    console.error("Error sending process rejected email:", error);
+    return null;
+  }
 }
 
 interface ContactFormData {

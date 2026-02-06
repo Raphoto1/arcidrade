@@ -27,7 +27,8 @@ import {
   updateProfesionalListedByProcessIdAndAddedByService,
   deleteProfesionalListedByProcessIdAndAddedByService,
 } from "@/service/process.service";
-import { getUserDataService } from "@/service/userData.service";
+import { getUserDataService, getUserEmailByReferCodeService } from "@/service/userData.service";
+import { sendProcessApplicationMail, sendProcessListedNotificationMail, sendProcessRejectedMail } from "@/utils/sendMail";
 import { getProfesionalsByAddedByDao } from "@/dao/process.dao";
 
 export const createProcess = async (data: any) => {
@@ -245,6 +246,27 @@ export const addProfesionalToProcess = async (processId: number, professionalId:
     };
 
     const result = await addPProfesionalToProcessService(dataPack);
+
+    try {
+      const professionalEmail = await getUserEmailByReferCodeService(professionalId);
+      if (professionalEmail) {
+        const profesionalName = profesional?.name ? `Hola ${profesional.name}` : "Hola";
+        if (added_by === "profesional") {
+          await sendProcessApplicationMail({
+            sendTo: professionalEmail,
+            greeting: profesionalName,
+          });
+        } else {
+          await sendProcessListedNotificationMail({
+            sendTo: professionalEmail,
+            greeting: profesionalName,
+          });
+        }
+      }
+    } catch (mailError) {
+      console.error("Error sending process notification:", mailError);
+    }
+
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -319,6 +341,21 @@ export const updateProfesionalFromProcessVictor = async (processId: number, data
     // Actualizar el registro
     const result = await updateProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by, updateData);
 
+    if (added_by === "profesional" && is_arci === true) {
+      try {
+        const professionalEmail = await getUserEmailByReferCodeService(profesional_id);
+        if (professionalEmail) {
+          const profesionalName = profesional?.name ? `Hola ${profesional.name}` : "Hola";
+          await sendProcessListedNotificationMail({
+            sendTo: professionalEmail,
+            greeting: profesionalName,
+          });
+        }
+      } catch (mailError) {
+        console.error("Error sending process listed notification:", mailError);
+      }
+    }
+
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
@@ -386,8 +423,25 @@ export const getAllProfesionalsPostulatedByAddedBy = async (addedBy: string | nu
 
 export const deleteProfesionalFromProcessVictor = async (processId: number, data: any) => {
   try {
-    const { profesional_id, added_by } = data;
+    const profesional_id = data?.profesional_id || data?.userID;
+    const added_by = data?.added_by || data?.added_By || "profesional";
     const result = await deleteProfesionalListedByProcessIdAndAddedByService(processId, profesional_id, added_by);
+
+    if (added_by === "profesional") {
+      try {
+        const profesional = await getUserDataService(profesional_id);
+        const professionalEmail = await getUserEmailByReferCodeService(profesional_id);
+        if (professionalEmail) {
+          const profesionalName = profesional?.name ? `Hola ${profesional.name}` : "Hola";
+          await sendProcessRejectedMail({
+            sendTo: professionalEmail,
+            greeting: profesionalName,
+          });
+        }
+      } catch (mailError) {
+        console.error("Error sending process rejected notification:", mailError);
+      }
+    }
     return result;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);

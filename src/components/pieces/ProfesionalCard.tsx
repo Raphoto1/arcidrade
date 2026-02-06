@@ -77,24 +77,34 @@ export default function ProfesionalCard(props: any) {
       <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
         {props.btnActive ? (
           <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
-            <ModalForForms title='Agregar Candidato'>
-              <ConfirmAddProfesionalToProcessForm 
-                UserID={userId} 
-                ProcessId={props.processId} 
-                fullName={formName} 
-                processPosition={props.processPosition} 
-                addedBy={props.addedBy || 'noBody'}
-                isArci={props.isArci || false}
-              />
-            </ModalForForms>
-            <ModalForFormsRedBtn title='Eliminar Candidato'>
-              <ConfirmDeleteProfesionalToProcessForm 
-                UserID={userId} 
-                ProcessId={props.processId} 
-                fullName={formName} 
-                processPosition={props.processPosition}
-              />
-            </ModalForFormsRedBtn>
+            {!props.hideAddCandidate && (
+              props.disableAddCandidate ? (
+                <button className='btn btn-disabled h-auto w-auto p-1 min-w-full' type='button' disabled>
+                  Ya agregado
+                </button>
+              ) : (
+                <ModalForForms title='Agregar Candidato'>
+                  <ConfirmAddProfesionalToProcessForm 
+                    UserID={userId} 
+                    ProcessId={props.processId} 
+                    fullName={formName} 
+                    processPosition={props.processPosition} 
+                    addedBy={props.addedBy || 'noBody'}
+                    isArci={props.isArci || false}
+                  />
+                </ModalForForms>
+              )
+            )}
+            {!props.hideDeleteCandidate && (
+              <ModalForFormsRedBtn title='Eliminar Candidato'>
+                <ConfirmDeleteProfesionalToProcessForm 
+                  UserID={userId} 
+                  ProcessId={props.processId} 
+                  fullName={formName} 
+                  processPosition={props.processPosition}
+                />
+              </ModalForFormsRedBtn>
+            )}
           </div>
         ) : (
           <div></div>

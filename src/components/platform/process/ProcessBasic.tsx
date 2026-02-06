@@ -21,6 +21,7 @@ export default function ProcessBasic(props: any) {
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(process.id);
   const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
   const profesionalsArci = profesionalsSelected?.payload?.filter((profesional: any) => profesional.is_arcidrade) || [];
+  const existingCandidateIds = profesionalsSelected?.payload?.map((profesional: any) => profesional.profesional_id) || [];
   // Memoizar la fecha formateada para evitar recálculos innecesarios
   const formattedStartDate = useMemo(() => {
     return formatDateToString(process.start_date);
@@ -86,12 +87,26 @@ export default function ProcessBasic(props: any) {
                 <ConfirmSelectProfesionalToProcessForm UserID={profesional.profesional_id} ProcessId={process.id} fullName={profesional.fullName} processPosition={process.position} addedBy={"institution"}  />
               </ModalForFormsGreenBtn>
               )}
-              <ProfesionalCard userId={profesional.profesional_id} isFake={props.isFake} isSelected={profesional.process_status === "selected"} />
+              <ProfesionalCard
+                userId={profesional.profesional_id}
+                isFake={props.isFake}
+                isSelected={profesional.process_status === "selected"}
+                btnActive
+                hideAddCandidate
+                processId={process.id}
+                processPosition={process.position}
+                addedBy={"institution"}
+              />
             </div>
           ))}
           {profesionals.length >= 3 || process.status === "completed" ? null : (
             <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-              <InstitutionGridSearchSelection isFake={props.isFake} processId={process?.id} processPosition={process?.position} />
+              <InstitutionGridSearchSelection
+                isFake={props.isFake}
+                processId={process?.id}
+                processPosition={process?.position}
+                existingCandidateIds={existingCandidateIds}
+              />
             </ModalForPreviewBtnLong>
           )}
         </Grid>

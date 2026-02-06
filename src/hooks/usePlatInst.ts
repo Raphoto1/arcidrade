@@ -61,12 +61,13 @@ export const useAllPausedInstitutions = () => {
   return { data, error, isLoading, mutate };
 }
 
-export const usePaginatedInstitutions = (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
+export const usePaginatedInstitutions = (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string, status: string = 'active') => {
   const searchParam = search ? `&search=${encodeURIComponent(search)}` : "";
   const countryParam = country ? `&country=${encodeURIComponent(country)}` : "";
   const specializationParam = specialization ? `&specialization=${encodeURIComponent(specialization)}` : "";
+  const statusParam = status ? `&status=${encodeURIComponent(status)}` : "";
   const { data, error, isLoading, mutate } = useSWR<any>(
-    `/api/platform/institution/paginated?page=${page}&limit=${limit}${searchParam}${countryParam}${specializationParam}`,
+    `/api/platform/institution/paginated?page=${page}&limit=${limit}${searchParam}${countryParam}${specializationParam}${statusParam}`,
     fetcher,
     swrConfig
   );

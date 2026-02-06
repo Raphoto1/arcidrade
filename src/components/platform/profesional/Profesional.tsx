@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import HeroHeader from "../pieces/HeroHeader";
 import ManageGrid from "./ManageGrid";
@@ -8,14 +8,22 @@ import { useProfesional } from "@/hooks/usePlatPro";
 import ProfesionalGridSearch from "@/components/platform/institution/ProfesionalGridSearch";
 import ListedProcess from "./ListedProcess";
 import Loader from "@/components/pieces/Loader";
+import { useSession } from "next-auth/react";
 export default function Profesional() {
-  const {data, error, isLoading} = useProfesional();
+  const { status } = useSession();
+  const { data, error, isLoading, mutate } = useProfesional(status === "authenticated");
+
+  useEffect(() => {
+    if (status === "authenticated") {
+      mutate();
+    }
+  }, [status, mutate]);
   
   // Manejo seguro de la estructura de datos
   const profesionalData = Array.isArray(data?.payload) ? data.payload[0] : data?.payload;
   const isDeactivated = profesionalData?.auth?.status === 'desactivated';
   
-  if (isLoading) {
+  if (status === "loading" || isLoading) {
     return (
       <div className='flex justify-center items-center min-h-screen'>
         <Loader size="lg" text="Cargando perfil profesional..." />
@@ -23,7 +31,7 @@ export default function Profesional() {
     );
   }
   
-  if (error || !profesionalData) {
+  if (status === "authenticated" && (error || !profesionalData)) {
     return (
       <div className='flex justify-center items-center min-h-screen'>
         <div className='text-center'>

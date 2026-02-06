@@ -18,8 +18,12 @@ const swrConfig: SWRConfiguration = {
   },
 };
 
-export const useProfesional = () => {
-  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>("/api/platform/profesional/", fetcher, swrConfig);
+export const useProfesional = (enabled: boolean = true) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    enabled ? "/api/platform/profesional/" : null,
+    enabled ? fetcher : null,
+    swrConfig
+  );
   return { data, error, isLoading, mutate };
 };
 

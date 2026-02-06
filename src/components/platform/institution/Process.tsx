@@ -23,6 +23,7 @@ export default function Process(props: any) {
   const processData = data?.payload;
   const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
   const profesionalsArci = profesionalsSelected?.payload?.filter((profesional: any) => profesional.is_arcidrade) || [];
+  const existingCandidateIds = profesionalsSelected?.payload?.map((profesional: any) => profesional.profesional_id) || [];
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
 
   // Memoizar el formateo de fecha para evitar recálculos
@@ -111,7 +112,12 @@ export default function Process(props: any) {
               </ModalForPreviewBtnLong>
             ) : (
               <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-                <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+                <InstitutionGridSearchSelection
+                  isFake={props.isFake}
+                  processId={processData?.id}
+                  processPosition={processData?.position}
+                  existingCandidateIds={existingCandidateIds}
+                />
               </ModalForPreviewBtnLong>
             )}
             <ModalForFormsRedBtn title={"Eliminar Proceso"}>
@@ -138,6 +144,7 @@ export default function Process(props: any) {
               userId={profesional.profesional_id}
               isFake={props.isFake}
               btnActive
+              hideAddCandidate
               processId={processData.id}
               processPosition={processData.position}
               addedBy={"institution"}
@@ -146,7 +153,12 @@ export default function Process(props: any) {
           ))}
           {profesionals.length >= 3 || processData?.status === "completed" ? null : (
             <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-              <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+              <InstitutionGridSearchSelection
+                isFake={props.isFake}
+                processId={processData?.id}
+                processPosition={processData?.position}
+                existingCandidateIds={existingCandidateIds}
+              />
             </ModalForPreviewBtnLong>
           )}
         </Grid>
@@ -162,6 +174,7 @@ export default function Process(props: any) {
                 userId={profesional.profesional_id}
                 isFake={props.isFake}
                 btnActive
+                hideAddCandidate
                 processId={processData.id}
                 processPosition={processData.position}
                 addedBy={"institution"}

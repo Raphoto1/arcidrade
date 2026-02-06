@@ -6,6 +6,8 @@ import { FiFilter, FiX } from "react-icons/fi";
 import ProfesionalPill from "./ProfesionalPill";
 import { usePaginatedProfesionals } from "@/hooks/usePlatPro";
 import { useHandleCategoryName } from "@/hooks/useUtils";
+import ModalForForms from "@/components/modals/ModalForForms";
+import ExportProfesionalsExcelForm from "@/components/forms/platform/profesional/ExportProfesionalsExcelForm";
 
 // Helper function para obtener nombre completo (no hook)
 const getFullName = (name?: string | null, lastName?: string | null) => {
@@ -125,8 +127,8 @@ export default function ActiveProfesionals() {
   return (
     <div className='w-full justify-center bg-gray-200 px-2'>
       <div className='w-full grid grid-cols-1 bg-gray-200 rounded-md md:justify-center md:align-middle md:items-center pt-4'>
-        <div className='pb-2'>
-          <h1 className='text-2xl fontArci text-center'>
+        <div className='pb-2 flex flex-col gap-2 md:flex-row md:items-center md:justify-between'>
+          <h1 className='text-2xl fontArci text-center md:text-left'>
             Profesionales Activos 
             {data?.data && (
               <span className='text-lg text-gray-600 ml-2'>
@@ -134,6 +136,15 @@ export default function ActiveProfesionals() {
               </span>
             )}
           </h1>
+          <div className='w-full md:w-44'>
+            <ModalForForms title='Exportar Excel'>
+              <ExportProfesionalsExcelForm
+                categoryLabel='Activos'
+                fileBaseName='profesionales-activos'
+                status='active'
+              />
+            </ModalForForms>
+          </div>
         </div>
         
         {/* Barra de búsqueda */}

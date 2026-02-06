@@ -9,6 +9,7 @@ export const GET = async (request: NextRequest) => {
     const search = searchParams.get('search') || undefined;
     const country = searchParams.get('country') || undefined;
     const specialization = searchParams.get('specialization') || undefined;
+    const status = searchParams.get('status') || 'active';
 
     // Validar parámetros
     if (page < 1 || limit < 1 || limit > 50) {
@@ -17,7 +18,7 @@ export const GET = async (request: NextRequest) => {
       }, { status: 400 });
     }
 
-    const result = await getAllInstitutionsPaginated(page, limit, search, country, specialization);
+    const result = await getAllInstitutionsPaginated(page, limit, search, country, specialization, status);
     
     return NextResponse.json({ 
       message: "Instituciones paginadas obtenidas exitosamente", 

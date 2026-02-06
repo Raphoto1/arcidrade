@@ -124,8 +124,8 @@ export const getAllInstitutionsService = async () => {
   return response;
 }
 
-export const getAllInstitutionsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
-  const response = await getAllInstitutionsPaginatedDao(page, limit, search, country, specialization);
+export const getAllInstitutionsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string, status?: string) => {
+  const response = await getAllInstitutionsPaginatedDao(page, limit, search, country, specialization, status);
   return response;
 }
 

@@ -18,7 +18,12 @@ export default function ListedProcess() {
         
       <Grid>
         {processData?.map((process: any, index:number) => (
-          <InstitutionProcessCard key={process.id || index} processId={process.process_id} isFake={true}/>
+          <InstitutionProcessCard
+            key={process.id || index}
+            processId={process.process_id}
+            isFake={true}
+            btnActive={false}
+          />
         ))}
         {processData.length === 0 && (
           <div className="col-span-full flex justify-center items-center py-8">

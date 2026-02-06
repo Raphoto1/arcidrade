@@ -26,6 +26,7 @@ import ConfirmExtendPeriodForm from "@/components/forms/platform/victor/ConfirmE
 import ConfirmMakeProcessArciForm from "@/components/forms/platform/victor/ConfirmMakeProcessArciForm";
 import ConfirmMakeProcessAutoForm from "@/components/forms/platform/victor/ConfirmMakeProcessAutoForm";
 import Loader from "@/components/pieces/Loader";
+import ExportProcessExcelForm from "@/components/forms/platform/process/ExportProcessExcelForm";
 
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
@@ -38,6 +39,7 @@ export default function ProcessVictor(props: any) {
 
   const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
   const profesionalsArci = profesionalsSelected?.payload?.filter((profesional: any) => profesional.is_arcidrade) || [];
+  const existingCandidateIds = profesionalsSelected?.payload?.map((profesional: any) => profesional.profesional_id) || [];
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
 
   // Memoizar el formateo de fecha para evitar recálculos
@@ -149,6 +151,7 @@ export default function ProcessVictor(props: any) {
                   processPosition={processData?.position}
                   addedBy='arcidrade'
                   isArci={true}
+                  existingCandidateIds={existingCandidateIds}
                 />
               </ModalForPreviewBtnLong>
             )}
@@ -202,6 +205,15 @@ export default function ProcessVictor(props: any) {
                 </ModalForFormsRedBtn>
               </>
             )}
+            <ModalForForms title={"Exportar Proceso"}>
+              <ExportProcessExcelForm
+                processData={processData}
+                institutionData={institutionData}
+                profesionals={profesionals}
+                profesionalsArci={profesionalsArci}
+                fileBaseName={processData?.position}
+              />
+            </ModalForForms>
             <ModalForForms title={"Solicitar Contacto"}>
               <ConfirmAskContactForm referCode={institutionData?.user_id} name={institutionData?.name} />
             </ModalForForms>
@@ -219,6 +231,7 @@ export default function ProcessVictor(props: any) {
                   userId={profesional.profesional_id}
                   isFake={props.isFake}
                   btnActive
+                  hideAddCandidate
                   processId={processData.id}
                   processPosition={processData.position}
                   isArci={false}
@@ -227,7 +240,12 @@ export default function ProcessVictor(props: any) {
               ))}
               {profesionals.length >= 3 ? null : (
                 <ModalForPreviewBtnLong title={"Buscar Candidatos"}>
-                  <InstitutionGridSearchSelection isFake={props.isFake} processId={processData?.id} processPosition={processData?.position} />
+                  <InstitutionGridSearchSelection
+                    isFake={props.isFake}
+                    processId={processData?.id}
+                    processPosition={processData?.position}
+                    existingCandidateIds={existingCandidateIds}
+                  />
                 </ModalForPreviewBtnLong>
               )}
             </Grid>
@@ -254,6 +272,7 @@ export default function ProcessVictor(props: any) {
                     userId={profesional.profesional_id}
                     isFake={props.isFake}
                     btnActive
+                    hideAddCandidate
                     processId={processData.id}
                     processPosition={processData.position}
                     addedBy={"arcidrade"}

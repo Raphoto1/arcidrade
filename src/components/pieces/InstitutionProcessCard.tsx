@@ -14,6 +14,7 @@ import ProcessDetail from "../platform/process/ProcessDetail";
 import { useSession } from "next-auth/react";
 import ModalForFormsGreenBtn from "../modals/ModalForFormsGreenBtn";
 import ConfirmAddProfesionalToProcessForm from "../forms/platform/process/ConfirmAddProfesionalToProcessForm";
+import { useProfesionalsListedInProcess } from "@/hooks/useProcess";
 
 
 export default function InstitutionProcessCard(props: any) {
@@ -29,6 +30,13 @@ export default function InstitutionProcessCard(props: any) {
   const { data: processData, isLoading: processLoading, error: processError } = useProcess(processDataProp ? null : processId);
   
   const processPack = processDataProp || processData?.payload || {};
+
+  const { data: listedPack } = useProfesionalsListedInProcess(processPack?.id || null);
+  const alreadyApplied = Boolean(
+    listedPack?.payload?.find(
+      (entry: any) => entry?.profesional_id === profesionalIdBySession && entry?.added_by === "profesional"
+    )
+  );
   
   // Si los datos de institución vienen en el proceso (modo público), usarlos directamente
   const institutionDataFromProcess = processPack.auth?.institution_data;
@@ -98,10 +106,13 @@ export default function InstitutionProcessCard(props: any) {
                 )}
               </ModalForPreview>
             )}
-            {btnActive && session?.user?.area === "profesional" && (
+            {btnActive && session?.user?.area === "profesional" && !alreadyApplied && (
               <ModalForFormsGreenBtn title={"Aplicar al Proceso"}>
                 <ConfirmAddProfesionalToProcessForm ProcessId={processPack.id} UserID={session?.user.id} addedBy={"profesional"} processPosition={processPack.position} />
               </ModalForFormsGreenBtn>
+            )}
+            {btnActive && session?.user?.area === "profesional" && alreadyApplied && (
+              <p className='text-xs text-gray-500'>Ya aplicaste a este proceso</p>
             )}
           </div>
         </div>

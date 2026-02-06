@@ -303,9 +303,9 @@ export const getAllInstitutions = async () => {
   }
 };
 
-export const getAllInstitutionsPaginated = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string) => {
+export const getAllInstitutionsPaginated = async (page: number = 1, limit: number = 9, search?: string, country?: string, specialization?: string, status?: string) => {
   try {
-    const response = await getAllInstitutionsPaginatedService(page, limit, search, country, specialization);
+    const response = await getAllInstitutionsPaginatedService(page, limit, search, country, specialization, status);
     return response;
   } catch (error) {
     console.error(error);
