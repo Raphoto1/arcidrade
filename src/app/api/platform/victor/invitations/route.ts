@@ -14,10 +14,10 @@ export async function GET(request: NextRequest) {
             );
         }
 
-        // Verificar que el usuario es Victor o Manager
-        if (!['victor', 'manager'].includes(session.user.area || '')) {
+        // Verificar que el usuario es Victor, Manager o Colab
+        if (!['victor', 'manager', 'colab'].includes(session.user.area || '')) {
             return NextResponse.json(
-                { error: "Acceso denegado. Solo Victor y Manager pueden acceder." },
+                { error: "Acceso denegado. Solo Victor, Manager y Colab pueden acceder." },
                 { status: 403 }
             );
         }

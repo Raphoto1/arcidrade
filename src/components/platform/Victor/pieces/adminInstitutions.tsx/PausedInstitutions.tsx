@@ -33,7 +33,7 @@ export default function PausedInstitutions() {
         {isLoading && <p key="loading" className="text-center">Cargando instituciones pausadas...</p>}
         {error && <p key="error" className="text-center text-red-500">Error al cargar las instituciones pausadas.</p>}
         {data?.payload.map((institution: any) => (
-          <InstitutionPill key={institution.referCode} institution={institution.referCode} />
+          <InstitutionPill key={institution.referCode} institution={institution.referCode} isPaused />
         ))}
       </div>
     </div>

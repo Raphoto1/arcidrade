@@ -14,10 +14,10 @@ export async function PUT(request: NextRequest) {
             );
         }
 
-        // Solo Victor y Manager pueden desactivar usuarios
-        if (!['victor', 'manager'].includes(session.user.area || '')) {
+        // Solo Victor, Manager y Colab pueden desactivar usuarios
+        if (!['victor', 'manager', 'colab'].includes(session.user.area || '')) {
             return NextResponse.json(
-                { error: "Acceso denegado. Solo Victor y Manager pueden acceder." },
+                { error: "Acceso denegado. Solo Victor, Manager y Colab pueden acceder." },
                 { status: 403 }
             );
         }

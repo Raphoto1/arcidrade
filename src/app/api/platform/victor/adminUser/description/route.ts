@@ -15,10 +15,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Solo Victor y Manager pueden actualizar descripciones
-    if (!['victor', 'manager'].includes(session.user.area || '')) {
+    // Solo Victor, Manager y Colab pueden actualizar descripciones
+    if (!['victor', 'manager', 'colab'].includes(session.user.area || '')) {
       return NextResponse.json(
-        { error: "Acceso denegado. Solo Victor y Manager pueden acceder." },
+        { error: "Acceso denegado. Solo Victor, Manager y Colab pueden acceder." },
         { status: 403 }
       );
     }

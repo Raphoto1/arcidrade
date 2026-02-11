@@ -12,7 +12,7 @@ import ConfirmActivateUserForm from "../../../../forms/platform/victor/ConfirmAc
 import UserDescriptionVictorForm from "@/components/forms/platform/victor/UserDescriptionVictorForm";
 import ConfirmDeleteUserForm from "@/components/forms/platform/victor/ConfirmDeleteUserForm";
 
-export default function InstitutionPill({ institution }: { institution: any }) {
+export default function InstitutionPill({ institution, isPaused }: { institution: any; isPaused?: boolean }) {
   const { data, isLoading, error } = useInstitutionFullById(institution);
   const institutionPack = data?.payload;
 
@@ -23,6 +23,10 @@ export default function InstitutionPill({ institution }: { institution: any }) {
   // Verificación adicional para institution_data
   const institutionData = institutionPack?.institution_data;
   if (!institutionData) return <p>Datos de institución no disponibles.</p>;
+
+  const isDeactivated = typeof isPaused === "boolean"
+    ? isPaused
+    : institutionPack?.status === "desactivated" || institutionPack?.auth?.status === "desactivated";
 
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col'>
@@ -61,7 +65,7 @@ export default function InstitutionPill({ institution }: { institution: any }) {
           <ModalForForms title='Actualizar descripción'>
             <UserDescriptionVictorForm userId={institutionPack?.referCode} area={"institution"} />
           </ModalForForms>
-          {institutionPack?.status === "desactivated" ? (
+          {isDeactivated ? (
             <ModalForFormsGreenBtn title='Activar Institución'>
               <ConfirmActivateUserForm
                 userId={institutionPack?.referCode}
