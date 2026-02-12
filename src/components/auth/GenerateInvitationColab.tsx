@@ -36,6 +36,7 @@ export default function GenerateInvitationColab() {
       const response = await useHandleSubmitText(data, "/api/auth/register");
       setIsLoading(false);
       alert("Invitación generada satisfactoriamente, por favor revise su correo y siga las Instrucciones");
+      form.reset();
       closeModal();
       router.refresh();
     } catch (error) {
