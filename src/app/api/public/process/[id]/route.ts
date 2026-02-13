@@ -2,9 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { getPublicProcessByIdService } from "@/service/process.service";
 import { withPrismaRetry } from "@/utils/retryUtils";
 
-export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
-    const processId = Number(params.id);
+    const { id } = await params;
+    const processId = Number(id);
     if (!processId || Number.isNaN(processId)) {
       return NextResponse.json({ error: "Invalid process id" }, { status: 400 });
     }
