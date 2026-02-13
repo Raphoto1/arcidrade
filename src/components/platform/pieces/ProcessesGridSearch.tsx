@@ -12,9 +12,11 @@ import { medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/s
 export default function ProcessesGridSearch(props: any) {
   const isFake = props.isFake
   const applyButton = props.applyButton || false
+  const lockedSubArea = props.lockedSubArea
+  const lockSubArea = props.lockSubArea || false
   const [searchTerm, setSearchTerm] = useState("");
   const [specialityFilter, setSpecialityFilter] = useState("");
-  const [selectedSubArea, setSelectedSubArea] = useState("");
+  const [selectedSubArea, setSelectedSubArea] = useState(lockedSubArea || "");
 
   // Opciones de categorías de profesional
   const subAreaOptions = [
@@ -44,6 +46,12 @@ export default function ProcessesGridSearch(props: any) {
   useEffect(() => {
     setSpecialityFilter("");
   }, [selectedSubArea]);
+
+  useEffect(() => {
+    if (lockSubArea && lockedSubArea) {
+      setSelectedSubArea(lockedSubArea);
+    }
+  }, [lockSubArea, lockedSubArea]);
 
   // Filtrar procesos basado en la búsqueda
   const filteredProcesses = useMemo(() => {
@@ -97,9 +105,13 @@ export default function ProcessesGridSearch(props: any) {
             <select
               name='subAreaFilter'
               value={selectedSubArea}
-              onChange={(e) => setSelectedSubArea(e.target.value)}
-              className='p-2 border border-gray-300 rounded-md w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white'>
-              <option value=''>Todas las categorías</option>
+              onChange={(e) => {
+                if (lockSubArea) return;
+                setSelectedSubArea(e.target.value);
+              }}
+              disabled={Boolean(lockSubArea && lockedSubArea)}
+              className='p-2 border border-gray-300 rounded-md w-48 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 bg-white disabled:bg-gray-100'>
+              {!lockSubArea && <option value=''>Todas las categorías</option>}
               {subAreaOptions.map((option) => (
                 <option key={option.value} value={option.value}>
                   {option.label}

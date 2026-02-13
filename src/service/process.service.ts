@@ -11,6 +11,7 @@ import {
   getProcessesByUserIdFilteredByStatusDao,
   getProcessesFilteredByStatusDao,
   getPublicProcessesFilteredByStatusDao,
+  getPublicProcessByIdDao,
   getProfesionalSelectedByProcessIdDao,
   getProfesionalsSelectedByProcessIdDao,
   updateProcessByIdDao,
@@ -87,6 +88,11 @@ export const getAllProcessesByStatusService = async (status: string) => {
 export const getPublicProcessesByStatusService = async (status: string) => {
   // Service call to get public processes by status with institution data
   const result = await getPublicProcessesFilteredByStatusDao(status as any);
+  return result;
+};
+
+export const getPublicProcessByIdService = async (processId: number) => {
+  const result = await getPublicProcessByIdDao(processId);
   return result;
 };
 

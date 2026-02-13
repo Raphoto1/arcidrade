@@ -105,6 +105,7 @@ export default function ProcessBasic(props: any) {
                 isFake={props.isFake}
                 processId={process?.id}
                 processPosition={process?.position}
+                lockedSubArea={process?.area}
                 existingCandidateIds={existingCandidateIds}
               />
             </ModalForPreviewBtnLong>

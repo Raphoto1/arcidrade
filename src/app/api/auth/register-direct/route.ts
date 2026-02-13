@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { registerDirectUser } from "@/service/register.service";
+import { addProfesionalToProcess } from "@/controller/process.controller";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, nombre, sub_area, accountType, institutionName } = body;
+    const { email, password, nombre, sub_area, accountType, institutionName, processId, process_id } = body;
 
     // Validaciones básicas
     if (!email || !password || !accountType) {
@@ -54,6 +55,28 @@ export async function POST(request: Request) {
         { error: "Error al crear la cuenta. El email podría estar en uso" },
         { status: 500 }
       );
+    }
+
+    const processIdValue = processId ?? process_id;
+
+    if (processIdValue && accountType !== "institution") {
+      const parsedProcessId = Number(processIdValue);
+      if (!parsedProcessId || Number.isNaN(parsedProcessId)) {
+        return NextResponse.json(
+          { error: "ID de proceso inválido" },
+          { status: 400 }
+        );
+      }
+
+      try {
+        await addProfesionalToProcess(parsedProcessId, user.referCode, "listed", false, "profesional");
+      } catch (error: any) {
+        console.error("Error al agregar profesional al proceso:", error);
+        return NextResponse.json(
+          { error: error.message || "Cuenta creada, pero no se pudo agregar al proceso" },
+          { status: 500 }
+        );
+      }
     }
 
     return NextResponse.json(

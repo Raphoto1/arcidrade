@@ -9,18 +9,58 @@ import ModalForPreview from "@/components/modals/ModalForPreview";
 import AdminProcess from "./AdminProcess";
 
 // Componente auxiliar para mostrar cada proceso con información del cliente
-function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; onSelect: (process: any) => void; isSelected: boolean }) {
+function ProcessDropdownItem({
+  process,
+  onSelect,
+  isSelected,
+  baseUrl,
+}: {
+  process: any;
+  onSelect: (process: any) => void;
+  isSelected: boolean;
+  baseUrl: string;
+}) {
   const { data: institutionPack } = useInstitutionById(process.user_id || "");
   const institutionData = institutionPack?.payload;
+  const registerPath = `/completeInvitationByProcess/${process.id}`;
+  const registerUrl = baseUrl ? `${baseUrl}${registerPath}` : registerPath;
+
+  const handleCopyLink = async (event: React.MouseEvent<HTMLSpanElement>) => {
+    event.stopPropagation();
+    try {
+      await navigator.clipboard.writeText(registerUrl);
+    } catch (error) {
+      console.error("Error al copiar el link:", error);
+    }
+  };
 
   return (
-    <li>
+    <li className='w-full'>
       <button className={`text-left p-3 hover:bg-base-200 rounded-lg w-full ${isSelected ? "bg-base-200" : ""}`} onClick={() => onSelect(process)}>
         <div className='flex flex-col'>
-          <span className='font-semibold text-[var(--main-arci)]'>{process.position}</span>
+          <span className='font-semibold text-(--main-arci)'>{process.position}</span>
           <span className='text-sm font-medium text-gray-700'>Cliente: {institutionData?.name || "Arcidrade"}</span>
           <span className='text-sm text-gray-600'>Especialidad: {process.main_speciality}</span>
           <span className='text-xs text-gray-500'>Estado: {process.status || "Activo"}</span>
+          <div className='mt-2 flex flex-col gap-1'>
+            <span className='text-xs font-semibold text-gray-600'>Link de registro:</span>
+            <div className='flex items-center gap-2'>
+              <span className='text-xs text-(--main-arci) break-all'>{registerUrl}</span>
+              <span
+                role='button'
+                tabIndex={0}
+                className='btn btn-xs btn-outline'
+                onClick={handleCopyLink}
+                onKeyDown={(event) => {
+                  if (event.key === "Enter" || event.key === " ") {
+                    handleCopyLink(event as unknown as React.MouseEvent<HTMLSpanElement>);
+                  }
+                }}
+              >
+                Copiar
+              </span>
+            </div>
+          </div>
         </div>
       </button>
     </li>
@@ -45,6 +85,11 @@ export default function ActiveProcess() {
   const activeProcesses = data?.payload || [];
   const [selectedProcess, setSelectedProcess] = useState<any>(null);
   const [institutionFilter, setInstitutionFilter] = useState<string>("");
+  const [copied, setCopied] = useState<boolean>(false);
+  const baseUrl = useMemo(() => {
+    if (typeof window === "undefined") return "";
+    return window.location.origin;
+  }, []);
 
   // Estado para almacenar información de instituciones cargadas
   const [institutionsData, setInstitutionsData] = useState<{ [key: string]: string }>({});
@@ -106,6 +151,7 @@ export default function ActiveProcess() {
   const handleProcessSelect = (process: any) => {
     setIsLoadingProcess(true);
     setSelectedProcess(process);
+    setIsDropdownOpen(false);
     
     // Cerrar dropdown de forma simple y estable
     const activeElement = document.activeElement as HTMLElement;
@@ -126,6 +172,24 @@ export default function ActiveProcess() {
     const activeElement = document.activeElement as HTMLElement;
     if (activeElement && activeElement.blur) {
       activeElement.blur();
+    }
+  };
+
+  const registerUrl = useMemo(() => {
+    if (!selectedProcess?.id) return "";
+    const path = `/completeInvitationByProcess/${selectedProcess.id}`;
+    if (typeof window === "undefined") return path;
+    return `${window.location.origin}${path}`;
+  }, [selectedProcess]);
+
+  const handleCopyLink = async () => {
+    if (!registerUrl) return;
+    try {
+      await navigator.clipboard.writeText(registerUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (error) {
+      console.error("Error al copiar el link:", error);
     }
   };
 
@@ -176,8 +240,12 @@ export default function ActiveProcess() {
             <div className='flex flex-col md:flex-row gap-3 md:gap-4 md:items-center'>
               {/* Dropdown de procesos */}
               <div className='flex-1 w-full md:w-auto'>
-                <div ref={dropdownRef} className={`dropdown dropdown-bottom w-full relative z-50 ${isDropdownOpen ? "dropdown-open" : ""}`}>
-                  <div tabIndex={0} role='button' className='btn btn-outline w-full justify-between' onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+                <div ref={dropdownRef} className='w-full relative z-50'>
+                  <button
+                    type='button'
+                    className='btn btn-outline w-full justify-between'
+                    onClick={() => setIsDropdownOpen((prev) => !prev)}
+                  >
                     <span className='text-left'>
                       {selectedProcess ? <SelectedProcessDisplay process={selectedProcess} /> : "Seleccionar proceso para ver detalles"}
                     </span>
@@ -187,19 +255,28 @@ export default function ActiveProcess() {
                       viewBox='0 0 20 20'>
                       <path d='M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z' />
                     </svg>
-                  </div>
-                  <ul
-                    tabIndex={0}
-                    className='dropdown-content z-[9999] menu p-2 shadow-2xl bg-base-100 rounded-box w-full max-h-60 overflow-auto border border-gray-200'>
-                    {filteredProcesses.map((process: any) => (
-                      <ProcessDropdownItem key={process.id} process={process} onSelect={handleProcessSelect} isSelected={selectedProcess?.id === process.id} />
-                    ))}
-                  </ul>
+                  </button>
+                  {isDropdownOpen && (
+                    <ul
+                      tabIndex={0}
+                      className='absolute left-0 top-full mt-2 z-9999 flex flex-col w-full gap-2 p-2 shadow-2xl bg-base-100 rounded-box max-h-60 overflow-auto border border-gray-200'
+                    >
+                      {filteredProcesses.map((process: any) => (
+                        <ProcessDropdownItem
+                          key={process.id}
+                          process={process}
+                          onSelect={handleProcessSelect}
+                          isSelected={selectedProcess?.id === process.id}
+                          baseUrl={baseUrl}
+                        />
+                      ))}
+                    </ul>
+                  )}
                 </div>
               </div>
 
               {/* Filtro dropdown por institución */}
-              <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto md:flex-shrink-0'>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto md:shrink-0'>
                 <span className='text-sm font-medium text-gray-600'>Filtrar por institución:</span>
                 <div className='flex items-center gap-2'>
                   <div ref={filterDropdownRef} className={`dropdown dropdown-bottom relative z-40 ${isFilterDropdownOpen ? "dropdown-open" : ""}`}>
@@ -218,7 +295,7 @@ export default function ActiveProcess() {
                     </div>
                     <ul
                       tabIndex={0}
-                      className='dropdown-content z-[9998] menu p-2 shadow-xl bg-base-100 rounded-box w-full max-h-48 overflow-auto border border-gray-200'>
+                      className='dropdown-content z-9998 menu p-2 shadow-xl bg-base-100 rounded-box w-full max-h-48 overflow-auto border border-gray-200'>
                       <li>
                         <button
                           className={`text-left p-2 hover:bg-base-200 rounded-lg w-full ${!institutionFilter ? "bg-base-200 font-semibold" : ""}`}
@@ -273,7 +350,31 @@ export default function ActiveProcess() {
                             </div>
                           </div>
                         ) : (
-                          <ProcessVictor key={selectedProcess.id} id={selectedProcess.id} isFake={false} />
+                          <>
+                            <div className='card bg-base-100 shadow-lg mb-4'>
+                              <div className='card-body gap-2'>
+                                <p className='text-sm font-semibold text-gray-700'>Link de registro por proceso</p>
+                                <div className='flex flex-col sm:flex-row sm:items-center gap-2'>
+                                  <a
+                                    href={registerUrl}
+                                    className='text-sm text-(--main-arci) hover:underline break-all'
+                                    target='_blank'
+                                    rel='noreferrer'
+                                  >
+                                    {registerUrl}
+                                  </a>
+                                  <button
+                                    type='button'
+                                    className='btn btn-sm btn-outline'
+                                    onClick={handleCopyLink}
+                                  >
+                                    {copied ? "Copiado" : "Copiar"}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                            <ProcessVictor key={selectedProcess.id} id={selectedProcess.id} isFake={false} />
+                          </>
                         )}
                       </div>
                     )}

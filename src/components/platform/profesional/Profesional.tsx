@@ -21,6 +21,9 @@ export default function Profesional() {
   
   // Manejo seguro de la estructura de datos
   const profesionalData = Array.isArray(data?.payload) ? data.payload[0] : data?.payload;
+  const professionalSubArea = Array.isArray(data?.payload)
+    ? data.payload[1]?.sub_area
+    : data?.payload?.main_study?.sub_area || data?.payload?.sub_area;
   const isDeactivated = profesionalData?.auth?.status === 'desactivated';
   
   if (status === "loading" || isLoading) {
@@ -50,7 +53,7 @@ export default function Profesional() {
         <>
           <MyAplications />
           <ListedProcess />
-          <Offers />
+          <Offers lockedSubArea={professionalSubArea} />
           <div className='grid grid-cols-1 gap-4 p-4 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center'>
             <h2 className='text-2xl fontArci text-center'>Instituciones Disponibles</h2>
             <ProfesionalGridSearch isFake={true} />

@@ -6,6 +6,9 @@ import { useHandleStatusName } from "@/hooks/useUtils";
 export default function InstitutionProcessCardPublic(props: any) {
   const processData = props.processData; // Datos del proceso completos desde el endpoint público
   const isFake = props.isFake || false;
+  const showRegisterCta = props.showRegisterCta !== false;
+  const registerUrl =
+    props.registerUrl || (processData?.id ? `/completeInvitationByProcess/${processData.id}` : "/auth/register");
 
   // Acceder directamente a los datos que ya vienen en el proceso
   const processPack = processData || {};
@@ -66,18 +69,20 @@ export default function InstitutionProcessCardPublic(props: any) {
               {processPack.main_speciality || "especialización de la oferta"}
             </p>
           </div>
-          
-          <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
-            <a 
-              href='/auth/register' 
-              className='btn btn-sm bg-(--main-arci) hover:bg-(--main-arci)/90 text-white'
-            >
-              Regístrese
-            </a>
-            <span className='text-xs text-center mt-1 text-(--dark-gray)'>
-              para aplicar
-            </span>
-          </div>
+
+          {showRegisterCta && (
+            <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
+              <a 
+                href={registerUrl} 
+                className='btn btn-sm bg-(--main-arci) hover:bg-(--main-arci)/90 text-white'
+              >
+                Regístrese
+              </a>
+              <span className='text-xs text-center mt-1 text-(--dark-gray)'>
+                para aplicar
+              </span>
+            </div>
+          )}
         </div>
 
         {processPack.extra_specialities && processPack.extra_specialities.length > 0 && (

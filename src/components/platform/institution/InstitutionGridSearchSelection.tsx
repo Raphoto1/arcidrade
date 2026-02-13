@@ -14,6 +14,9 @@ interface InstitutionGridSearchProps {
   isArci?: boolean;
   addedBy?: string;
   existingCandidateIds?: string[];
+  lockedSubArea?: string;
+  lockedSpeciality?: string;
+  lockSpeciality?: boolean;
 }
 //REVISAR ADDEDBY CON MIGRATION
 export default function InstitutionGridSearchSelection({
@@ -23,14 +26,18 @@ export default function InstitutionGridSearchSelection({
   isArci,
   addedBy,
   existingCandidateIds = [],
+  lockedSubArea,
+  lockedSpeciality,
+  lockSpeciality = false,
 }: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedSpeciality, setSelectedSpeciality] = useState("");
-  const [selectedSubArea, setSelectedSubArea] = useState("");
+  const [selectedSubArea, setSelectedSubArea] = useState(lockedSubArea || "");
   const [showFilters, setShowFilters] = useState(false);
   const itemsPerPage = 9;
+  const isSpecialityLocked = Boolean(lockSpeciality && lockedSpeciality);
 
   // Opciones de categorías de profesional
   const subAreaOptions = [
@@ -78,6 +85,18 @@ export default function InstitutionGridSearchSelection({
     setSelectedSpeciality("");
   }, [selectedSubArea]);
 
+  useEffect(() => {
+    if (lockedSubArea) {
+      setSelectedSubArea(lockedSubArea);
+    }
+  }, [lockedSubArea]);
+
+  useEffect(() => {
+    if (isSpecialityLocked && lockedSpeciality) {
+      setSelectedSpeciality(lockedSpeciality);
+    }
+  }, [isSpecialityLocked, lockedSpeciality]);
+
   const { data: paginatedData, error, isLoading } = usePaginatedProfesionals(
     currentPage, 
     itemsPerPage, 
@@ -100,6 +119,7 @@ export default function InstitutionGridSearchSelection({
 
   // Manejar cambio de especialidad
   const handleSpecialityChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    if (isSpecialityLocked) return;
     setSelectedSpeciality(e.target.value);
   };
 
@@ -111,8 +131,8 @@ export default function InstitutionGridSearchSelection({
   // Limpiar todos los filtros
   const clearAllFilters = () => {
     setSearchTerm("");
-    setSelectedSpeciality("");
-    setSelectedSubArea("");
+    setSelectedSpeciality(isSpecialityLocked ? lockedSpeciality || "" : "");
+    setSelectedSubArea(lockedSubArea || "");
   };
 
   // Verificar si hay filtros activos
@@ -169,39 +189,58 @@ export default function InstitutionGridSearchSelection({
             </div>
 
             <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+              {lockedSubArea && (
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría del Profesional</label>
+                  <div className='w-full p-2 border border-gray-200 rounded-md bg-gray-100 text-sm text-gray-700'>
+                    {subAreaOptions.find((opt) => opt.value === lockedSubArea)?.label || lockedSubArea}
+                  </div>
+                </div>
+              )}
               {/* Filtro por categoría del profesional */}
-              <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría del Profesional</label>
-                <select
-                  value={selectedSubArea}
-                  onChange={handleSubAreaChange}
-                  className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
-                  <option value=''>Todas las categorías</option>
-                  {subAreaOptions.map((option) => (
-                    <option key={option.value} value={option.value}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {!lockedSubArea && (
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría del Profesional</label>
+                  <select
+                    value={selectedSubArea}
+                    onChange={handleSubAreaChange}
+                    className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
+                    <option value=''>Todas las categorías</option>
+                    {subAreaOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Filtro por especialidad */}
-              <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>
-                  {selectedSubArea ? `Especialidades de ${subAreaOptions.find(opt => opt.value === selectedSubArea)?.label}` : 'Especialidad'}
-                </label>
-                <select
-                  value={selectedSpeciality}
-                  onChange={handleSpecialityChange}
-                  className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
-                  <option value=''>Todas las especialidades</option>
-                  {getSpecialityOptions().map((option: any) => (
-                    <option key={option.id} value={option.name}>
-                      {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {isSpecialityLocked ? (
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>Especialidad</label>
+                  <div className='w-full p-2 border border-gray-200 rounded-md bg-gray-100 text-sm text-gray-700'>
+                    {lockedSpeciality}
+                  </div>
+                </div>
+              ) : (
+                <div>
+                  <label className='block text-sm font-medium text-gray-700 mb-1'>
+                    {selectedSubArea ? `Especialidades de ${subAreaOptions.find(opt => opt.value === selectedSubArea)?.label}` : 'Especialidad'}
+                  </label>
+                  <select
+                    value={selectedSpeciality}
+                    onChange={handleSpecialityChange}
+                    className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-blue-500'>
+                    <option value=''>Todas las especialidades</option>
+                    {getSpecialityOptions().map((option: any) => (
+                      <option key={option.id} value={option.name}>
+                        {option.name.charAt(0).toUpperCase() + option.name.slice(1)}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               {/* Botón limpiar filtros */}
               <div className='flex items-end'>
@@ -228,7 +267,7 @@ export default function InstitutionGridSearchSelection({
                   </button>
                 </span>
               )}
-              {selectedSubArea && (
+              {selectedSubArea && !lockedSubArea && (
                 <span className='inline-flex items-center gap-1 bg-purple-100 text-purple-800 px-2 py-1 rounded-full text-xs'>
                   Categoría: {subAreaOptions.find(opt => opt.value === selectedSubArea)?.label}
                   <button onClick={() => setSelectedSubArea("")} className='text-purple-600 hover:text-purple-800'>
@@ -236,7 +275,7 @@ export default function InstitutionGridSearchSelection({
                   </button>
                 </span>
               )}
-              {selectedSpeciality && (
+              {selectedSpeciality && !isSpecialityLocked && (
                 <span className='inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs'>
                   Especialidad: {selectedSpeciality.charAt(0).toUpperCase() + selectedSpeciality.slice(1)}
                   <button onClick={() => setSelectedSpeciality("")} className='text-green-600 hover:text-green-800'>
