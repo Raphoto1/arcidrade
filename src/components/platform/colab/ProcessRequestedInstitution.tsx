@@ -4,7 +4,7 @@ import { useAllPendingProcesses } from "@/hooks/useProcess";
 import Loader from "@/components/pieces/Loader";
 
 export default function ProcessRequestedInstitution() {
-  const { data, error, isLoading } = useAllPendingProcesses();
+  const { data, error, isLoading, mutate } = useAllPendingProcesses();
   const filteredCount = data?.payload?.length || 0;
   
   if (isLoading) {
@@ -43,7 +43,7 @@ export default function ProcessRequestedInstitution() {
       </div>
       <div className='max-h-80 md:max-h-96 overflow-auto'>
         {processes.length > 0 ? (
-          processes.map((process: any, index: number) => <ProcessInstitution process={process} key={process.id || index} />)
+          processes.map((process: any, index: number) => <ProcessInstitution process={process} onSuccess={mutate} key={process.id || index} />)
         ) : (
           <div className='text-center py-8 text-gray-500 text-sm md:text-base'>No hay procesos pendientes de instituciones</div>
         )}

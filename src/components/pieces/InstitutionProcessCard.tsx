@@ -2,19 +2,17 @@
 import React from "react";
 import { CiMedal } from "react-icons/ci";
 import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { useInstitutionById, useInstitutionFullById } from "@/hooks/usePlatInst";
+import { useProcess, useProfesionalsListedInProcess } from "@/hooks/useProcess";
+import { useHandleStatusName } from "@/hooks/useUtils";
 import ModalForPreviewTextLink from "../modals/ModalForPreviewTextLink";
 import UserDescription from "../platform/pieces/UserDescription";
 import ModalForPreview from "../modals/ModalForPreview";
-import InstitutionDetailById from "../platform/pieces/institutionDetailById";
-import InstitutionDetailFullById from "../platform/pieces/InstitutionDetailFullById";
-import { useProcess } from "@/hooks/useProcess";
-import { useHandleStatusName } from "@/hooks/useUtils";
-import ProcessDetail from "../platform/process/ProcessDetail";
-import { useSession } from "next-auth/react";
-import ModalForFormsGreenBtn from "../modals/ModalForFormsGreenBtn";
-import ConfirmAddProfesionalToProcessForm from "../forms/platform/process/ConfirmAddProfesionalToProcessForm";
-import { useProfesionalsListedInProcess } from "@/hooks/useProcess";
+import ProcessDetail from "@/components/platform/process/ProcessDetail";
+import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
+import ConfirmAddProfesionalToProcessForm from "@/components/forms/platform/process/ConfirmAddProfesionalToProcessForm";
+import RichTextPreview from "@/components/ui/RichTextPreview";
 
 
 export default function InstitutionProcessCard(props: any) {
@@ -76,7 +74,11 @@ export default function InstitutionProcessCard(props: any) {
 
       <div className='card-body'>
         <h2 className='card-title font-oswald text-xl text-(--main-arci)'>{isFake ? institutionInfo.fake_name : institutionInfo.name || "Arcidrade"}</h2>
-        <p className='description h-10 font-roboto-condensed line-clamp-2'>{processPack.description || "Sin descripción"}</p>
+        <RichTextPreview 
+          content={processPack.description} 
+          maxHeight='80px'
+          className='text-sm line-clamp-3'
+        />
         {isFake ? (
           <div></div>
         ) : institutionInfo.description || processPack.description ? (

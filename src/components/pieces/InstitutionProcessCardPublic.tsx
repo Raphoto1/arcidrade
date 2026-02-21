@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import { useHandleStatusName } from "@/hooks/useUtils";
+import RichTextPreview from "@/components/ui/RichTextPreview";
 
 export default function InstitutionProcessCardPublic(props: any) {
   const processData = props.processData; // Datos del proceso completos desde el endpoint público
@@ -52,9 +53,11 @@ export default function InstitutionProcessCardPublic(props: any) {
         <h2 className='card-title font-oswald text-xl text-(--main-arci)'>
           {isFake ? institutionData.fake_name : institutionData.name || "Arcidrade"}
         </h2>
-        <p className='description h-10 font-roboto-condensed line-clamp-2'>
-          {processPack.description || "Sin descripción"}
-        </p>
+        <RichTextPreview 
+          content={processPack.description} 
+          maxHeight='80px'
+          className='text-sm line-clamp-2'
+        />
         
         {processPack.description && (
           <div className='text-xs text-(--dark-gray) italic'>

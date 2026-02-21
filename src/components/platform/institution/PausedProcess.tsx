@@ -5,7 +5,7 @@ import ProcessBasic from "../process/ProcessBasic";
 import { usePausedProcesses } from "@/hooks/useProcess";
 
 export default function PausedProcess() {
-  const { data, error, isLoading } = usePausedProcesses();
+  const { data, error, isLoading, mutate } = usePausedProcesses();
 
   return (
     <div className='grid grid-cols-1 w-full p-4 md:max-h-3/4 md:max-w-3/4 md:justify-center md:align-middle md:items-center'>
@@ -21,7 +21,7 @@ export default function PausedProcess() {
             {data && data.payload.length > 0 ? (
               data.payload.map((process: any, idx: number) => (
                 <React.Fragment key={process.id}>
-                  <ProcessBasic process={{ ...process }} isFake />
+                  <ProcessBasic process={{ ...process }} isFake onSuccess={mutate} />
                   {idx < data.payload.length - 1 && <hr className='border-t border-gray-300 my-1' />}
                 </React.Fragment>
               ))

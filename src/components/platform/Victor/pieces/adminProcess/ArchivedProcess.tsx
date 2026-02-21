@@ -15,7 +15,7 @@ export default function ArchivedProcess() {
       </div>
       <div className='w-full gap-2 flex flex-col'>
         {archivedProcesses.map((process: any) => (
-          <ProcessPill key={process.id} process={process} />
+          <ProcessPill key={process.id} process={process} onSuccess={mutate} />
         ))}
       </div>
       {/* <div className='flex justify-center pt-2'>

@@ -15,7 +15,7 @@ export default function PendingProcessArci() {
       </div>
       <div className="w-full gap-2 flex flex-col">
               {pendingProcesses.map((process: any) => (
-                <ProcessPill key={process.id} process={process} />
+                <ProcessPill key={process.id} process={process} onSuccess={mutate} />
               ))}
             </div>
             {/* <div className="flex justify-center pt-2">

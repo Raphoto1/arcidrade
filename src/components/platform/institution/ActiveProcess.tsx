@@ -8,7 +8,7 @@ import { useActiveProcesses, useProcesses } from "@/hooks/useProcess";
 import { InlineLoader } from "@/components/pieces/Loader";
 
 export default function ActiveProcess() {
-  const { data, error, isLoading } = useActiveProcesses();
+  const { data, error, isLoading, mutate } = useActiveProcesses();
   
   if (isLoading) return <div className='p-4 text-center'><InlineLoader /> <span className='ml-2'>Cargando...</span></div>;
   return (
@@ -29,7 +29,7 @@ export default function ActiveProcess() {
             {data && data.payload.length > 0 ? (
               data.payload.map((process: any, idx: number) => (
                 <React.Fragment key={process.id}>
-                  <ProcessBasic process={{ ...process }} isFake={false} />
+                  <ProcessBasic process={{ ...process }} isFake={false} onSuccess={mutate} />
                   {idx < data.payload.length - 1 && <hr className='border-t border-gray-600 my-1 border-4 rounded-3xl' />}
                 </React.Fragment>
               ))

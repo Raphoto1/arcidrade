@@ -1,20 +1,25 @@
 'use client'
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { useProfesionalsListedInProcess } from "@/hooks/useProcess";
+import { useProfesionalsListedInProcess, useActiveProcessesByUser } from "@/hooks/useProcess";
+import { useSession } from "next-auth/react";
+import { useToast } from "@/context/ToastContext";
 
 export default function ConfirmAddProfesionalToProcessForm(props: any) {
 
   const [isLoading, setIsLoading] = useState(false);
   const { closeModal } = useModal();
+  const { showToast } = useToast();
+  const { data: session } = useSession();
   const { data, mutate } = useProfesionalsListedInProcess(props.ProcessId);
+  const { mutate: mutateUserProcesses } = useActiveProcessesByUser(session?.user.id || null);
   const chk = data?.payload.find((item: any) => item.profesional_id === props.UserID && item.added_by === 'institution');
   
   if (chk) {
     return (
       <div className="flex flex-col items-center">
         <h1 className="text-2xl fontArci text-center pb-5">{`${props.fullName || ''} ya fue agregado al Proceso ${props.processPosition}`}</h1>
-        <button className="btn bg-[var(--main-arci)] h-7 w-20 text-white text-center justify-center pt" onClick={closeModal}>
+        <button className="btn bg-(--main-arci) h-7 w-20 text-white text-center justify-center pt" onClick={closeModal}>
           Cerrar
         </button>
       </div>
@@ -32,7 +37,7 @@ export default function ConfirmAddProfesionalToProcessForm(props: any) {
 
     
     try {
-      // Lógica para archivar el proceso
+      // Lógica para agregar el profesional al proceso
       const response = await fetch("/api/platform/process/candidates", {
         method: "POST",
         body: JSON.stringify(pack),
@@ -45,10 +50,19 @@ export default function ConfirmAddProfesionalToProcessForm(props: any) {
       }
       const result = await response.json();
 
+      // Revalidar la lista de profesionales en este proceso
       mutate();
+      
+      // Revalidar la lista de postulaciones del usuario profesional
+      mutateUserProcesses();
+
+      // Mostrar mensaje de éxito
+      showToast('Postulación enviada correctamente', 'success');
+      
       closeModal();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al agregar profesional:", error);
+      showToast(`Error al enviar postulación: ${error.message}`, 'error');
     } finally {
       setIsLoading(false);
     }
@@ -58,7 +72,7 @@ export default function ConfirmAddProfesionalToProcessForm(props: any) {
       <h1 className='text-2xl fontArci text-center pb-5'>{`${props.fullName||''} Se Agregara al Proceso ${props.processPosition}`}</h1>
       <button 
         className={`btn h-7 w-20 text-white text-center justify-center pt flex items-center ${
-          isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-[var(--main-arci)]'
+          isLoading ? 'bg-gray-400 cursor-not-allowed' : 'bg-(--main-arci)'
         }`}
         onClick={handleDelete}
         disabled={isLoading}

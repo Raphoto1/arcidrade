@@ -16,6 +16,7 @@ import InstitutionGridSearchSelection from "./InstitutionGridSearchSelection";
 import { useProfesional } from "@/hooks/usePlatPro";
 import ConfirmFinishProcessForm from "@/components/forms/platform/process/ConfirmFinishProcessForm";
 import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
+import RichTextDisplay from "@/components/ui/RichTextDisplay";
 
 export default function Process(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
@@ -87,7 +88,7 @@ export default function Process(props: any) {
               </div>
               <div className='descrip md:w-2/3 bg-white rounded-md px-2'>
                 <h2 className='fontRoboto text-xl text-(--main-arci)'>Descripción</h2>
-                <p className='text-sm'>{processData?.description}</p>
+                <RichTextDisplay content={processData?.description} className='text-sm' />
               </div>
             </div>
           </div>
@@ -121,11 +122,11 @@ export default function Process(props: any) {
               </ModalForPreviewBtnLong>
             )}
             <ModalForFormsRedBtn title={"Eliminar Proceso"}>
-              <ConfirmArchiveProcessForm id={processData?.id} />
+              <ConfirmArchiveProcessForm id={processData?.id} onSuccess={mutate} />
             </ModalForFormsRedBtn>
             {processData?.status !== "completed" && processData?.status !== "pending" && (
               <ModalForFormsGreenBtn title={"Finalizar Proceso"}>
-                <ConfirmFinishProcessForm id={processData.id} />
+                <ConfirmFinishProcessForm id={processData.id} onSuccess={mutate} />
               </ModalForFormsGreenBtn>
             )}
             {/* <button className='btn bg-success h-auto text-sm'>Iniciar Proceso</button>

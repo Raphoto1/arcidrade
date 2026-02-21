@@ -16,7 +16,7 @@ import ConfirmFinishProcessForm from "@/components/forms/platform/process/Confir
 import ConfirmSelectProfesionalToProcessForm from "@/components/forms/platform/process/ConfirmSelectProfesionalToProcessForm";
 
 export default function ProcessBasic(props: any) {
-  const { process } = props;
+  const { process, onSuccess } = props;
   const { diasRestantesFormateados } = useCalcApprovalDate(process.start_date, process.approval_date);
   const { data: profesionalsSelected } = useProfesionalsListedInProcess(process.id);
   const profesionals = profesionalsSelected?.payload?.filter((profesional: any) => profesional.added_by === "institution") || [];
@@ -67,11 +67,11 @@ export default function ProcessBasic(props: any) {
             </ModalForPreview>
             {/* <button className='btn bg-amber-300 text-white text-sm h-auto'>Pausar Proceso</button> */}
             <ModalForFormsRedBtn title='Eliminar Proceso'>
-              <ConfirmArchiveProcessForm id={process.id} />
+              <ConfirmArchiveProcessForm id={process.id} onSuccess={onSuccess} />
             </ModalForFormsRedBtn>
             {process.status !== "completed" && process.status !== "pending" && process.status !== "paused" && (
               <ModalForFormsGreenBtn title={"Finalizar Proceso"}>
-                <ConfirmFinishProcessForm id={process.id} />
+                <ConfirmFinishProcessForm id={process.id} onSuccess={onSuccess} />
               </ModalForFormsGreenBtn>
             )}
           </div>

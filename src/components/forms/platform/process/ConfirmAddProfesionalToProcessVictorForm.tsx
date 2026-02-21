@@ -2,10 +2,12 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
 import { useAllProfesionalsPostulatedByAddedBy, useProfesionalsListedInProcess } from "@/hooks/useProcess";
+import { useToast } from "@/context/ToastContext";
 
 export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
   const [isLoading, setIsLoading] = useState(false);
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const { data, mutate } = useProfesionalsListedInProcess(props.ProcessId);
   const { mutate: mutateAll } = useAllProfesionalsPostulatedByAddedBy("profesional");
   const chk = data?.payload.find((item: any) => item.profesional_id === props.UserID && item.added_by === "institution");
@@ -30,7 +32,7 @@ export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
 
 
     try {
-      // Lógica para archivar el proceso
+      // Lógica para agregar el profesional al proceso
       const response = await fetch(`/api/platform/process/candidates/${props.ProcessId}`, {
         method: "PUT",
         body: JSON.stringify(pack),
@@ -45,9 +47,14 @@ export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
 
       mutate();
       mutateAll();
+      
+      // Mostrar mensaje de éxito
+      showToast('Postulación enviada correctamente', 'success');
+      
       closeModal();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error al agregar profesional:", error);
+      showToast(`Error al enviar postulación: ${error.message}`, 'error');
     } finally {
       setIsLoading(false);
     }

@@ -22,7 +22,7 @@ export default function PendingProcess() {
       </div>
       <div className="w-full gap-2 flex flex-col">
         {filteredProcesses.map((process: any) => (
-          <ProcessPill key={process.id} process={process} />
+          <ProcessPill key={process.id} process={process} onSuccess={mutate} />
         ))}
       </div>
     </div>

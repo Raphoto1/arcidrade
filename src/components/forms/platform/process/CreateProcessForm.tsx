@@ -1,15 +1,20 @@
 'use client'
 import React, { useState } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { optionsTitleStatus, medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
+import DescriptionRichText from "@/components/forms/DescriptionRichTextWrapper";
+import { useToast } from "@/context/ToastContext";
+import { revalidateAllProcesses } from "@/hooks/useProcess";
 
 export default function CreateProcessForm() {
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const [titleCategorySelected, setTitleCategorySelected] = useState<string[]>([""]);
   const [statusSelected, setStatusSelected] = useState("");
   const [subAreaSelected, setSubAreaSelected] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Opciones de categorías de profesional
   const subAreaOptions = [
@@ -37,6 +42,7 @@ export default function CreateProcessForm() {
     handleSubmit,
     getValues,
     reset,
+    control,
     formState: { errors },
   } = useForm();
 
@@ -70,25 +76,38 @@ export default function CreateProcessForm() {
   };
 
   const onSubmit = handleSubmit(async (formData) => {
-    const payload = {
-      ...formData,
-      subArea: subAreaSelected,
-    };
+    setIsSubmitting(true);
+    try {
+      const payload = {
+        ...formData,
+        subArea: subAreaSelected,
+      };
 
-    const response = await useHandleSubmitText(payload, "/api/platform/process/");
-    
-    if (response.ok) {
+      await useHandleSubmitText(payload, "/api/platform/process/");
+      
       reset(); // Resetea los campos del formulario
       setTitleCategorySelected([""]); // Reinicia especialidades
       setSubAreaSelected(""); // Reinicia categoría del profesional
+      
+      // Revalidar la lista de procesos pendientes
+      revalidateAllProcesses().catch(err => console.error('Error revalidating processes:', err));
+      
+      // Mostrar éxito (no bloqueante) y cerrar modal
+      showToast('Proceso creado correctamente', 'success');
       closeModal();
+      
+    } catch (error: any) {
+      const errorMessage = error.message || 'Error desconocido';
+      showToast(`Error al crear el proceso: ${errorMessage}`, 'error');
+    } finally {
+      setIsSubmitting(false);
     }
   });
   return (
     <div className='flex w-full justify-center items-center'>
       <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h2 className='text-2xl text-start font-[var(--font-oswald)]'>Crear Proceso</h2>
+          <h2 className='text-2xl text-start font-(--font-oswald)'>Crear Proceso</h2>
           <form onSubmit={onSubmit} className='form justify-center align-middle pl-2 min-w-full grid gap-4 mt-4'>
             <div className='mb-2'>
               <label htmlFor='start_date' className='block'>
@@ -195,10 +214,20 @@ export default function CreateProcessForm() {
               </select>
             </div>
             <div>
-              <label htmlFor='description' className='block font-semibold mb-1'>
-                Descripción del Cargo
-              </label>
-              <textarea {...register("description")} className='textarea textarea-bordered w-full' />
+              <Controller
+                name="description"
+                control={control}
+                defaultValue=""
+                render={({ field }) => (
+                  <DescriptionRichText
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                    label="Descripción del Cargo"
+                    placeholder="Describe el cargo, funciones, requisitos..."
+                    minHeight="300px"
+                  />
+                )}
+              />
             </div>
             <div>
               <label className='block font-semibold mb-1'>Tipo de proceso</label>
@@ -215,10 +244,10 @@ export default function CreateProcessForm() {
               {errors.processType && <span className='text-xs text-red-500'>Este campo es obligatorio</span>}
             </div>
             <div className='flex justify-center gap-4 mt-6'>
-              <button type='submit' className='btn bg-[var(--soft-arci)]'>
-                Confirmar Crear Proceso
+              <button type='submit' className='btn bg-(--soft-arci)' disabled={isSubmitting}>
+                {isSubmitting ? 'Creando...' : 'Confirmar Crear Proceso'}
               </button>
-              <button type='button' className='btn bg-[var(--orange-arci)]' onClick={closeModal}>
+              <button type='button' className='btn bg-(--orange-arci)' onClick={closeModal} disabled={isSubmitting}>
                 Cancelar
               </button>
             </div>

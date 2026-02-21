@@ -1,10 +1,12 @@
 'use client'
 import React, { useState, useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { optionsTitleStatus, medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
 import { useProcess, revalidateAllProcesses } from "@/hooks/useProcess";
+import DescriptionRichText from "@/components/forms/DescriptionRichTextWrapper";
+import { useToast } from "@/context/ToastContext";
 
 function validateStartDate(value: string) {
   const today = new Date();
@@ -64,6 +66,7 @@ export default function UpdateProcessForm({ id }: { id: number }) {
   const { closeModal } = useModal();
   const { data, error, isLoading, mutate } = useProcess(id);
   const process = data?.payload;
+  const { showToast } = useToast();
 
   const [titleCategorySelected, setTitleCategorySelected] = useState<string[]>([""]);
   const [subAreaSelected, setSubAreaSelected] = useState("");
@@ -96,6 +99,7 @@ export default function UpdateProcessForm({ id }: { id: number }) {
     handleSubmit,
     reset,
     setValue,
+    control,
     formState: { errors },
   } = useForm();
 
@@ -148,26 +152,39 @@ export default function UpdateProcessForm({ id }: { id: number }) {
 
   const onSubmit = handleSubmit(async (formData) => {
     setIsSubmitting(true);
-    const payload = {
-      ...formData,
-      id: process.id,
-      subArea: subAreaSelected,
-      main_speciality: titleCategorySelected[0],
-      extra_specialities: titleCategorySelected.slice(1).map((value, index) => ({
-        field: `title_category_${index + 1}`,
-        speciality: value,
-      })),
-    };
+    try {
+      const payload = {
+        ...formData,
+        id: process.id,
+        subArea: subAreaSelected,
+        main_speciality: titleCategorySelected[0],
+        extra_specialities: titleCategorySelected.slice(1).map((value, index) => ({
+          field: `title_category_${index + 1}`,
+          speciality: value,
+        })),
+      };
 
-    const response = await useHandleSubmitText(payload, `/api/platform/process/${process.id}`);
-    if (response.ok) {
+      const response = await useHandleSubmitText(payload, `/api/platform/process/${process.id}`);
+      
+      // Resetear formulario
       reset();
-      mutate();
-      // Revalidar todas las listas de procesos
-      await revalidateAllProcesses();
+      
+      // Mostrar mensaje de éxito
+      showToast('Proceso actualizado correctamente', 'success');
+      
+      // Revalidar datos en background (sin await)
+      mutate().catch(err => console.error('Error revalidating mutate:', err));
+      revalidateAllProcesses().catch(err => console.error('Error revalidating all:', err));
+      
+      // Cerrar modal
       closeModal();
+      
+    } catch (error: any) {
+      const errorMessage = error.message || 'Error desconocido';
+      showToast(`Error al actualizar el proceso: ${errorMessage}`, 'error');
+    } finally {
+      setIsSubmitting(false);
     }
-    setIsSubmitting(false);
   });
 
   if (isLoading) return <div className='p-8 text-center'>Cargando datos del proceso...</div>;
@@ -178,7 +195,7 @@ export default function UpdateProcessForm({ id }: { id: number }) {
     <div className='flex w-full justify-center items-center'>
       <div className='flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl'>
         <div className='flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center'>
-          <h2 className='text-2xl text-start font-[var(--font-oswald)]'>Actualizar Proceso</h2>
+          <h2 className='text-2xl text-start font-(--font-oswald)'>Actualizar Proceso</h2>
           <form onSubmit={onSubmit} className='form justify-center align-middle pl-2 min-w-full grid gap-4 mt-4'>
             <div className='mb-2'>
               <label htmlFor='start_date' className='block'>
@@ -263,10 +280,20 @@ export default function UpdateProcessForm({ id }: { id: number }) {
             </div>
 
             <div>
-              <label htmlFor='description' className='block font-semibold mb-1'>
-                Descripción del Cargo
-              </label>
-              <textarea {...register("description")} className='textarea textarea-bordered w-full' />
+              <Controller
+                name="description"
+                control={control}
+                defaultValue={process?.description || ""}
+                render={({ field }) => (
+                  <DescriptionRichText
+                    value={field.value || ''}
+                    onChange={field.onChange}
+                    label="Descripción del Cargo"
+                    placeholder="Describe el cargo, funciones, requisitos..."
+                    minHeight="300px"
+                  />
+                )}
+              />
             </div>
 
             <div>
@@ -285,10 +312,10 @@ export default function UpdateProcessForm({ id }: { id: number }) {
             </div>
 
             <div className='flex justify-center gap-4 mt-6'>
-              <button type='submit' className='btn bg-[var(--soft-arci)]' disabled={isSubmitting}>
+              <button type='submit' className='btn bg-(--soft-arci)' disabled={isSubmitting}>
                 {isSubmitting ? "Actualizando..." : "Actualizar Proceso"}
               </button>
-              <button type='button' className='btn bg-[var(--orange-arci)]' onClick={closeModal}>
+              <button type='button' className='btn bg-(--orange-arci)' onClick={closeModal} disabled={isSubmitting}>
                 Cancelar
               </button>
             </div>

@@ -1,4 +1,72 @@
 ╔════════════════════════════════════════════════════════════════════════════╗
+║                          CAMBIOS REALIZADOS - PROYECTO                    ║
+║                          Actualizado: 20 de Febrero, 2026                 ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║              MANEJO DE DESCRIPCIONES CON QUILL - 20/02/2026               ║
+║                    (Ver: guides/QUILL_DESCRIPTIONS_GUIDE.md)              ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+📋 DOCUMENTACIÓN CREADA
+└─ guides/QUILL_DESCRIPTIONS_GUIDE.md
+   ├─ Descripción general del sistema Quill
+   ├─ Problema original (listas renderizadas mal) + Solución
+   ├─ Funciones y componentes principales
+   ├─ Flujo completo de datos
+   ├─ Dependencias y cómo instalar
+   ├─ Implementación en componentes existentes
+   ├─ Formato soportado en el editor
+   ├─ Cómo extender con nuevos formatos
+   ├─ Troubleshooting y referencias
+   └─ Historial de cambios
+
+✅ IMPLEMENTACIÓN ANTERIOR (diciembre 2025)
+
+Componentes creados/modificados:
+├─ src/utils/quillProcessor.ts (NEW)
+│  └─ Función processQuillHTML() que convierte HTML de Quill a estándar
+│     • Remueve <span class="ql-ui"> vacíos
+│     • Convierte data-list="bullet" a <ul>
+│     • Mantiene data-list="ordered" como <ol>
+│     • Separa listas mixtas en contenedores distintos
+│
+├─ src/components/ui/RichTextDisplay.tsx (UPDATED)
+│  └─ Display completo para modales y vistas detalle
+│     • Integra processQuillHTML()
+│     • Estilos CSS con pseudo-elementos ::before
+│
+├─ src/components/ui/RichTextPreview.tsx (UPDATED)
+│  └─ Preview truncado para tarjetas (80px default)
+│     • Integra processQuillHTML()
+│     • Respeta contenedor padre
+│
+├─ src/components/forms/DescriptionRichText.tsx (UPDATED)
+│  └─ Editor Quill para entrada
+│     • Cambio: quill.snow.css → quill.core.css
+│
+├─ src/components/pieces/InstitutionProcessCard.tsx (UPDATED)
+│  └─ Integración de RichTextPreview
+│     • Imports fijos de hooks y componentes
+│
+└─ src/components/pieces/InstitutionProcessCardPublic.tsx (UPDATED)
+   └─ Integración de RichTextPreview
+
+Packages instalados:
+├─ quill: ^2.x
+├─ isomorphic-dompurify: latest
+└─ npm install dompurify isomorphic-dompurify
+
+Resultado:
+✓ Viñetas (•) muestran correctamente en listas
+✓ Números (1, 2, 3...) funciona en listas ordenadas
+✓ Sin conflictos de CSS
+✓ HTML limpio sin atributos Quill
+✓ Funciona en SSR (isomorphic)
+
+═══════════════════════════════════════════════════════════════════════════════
+
+╔════════════════════════════════════════════════════════════════════════════╗
 ║                      SOLUCIÓN P1001 - CAMBIOS REALIZADOS                  ║
 ║                         17 de Diciembre, 2025                             ║
 ╚════════════════════════════════════════════════════════════════════════════╝

@@ -1,15 +1,20 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { revalidateAllProcesses } from "@/hooks/useProcess";
+import { useToast } from "@/context/ToastContext";
+import { useSWRConfig } from "swr";
 
 export default function ConfirmPauseProcessForm(props: any) {
   const { closeModal } = useModal();
+  const { showToast } = useToast();
+  const { mutate: globalMutate } = useSWRConfig();
   const [isLoading, setIsLoading] = useState(false);
   
   const handleDelete = async () => {
     setIsLoading(true);
+    console.log('🟡 [ConfirmPauseProcessForm] iniciando pausa de proceso', { id: props.id });
     try {
       // Lógica para pausar el proceso
+      console.log('🟡 [ConfirmPauseProcessForm] enviando solicitud PUT a /api/platform/process/manage/status/paused');
       const response = await fetch("/api/platform/process/manage/status/paused", {
         method: "PUT",
         body: JSON.stringify({ id: props.id }),
@@ -17,19 +22,53 @@ export default function ConfirmPauseProcessForm(props: any) {
           "Content-Type": "application/json",
         },
       });
+      
+      console.log('🟡 [ConfirmPauseProcessForm] respuesta recibida', { status: response.status, ok: response.ok });
+      
       if (!response.ok) {
-        throw new Error("Error en la peticion o la informacion proporcionada");
+        const errorText = await response.text();
+        console.error('🟡 [ConfirmPauseProcessForm] respuesta no OK', { status: response.status, text: errorText });
+        throw new Error(`Error en la peticion: ${response.status} - ${errorText}`);
       }
+      
       const result = await response.json();
-      // Revalidar todas las listas de procesos
-      await revalidateAllProcesses();
-      // Si hay un callback onSuccess, ejecutarlo (para actualizar el proceso individual)
+      console.log('🟡 [ConfirmPauseProcessForm] resultado JSON', result);
+      
+      // Ejecutar callback del padre (que tiene el mutate correcto)
+      console.log('🟡 [ConfirmPauseProcessForm] ejecutando onSuccess callback');
       if (props.onSuccess) {
         await props.onSuccess();
       }
+      console.log('🟡 [ConfirmPauseProcessForm] onSuccess callback completado');
+      
+      // Revalidar todos los procesos en background (sin bloquear el cierre del modal)
+      console.log('🟡 [ConfirmPauseProcessForm] iniciando revalidación en background');
+      const revalidateEndpoints = [
+        '/api/platform/process/',
+        '/api/platform/process/status/active',
+        '/api/platform/process/status/paused',
+        '/api/platform/process/all',
+        '/api/platform/process/all/active',
+        '/api/platform/process/all/paused',
+      ];
+      Promise.all(revalidateEndpoints.map(endpoint => globalMutate(endpoint))).then(() => {
+        console.log('🟡 [ConfirmPauseProcessForm] revalidación completada');
+      }).catch(err => {
+        console.error('🟡 [ConfirmPauseProcessForm] error en revalidación', err);
+      });
+      
+      // Mostrar mensaje de éxito
+      console.log('🟡 [ConfirmPauseProcessForm] mostrando toast de éxito');
+      showToast('Proceso pausado correctamente', 'success');
+      
+      // Cerrar modal inmediatamente
+      console.log('🟡 [ConfirmPauseProcessForm] cerrando modal');
       closeModal();
+      console.log('🟡 [ConfirmPauseProcessForm] proceso completado exitosamente');
     } catch (error) {
-      console.error("Error al pausar proceso:", error);
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      console.error('🟡 [ConfirmPauseProcessForm] ERROR CAPTURADO', { error, errorMessage });
+      showToast(`Error al pausar el proceso: ${errorMessage}`, 'error');
     } finally {
       setIsLoading(false);
     }

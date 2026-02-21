@@ -5,6 +5,7 @@ import ModalForForms from "@/components/modals/ModalForForms";
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmAddProfesionalToProcessForm from "@/components/forms/platform/process/ConfirmAddProfesionalToProcessForm";
 import ConfirmDeleteProfesionalToProcessForm from "@/components/forms/platform/process/ConfirmDeleteProfesionalToProcessForm";
+import RichTextDisplay from "@/components/ui/RichTextDisplay";
 
 export default function ProcessDetail(props: any) {
   const { processData } = props;
@@ -55,7 +56,7 @@ export default function ProcessDetail(props: any) {
             </div>
             <div className='descrip md:w-2/3 bg-white rounded-md px-2'>
               <h2 className='fontRoboto text-xl text-(--main-arci)'>Descripción</h2>
-              <p className='text-sm'>{processData?.description}</p>
+              <RichTextDisplay content={processData?.description} className='text-sm' />
             </div>
           </div>
           <div className='controles w-full flex justify-end mt-4'>

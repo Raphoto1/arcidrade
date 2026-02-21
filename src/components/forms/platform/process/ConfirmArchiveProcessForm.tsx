@@ -1,17 +1,22 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { revalidateAllProcesses } from "@/hooks/useProcess";
+import { useToast } from "@/context/ToastContext";
+import { useSWRConfig } from "swr";
 
 export default function ConfirmArchiveProcessForm(props: any) {
   const { closeModal } = useModal();
+  const { showToast } = useToast();
+  const { mutate: globalMutate } = useSWRConfig();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleDelete = async () => {
     setIsSubmitting(true);
+    console.log('🔴 [ConfirmArchiveProcessForm] iniciando archivación de proceso', { id: props.id });
     
     try {
       // Lógica para archivar el proceso
-      const response = await fetch("/api/platform/process/status/archived", {
+      console.log('🔴 [ConfirmArchiveProcessForm] enviando solicitud PUT a /api/platform/process/manage/status/archived');
+      const response = await fetch("/api/platform/process/manage/status/archived", {
         method: "PUT",
         body: JSON.stringify({ id: props.id }),
         headers: {
@@ -19,24 +24,54 @@ export default function ConfirmArchiveProcessForm(props: any) {
         },
       });
       
+      console.log('🔴 [ConfirmArchiveProcessForm] respuesta recibida', { status: response.status, ok: response.ok });
+      
       if (!response.ok) {
-        throw new Error("Error en la petición o la información proporcionada");
+        const errorText = await response.text();
+        console.error('🔴 [ConfirmArchiveProcessForm] respuesta no OK', { status: response.status, text: errorText });
+        throw new Error(`Error en la petición: ${response.status} - ${errorText}`);
       }
       
       const result = await response.json();
+      console.log('🔴 [ConfirmArchiveProcessForm] resultado JSON', result);
       
-      // Revalidar todas las listas de procesos
-      await revalidateAllProcesses();
-      
-      // Si hay un callback onSuccess, ejecutarlo (para actualizar el proceso individual)
+      // Ejecutar callback del padre (que tiene el mutate correcto)
+      console.log('🔴 [ConfirmArchiveProcessForm] ejecutando onSuccess callback');
       if (props.onSuccess) {
         await props.onSuccess();
       }
+      console.log('🔴 [ConfirmArchiveProcessForm] onSuccess callback completado');
       
+      // Revalidar todos los procesos en background (sin bloquear el cierre del modal)
+      console.log('🔴 [ConfirmArchiveProcessForm] iniciando revalidación en background');
+      const revalidateEndpoints = [
+        '/api/platform/process/',
+        '/api/platform/process/status/pending',
+        '/api/platform/process/status/active',
+        '/api/platform/process/status/archived',
+        '/api/platform/process/all',
+        '/api/platform/process/all/pending',
+        '/api/platform/process/all/active',
+        '/api/platform/process/all/archived',
+      ];
+      Promise.all(revalidateEndpoints.map(endpoint => globalMutate(endpoint))).then(() => {
+        console.log('🔴 [ConfirmArchiveProcessForm] revalidación completada');
+      }).catch(err => {
+        console.error('🔴 [ConfirmArchiveProcessForm] error en revalidación', err);
+      });
+      
+      // Mostrar mensaje de éxito
+      console.log('🔴 [ConfirmArchiveProcessForm] mostrando toast de éxito');
+      showToast('Proceso archivado correctamente', 'success');
+      
+      // Cerrar modal inmediatamente
+      console.log('🔴 [ConfirmArchiveProcessForm] cerrando modal');
       closeModal();
+      console.log('🔴 [ConfirmArchiveProcessForm] proceso completado exitosamente');
     } catch (error) {
-      console.error("Error al archivar proceso:", error);
-      // Aquí podrías agregar un toast o notificación de error
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      console.error('🔴 [ConfirmArchiveProcessForm] ERROR CAPTURADO', { error, errorMessage });
+      showToast(`Error al archivar el proceso: ${errorMessage}`, 'error');
     } finally {
       setIsSubmitting(false);
     }

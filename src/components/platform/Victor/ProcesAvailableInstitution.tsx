@@ -44,7 +44,7 @@ export default function ProcesAvailableInstitution() {
       </div>
       <div className='max-h-100 overflow-auto'>
         {processes.length > 0 ? (
-          processes.map((process: any, index: number) => <ProcessInstitution process={process} key={process.id || index} />)
+          processes.map((process: any, index: number) => <ProcessInstitution process={process} onSuccess={mutate} key={process.id || index} />)
         ) : (
           <div className='text-center py-8 text-gray-500'>No hay procesos pendientes de instituciones</div>
         )}

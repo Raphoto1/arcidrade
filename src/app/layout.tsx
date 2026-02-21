@@ -8,6 +8,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next"
 import NavBar from "@/components/nav/NavBar";
 import Footer from "@/components/pieces/Footer";
 import GlobalContext from "@/context/GlobalContext";
+import { ToastProvider } from "@/context/ToastContext";
 import GoogleAnalytics from "@/components/analytics/GoogleAnalytics";
 import { defaultMetadata, organizationStructuredData, websiteStructuredData } from "@/config/metadata";
 import CookieBanner from "@/components/CookieBanner";
@@ -47,14 +48,16 @@ export default function RootLayout({
         />
       </head>
       <body className={`${robotoCond.variable} ${oswald.variable} antialiased`}>
-        <GlobalContext>
-          <NavBar />
-          {children}
-          <SpeedInsights />
-          <Analytics />
-          <Footer />
-          <CookieBanner />
-        </GlobalContext>
+        <ToastProvider>
+          <GlobalContext>
+            <NavBar />
+            {children}
+            <SpeedInsights />
+            <Analytics />
+            <Footer />
+            <CookieBanner />
+          </GlobalContext>
+        </ToastProvider>
       </body>
     </html>
   );

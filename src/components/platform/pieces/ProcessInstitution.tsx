@@ -13,9 +13,11 @@ import ConfirmArchiveProcessForm from "@/components/forms/platform/process/Confi
 import ModalForForms from "@/components/modals/ModalForForms";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
 import { useHandleCategoryName } from "@/hooks/useUtils";
+import UpdateProcessForm from "@/components/forms/platform/process/UpdateProcessForm";
 
 export default function ProcessInstitution(props: any) {
   const process = props.process;
+  const onSuccess = props.onSuccess;
   const institution = useInstitutionById(process?.user_id);
   const institutionData = institution?.data?.payload || {};
 
@@ -34,11 +36,14 @@ export default function ProcessInstitution(props: any) {
           <ModalForPreview title='Detalle del Proceso'>
             <ProcessDetail processData={process} />
           </ModalForPreview>
+          <ModalForForms title='Editar Proceso'>
+            <UpdateProcessForm id={process?.id} />
+          </ModalForForms>
           <ModalForFormsRedBtn title={"Eliminar Proceso"}>
-            <ConfirmArchiveProcessForm id={process?.id} />
+            <ConfirmArchiveProcessForm id={process?.id} onSuccess={onSuccess} />
           </ModalForFormsRedBtn>
           <ModalForFormsGreenBtn title={"Aceptar Proceso"}>
-            <ConfirmActivateProcessForm id={process.id} />
+            <ConfirmActivateProcessForm id={process.id} onSuccess={onSuccess} />
           </ModalForFormsGreenBtn>
           <ModalForForms title={"Solicitar Contacto"}>
             <ConfirmAskContactForm referCode={process?.user_id} name={institutionData?.name} />

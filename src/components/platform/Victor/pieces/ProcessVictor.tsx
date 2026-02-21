@@ -27,6 +27,7 @@ import ConfirmMakeProcessArciForm from "@/components/forms/platform/victor/Confi
 import ConfirmMakeProcessAutoForm from "@/components/forms/platform/victor/ConfirmMakeProcessAutoForm";
 import Loader from "@/components/pieces/Loader";
 import ExportProcessExcelForm from "@/components/forms/platform/process/ExportProcessExcelForm";
+import RichTextDisplay from "@/components/ui/RichTextDisplay";
 
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
@@ -120,7 +121,9 @@ export default function ProcessVictor(props: any) {
               </div>
               <div className='descrip md:w-2/3 bg-white rounded-md px-2'>
                 <h2 className='fontRoboto text-xl text-(--main-arci)'>Descripción</h2>
-                <p className='text-sm'>{processData?.description}</p>
+                <div className='line-clamp-5'>
+                  <RichTextDisplay content={processData?.description} className='text-sm' />
+                </div>
                 <ModalForPreviewTextLink title='ver mas...'>
                   <UserDescription description={processData?.description} />
                 </ModalForPreviewTextLink>
@@ -164,7 +167,7 @@ export default function ProcessVictor(props: any) {
               </ModalForForms>}
             {processData?.status == "archived" ? null : (
               <ModalForFormsRedBtn title={"Eliminar Proceso"}>
-                <ConfirmArchiveProcessForm id={processData?.id} />
+                <ConfirmArchiveProcessForm id={processData?.id} onSuccess={mutate} />
               </ModalForFormsRedBtn>
             )}
             {processData?.status == "pending" && (

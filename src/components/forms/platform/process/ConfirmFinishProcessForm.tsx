@@ -1,32 +1,22 @@
 import React, { useState } from "react";
 import { useModal } from "@/context/ModalContext";
-import { 
-  useProcesses, 
-  useActiveProcesses, 
-  usePendingProcesses, 
-  useFinishedProcesses, 
-  usePausedProcesses,
-  useArchivedProcesses 
-} from "@/hooks/useProcess";
+import { useToast } from "@/context/ToastContext";
+import { useSWRConfig } from "swr";
 
 export default function ConfirmFinishProcessForm(props: any) {
   const { closeModal } = useModal();
+  const { showToast } = useToast();
+  const { mutate: globalMutate } = useSWRConfig();
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  // Hooks para actualizar todas las listas de procesos
-  const { mutate: mutateProcesses } = useProcesses();
-  const { mutate: mutateActiveProcesses } = useActiveProcesses();
-  const { mutate: mutatePendingProcesses } = usePendingProcesses();
-  const { mutate: mutateFinishedProcesses } = useFinishedProcesses();
-  const { mutate: mutatePausedProcesses } = usePausedProcesses();
-  const { mutate: mutateArchivedProcesses } = useArchivedProcesses();
 
   const handleDelete = async () => {
     setIsSubmitting(true);
+    console.log('🔵 [ConfirmFinishProcessForm] iniciando finalización de proceso', { id: props.id });
     
     try {
       // Lógica para finalizar el proceso
-      const response = await fetch("/api/platform/process/status/completed", {
+      console.log('🔵 [ConfirmFinishProcessForm] enviando solicitud PUT a /api/platform/process/manage/status/completed');
+      const response = await fetch("/api/platform/process/manage/status/completed", {
         method: "PUT",
         body: JSON.stringify({ id: props.id }),
         headers: {
@@ -34,26 +24,52 @@ export default function ConfirmFinishProcessForm(props: any) {
         },
       });
       
+      console.log('🔵 [ConfirmFinishProcessForm] respuesta recibida', { status: response.status, ok: response.ok });
+      
       if (!response.ok) {
-        throw new Error("Error en la petición o la información proporcionada");
+        const errorText = await response.text();
+        console.error('🔵 [ConfirmFinishProcessForm] respuesta no OK', { status: response.status, text: errorText });
+        throw new Error(`Error en la petición: ${response.status} - ${errorText}`);
       }
       
       const result = await response.json();
+      console.log('🔵 [ConfirmFinishProcessForm] resultado JSON', result);
       
-      // Actualizar todas las listas de procesos para reflejar el cambio
-      await Promise.all([
-        mutateProcesses(),
-        mutateActiveProcesses(),
-        mutatePendingProcesses(),
-        mutateFinishedProcesses(),
-        mutatePausedProcesses(),
-        mutateArchivedProcesses()
-      ]);
+      // Ejecutar callback del padre (que tiene el mutate correcto)
+      console.log('🔵 [ConfirmFinishProcessForm] ejecutando onSuccess callback');
+      if (props.onSuccess) {
+        await props.onSuccess();
+      }
+      console.log('🔵 [ConfirmFinishProcessForm] onSuccess callback completado');
       
+      // Revalidar todos los procesos en background (sin bloquear el cierre del modal)
+      console.log('🔵 [ConfirmFinishProcessForm] iniciando revalidación en background');
+      const revalidateEndpoints = [
+        '/api/platform/process/',
+        '/api/platform/process/status/active',
+        '/api/platform/process/status/completed',
+        '/api/platform/process/all',
+        '/api/platform/process/all/active',
+        '/api/platform/process/all/completed',
+      ];
+      Promise.all(revalidateEndpoints.map(endpoint => globalMutate(endpoint))).then(() => {
+        console.log('🔵 [ConfirmFinishProcessForm] revalidación completada');
+      }).catch(err => {
+        console.error('🔵 [ConfirmFinishProcessForm] error en revalidación', err);
+      });
+      
+      // Mostrar mensaje de éxito
+      console.log('🔵 [ConfirmFinishProcessForm] mostrando toast de éxito');
+      showToast('Proceso finalizado correctamente', 'success');
+      
+      // Cerrar modal
+      console.log('🔵 [ConfirmFinishProcessForm] cerrando modal');
       closeModal();
+      console.log('🔵 [ConfirmFinishProcessForm] proceso completado exitosamente');
     } catch (error) {
-      console.error("Error al finalizar proceso:", error);
-      // Aquí podrías agregar un toast o notificación de error
+      const errorMessage = error instanceof Error ? error.message : 'Error desconocido';
+      console.error('🔵 [ConfirmFinishProcessForm] ERROR CAPTURADO', { error, errorMessage });
+      showToast(`Error al finalizar el proceso: ${errorMessage}`, 'error');
     } finally {
       setIsSubmitting(false);
     }
