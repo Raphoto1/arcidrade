@@ -4,7 +4,7 @@ import Speciality from "../pieces/Speciality";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ProfesionalSpecialityForm from "@/components/forms/platform/profesional/ProfesionalSpecialityForm";
 import { useProfesional, useProfesionalSpecialities } from "@/hooks/usePlatPro";
-import { InlineLoader } from "@/components/pieces/Loader";
+import Loader from "@/components/pieces/Loader";
 
 export default function Specialities() {
   const { data, error, isLoading } = useProfesionalSpecialities();
@@ -29,7 +29,7 @@ export default function Specialities() {
       </div>
       {isLoading ? (
         <div className='flex justify-center items-center py-8'>
-          <InlineLoader size="md" />
+          <Loader size="md" text="Cargando especialidades..." />
         </div>
       ) : (
         <div className='max-h-110 overflow-y-auto overflow-x-clip'>

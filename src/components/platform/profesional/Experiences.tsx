@@ -2,7 +2,7 @@ import Experience from "../pieces/Experience";
 import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton";
 import ProfesionalExperienceForm from "@/components/forms/platform/profesional/ProfesionalExperienceForm";
 import { useProfesionalExperiences, useProfesional } from "@/hooks/usePlatPro";
-import { InlineLoader } from "@/components/pieces/Loader";
+import Loader from "@/components/pieces/Loader";
 
 export default function Experiences() {
   const { data, error, isLoading } = useProfesionalExperiences();
@@ -16,7 +16,7 @@ export default function Experiences() {
       </div>
       {isLoading ? (
         <div className='flex justify-center items-center py-8'>
-          <InlineLoader size="md" />
+          <Loader size="md" text="Cargando experiencias..." />
         </div>
       ) : (
         <div className='max-h-110 overflow-auto'>

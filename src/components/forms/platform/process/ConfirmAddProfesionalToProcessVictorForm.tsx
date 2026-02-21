@@ -16,7 +16,7 @@ export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
     return (
       <div className='flex flex-col items-center'>
         <h1 className='text-2xl fontArci text-center pb-5'>{`${props.fullName || ""} ya fue agregado al Proceso ${props.processPosition}`}</h1>
-        <button className='btn bg-[var(--main-arci)] h-7 w-20 text-white text-center justify-center pt' onClick={closeModal}>
+        <button className='btn bg-(--main-arci) h-7 w-20 text-white text-center justify-center pt' onClick={closeModal}>
           Cerrar
         </button>
       </div>
@@ -64,7 +64,7 @@ export default function ConfirmAddProfesionalToProcessVictorForm(props: any) {
       <h1 className='text-2xl fontArci text-center pb-5'>{`${props.fullName || ""} Se Agregara al Proceso ${props.processPosition}`}</h1>
       <button
         className={`btn h-7 w-20 text-white text-center justify-center pt flex items-center ${
-          isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[var(--main-arci)]"
+          isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-(--main-arci)"
         }`}
         onClick={handleDelete}
         disabled={isLoading}>

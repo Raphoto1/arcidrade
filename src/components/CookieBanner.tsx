@@ -33,11 +33,11 @@ export default function CookieBanner() {
 
   return (
     <div className="fixed inset-0 z-50 flex items-end justify-center p-4 pointer-events-none">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full pointer-events-auto border-2 border-[var(--main-arci)]">
+      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl max-w-2xl w-full pointer-events-auto border-2 border-(--main-arci)">
         <div className="p-6">
           {/* Header */}
           <div className="flex items-start gap-3 mb-4">
-            <div className="flex-shrink-0 text-3xl">🍪</div>
+            <div className="shrink-0 text-3xl">🍪</div>
             <div className="flex-1">
               <h3 className="text-xl font-bold mb-2 text-gray-900 dark:text-white">
                 Usamos cookies
@@ -86,7 +86,7 @@ export default function CookieBanner() {
           <div className="flex flex-col sm:flex-row gap-2 mb-3">
             <button
               onClick={acceptAll}
-              className="flex-1 px-4 py-2.5 bg-[var(--main-arci)] hover:bg-[var(--soft-arci)] text-white font-semibold rounded-lg transition-colors"
+              className="flex-1 px-4 py-2.5 bg-(--main-arci) hover:bg-(--soft-arci) text-white font-semibold rounded-lg transition-colors"
             >
               Aceptar todas
             </button>
@@ -107,7 +107,7 @@ export default function CookieBanner() {
           {/* Toggle detalles */}
           <button
             onClick={() => setShowDetails(!showDetails)}
-            className="text-sm text-[var(--main-arci)] hover:text-[var(--soft-arci)] font-medium transition-colors"
+            className="text-sm text-(--main-arci) hover:text-(--soft-arci) font-medium transition-colors"
           >
             {showDetails ? '▼ Ocultar detalles' : '▶ Ver detalles de cookies'}
           </button>
@@ -118,7 +118,7 @@ export default function CookieBanner() {
               Para más información, consulta nuestra{' '}
               <a 
                 href="/politica-cookies" 
-                className="text-[var(--main-arci)] hover:text-[var(--soft-arci)] underline font-medium"
+                className="text-(--main-arci) hover:text-(--soft-arci) underline font-medium"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -127,7 +127,7 @@ export default function CookieBanner() {
               {' '}y{' '}
               <a 
                 href="/politica-privacidad" 
-                className="text-[var(--main-arci)] hover:text-[var(--soft-arci)] underline font-medium"
+                className="text-(--main-arci) hover:text-(--soft-arci) underline font-medium"
                 target="_blank"
                 rel="noopener noreferrer"
               >

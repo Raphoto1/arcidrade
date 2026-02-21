@@ -76,3 +76,28 @@ export function PageLoader({ text = "Cargando..." }: Pick<LoaderProps, "text">) 
     </div>
   );
 }
+
+// Componente skeleton card loader (ghost effect)
+export function SkeletonCardLoader() {
+  return (
+    <div className="card w-96 bg-base-100 card-sm shadow-sm max-w-80 animate-pulse">
+      <div className="topHat bg-gray-300 w-full h-20 rounded-t-lg"></div>
+      <div className="card-body space-y-3">
+        <div className="h-6 bg-gray-300 rounded w-3/4"></div>
+        <div className="h-4 bg-gray-200 rounded w-full"></div>
+        <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+        <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+        <div className="flex justify-between items-end pt-4">
+          <div className="space-y-2 flex-1">
+            <div className="h-3 bg-gray-300 rounded w-2/3"></div>
+            <div className="h-6 bg-gray-300 rounded w-1/2"></div>
+          </div>
+          <div className="space-y-2">
+            <div className="h-8 bg-gray-300 rounded w-20"></div>
+            <div className="h-8 bg-gray-300 rounded w-20"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}

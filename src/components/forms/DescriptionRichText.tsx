@@ -166,7 +166,7 @@ export default function DescriptionRichText({
         </div>
       </div>
       {isLoading && (
-        <div className="w-full h-[200px] bg-gray-100 rounded-md animate-pulse" />
+        <div className="w-full h-50 bg-gray-100 rounded-md animate-pulse" />
       )}
       <div 
         ref={editorRef} 

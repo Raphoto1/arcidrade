@@ -13,6 +13,7 @@ import ProcessDetail from "@/components/platform/process/ProcessDetail";
 import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 import ConfirmAddProfesionalToProcessForm from "@/components/forms/platform/process/ConfirmAddProfesionalToProcessForm";
 import RichTextPreview from "@/components/ui/RichTextPreview";
+import { SkeletonCardLoader } from "@/components/pieces/Loader";
 
 
 export default function InstitutionProcessCard(props: any) {
@@ -52,7 +53,9 @@ export default function InstitutionProcessCard(props: any) {
   
   const institutionInfo = institutionData || {};
 
-  if (isLoading || processLoading) return <div>Cargando...</div>;
+  if (isLoading || processLoading) {
+    return <SkeletonCardLoader />;
+  }
   if (error || processError) return <div>Error al cargar la institución</div>;
 
   return (
@@ -104,7 +107,7 @@ export default function InstitutionProcessCard(props: any) {
                 {processPack && Object.keys(processPack).length > 0 ? (
                     <ProcessDetail processData={{ ...processPack }} btnActive={btnActive} isFake={false} profesionalId={profesionalIdBySession } />
                 ) : (
-                  <div>Cargando datos del proceso...</div>
+                  <SkeletonCardLoader />
                 )}
               </ModalForPreview>
             )}

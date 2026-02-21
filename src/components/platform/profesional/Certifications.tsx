@@ -2,7 +2,7 @@ import ModalForFormsPlusButton from "@/components/modals/ModalForFormsPlusButton
 import Certificate from "../pieces/Certificate";
 import ProfesionalCertificationForm from "@/components/forms/platform/profesional/ProfesionalCertificationForm";
 import { useProfesionalCertifications, useProfesional } from "@/hooks/usePlatPro";
-import { InlineLoader } from "@/components/pieces/Loader";
+import Loader from "@/components/pieces/Loader";
 
 export default function Certifications() {
   const { data, error, isLoading, mutate } = useProfesionalCertifications();
@@ -16,7 +16,7 @@ export default function Certifications() {
       </div>
       {isLoading ? (
         <div className='flex justify-center items-center py-8'>
-          <InlineLoader size="md" />
+          <Loader size="md" text="Cargando certificaciones..." />
         </div>
       ) : (
         <div className='max-h-110 overflow-auto'>
