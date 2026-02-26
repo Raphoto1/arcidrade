@@ -1,3 +1,4 @@
+import React, { useState } from "react";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import ProcessDetail from "@/components/platform/process/ProcessDetail";
 import { useInstitutionById } from "@/hooks/usePlatInst";
@@ -8,7 +9,6 @@ import ModalForFormsGreenBtn from "@/components/modals/ModalForFormsGreenBtn";
 import ConfirmActivateProcessForm from "@/components/forms/platform/process/ConfirmActivateProcessForm";
 import ModalForFormsYellowBtn from "@/components/modals/ModalForFormsYellowBtn";
 import ConfirmPauseProcessForm from "@/components/forms/platform/process/ConfirmPauseProcessForm";
-import React from "react";
 import ModalForForms from "@/components/modals/ModalForForms";
 import ConfirmAskContactForm from "@/components/forms/platform/victor/ConfirmAskContactForm";
 import ConfirmExtendPeriodForm from "@/components/forms/platform/victor/ConfirmExtendPeriodForm";
@@ -19,6 +19,18 @@ export default function ProcessPill(props: any) {
   const { data: institutionPack } = useInstitutionById(process?.user_id);
   const institutionData = institutionPack?.payload;
   const onSuccess = props.onSuccess || (() => {});
+  const [copied, setCopied] = useState(false);
+
+  const handleCopyUrl = async () => {
+    const url = `${window.location.origin}/completeInvitationByProcess/${process?.id}`;
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch (err) {
+      console.error("Error al copiar URL:", err);
+    }
+  };
 
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col'>
@@ -32,6 +44,17 @@ export default function ProcessPill(props: any) {
           <ModalForPreview title='Detalle'>
             <ProcessDetail processData={{ ...process }} />
           </ModalForPreview>
+          {process?.status == "active" && (
+            <button
+              onClick={handleCopyUrl}
+              className={`w-full px-4 py-2 mb-2 btn btn-sm justify-center transition-colors ${
+                copied ? "btn-success" : "btn-outline"
+              }`}
+              title='Copiar URL del proceso'
+            >
+              {copied ? "¡Copiado!" : "Copiar URL"}
+            </button>
+          )}
           <ModalForForms title='Editar'>
             <UpdateProcessForm id={process?.id} />
           </ModalForForms>
