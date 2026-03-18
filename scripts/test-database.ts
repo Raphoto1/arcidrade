@@ -63,8 +63,7 @@ async function runDiagnostics() {
   const start2 = Date.now()
   let prisma: PrismaClient
   try {
-    const pool = new Pool({ connectionString })
-    const adapter = new PrismaPg(pool)
+    const adapter = new PrismaPg({ connectionString })
     prisma = new PrismaClient({ adapter })
     
     const duration2 = Date.now() - start2

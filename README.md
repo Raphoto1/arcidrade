@@ -318,6 +318,64 @@ const getSpecialityOptions = () => {
 
 ---
 
+## 🧪 **Tests**
+
+### **Framework de Testing**
+
+El proyecto usa **[Vitest](https://vitest.dev/)** como framework de tests, configurado con entorno `jsdom` para simular el DOM del navegador.
+
+**Stack de testing:**
+- `vitest` — Runner de tests y assertions
+- `@testing-library/react` — Testing de componentes React
+- `@testing-library/jest-dom` — Matchers adicionales para el DOM
+- `@vitest/coverage-v8` — Reporte de cobertura de código
+
+### **Comandos**
+
+```bash
+# Ejecutar todos los tests una sola vez
+npm test
+
+# Ejecutar en modo watch (re-ejecuta al guardar)
+npm run test:watch
+
+# Ejecutar con reporte de cobertura de código
+npm run test:coverage
+```
+
+### **Estructura de Tests**
+
+```
+src/__tests__/
+├── setup.ts                    # Configuración global (jest-dom)
+└── utils/
+    ├── htmlHelpers.test.ts     # Tests de stripHtml, getHtmlPreview, sanitizeAndStyleHtml
+    ├── retryUtils.test.ts      # Tests de withRetry y withPrismaRetry
+    ├── cookieConsent.test.ts   # Tests de getCookieConsent, hasCookieConsent, resetCookieConsent
+    ├── encrypter.test.ts       # Tests de encrypt y compare (bcrypt)
+    └── quillProcessor.test.ts  # Tests de processQuillHTML
+```
+
+### **Cobertura Actual**
+
+| Archivo | Tests | Funciones cubiertas |
+|---|---|---|
+| `htmlHelpers.test.ts` | 23 | `stripHtml`, `getHtmlPreview`, `sanitizeAndStyleHtml` |
+| `retryUtils.test.ts` | 8 | `withRetry`, `withPrismaRetry` |
+| `cookieConsent.test.ts` | 12 | `getCookieConsent`, `hasCookieConsent`, `resetCookieConsent` |
+| `encrypter.test.ts` | 9 | `encrypt`, `compare` |
+| `quillProcessor.test.ts` | 13 | `processQuillHTML` |
+| **Total** | **65** | |
+
+### **Configuración**
+
+La configuración de Vitest está en [`vitest.config.ts`](./vitest.config.ts) en la raíz del proyecto. Incluye:
+- Alias `@/*` → `src/*` (mismo que TypeScript/Next.js)
+- Entorno `jsdom` para simular el navegador
+- Cobertura sobre `src/utils/`, `src/service/` y `src/controller/`
+
+---
+
 ## 🔧 **Scripts de Utilidad**
 
 ```bash
@@ -332,6 +390,11 @@ npm run dev                # Servidor de desarrollo
 npm run build             # Build de producción
 npm run start             # Servidor de producción
 npm run lint              # Linting del código
+
+# Tests
+npm test                   # Ejecutar todos los tests
+npm run test:watch         # Tests en modo watch
+npm run test:coverage      # Tests con cobertura
 
 # Backups (scripts personalizados)
 node backup-database.js    # Crear backup de base de datos
