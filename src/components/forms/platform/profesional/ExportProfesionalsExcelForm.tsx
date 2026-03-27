@@ -51,12 +51,14 @@ type ExportProfesionalsExcelFormProps = {
   categoryLabel: string;
   fileBaseName: string;
   status: string;
+  profesionals?: ProfesionalPayload[];
 };
 
 export default function ExportProfesionalsExcelForm({
   categoryLabel,
   fileBaseName,
   status,
+  profesionals,
 }: ExportProfesionalsExcelFormProps) {
   const { closeModal } = useModal();
   const [isExporting, setIsExporting] = useState(false);
@@ -80,14 +82,20 @@ export default function ExportProfesionalsExcelForm({
     setErrorMessage(null);
 
     try {
-      const firstPage = await fetchPage(1);
-      const totalPages = Number(firstPage?.totalPages || 1);
-      const allProfesionals: ProfesionalPayload[] = Array.isArray(firstPage?.data) ? firstPage.data : [];
+      let allProfesionals: ProfesionalPayload[] = [];
 
-      for (let page = 2; page <= totalPages; page += 1) {
-        const pageData = await fetchPage(page);
-        if (Array.isArray(pageData?.data)) {
-          allProfesionals.push(...pageData.data);
+      if (Array.isArray(profesionals)) {
+        allProfesionals = profesionals;
+      } else {
+        const firstPage = await fetchPage(1);
+        const totalPages = Number(firstPage?.totalPages || 1);
+        allProfesionals = Array.isArray(firstPage?.data) ? firstPage.data : [];
+
+        for (let page = 2; page <= totalPages; page += 1) {
+          const pageData = await fetchPage(page);
+          if (Array.isArray(pageData?.data)) {
+            allProfesionals.push(...pageData.data);
+          }
         }
       }
 
@@ -142,14 +150,16 @@ export default function ExportProfesionalsExcelForm({
   return (
     <div className="flex flex-col gap-4">
       <div className="text-sm text-gray-600">
-        Exporta todos los profesionales de la categoria {categoryLabel}.
+        {Array.isArray(profesionals)
+          ? `Exporta los profesionales filtrados de la categoria ${categoryLabel}.`
+          : `Exporta todos los profesionales de la categoria ${categoryLabel}.`}
       </div>
 
       {errorMessage && <div className="text-sm text-red-500">{errorMessage}</div>}
 
       <button
         type="button"
-        className="btn bg-[var(--main-arci)] hover:bg-[var(--main-arci)]/90 text-white"
+        className="btn bg-(--main-arci) hover:bg-(--main-arci)/90 text-white"
         onClick={handleExport}
         disabled={isExporting}
       >

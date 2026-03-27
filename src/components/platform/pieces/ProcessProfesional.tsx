@@ -35,7 +35,10 @@ export default function ProcessProfesional(props: any) {
           <span className='text-sm text-gray-600 w-100'>{processPack?.payload.position}</span>
           <p className='font-light'>{formatDateToString(processPack?.payload.created_at)}</p>
         </div>
-        <div className='controles grid justify-center gap-2 mt-4'>
+        <div className='controles grid gap-2 [&>*>button]:w-full'>
+          {Boolean(profesionalPack?.payload?.profesional_data?.main_study?.isHomologated) && (
+            <div className='badge badge-success badge-outline w-fit justify-self-center'>Homologado UE</div>
+          )}
           <ModalForPreview title='Ver Profesional'>
             <ProfesionalDetailFullById userId={userId} />
           </ModalForPreview>

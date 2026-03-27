@@ -3,11 +3,12 @@
 import React from "react";
 import Image from "next/image";
 import { IoDocumentAttachOutline } from "react-icons/io5";
-import { fakerES as faker } from "@faker-js/faker";
 import { ICountry } from "country-state-city";
 import { Country } from "country-state-city";
+import { useSession } from "next-auth/react";
 //imports propios
-import { useProfesionalById, useProfesionalFull } from "@/hooks/usePlatPro";
+import { useProfesionalById } from "@/hooks/usePlatPro";
+import { useProfessionalProfileDownload } from "@/hooks/useProfessionalProfileDownload";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
 import { useHandleCategoryName } from "@/hooks/useUtils";
@@ -15,6 +16,7 @@ import Loader from "@/components/pieces/Loader";
 
 export default function ProfesionalDetailFull(props: any) {
   const { data, error, isLoading } = useProfesionalById(props.userId);
+  const { data: session } = useSession();
   
   // Validación defensiva para prevenir errores
   const payload = data?.payload || {};
@@ -24,7 +26,6 @@ export default function ProfesionalDetailFull(props: any) {
   const certifications = payload.profesional_certifications || [];
   const experience = payload.experience || [];
   
-  const fakeLastName = faker.person.lastName(); // Generar un apellido falso
   const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
   const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
   const countryName: ICountry | undefined = Country.getCountryByCode(personalData?.country);
@@ -56,6 +57,20 @@ export default function ProfesionalDetailFull(props: any) {
 
     return <span className='badge badge-success badge-outline'>Homologado UE</span>;
   };
+  const {
+    isDownloadingProfile,
+    isDownloadingPdf,
+    downloadError,
+    handleDownloadProfile,
+    handleDownloadProfilePdf,
+  } = useProfessionalProfileDownload({
+    payload,
+    userId: props.userId,
+    countryName: countryName?.name,
+    isEnabled: ["victor", "admin", "colab", "manager"].includes(session?.user?.area || ""),
+  });
+
+  const canDownloadProfile = ["victor", "admin", "colab", "manager"].includes(session?.user?.area || "");
 
   if (isLoading) {
     return (
@@ -106,7 +121,27 @@ export default function ProfesionalDetailFull(props: any) {
         <h1 className='text-2xl fontArci text-center'>{`${personalData.name} ${personalData.last_name} `}</h1>
         <p className='text-center'>{mainStudy.title}</p>
         {renderHomologationBadge(mainStudy.isHomologated)}
-        <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button>
+        {canDownloadProfile ? (
+          <>
+            <div className='mt-2 flex flex-wrap items-center justify-center gap-2'>
+              <button
+                className='btn bg-(--main-arci) text-white'
+                onClick={handleDownloadProfile}
+                disabled={isDownloadingProfile || isDownloadingPdf}
+              >
+                {isDownloadingProfile ? "Preparando Excel..." : "Descargar Excel"}
+              </button>
+              <button
+                className='btn btn-outline border-(--main-arci) text-(--main-arci)'
+                onClick={handleDownloadProfilePdf}
+                disabled={isDownloadingProfile || isDownloadingPdf}
+              >
+                {isDownloadingPdf ? "Preparando PDF..." : "Descargar PDF"}
+              </button>
+            </div>
+            {downloadError ? <p className='mt-2 text-center text-sm text-red-500'>{downloadError}</p> : null}
+          </>
+        ) : null}
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci text'>Presentación</h1>
@@ -216,7 +251,7 @@ export default function ProfesionalDetailFull(props: any) {
         <h1 className='text-2xl fontArci text mb-2'>Especialidades</h1>
         <div className='flex flex-col gap-2'>
           {speciality.map((item: any, index: number) => (
-            <div key={index} className='bg-white rounded-md p-1'>
+            <div key={index} className='bg-white rounded-md p-1 gap-2 flex flex-col'>
               <div className='flex items-start justify-between gap-2'>
                 <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
                 {renderHomologationBadge(item.isHomologated)}
@@ -242,46 +277,48 @@ export default function ProfesionalDetailFull(props: any) {
         </div>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
-        <h1 className='text-2xl fontArci text'>Certificaciones</h1>
-        {certifications.map((item: any, index: number) => (
-          <div key={index} className='bg-white rounded-md p-1'>
-            <div className='flex items-start justify-between gap-2'>
-              <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
-              {renderHomologationBadge(item.isHomologated)}
-            </div>
-            <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
-            <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
-            {item.link ? (
-              <div className='flex justify-end'>
-                <a href={item.link} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
-                  Ver Respaldo
-                </a>
+        <h1 className='text-2xl fontArci text mb-2'>Certificaciones</h1>
+        <div className='flex flex-col gap-2'>
+          {certifications.map((item: any, index: number) => (
+            <div key={index} className='bg-white rounded-md p-1 gap-2 flex flex-col'>
+              <div className='flex items-start justify-between gap-2'>
+                <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+                {renderHomologationBadge(item.isHomologated)}
               </div>
-            ) : null}
-            {item.file ? (
-              <div className='flex justify-end'>
-                <a href={item.file} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
-                  Ver Respaldo
-                </a>
+              <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
+              <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
+              {item.link ? (
+                <div className='flex justify-end'>
+                  <a href={item.link} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
+                    Ver Respaldo
+                  </a>
+                </div>
+              ) : null}
+              {item.file ? (
+                <div className='flex justify-end'>
+                  <a href={item.file} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>
+                    Ver Respaldo
+                  </a>
+                </div>
+              ) : null}
+              <div>
+                <h3 className='text-(--main-arci)'>Descripción:</h3>
+                <p className='line-clamp-3'>{item.description}</p>
+                <ModalForPreviewTextLink title='Ver Más...'>
+                  <UserDescription description={item.description} />
+                </ModalForPreviewTextLink>
               </div>
-            ) : null}
-            <div>
-              <h3 className='text-(--main-arci)'>Descripción:</h3>
-              <p className='line-clamp-3'>{item.description}</p>
-              <ModalForPreviewTextLink title='Ver Más...'>
-                <UserDescription description={item.description} />
-              </ModalForPreviewTextLink>
             </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
 
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full md:text-lg'>
         <h1 className='text-2xl fontArci'>Experiencia</h1>
         <div className='flex flex-col gap-2'>
           {experience?.map((item: any, index: number) => (
-            <div key={index} className='bg-white rounded-md p-1'>
-              <div className='flex justify-between'>
+            <div key={index} className='bg-white rounded-md p-1 flex flex-col gap-2'>
+              <div className='flex justify-between gap-2'>
                 <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
                 {item.link ? (
                   <a href={item.link} target='_blank' className='btn bg-(--main-arci) text-white justify-end'>

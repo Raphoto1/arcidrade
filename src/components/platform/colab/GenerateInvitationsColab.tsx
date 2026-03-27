@@ -1,6 +1,6 @@
 import React from "react";
 import ModalForForms from "@/components/modals/ModalForForms";
-import ModalForPreview from "@/components/modals/ModalForPreview";
+import ModalForPreviewBtnLong from "@/components/modals/ModalForPreviewBtnLong";
 import GenerateInvitationColab from "@/components/auth/GenerateInvitationColab";
 import AdminInvitationsColab from "./AdminInvitationsColab";
 import GenerateSingleInvitation from "@/components/forms/platform/victor/GenerateSingleInvitation";
@@ -30,9 +30,9 @@ export default function GenerateInvitationsColab() {
         <ModalForForms title='Recordar Invitaciones Pendientes'>
           <RemindPendingInvitations />
         </ModalForForms>
-        <ModalForPreview title='Administrar Invitaciones'>
+        <ModalForPreviewBtnLong title='Administrar Invitaciones'>
           <AdminInvitationsColab />
-        </ModalForPreview>
+        </ModalForPreviewBtnLong>
       </div>
     </div>
   );

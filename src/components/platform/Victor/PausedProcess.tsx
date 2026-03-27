@@ -6,6 +6,7 @@ import ProcessVictor from "./pieces/ProcessVictor";
 import { useInstitutionById } from "@/hooks/usePlatInst";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import AdminProcess from "./AdminProcess";
+import ProcessAccordionHeader from "@/components/pieces/ProcessAccordionHeader";
 
 // Componente auxiliar para mostrar cada proceso con información del cliente
 function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; onSelect: (process: any) => void; isSelected: boolean }) {
@@ -16,7 +17,7 @@ function ProcessDropdownItem({ process, onSelect, isSelected }: { process: any; 
     <li>
       <button className={`text-left p-3 hover:bg-base-200 rounded-lg w-full ${isSelected ? "bg-base-200" : ""}`} onClick={() => onSelect(process)}>
         <div className='flex flex-col'>
-          <span className='font-semibold text-[var(--main-arci)]'>{process.position}</span>
+          <span className='font-semibold text-(--main-arci)'>{process.position}</span>
           <span className='text-sm font-medium text-gray-700'>Cliente: {institutionData?.name || "Cargando cliente..."}</span>
           <span className='text-sm text-gray-600'>Especialidad: {process.main_speciality}</span>
           <span className='text-xs text-gray-500'>Estado: {process.status || "Pausado"}</span>
@@ -130,27 +131,19 @@ export default function PausedProcess() {
 
   return (
     <div className='flex justify-center'>
-      <div className='grid grid-cols-1 gap-4 mt-4 pt-0 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center md:w-4/5 bg-gray-100'>
+      <div className='grid w-full grid-cols-1 gap-4 mt-4 pt-0 px-2 md:px-0 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center md:w-4/5 bg-gray-100'>
         {/* Header clickeable con título y botón */}
-        <div 
-          className={`flex md:justify-around flex-col md:flex-row bg-gray-300 p-2 cursor-pointer hover:bg-gray-400 transition-colors ${isContentExpanded ? 'rounded-t-md' : 'rounded-md'}`}
-          onClick={() => setIsContentExpanded(!isContentExpanded)}
-        >
-          <div className='flex items-center gap-2'>
-            <svg
-              className={`w-5 h-5 fill-current transition-transform duration-200 ${isContentExpanded ? "rotate-90" : ""}`}
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 20 20'>
-              <path d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z' />
-            </svg>
-          </div>
-          <h2 className='text-2xl fontArci text-center flex-1'>Procesos Pausados ({validProcesses.length})</h2>
-          <div onClick={(e) => e.stopPropagation()}>
+        <ProcessAccordionHeader
+          title='Procesos Pausados'
+          count={validProcesses.length}
+          isExpanded={isContentExpanded}
+          onToggle={() => setIsContentExpanded(!isContentExpanded)}
+          action={
             <ModalForPreview title='Administrar Procesos'>
               <AdminProcess />
             </ModalForPreview>
-          </div>
-        </div>
+          }
+        />
         
         {/* Contenido expandible */}
         {isContentExpanded && (
@@ -189,7 +182,7 @@ export default function PausedProcess() {
                   </div>
                   <ul
                     tabIndex={0}
-                    className='dropdown-content z-[9999] menu p-2 shadow-2xl bg-base-100 rounded-box w-full max-h-60 overflow-auto border border-gray-200'>
+                    className='dropdown-content z-9999 menu p-2 shadow-2xl bg-base-100 rounded-box w-full max-h-60 overflow-auto border border-gray-200'>
                     {filteredProcesses.map((process: any) => (
                       <ProcessDropdownItem key={process.id} process={process} onSelect={handleProcessSelect} isSelected={selectedProcess?.id === process.id} />
                     ))}
@@ -198,7 +191,7 @@ export default function PausedProcess() {
               </div>
 
               {/* Filtro dropdown por institución */}
-              <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto md:flex-shrink-0'>
+              <div className='flex flex-col sm:flex-row sm:items-center gap-2 w-full md:w-auto md:shrink-0'>
                 <span className='text-sm font-medium text-gray-600'>Filtrar por institución:</span>
                 <div className='flex items-center gap-2'>
                   <div ref={filterDropdownRef} className={`dropdown dropdown-bottom relative z-40 ${isFilterDropdownOpen ? "dropdown-open" : ""}`}>
@@ -217,7 +210,7 @@ export default function PausedProcess() {
                     </div>
                     <ul
                       tabIndex={0}
-                      className='dropdown-content z-[9998] menu p-2 shadow-xl bg-base-100 rounded-box w-full max-h-48 overflow-auto border border-gray-200'>
+                      className='dropdown-content z-9998 menu p-2 shadow-xl bg-base-100 rounded-box w-full max-h-48 overflow-auto border border-gray-200'>
                       <li>
                         <button
                           className={`text-left p-2 hover:bg-base-200 rounded-lg w-full ${!institutionFilter ? "bg-base-200 font-semibold" : ""}`}

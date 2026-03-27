@@ -1,9 +1,6 @@
 "use client";
 //imports de app
-import { useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { Country, State, City } from "country-state-city";
-import { ICountry, IState, ICity } from "country-state-city";
 import Link from "next/link";
 //imports propios
 import ModalForForm from "@/components/modals/ModalForForms";
@@ -26,7 +23,12 @@ export default function ColabData() {
   }
 
   // data validation - permitir payload vacío para usuarios nuevos
-  const colabData = data?.payload || {};
+  const colabData = Array.isArray(data?.payload) ? data?.payload[0] : data?.payload || {};
+  const hasPersonalName = Boolean(colabData?.name && colabData?.last_name);
+
+  if (hasPersonalName) {
+    return null;
+  }
 
   return (
     <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-lg p-3 md:p-4 md:justify-center md:h-auto'>

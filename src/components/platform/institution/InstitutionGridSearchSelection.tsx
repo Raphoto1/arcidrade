@@ -35,6 +35,7 @@ export default function InstitutionGridSearchSelection({
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const [selectedSpeciality, setSelectedSpeciality] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState(lockedSubArea || "");
+  const [selectedHomologation, setSelectedHomologation] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const itemsPerPage = 9;
   const isSpecialityLocked = Boolean(lockSpeciality && lockedSpeciality);
@@ -78,7 +79,7 @@ export default function InstitutionGridSearchSelection({
   // Resetear página cuando cambia la especialidad o categoría
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedSpeciality, selectedSubArea]);
+  }, [selectedSpeciality, selectedSubArea, selectedHomologation]);
 
   // Resetear especialidad cuando cambia la categoría del profesional
   useEffect(() => {
@@ -102,7 +103,9 @@ export default function InstitutionGridSearchSelection({
     itemsPerPage, 
     debouncedSearchTerm, 
     selectedSpeciality, 
-    selectedSubArea ? selectedSubArea : undefined // Solo enviar si hay algo seleccionado
+    selectedSubArea ? selectedSubArea : undefined, // Solo enviar si hay algo seleccionado
+    'active',
+    selectedHomologation
   );
 
   const existingCandidateIdSet = new Set(existingCandidateIds);
@@ -128,15 +131,21 @@ export default function InstitutionGridSearchSelection({
     setSelectedSubArea(e.target.value);
   };
 
+  // Manejar cambio de homologación
+  const handleHomologationChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSelectedHomologation(e.target.checked);
+  };
+
   // Limpiar todos los filtros
   const clearAllFilters = () => {
     setSearchTerm("");
     setSelectedSpeciality(isSpecialityLocked ? lockedSpeciality || "" : "");
     setSelectedSubArea(lockedSubArea || "");
+    setSelectedHomologation(false);
   };
 
   // Verificar si hay filtros activos
-  const hasActiveFilters = debouncedSearchTerm || selectedSpeciality || selectedSubArea;
+  const hasActiveFilters = debouncedSearchTerm || selectedSpeciality || selectedSubArea || selectedHomologation;
 
   // Mostrar error solo si hay error
   // Mostrar error con más detalle
@@ -180,7 +189,7 @@ export default function InstitutionGridSearchSelection({
 
         {/* Panel de filtros */}
         {showFilters && (
-          <div className='bg-white mx-4 mb-4 p-4 rounded-lg border border-gray-300 shadow-sm'>
+          <div className='bg-white w-full max-w-5xl justify-self-center mx-4 mb-4 p-4 rounded-lg border border-gray-300 shadow-sm'>
             <div className='flex justify-between items-center mb-3'>
               <h3 className='font-semibold text-gray-700'>Filtros de búsqueda</h3>
               <button onClick={() => setShowFilters(false)} className='text-gray-500 hover:text-gray-700'>
@@ -188,7 +197,7 @@ export default function InstitutionGridSearchSelection({
               </button>
             </div>
 
-            <div className='grid grid-cols-1 md:grid-cols-3 gap-4'>
+            <div className='grid grid-cols-1 md:grid-cols-4 gap-4'>
               {lockedSubArea && (
                 <div>
                   <label className='block text-sm font-medium text-gray-700 mb-1'>Categoría del Profesional</label>
@@ -242,6 +251,19 @@ export default function InstitutionGridSearchSelection({
                 </div>
               )}
 
+              {/* Filtro por homologación */}
+              <div className='flex items-end'>
+                <label className='flex items-center gap-2 text-sm font-medium text-gray-700 select-none cursor-pointer'>
+                  Homologado UE
+                  <input
+                    type='checkbox'
+                    checked={selectedHomologation}
+                    onChange={handleHomologationChange}
+                    className='h-4 w-4 rounded border border-gray-400 accent-(--main-arci) cursor-pointer'
+                  />
+                </label>
+              </div>
+
               {/* Botón limpiar filtros */}
               <div className='flex items-end'>
                 <button
@@ -279,6 +301,14 @@ export default function InstitutionGridSearchSelection({
                 <span className='inline-flex items-center gap-1 bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs'>
                   Especialidad: {selectedSpeciality.charAt(0).toUpperCase() + selectedSpeciality.slice(1)}
                   <button onClick={() => setSelectedSpeciality("")} className='text-green-600 hover:text-green-800'>
+                    <FiX size={12} />
+                  </button>
+                </span>
+              )}
+              {selectedHomologation && (
+                <span className='inline-flex items-center gap-1 bg-amber-100 text-amber-800 px-2 py-1 rounded-full text-xs'>
+                  Homologación: Con homologación
+                  <button onClick={() => setSelectedHomologation(false)} className='text-amber-600 hover:text-amber-800'>
                     <FiX size={12} />
                   </button>
                 </span>

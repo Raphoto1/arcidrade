@@ -10,6 +10,7 @@ export const GET = async (request: NextRequest) => {
     const speciality = searchParams.get('speciality') || undefined;
     const subArea = searchParams.get('subArea') || undefined;
     const status = searchParams.get('status') || 'active'; // Por defecto 'active'
+    const homologatedAny = searchParams.get('homologatedAny') === 'true';
 
     // Validar parámetros
     if (page < 1 || limit < 1 || limit > 50) {
@@ -18,7 +19,7 @@ export const GET = async (request: NextRequest) => {
       }, { status: 400 });
     }
 
-    const result = await getAllProfesionalsPaginated(page, limit, search, speciality, subArea, status);
+    const result = await getAllProfesionalsPaginated(page, limit, search, speciality, subArea, status, homologatedAny);
     
     return NextResponse.json({ 
       message: "Profesionales paginados obtenidos exitosamente", 

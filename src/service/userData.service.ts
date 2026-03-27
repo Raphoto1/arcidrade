@@ -60,8 +60,8 @@ export const getAllProfesionalsService = async () => {
   return response;
 }
 
-export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string) => {
-  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality, subArea, status);
+export const getAllProfesionalsPaginatedService = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string, homologatedAny?: boolean) => {
+  const response = await getAllProfesionalsPaginatedDao(page, limit, search, speciality, subArea, status, homologatedAny);
   return response;
 }
 

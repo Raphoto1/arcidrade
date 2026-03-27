@@ -20,6 +20,7 @@ const getFullName = (name?: string | null, lastName?: string | null) => {
 export default function PausedProfesionals() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState("");
+  const [selectedHomologation, setSelectedHomologation] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -69,6 +70,21 @@ export default function PausedProfesionals() {
       });
     }
 
+    // Filtrar por homologación (main study, especialidades o certificaciones)
+    if (selectedHomologation) {
+      validProfesionals = validProfesionals.filter((profesional: any) => {
+        const hasMainStudyHomologation = Boolean(profesional.main_study?.isHomologated);
+        const hasSpecialityHomologation = Array.isArray(profesional.study_specialization)
+          ? profesional.study_specialization.some((item: any) => Boolean(item?.isHomologated))
+          : false;
+        const hasCertificationHomologation = Array.isArray(profesional.profesional_certifications)
+          ? profesional.profesional_certifications.some((item: any) => Boolean(item?.isHomologated))
+          : false;
+
+        return hasMainStudyHomologation || hasSpecialityHomologation || hasCertificationHomologation;
+      });
+    }
+
     // Filtrar por término de búsqueda
     if (!searchTerm.trim()) {
       return validProfesionals;
@@ -104,7 +120,7 @@ export default function PausedProfesionals() {
     });
 
     return filtered;
-  }, [data?.data, searchTerm, selectedSubArea]);
+  }, [data?.data, searchTerm, selectedSubArea, selectedHomologation]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -121,10 +137,11 @@ export default function PausedProfesionals() {
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedSubArea("");
+    setSelectedHomologation(false);
   };
 
   // Verificar si hay filtros activos
-  const hasActiveFilters = searchTerm || selectedSubArea;
+  const hasActiveFilters = searchTerm || selectedSubArea || selectedHomologation;
 
   return (
     <div className='w-full justify-center bg-gray-200 px-2'>
@@ -197,9 +214,25 @@ export default function PausedProfesionals() {
                 </select>
               </div>
 
-              {/* Área para futuros filtros */}
+              {/* Filtro por homologación */}
               <div>
-                <label className='block text-sm font-medium text-gray-700 mb-1'>Filtros adicionales</label>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Homologación</label>
+                <div className='flex items-center gap-2'>
+                  <label className='flex items-center gap-2 cursor-pointer'>
+                    <span className='text-sm text-gray-700'>Homologado UE</span>
+                    <input
+                      type='checkbox'
+                      checked={selectedHomologation}
+                      onChange={(e) => setSelectedHomologation(e.target.checked)}
+                      className='h-4 w-4 rounded border border-gray-400 accent-(--main-arci) cursor-pointer'
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Acciones */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>Acciones</label>
                 <div className='flex items-center gap-2'>
                   {hasActiveFilters && (
                     <button onClick={clearFilters} className='btn btn-outline btn-sm flex items-center gap-1'>
@@ -219,6 +252,7 @@ export default function PausedProfesionals() {
                   <span className='text-sm text-gray-600'>Filtros activos:</span>
                   {searchTerm && <span className='badge badge-outline badge-sm'>Búsqueda: "{searchTerm}"</span>}
                   {selectedSubArea && <span className='badge badge-outline badge-sm'>Categoría: "{useHandleCategoryName(selectedSubArea)}"</span>}
+                  {selectedHomologation && <span className='badge badge-outline badge-sm'>Homologado UE</span>}
                 </div>
               </div>
             )}
@@ -252,7 +286,7 @@ export default function PausedProfesionals() {
           ) : (
             <div className='text-center p-12'>
               <div className='flex flex-col items-center gap-4'>
-                {searchTerm || selectedSubArea ? (
+                {searchTerm || selectedSubArea || selectedHomologation ? (
                   <>
                     <svg className='w-20 h-20 text-gray-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                       <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />
@@ -262,6 +296,7 @@ export default function PausedProfesionals() {
                       <p>No hay profesionales que coincidan con los filtros:</p>
                       {searchTerm && <p className='font-medium'>Búsqueda: "{searchTerm}"</p>}
                       {selectedSubArea && <p className='font-medium'>SubArea: "{useHandleCategoryName(selectedSubArea)}"</p>}
+                      {selectedHomologation && <p className='font-medium'>Homologación: Homologado UE</p>}
                     </div>
                     <button onClick={clearFilters} className='btn btn-outline btn-sm'>
                       Limpiar todos los filtros
@@ -286,10 +321,11 @@ export default function PausedProfesionals() {
       {!isLoading && !error && data?.data && (
         <div className='mt-6 text-center pb-4'>
           <p className='text-sm text-gray-600'>Mostrando {filteredProfesionals.length} profesional(es) pausado(s)</p>
-          {(searchTerm || selectedSubArea) && (
+          {(searchTerm || selectedSubArea || selectedHomologation) && (
             <div className='text-xs text-gray-500 mt-1 space-y-1'>
               {searchTerm && <p>Filtrado por texto: "{searchTerm}"</p>}
               {selectedSubArea && <p>SubArea: "{useHandleCategoryName(selectedSubArea)}"</p>}
+              {selectedHomologation && <p>Homologación: Homologado UE</p>}
             </div>
           )}
         </div>

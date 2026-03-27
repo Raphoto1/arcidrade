@@ -8,6 +8,7 @@ import ProcessVictor from "./pieces/ProcessVictor";
 import { useInstitutionById } from "@/hooks/usePlatInst";
 import ModalForPreview from "@/components/modals/ModalForPreview";
 import AdminProcess from "./AdminProcess";
+import ProcessAccordionHeader from "@/components/pieces/ProcessAccordionHeader";
 
 // Componente para mostrar información de institución y recopilar datos para el filtro
 function InstitutionDataCollector({ userId, onInstitutionLoaded }: { userId: string; onInstitutionLoaded: (userId: string, name: string) => void }) {
@@ -151,27 +152,19 @@ export default function AskedProcess() {
   //usar process de institution
   return (
     <div className='flex justify-center'>
-      <div className='grid grid-cols-1 gap-4 mt-4 pt-0 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center md:w-4/5 bg-gray-100'>
+      <div className='grid w-full grid-cols-1 gap-4 mt-4 pt-0 px-2 md:px-0 md:max-h-3/4 md:max-w-full md:justify-center md:align-middle md:items-center md:w-4/5 bg-gray-100'>
         {/* Header clickeable con título y botón */}
-        <div 
-          className={`flex md:justify-around flex-col md:flex-row bg-gray-300 p-2 cursor-pointer hover:bg-gray-400 transition-colors ${isContentExpanded ? 'rounded-t-md' : 'rounded-md'}`}
-          onClick={() => setIsContentExpanded(!isContentExpanded)}
-        >
-          <div className='flex items-center gap-2'>
-            <svg
-              className={`w-5 h-5 fill-current transition-transform duration-200 ${isContentExpanded ? "rotate-90" : ""}`}
-              xmlns='http://www.w3.org/2000/svg'
-              viewBox='0 0 20 20'>
-              <path d='M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z' />
-            </svg>
-          </div>
-          <h2 className='text-2xl fontArci text-center flex-1'>Procesos Solicitados ({validProcesses.length})</h2>
-          <div onClick={(e) => e.stopPropagation()}>
+        <ProcessAccordionHeader
+          title='Procesos Solicitados'
+          count={validProcesses.length}
+          isExpanded={isContentExpanded}
+          onToggle={() => setIsContentExpanded(!isContentExpanded)}
+          action={
             <ModalForPreview title='Administrar Procesos'>
               <AdminProcess />
             </ModalForPreview>
-          </div>
-        </div>
+          }
+        />
         
         {/* Contenido expandible */}
         {isContentExpanded && (

@@ -20,6 +20,7 @@ const getFullName = (name?: string | null, lastName?: string | null) => {
 export default function ActiveProfesionals() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState("");
+  const [selectedHomologation, setSelectedHomologation] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 12;
@@ -68,6 +69,21 @@ export default function ActiveProfesionals() {
         return profesional.main_study?.sub_area === selectedSubArea;
       });
     }
+
+    // Filtrar por homologación si está seleccionada
+    if (selectedHomologation) {
+      validProfesionals = validProfesionals.filter((profesional: any) => {
+        const hasMainStudyHomologation = Boolean(profesional.main_study?.isHomologated);
+        const hasSpecialityHomologation = Array.isArray(profesional.study_specialization)
+          ? profesional.study_specialization.some((item: any) => Boolean(item?.isHomologated))
+          : false;
+        const hasCertificationHomologation = Array.isArray(profesional.profesional_certifications)
+          ? profesional.profesional_certifications.some((item: any) => Boolean(item?.isHomologated))
+          : false;
+
+        return hasMainStudyHomologation || hasSpecialityHomologation || hasCertificationHomologation;
+      });
+    }
     
     // Filtrar por término de búsqueda
     if (!searchTerm.trim()) {
@@ -102,7 +118,7 @@ export default function ActiveProfesionals() {
     });
     
     return filtered;
-  }, [data?.data, searchTerm, selectedSubArea]);
+  }, [data?.data, searchTerm, selectedSubArea, selectedHomologation]);
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchTerm(e.target.value);
@@ -119,10 +135,11 @@ export default function ActiveProfesionals() {
   const clearFilters = () => {
     setSearchTerm("");
     setSelectedSubArea("");
+    setSelectedHomologation(false);
   };
 
   // Verificar si hay filtros activos
-  const hasActiveFilters = searchTerm || selectedSubArea;
+  const hasActiveFilters = searchTerm || selectedSubArea || selectedHomologation;
 
   return (
     <div className='w-full justify-center bg-gray-200 px-2'>
@@ -142,6 +159,7 @@ export default function ActiveProfesionals() {
                 categoryLabel='Activos'
                 fileBaseName='profesionales-activos'
                 status='active'
+                profesionals={filteredProfesionals}
               />
             </ModalForForms>
           </div>
@@ -207,9 +225,28 @@ export default function ActiveProfesionals() {
               </div>
 
               {/* Área para futuros filtros */}
+              {/* Filtro por homologación */}
               <div>
                 <label className='block text-sm font-medium text-gray-700 mb-1'>
-                  Filtros adicionales
+                  Homologación
+                </label>
+                <div className='flex items-center gap-2'>
+                  <label className='flex items-center gap-2 cursor-pointer'>
+                    <span className='text-sm text-gray-700'>Homologado UE</span>
+                    <input
+                      type='checkbox'
+                      checked={selectedHomologation}
+                      onChange={(e) => setSelectedHomologation(e.target.checked)}
+                      className='h-4 w-4 rounded border border-gray-400 accent-(--main-arci) cursor-pointer'
+                    />
+                  </label>
+                </div>
+              </div>
+
+              {/* Limpiar filtros */}
+              <div>
+                <label className='block text-sm font-medium text-gray-700 mb-1'>
+                  Acciones
                 </label>
                 <div className='flex items-center gap-2'>
                   {hasActiveFilters && (
@@ -242,6 +279,9 @@ export default function ActiveProfesionals() {
                     <span className='badge badge-outline badge-sm'>
                       Categoría: "{useHandleCategoryName(selectedSubArea)}"
                     </span>
+                  )}
+                  {selectedHomologation && (
+                    <span className='badge badge-outline badge-sm'>Homologado UE</span>
                   )}
                 </div>
               </div>
@@ -280,7 +320,7 @@ export default function ActiveProfesionals() {
           ) : (
             <div className='text-center p-12'>
               <div className='flex flex-col items-center gap-4'>
-                {(searchTerm || selectedSubArea) ? (
+                {(searchTerm || selectedSubArea || selectedHomologation) ? (
                   <>
                     <svg className='w-20 h-20 text-gray-300' fill='none' stroke='currentColor' viewBox='0 0 24 24'>
                       <path strokeLinecap='round' strokeLinejoin='round' strokeWidth={2} d='M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z' />

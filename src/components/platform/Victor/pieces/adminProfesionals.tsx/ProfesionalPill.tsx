@@ -35,16 +35,19 @@ interface ProfesionalPillProps {
       institution?: string;
       status?: string;
       sub_area?: string;
+      isHomologated?: boolean;
     };
     study_specialization?: Array<{
       title?: string;
       title_category?: string;
       institution?: string;
       description?: string;
+      isHomologated?: boolean;
     }>;
     profesional_certifications?: Array<{
       title?: string;
       institution?: string;
+      isHomologated?: boolean;
     }>;
     experience?: Array<{
       title?: string;
@@ -85,6 +88,10 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
   const city = profesionalData.city || "No registrada";
   const phone = profesionalData.phone || "No registrado";
   const referCode = profesional.referCode || "No generado";
+  const hasAnyHomologation =
+    Boolean(mainStudy.isHomologated) ||
+    profesional.study_specialization?.some((item) => Boolean(item?.isHomologated)) ||
+    profesional.profesional_certifications?.some((item) => Boolean(item?.isHomologated));
 
   return (
     <div className='w-full h-auto bg-white rounded-md flex flex-col shadow-sm border border-gray-200 hover:shadow-md transition-shadow'>
@@ -146,7 +153,10 @@ export default function ProfesionalPill({ profesional, isPaused = false }: Profe
           </div>
         </div>
 
-        <div className='w-1/3 p-3 flex flex-col justify-center gap-2'>
+        <div className='w-1/3 p-3 flex flex-col justify-center gap-2 [&>*>button]:w-full'>
+          {Boolean(hasAnyHomologation) && (
+            <div className='badge badge-success badge-outline w-fit mx-auto'>Homologado UE</div>
+          )}
           <ModalForPreview title='Detalle'>
             <ProfesionalDetailFullById userId={profesional.referCode} />
           </ModalForPreview>

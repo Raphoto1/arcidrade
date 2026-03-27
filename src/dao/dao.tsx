@@ -239,7 +239,7 @@ export const getAllProfesionalsDao = async () => {
   }
 };
 
-export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string) => {
+export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: number = 9, search?: string, speciality?: string, subArea?: string, status?: string, homologatedAny?: boolean) => {
   try {
     const skip = (page - 1) * limit;
     
@@ -335,6 +335,17 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
       });
     }
 
+    // Filtro por homologación en cualquier estudio/certificación
+    if (homologatedAny) {
+      andConditions.push({
+        OR: [
+          { main_study: { isHomologated: true } },
+          { study_specialization: { some: { isHomologated: true } } },
+          { profesional_certifications: { some: { isHomologated: true } } }
+        ]
+      });
+    }
+
     // Construir la cláusula final
     if (orConditions.length > 0 && andConditions.length > 0) {
       // Si hay ambos filtros: (búsqueda) AND (especialidad)
@@ -389,7 +400,8 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
       search: search || '',
       speciality: speciality || '',
       subArea: subArea || '',
-      status: status || 'active'
+      status: status || 'active',
+      homologatedAny: Boolean(homologatedAny)
     };
   } catch (error) {
     console.error('Error al obtener profesionales paginados:', error);
