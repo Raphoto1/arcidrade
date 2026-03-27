@@ -81,16 +81,16 @@ export default function ProfesionalDetailFull() {
         <h1 className='text-2xl fontArci text-center'>{`${personalData.name} ${personalData.last_name} `}</h1>
         <p className='text-center'>{mainStudy.title}</p>
         {renderHomologationBadge(mainStudy.isHomologated)}
-        <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button>
+        {/* <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button> */}
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
-        <h1 className='text-2xl fontArci text'>Presentación</h1>
+      <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <h1 className='text-2xl fontArci mb-2'>Presentación</h1>
         <p className='text-sm max-h-fit'>{personalData.description}</p>
         <ModalForPreviewTextLink title='Ver Más...'>
           <UserDescription description={personalData.description} />
         </ModalForPreviewTextLink>
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+      <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <div className='fileSpace grid w-full grid-cols-1 gap-2 rounded-sm bg-gray-50 p-2 shadow-xl sm:grid-cols-3'>
           <div className='flex min-h-20 w-full justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
             <IoDocumentAttachOutline size={36} />
@@ -116,7 +116,7 @@ export default function ProfesionalDetailFull() {
           </div>
         </div>
         <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
-          <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
+          <h2 className='font-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
           <div className='w-full'>
             <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Nombre</h3>
@@ -127,7 +127,7 @@ export default function ProfesionalDetailFull() {
               <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{personalData.last_name}</p>
             </div>
             <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
-              <h3 className='text-light'>Fecha de Nacimiento</h3>
+              <h3 className='font-light'>Fecha de Nacimiento</h3>
               <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{fechaString}</p>
             </div>
             <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
@@ -183,11 +183,11 @@ export default function ProfesionalDetailFull() {
           </div>
         </div>
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
-        <h1 className='text-2xl fontArci text mb-2'>Especialidades</h1>
+      <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <h1 className='text-2xl fontArci mb-2'>Especialidades</h1>
         <div className='flex flex-col gap-2'>
           {speciality.map((item: any, index: number) => (
-            <div key={index} className='bg-white rounded-md p-1'>
+            <div key={index} className='bg-white rounded-md p-2'>
               <div className='flex items-start justify-between gap-2'>
                 <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
                 {renderHomologationBadge(item.isHomologated)}
@@ -212,10 +212,11 @@ export default function ProfesionalDetailFull() {
           ))}
         </div>
       </div>
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
-        <h1 className='text-2xl fontArci text'>Certificaciones</h1>
-        {certifications.map((item: any, index: number) => (
-          <div key={index} className='bg-white rounded-md p-1'>
+      <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <h1 className='text-2xl fontArci mb-2'>Certificaciones</h1>
+        <div className='flex flex-col gap-2'>
+          {certifications.map((item: any, index: number) => (
+            <div key={index} className='bg-white rounded-md p-2'>
             <div className='flex items-start justify-between gap-2'>
               <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
               {renderHomologationBadge(item.isHomologated)}
@@ -245,13 +246,14 @@ export default function ProfesionalDetailFull() {
             </div>
           </div>
         ))}
+        </div>
       </div>
 
-      <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
-        <h1 className='text-2xl fontArci'>Experiencia</h1>
+      <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        <h1 className='text-2xl fontArci mb-2'>Experiencia</h1>
         <div className='flex flex-col gap-2'>
           {experience?.map((item: any, index: number) => (
-            <div key={index} className='bg-white rounded-md p-1'>
+            <div key={index} className='bg-white rounded-md p-2'>
               <div className='flex justify-between'>
                 <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
                 {item.link ? (
