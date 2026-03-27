@@ -16,6 +16,12 @@
     --green-arci:#8FF19C;
 }
 
+html,
+body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 @utility btn {
   @apply rounded-md;
 }

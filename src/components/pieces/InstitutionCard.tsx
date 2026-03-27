@@ -21,7 +21,7 @@ export default function InstitutionCard(props: any) {
   if (isLoading) return <div className='p-4 text-center'><InlineLoader size='sm' /> <span className='ml-2 text-sm'>Cargando...</span></div>;
   if (error) return <div>Error al cargar la institución</div>;
   return (
-    <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
+    <div className='card w-full max-w-80 bg-base-100 card-sm shadow-sm'>
       <div className='topHat bg-(--orange-arci) w-full h-20 flex align-middle items-center justify-between rounded-t-lg'>
         {props.btnActive ? (
           <div className='buttons w-15 h-15 ml-2 grid flex-col content-between'>

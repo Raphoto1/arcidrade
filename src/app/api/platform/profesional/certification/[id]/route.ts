@@ -22,7 +22,6 @@ export const POST = async (req: NextRequest, { params }: any) => {
     // console.log("recibo en post la actualizacion");
     //envio a actualizar
     const body = await req.json();
-    // console.log("body en la pet", body);
     const update = await updateCertification(id, body);
     // console.log("update", update);
     return NextResponse.json({ message: `certificación  con ID ${id} actualizado` }, { status: 200 });

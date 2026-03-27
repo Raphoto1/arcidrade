@@ -79,6 +79,7 @@ export const createUserData = async (data: any) => {
           status: data.titleStatus || null,
           institution: data.titleInstitution || null,
           country: data.studyCountry || null,
+          isHomologated: Boolean(data.isHomologated),
           sub_area: data.sub_area, // Este campo es requerido
         };
         
@@ -109,7 +110,7 @@ export const createUserData = async (data: any) => {
 export const updateUserData = async (data: any) => {
 
   try {
-    const result = updateUserDataService(data);
+    const result = await updateUserDataService(data);
     return result;
   } catch (error) {
     throw new Error("error actualizando");
@@ -239,7 +240,7 @@ export const deleteCv = async () => {
   }
 };
 
-export const uploadUserMainStudyLink = async (link: any) => {
+export const uploadUserMainStudyLink = async (link: any, isHomologated?: boolean) => {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
@@ -247,19 +248,27 @@ export const uploadUserMainStudyLink = async (link: any) => {
 
 
     if (!chkMainStudy) throw new Error("Estudio principal no encontrado");
+    if (!link && typeof isHomologated === "boolean") {
+      const updatePack = { isHomologated };
+      const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
+      return updateDb;
+    }
+
+    const homologatedPack = typeof isHomologated === "boolean" ? { isHomologated } : {};
+
     if (chkMainStudy?.link) {
-      const updatePack = { link: link };
+      const updatePack = { link: link, ...homologatedPack };
       const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
 
       return updateDb;
     }
     if (chkMainStudy?.file) {
       const deleteFile = await deleteFileService(chkMainStudy?.file);
-      const updatePack = { link: link, file: null };
+      const updatePack = { link: link, file: null, ...homologatedPack };
       const updateResult = await updateProfesionalMainStudyDao(updatePack, userId);
       return updateResult;
     }
-    const updatePack = { link: link };
+    const updatePack = { link: link, ...homologatedPack };
     const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
 
     return updateDb;
@@ -269,27 +278,29 @@ export const uploadUserMainStudyLink = async (link: any) => {
   }
 };
 
-export const uploadUserMainStudyFile = async (file: File) => {
+export const uploadUserMainStudyFile = async (file: File, isHomologated?: boolean) => {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
     const chkMainStudy = await getMainStudyService(userId);
+    const homologatedPack = typeof isHomologated === "boolean" ? { isHomologated } : {};
+
     if (!chkMainStudy) throw new Error("Estudio principal no encontrado");
     if (chkMainStudy?.link) {
       const uploadFile = await uploadFileService(file, "mainStudy", userId);
-      const updatePack = { link: null, file: uploadFile.url };
+      const updatePack = { link: null, file: uploadFile.url, ...homologatedPack };
       const updateDb = await updateProfesionalMainStudyDao(updatePack, userId);
       return updateDb;
     }
     if (chkMainStudy?.file) {
       const deleteFile = await deleteFileService(chkMainStudy?.file);
       const uploadFile = await uploadFileService(file, "mainStudy", userId);
-      const updatePack = { file: uploadFile.url };
+      const updatePack = { file: uploadFile.url, ...homologatedPack };
       const updateResult = await updateProfesionalMainStudyDao(updatePack, userId);
       return updateResult;
     }
     const uploadFile = await uploadFileService(file, "mainStudy", userId);
-    const updatePack = { file: uploadFile.url };
+    const updatePack = { file: uploadFile.url, ...homologatedPack };
     const updateResult = await updateProfesionalMainStudyDao(updatePack, userId);
     return updateResult;
   } catch (error) {
@@ -386,6 +397,7 @@ export const createSpeciality = async (data: any) => {
       status: data.titleStatus,
       country: data.country,
       sub_area: data.subArea,
+      isHomologated: Boolean(data.isHomologated),
       start_date: new Date(data.startDate),
       end_date: endDateFix,
     };
@@ -429,7 +441,7 @@ export const deleteUserSpecialitie = async (id: number) => {
 
 export const updateSpecialization = async (id: number, data: any) => {
   try {
-    const result = updateUserSpecializationService(id, data);
+    const result = await updateUserSpecializationService(id, data);
     return result;
   } catch (error) {
     console.error(error);
@@ -524,6 +536,7 @@ export const createUserCertification = async (data: any) => {
       country: data.country,
       institution: data.titleInstitution,
       description: data.description,
+      isHomologated: Boolean(data.isHomologated),
     };
     //se envia a service
     const result = await createUserCertificationService(userId, certPack);
@@ -570,6 +583,7 @@ export const updateCertification = async (id: number, data: any) => {
       start_date: startDateFix,
       end_date: endDateFix,
       description: data.description,
+      isHomologated: Boolean(data.isHomologated),
     };
     const update = await updateUserCertificationService(id, specialPack);
 

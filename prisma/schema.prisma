@@ -31,7 +31,7 @@ model Auth {
   study_speciality_favorite  Study_speciality_favorite[]
   study_specialization       Study_specialization[]
   fail_mail                  fail_mail?
-  colaborator_data                colaborator_data[]
+  colaborator_data           colaborator_data[]
 
   // Índices para mejorar performance de queries
   @@index([status])
@@ -81,6 +81,7 @@ model Main_study {
   description String?
   file        String?
   link        String?
+  isHomologated Boolean   @default(false)
   sub_area    Sub_area?
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
@@ -102,6 +103,7 @@ model Study_specialization {
   link           String?
   sub_area       Sub_area?
   is_main        Boolean   @default(false)
+  isHomologated   Boolean   @default(false)
   created_at     DateTime  @default(now())
   updated_at     DateTime  @updatedAt
   auth           Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
@@ -127,6 +129,7 @@ model Profesional_certifications {
   description String?
   file        String?
   link        String?
+  isHomologated Boolean   @default(false)
   created_at  DateTime  @default(now())
   updated_at  DateTime  @updatedAt
   auth        Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)

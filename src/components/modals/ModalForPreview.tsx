@@ -14,16 +14,16 @@ export default function ModalForPreview({ children, title }: { title?: string } 
 
   return (
     <div>
-      <button className='btn bg-[var(--main-arci)] h-auto w-auto p-1 min-w-full text-white' onClick={openModal}>
+      <button className='btn bg-(--main-arci) h-auto w-auto px-2 py-1 min-w-0 text-white' onClick={openModal}>
         {title || null}
       </button>
-      <dialog ref={modalRef} className='modal modal-start overflow-y-auto h-full w-full'>
-        <div className='modal-box w-full max-w-none overflow-y-auto max-h-10/12 md:h-auto p-6'>
+      <dialog ref={modalRef} className='modal px-2 py-2 sm:px-4' onClick={(event) => event.target === event.currentTarget && modalRef.current?.close()}>
+        <div className='modal-box relative w-full max-w-[min(100vw-1rem,72rem)] max-h-[92vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6'>
           <form method='dialog'>
-            <button className='btn btn-sm btn-circle btn-ghost absolute right-1 top-1'>✕</button>
+            <button className='btn btn-sm btn-circle btn-ghost sticky top-0 float-right z-20 bg-base-100/90'>✕</button>
           </form>
-          <div >
-          {children}
+          <div className='clear-both w-full min-w-0'>
+            {children}
           </div>
         </div>
       </dialog>

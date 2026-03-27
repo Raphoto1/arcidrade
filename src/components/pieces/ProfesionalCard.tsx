@@ -73,8 +73,8 @@ export default function ProfesionalCard(props: any) {
   if (!profesionalData || (shouldFetch && !data?.payload)) return <div>No se encontró el profesional</div>;
 
   return (
-    <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
-      <div className='topHat bg-[var(--soft-arci)] w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
+    <div className='card card-sm w-full min-w-0 max-w-80 bg-base-100 shadow-sm'>
+      <div className='topHat bg-(--soft-arci) w-full h-20 flex align-middle items-center justify-between rounded-t-lg pr-2'>
         {props.btnActive ? (
           <div className='buttons w-40 h-15 ml-2 grid flex-col content-between'>
             {!props.hideAddCandidate && (
@@ -133,9 +133,10 @@ export default function ProfesionalCard(props: any) {
         </div>
       </div>
 
-      <div className='card-body'>
-        <h2 className='card-title font-oswald text-xl text-[var(--main-arci)]'>{ useHandleCategoryName(mainStudyInfo.sub_area)} {displayName}</h2>
-        <p className='description h-10 font-roboto-condensed line-clamp-2'>{profesionalInfo.description || "Sin descripción"}</p>
+      <div className='card-body min-w-0'>
+        <h2 className='card-title wrap-break-word font-oswald text-xl leading-tight text-(--main-arci)'>{ useHandleCategoryName(mainStudyInfo.sub_area)} {displayName}</h2>
+        {!isFake && Boolean(mainStudyInfo.isHomologated) ? <div className='badge badge-success badge-outline w-fit'>Homologado UE</div> : null}
+        <p className='description min-h-10 wrap-break-word font-roboto-condensed line-clamp-2'>{profesionalInfo.description || "Sin descripción"}</p>
         {isFake ? <div></div> : (
           profesionalInfo.description ? (
             <ModalForPreviewTextLink title='Ver Más...'>
@@ -143,13 +144,13 @@ export default function ProfesionalCard(props: any) {
             </ModalForPreviewTextLink>
           ) : <div className="h-5">   </div>
         )}
-        <div className='flex justify-between card-actions items-end'>
-          <div className='extraInfo font-roboto-condensed text-red-700'>
+        <div className='card-actions flex flex-col items-start gap-3 sm:flex-row sm:items-end sm:justify-between'>
+          <div className='extraInfo min-w-0 font-roboto-condensed text-red-700'>
             <p className='capitalize'>{useHandleCategoryName(mainStudyInfo.sub_area) || "Sin registro"}</p>
-            <p className='capitalize'>{mainStudyInfo.title || "sin título"}</p>
+            <p className='wrap-break-word capitalize'>{mainStudyInfo.title || "sin título"}</p>
           </div>
-          <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
-            <p>{statusName || "no registrado"}</p>
+          <div className='rightActions flex w-full flex-col items-start justify-end font-roboto-condensed sm:w-auto sm:items-end'>
+            <p className='wrap-break-word text-left sm:text-right'>{statusName || "no registrado"}</p>
             {isFake ? (
               <ModalForPreview title={"Ver Detalle"}>
                 <ProfesionalDetailById userId={userId} />

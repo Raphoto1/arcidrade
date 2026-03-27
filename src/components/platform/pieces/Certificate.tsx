@@ -1,7 +1,7 @@
 'use client'
 import React from "react";
 
-import { FaStar } from "react-icons/fa";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 
 import ModalForFormsRedBtn from "@/components/modals/ModalForFormsRedBtn";
 import ConfirmDeleteCertificationForm from "@/components/forms/platform/profesional/ConfirmDeleteCertificationForm";
@@ -18,6 +18,14 @@ export default function Certificate(props: any) {
         <div className='w-2/3'>
           <h2 className='text-(--main-arci) text-bold text-wrap font-bold'>{props.title || "Nombre Cert"}</h2>
           <span className='text-sm text-gray-600 w-100'>{props.institution || "Universidad Grande"}</span>
+          <div className='flex items-center gap-2 text-sm font-medium'>
+            <span>Homologado UE:</span>
+            {props.isHomologated ? (
+              <FaCheckCircle className='shrink-0 text-2xl text-green-600' title='Homologado' aria-label='Homologado' />
+            ) : (
+              <FaTimesCircle className='shrink-0 text-2xl text-red-500' title='No homologado' aria-label='No homologado' />
+            )}
+          </div>
           <p className='font-light'>{endDate || "No Finalizado"}</p>
           {props.link ? (
             <div className='m-0 p-0'>

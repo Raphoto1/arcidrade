@@ -152,23 +152,23 @@ export default function InstitutionGridSearchSelection({
   }
 
   return (
-    <div className='grid justify-center'>
-      <div className='grid grid-cols-1 bg-gray-200 rounded-md md:justify-center md:align-middle md:items-center pt-4'>
+    <div className='grid w-full justify-center'>
+      <div className='grid w-full max-w-full grid-cols-1 overflow-x-hidden rounded-md bg-gray-200 pt-4 md:justify-center md:align-middle md:items-center'>
         {/* Barra de búsqueda */}
-        <div className='barraDeBusqueda flex justify-center mb-4 items-center flex-wrap gap-2'>
-          <div className='flex items-center'>
+        <div className='barraDeBusqueda mb-4 flex w-full flex-col items-stretch gap-2 px-4 sm:flex-row sm:items-center sm:justify-center'>
+          <div className='flex w-full items-center sm:w-auto'>
             <input
               type='text'
               placeholder='Buscar Profesionales...'
-              className='p-2 border border-gray-300 rounded-md mr-2 w-64'
+              className='w-full min-w-0 rounded-md border border-gray-300 p-2 sm:w-64'
               value={searchTerm}
               onChange={handleSearchChange}
             />
-            <ImSearch size={24} className='text-gray-500 mr-4' />
+            <ImSearch size={24} className='ml-2 shrink-0 text-gray-500 sm:mr-2' />
           </div>
 
           {/* Botón de filtros */}
-          <button onClick={() => setShowFilters(!showFilters)} className='btn btn-sm bg-white border border-gray-300 hover:bg-gray-50 flex items-center gap-2'>
+          <button onClick={() => setShowFilters(!showFilters)} className='btn btn-sm w-full bg-white border border-gray-300 hover:bg-gray-50 sm:w-auto flex items-center gap-2'>
             <FiFilter size={16} />
             Filtros
             {hasActiveFilters && <span className='badge badge-primary badge-xs'>!</span>}
@@ -349,11 +349,11 @@ export default function InstitutionGridSearchSelection({
 
         {/* Botón Cargar Más */}
         {paginatedData?.hasMore && (
-          <div className='flex justify-center mt-4 mb-4'>
+          <div className='flex justify-center mt-4 mb-4 px-4'>
             <button
               onClick={loadMore}
               disabled={isLoading}
-              className='btn btn-primary bg-(--orange-arci) border-none hover:bg-(--orange-arci)/80 disabled:opacity-50 min-w-50'>
+              className='btn btn-primary w-full sm:w-auto bg-(--orange-arci) border-none hover:bg-(--orange-arci)/80 disabled:opacity-50'>
               {isLoading && currentPage > 1 ? (
                 <div className='flex items-center gap-2'>
                   <div className='loading loading-spinner loading-sm'></div>

@@ -43,6 +43,7 @@ export default function Specialities() {
             end_date={item.end_date}
             link={item.link}
             file={item.file}
+            isHomologated={item.isHomologated}
           />
         ))}
       </div>

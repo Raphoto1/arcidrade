@@ -47,6 +47,7 @@ export const POST = async (req: NextRequest, { params }: any) => {
       sub_area: data.sub_area,
       status: data.titleStatus,
       country: data.country,
+      isHomologated: Boolean(data.isHomologated),
       start_date: startDateFix,
       end_date: endDateFix,
     };

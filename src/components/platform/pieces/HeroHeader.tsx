@@ -68,7 +68,7 @@ export default function HeroHeader() {
       {/* Degradado inferior hacia transparente */}
       <div className='absolute bottom-0 left-0 right-0 h-40 bg-linear-to-t from-white via-transparent to-transparent' />
       {/* Contenido principal */}
-      <div className='HeroArea w-full flex justify-center items-center align-middle p-2 md:pr-5 relative z-10'>
+      <div className='HeroArea relative z-10 flex w-full flex-col items-center justify-center gap-3 p-2 md:flex-row md:pr-5'>
         <div className='vacio none md:visible md:w-1/3 z-10'></div>
         <div className='avatar flex flex-col justify-center align-middle items-center p-2 z-10 md:w-1/3'>
           <div className='relative w-40 h-40'>
@@ -87,7 +87,7 @@ export default function HeroHeader() {
           </div>
           <h2 className='text-xl font-bold font-var(--font-oswald) text-center p-2 capitalize'>{fullName}</h2>
         </div>
-        <div className='description bg-gray-200 p-4 rounded-sm z-10 md:w-1/3'>
+        <div className='description z-10 w-full rounded-sm bg-gray-200 p-4 md:w-1/3'>
           <h3 className='text-xl font-bold font-var(--font-oswald)'>Presentación</h3>
           <div className='max-h-fit'>
             <p className='text-sm max-height-10 line-clamp-5'>{profesionalData?.description || "Agrega una descripción para que todos te conozcan"}</p>
@@ -107,13 +107,13 @@ export default function HeroHeader() {
         </div>
       </div>
       {/* Opciones */}
-      <div className='options grid justify-center relative z-10 md:pr-5'>
+      <div className='options relative z-10 grid justify-center md:pr-5'>
         <h3 className='text-xl text-center capitalize'>{Array.isArray(data?.payload) && data.payload[1]?.title || "Título Princial"}</h3>
         {Array.isArray(data?.payload) && data.payload[1]?.title ? null: <h3>Mejore sus posibilidades de ser encontrado agregando más información</h3>}
         <div className='flex justify-center'>
           {/* <button className='btn bg-[var(--main-arci)] text-white'>Buscando Ofertas</button>
           <button className='btn bg-[var(--main-arci)] text-white'>Disponible Para trabajar</button> */}
-          <div className='flex justify-center'>
+          <div className='flex flex-wrap justify-center gap-2'>
             <ModalForPreview title={"Preview"}>
               <ProfesionalDetail />
             </ModalForPreview>

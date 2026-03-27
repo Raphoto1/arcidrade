@@ -10,6 +10,7 @@ import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesional } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 
 // Opciones para sub_area (deben coincidir con el enum Sub_area en Prisma)
 const subAreaOptions = [
@@ -20,6 +21,7 @@ const subAreaOptions = [
 
 export default function ProfesionalProfileHookForm() {
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const { data: session } = useSession();
   const { data, error, isLoading, mutate } = useProfesional();
 
@@ -43,6 +45,7 @@ export default function ProfesionalProfileHookForm() {
       studyCountry: "",
       titleInstitution: "",
       titleStatus: "",
+      isHomologated: false,
     },
   });
 
@@ -60,6 +63,7 @@ export default function ProfesionalProfileHookForm() {
   const [showOptionalFields, setShowOptionalFields] = useState(false);
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
+  const hasValidCountrySelected = countryList.some((country) => country.isoCode === countrySelected);
 
   // Cargar datos básicos que no dependen de listas externas
   useEffect(() => {
@@ -89,6 +93,7 @@ export default function ProfesionalProfileHookForm() {
         studyCountry: mainStudy?.country || "",
         titleInstitution: mainStudy?.institution || "",
         titleStatus: mainStudy?.status || "",
+        isHomologated: Boolean(mainStudy?.isHomologated),
       });
 
       // Actualizar estados que no dependen de listas externas
@@ -145,9 +150,13 @@ export default function ProfesionalProfileHookForm() {
   };
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCountrySelected(e.target.value);
+    const selectedCountry = e.target.value;
+    setCountrySelected(selectedCountry);
+    setStateSelected("");
+    setCitySelected("");
+    setCityList([]);
 
-    const states = State.getStatesOfCountry(e.target.value);
+    const states = State.getStatesOfCountry(selectedCountry);
     setStateList(states);
   };
 
@@ -198,6 +207,7 @@ export default function ProfesionalProfileHookForm() {
         ]);
         
         setSubmitSuccess(true);
+        showToast("Datos personales actualizados correctamente", "success");
         
         // Esperar un poco para mostrar el mensaje de éxito antes de cerrar
         setTimeout(() => {
@@ -212,6 +222,7 @@ export default function ProfesionalProfileHookForm() {
           : errorData.error || "Error al guardar los datos. Por favor, intenta de nuevo.";
         
         setSubmitError(errorMessage);
+        showToast(errorMessage, "error");
       }
     } catch (error) {
       console.error('[ProfesionalProfileForm] ✗ Excepción durante el envío:', error);
@@ -222,6 +233,7 @@ export default function ProfesionalProfileHookForm() {
         : "Error de conexión. Por favor, verifica tu conexión e intenta de nuevo.";
       
       setSubmitError(errorMessage);
+      showToast(errorMessage, "error");
     } finally {
       setIsSubmitting(false);
       console.log('[ProfesionalProfileForm] Proceso finalizado');
@@ -411,42 +423,46 @@ export default function ProfesionalProfileHookForm() {
                     ))}
                   </select>
                 </div>
-                <div>
-                  <label htmlFor='state' className='block'>
-                    Estado de Nacionalidad
-                  </label>
-                  <select
-                    id='state'
-                    {...register("state")}
-                    value={stateSelected}
-                    onChange={handleStateChange}
-                    className='select select-bordered w-full max-w-xs mb-2 input'>
-                    <option value=''>{countrySelected ? "Seleccione Un Estado" : "Primero seleccione un País"}</option>
-                    {stateList.map((state, index) => (
-                      <option key={index} value={state.isoCode as string}>
-                        {state.name as string}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-                <div>
-                  <label htmlFor='city' className='block'>
-                    Ciudad de Nacionalidad
-                  </label>
-                  <select
-                    id='city'
-                    {...register("city")}
-                    value={citySelected}
-                    onChange={handleCityChange}
-                    className='select select-bordered w-full max-w-xs mb-2 input'>
-                    <option value=''>{stateSelected ? "Seleccione Una Ciudad" : "Primero seleccione un Estado"}</option>
-                    {cityList.map((city, index) => (
-                      <option key={index} value={city.name as string}>
-                        {city.name as string}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {hasValidCountrySelected && (
+                  <>
+                    <div>
+                      <label htmlFor='state' className='block'>
+                        Estado de Nacionalidad (Opcional)
+                      </label>
+                      <select
+                        id='state'
+                        {...register("state")}
+                        value={stateSelected}
+                        onChange={handleStateChange}
+                        className='select select-bordered w-full max-w-xs mb-2 input'>
+                        <option value=''>Seleccione Un Estado</option>
+                        {stateList.map((state, index) => (
+                          <option key={index} value={state.isoCode as string}>
+                            {state.name as string}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    <div>
+                      <label htmlFor='city' className='block'>
+                        Ciudad de Nacionalidad (Opcional)
+                      </label>
+                      <select
+                        id='city'
+                        {...register("city")}
+                        value={citySelected}
+                        onChange={handleCityChange}
+                        className='select select-bordered w-full max-w-xs mb-2 input'>
+                        <option value=''>{stateSelected ? "Seleccione Una Ciudad" : "Primero seleccione un Estado"}</option>
+                        {cityList.map((city, index) => (
+                          <option key={index} value={city.name as string}>
+                            {city.name as string}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  </>
+                )}
                 <div>
                   <label htmlFor='title' className='block'>
                     Estudio Principal
@@ -495,10 +511,20 @@ export default function ProfesionalProfileHookForm() {
                     ))}
                   </select>
                 </div>
+                <div>
+                  <label className='flex items-center justify-between max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+                    <span className='text-sm font-medium'>Título Homologado para Unión Europea</span>
+                    <div className='flex items-center gap-2'>
+                      <span className='text-xs text-gray-500'>No</span>
+                      <input type='checkbox' className='toggle toggle-success toggle-lg' {...register("isHomologated")} />
+                      <span className='text-xs text-green-700 font-semibold'>Sí</span>
+                    </div>
+                  </label>
+                </div>
               </div>
             )}
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-              <button className='btn bg-[var(--soft-arci)]' type='submit' disabled={isSubmitting}>
+              <button className='btn bg-(--soft-arci)' type='submit' disabled={isSubmitting}>
                 {isSubmitting ? (
                   <>
                     <span className='loading loading-spinner loading-sm'></span>
@@ -511,7 +537,7 @@ export default function ProfesionalProfileHookForm() {
             </div>
           </form>
           <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal} disabled={isSubmitting}>
+            <button className='btn btn-wide bg-(--orange-arci)' onClick={closeModal} disabled={isSubmitting}>
               Cancelar
             </button>
           </div>

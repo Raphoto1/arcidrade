@@ -16,11 +16,11 @@ export default function ModalForForms({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-[var(--main-arci)] h-auto w-auto p-1 min-w-full text-white' onClick={openModal}>
+        <button className='btn h-auto w-auto p-1 min-w-full text-white' style={{ backgroundColor: 'var(--main-arci)' }} onClick={openModal}>
           {title}
         </button>
       )}
-      <dialog ref={modalRef} className='modal modal-bottom sm:modal-middle' aria-labelledby='modal-title'>
+      <dialog ref={modalRef} className='modal modal-bottom sm:modal-middle' aria-labelledby='modal-title' onClick={(event) => event.target === event.currentTarget && closeModal()}>
         <ModalContext.Provider value={{ closeModal }}>
           <div className='modal-box max-h-90vh mb-10'>
             <form method='dialog'>

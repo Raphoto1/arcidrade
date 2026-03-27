@@ -21,10 +21,23 @@ export default function Profesional() {
   
   // Manejo seguro de la estructura de datos
   const profesionalData = Array.isArray(data?.payload) ? data.payload[0] : data?.payload;
+  const mainStudyData = Array.isArray(data?.payload) ? data.payload[1] : data?.payload?.main_study || {};
   const professionalSubArea = Array.isArray(data?.payload)
     ? data.payload[1]?.sub_area
     : data?.payload?.main_study?.sub_area || data?.payload?.sub_area;
   const isDeactivated = profesionalData?.auth?.status === 'desactivated';
+  const hasCompletedMainProfile = Boolean(
+    profesionalData?.name &&
+      profesionalData?.last_name &&
+      profesionalData?.birth_date &&
+      profesionalData?.phone &&
+      profesionalData?.country &&
+      profesionalData?.city &&
+      mainStudyData?.sub_area &&
+      mainStudyData?.title &&
+      mainStudyData?.institution &&
+      mainStudyData?.status
+  );
   
   if (status === "loading" || isLoading) {
     return (
@@ -48,7 +61,22 @@ export default function Profesional() {
   return (
     <div className=''>
       <HeroHeader />
-      <ManageGrid />
+      {hasCompletedMainProfile ? (
+        <div className='px-4 pt-4'>
+          <div className='collapse bg-base-200 shadow-sm'>
+            <input type='checkbox' />
+            <div className='collapse-title min-h-0 py-4 pr-20 text-base leading-6 font-semibold text-(--main-arci) md:text-lg'>
+              Actualizar mi información
+            </div>
+            <div className='collapse-content'>
+              <p className='pb-3 text-sm text-gray-600'>Aquí puedes editar tu información personal, título principal, especialidades, certificaciones y experiencia.</p>
+              <ManageGrid />
+            </div>
+          </div>
+        </div>
+      ) : (
+        <ManageGrid />
+      )}
       {!isDeactivated && (
         <>
           <MyAplications />

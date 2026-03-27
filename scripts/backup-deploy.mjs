@@ -1,5 +1,3 @@
-import { PrismaClient } from '../src/generated/prisma/index.js';
-import { PrismaPg } from '@prisma/adapter-pg';
 import pg from 'pg';
 import fs from 'fs';
 import dotenv from 'dotenv';
@@ -8,6 +6,36 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const { Pool } = pg;
+
+const tablesToBackup = [
+  { tableName: 'Auth', outputKey: 'auth' },
+  { tableName: 'Profesional_data', outputKey: 'profesional_data' },
+  { tableName: 'Institution_Data', outputKey: 'institution_data' },
+  { tableName: 'Process', outputKey: 'process' },
+  { tableName: 'Campaign_data', outputKey: 'campaign_data' },
+  { tableName: 'Goals', outputKey: 'goals' },
+  { tableName: 'fail_mail', outputKey: 'fail_mail' },
+  { tableName: 'Main_study', outputKey: 'main_study' },
+  { tableName: 'Study_specialization', outputKey: 'study_specialization' },
+  { tableName: 'Experience', outputKey: 'experience' },
+  { tableName: 'Leads_send', outputKey: 'leads_send' },
+  { tableName: 'Profesional_certifications', outputKey: 'profesional_certifications' },
+  { tableName: 'Institution_Certifications', outputKey: 'institution_certifications' },
+  { tableName: 'Institution_specialization', outputKey: 'institution_specialization' },
+  { tableName: 'Study_speciality_favorite', outputKey: 'study_speciality_favorite' },
+];
+
+const quoteIdentifier = (value) => `"${value.replace(/"/g, '""')}"`;
+
+async function readTable(pool, tableName) {
+  try {
+    const result = await pool.query(`SELECT * FROM ${quoteIdentifier(tableName)}`);
+    return result.rows;
+  } catch (error) {
+    console.warn(`⚠️ No se pudo extraer ${tableName}: ${error.message}`);
+    return [];
+  }
+}
 
 async function backupDatabase() {
   console.log('🔄 Iniciando backup de la base de datos de DEPLOY...');
@@ -19,55 +47,14 @@ async function backupDatabase() {
   }
   
   const pool = new Pool({ connectionString });
-  const adapter = new PrismaPg(pool);
-  const prisma = new PrismaClient({ adapter });
   
   try {
-    // Obtener datos de las tablas principales
-    console.log('📊 Extrayendo datos de Auth...');
-    const authData = await prisma.auth.findMany();
-    
-    console.log('👨‍⚕️ Extrayendo datos de Profesional_data...');
-    const profesionalData = await prisma.profesional_data.findMany();
-    
-    console.log('🏥 Extrayendo datos de Institution_Data...');
-    const institutionData = await prisma.institution_Data.findMany();
-    
-    console.log('📋 Extrayendo datos de Process...');
-    const processData = await prisma.process.findMany();
-    
-    console.log('📧 Extrayendo datos de Campaign_data...');
-    const campaignData = await prisma.campaign_data.findMany();
-    
-    console.log('🎯 Extrayendo datos de Goals...');
-    const goalsData = await prisma.goals.findMany();
-    
-    console.log('📜 Extrayendo datos de fail_mail...');
-    const failMailData = await prisma.fail_mail.findMany();
-    
-    console.log('🎓 Extrayendo datos de Main_study...');
-    const mainStudyData = await prisma.main_study.findMany();
-    
-    console.log('🔬 Extrayendo datos de Study_specialization...');
-    const studySpecializationData = await prisma.study_specialization.findMany();
-    
-    console.log('💼 Extrayendo datos de Experience...');
-    const experienceData = await prisma.experience.findMany();
-    
-    console.log('📝 Extrayendo datos de Leads_send...');
-    const leadsSendData = await prisma.leads_send.findMany();
-    
-    console.log('🏆 Extrayendo datos de Profesional_certifications...');
-    const profesionalCertificationsData = await prisma.profesional_certifications.findMany();
-    
-    console.log('🏅 Extrayendo datos de Institution_Certifications...');
-    const institutionCertificationsData = await prisma.institution_Certifications.findMany();
-    
-    console.log('🔖 Extrayendo datos de Institution_specialization...');
-    const institutionSpecializationData = await prisma.institution_specialization.findMany();
-    
-    console.log('⭐ Extrayendo datos de Study_speciality_favorite...');
-    const studySpecialityFavoriteData = await prisma.study_speciality_favorite.findMany();
+    const backupData = {};
+
+    for (const { tableName, outputKey } of tablesToBackup) {
+      console.log(`📦 Extrayendo datos de ${tableName}...`);
+      backupData[outputKey] = await readTable(pool, tableName);
+    }
 
     // Crear objeto con todos los datos
     const backup = {
@@ -77,23 +64,7 @@ async function backupDatabase() {
         environment: 'DEPLOY',
         description: 'Backup completo de la base de datos Arcidrade (Deploy)'
       },
-      data: {
-        auth: authData,
-        profesional_data: profesionalData,
-        institution_data: institutionData,
-        process: processData,
-        campaign_data: campaignData,
-        goals: goalsData,
-        fail_mail: failMailData,
-        main_study: mainStudyData,
-        study_specialization: studySpecializationData,
-        experience: experienceData,
-        leads_send: leadsSendData,
-        profesional_certifications: profesionalCertificationsData,
-        institution_certifications: institutionCertificationsData,
-        institution_specialization: institutionSpecializationData,
-        study_speciality_favorite: studySpecialityFavoriteData
-      }
+      data: backupData,
     };
 
     // Crear nombre de archivo con timestamp
@@ -119,7 +90,6 @@ async function backupDatabase() {
     console.error('❌ Error durante el backup:', error);
     throw error;
   } finally {
-    await prisma.$disconnect();
     await pool.end();
     console.log('🔌 Conexión a la base de datos cerrada');
   }

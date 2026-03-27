@@ -24,6 +24,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
   const [studyCountry, setStudyCountry] = useState('');
   const [selectedSubArea, setSelectedSubArea] = useState(subArea || ""); // Estado para manejar subArea seleccionado
   const [isSubmitting, setIsSubmitting] = useState(false); // Estado de carga
+  const [isHomologated, setIsHomologated] = useState(false);
 
   const {
     register,
@@ -46,6 +47,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
           : "",
         country: data.payload.country,
         titleInstitution: data.payload.institution,
+        isHomologated: Boolean(data.payload.isHomologated),
       });
 
       setTitleCategorySelected(data.payload.title_category);
@@ -53,6 +55,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
       setStudyCountry(data.payload.country);
       // Actualizar selectedSubArea con los datos cargados
       setSelectedSubArea(data.payload.sub_area || "");
+      setIsHomologated(Boolean(data.payload.isHomologated));
     }
   }, [data, reset]);
 
@@ -102,6 +105,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
         ...formData,
         // Incluir subArea si fue seleccionado o si ya existía
         ...(selectedSubArea && { sub_area: selectedSubArea }),
+        isHomologated,
       };
 
       console.log('Payload enviado:', payload);
@@ -125,13 +129,13 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
     <div className="flex w-full justify-center items-center">
       <div className="flex justify-center items-center h-1/2 p-2 min-w-xl">
         <div className="flex flex-col justify-start h-full bg-gray-200 w-2/3 items-center rounded-sm p-4 md:justify-center">
-          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Actualizar Especialidad</h2>
+          <h2 className="text-2xl text-start font-(--font-oswald)">Actualizar Especialidad</h2>
           
           {/* Mostrar categoría si existe o selector si es null */}
           {subArea ? (
             <div className="w-full mb-4 bg-gray-50 p-3 rounded-md border">
               <p className="text-sm text-gray-600">Categoría de Profesión:</p>
-              <p className="font-semibold text-[var(--main-arci)] text-lg">{useHandleCategoryName(subArea)}</p>
+              <p className="font-semibold text-(--main-arci) text-lg">{useHandleCategoryName(subArea)}</p>
             </div>
           ) : (
             <div className="w-full mb-4">
@@ -217,6 +221,17 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
               </select>
             </div>
 
+            <div>
+              <label className='flex items-center justify-between max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+                <span className='text-sm font-medium'>Título Homologado UE</span>
+                <div className='flex items-center gap-2'>
+                  <span className='text-xs text-gray-500'>No</span>
+                  <input type='checkbox' className='toggle toggle-success toggle-lg' checked={isHomologated} onChange={(e) => setIsHomologated(e.target.checked)} />
+                  <span className='text-xs text-green-700 font-semibold'>Sí</span>
+                </div>
+              </label>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="startDate" className="block font-semibold mb-1">Fecha de inicio</label>
@@ -271,7 +286,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
             <div className="flex justify-center gap-4 mt-6">
               <button 
                 type="submit" 
-                className="btn bg-[var(--main-arci)] text-white"
+                className="btn bg-(--main-arci) text-white"
                 disabled={isSubmitting}
               >
                 {isSubmitting ? (
@@ -285,7 +300,7 @@ export default function ProfesionalSpecialityUpdateForm(props: any) {
               </button>
               <button 
                 type="button" 
-                className="btn bg-[var(--orange-arci)] text-white" 
+                className="btn bg-(--orange-arci) text-white"
                 onClick={closeModal}
                 disabled={isSubmitting}
               >

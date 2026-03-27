@@ -8,6 +8,7 @@ import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalCertification, useProfesionalCertifications } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+import { mutate as globalMutate } from "swr";
 
 export default function ProfesionalCertificationUpdateForm(props:any) {
   const { closeModal } = useModal();
@@ -17,6 +18,7 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
   const [countryList, setCountryList] = useState<ICountry[]>([]);
   const [statusSelected, setStatusSelected] = useState("");
   const [studyCountry, setStudyCountry] = useState("");
+  const [isHomologated, setIsHomologated] = useState(false);
 
   const {
     register,
@@ -40,10 +42,12 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
         country: data.payload.country,
         titleInstitution: data.payload.institution,
         description: data.payload.description ?? "",
+        isHomologated: Boolean(data.payload.isHomologated),
       });
 
       setStatusSelected(data.payload.status);
       setStudyCountry(data.payload.country);
+      setIsHomologated(Boolean(data.payload.isHomologated));
     }
   }, [data, reset]);
 
@@ -63,10 +67,14 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
   const path = `/api/platform/profesional/certification/${props.id}`;
 
   const onSubmit = handleSubmit(async (formData) => {
-    const response = await useHandleSubmitText(formData, path);
+    const response = await useHandleSubmitText({ ...formData, isHomologated }, path);
     if (response.ok) {
-      mutate();
-      mutate2();
+      await Promise.all([
+        mutate(),
+        mutate2(),
+        globalMutate("/api/platform/profesional/certification"),
+        globalMutate("/api/platform/profesional/certification/"),
+      ]);
       closeModal();
     }
   });
@@ -78,7 +86,7 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
     <div className="flex w-full justify-center items-center">
       <div className="flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl">
         <div className="flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center">
-          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Actualizar Certificado</h2>
+          <h2 className="text-2xl text-start font-(--font-oswald)">Actualizar Certificado</h2>
 
           <form onSubmit={onSubmit} className="form justify-center align-middle pl-2 min-w-full grid gap-4 mt-4">
             <div>
@@ -109,6 +117,17 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
               {errors.titleStatus?.message && (
                 <span className="text-xs text-red-500">{String(errors.titleStatus.message)}</span>
               )}
+            </div>
+
+            <div>
+              <label className='flex items-center justify-between max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+                <span className='text-sm font-medium'>Título Homologado UE</span>
+                <div className='flex items-center gap-2'>
+                  <span className='text-xs text-gray-500'>No</span>
+                  <input type='checkbox' className='toggle toggle-success toggle-lg' checked={isHomologated} onChange={(e) => setIsHomologated(e.target.checked)} />
+                  <span className='text-xs text-green-700 font-semibold'>Sí</span>
+                </div>
+              </label>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -180,8 +199,8 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
             </div>
 
             <div className="flex justify-center gap-4 mt-6">
-              <button type="submit" className="btn bg-[var(--soft-arci)]">Actualizar Certificado</button>
-              <button type="button" className="btn bg-[var(--orange-arci)]" onClick={closeModal}>Cancelar</button>
+              <button type="submit" className="btn bg-(--soft-arci)">Actualizar Certificado</button>
+              <button type="button" className="btn bg-(--orange-arci)" onClick={closeModal}>Cancelar</button>
             </div>
           </form>
         </div>

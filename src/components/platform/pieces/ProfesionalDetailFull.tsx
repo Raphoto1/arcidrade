@@ -47,8 +47,17 @@ export default function ProfesionalDetailFull() {
     const endDate = date.getFullYear();
     return endDate;
   };
+
+  const renderHomologationBadge = (isHomologated: any) => {
+    if (!Boolean(isHomologated)) {
+      return null;
+    }
+
+    return <span className='badge badge-success badge-outline'>Homologado UE</span>;
+  };
+
   return (
-    <div className='Total grid gap-2 md:grid-cols-3 pt-2 overflow-auto'>
+    <div className='Total grid gap-2 pt-2 overflow-x-hidden md:grid-cols-3'>
       <div className='flex flex-col justify-center align-middle items-center'>
         <div className='relative w-40 h-40'>
           {personalData.avatar ? (
@@ -71,6 +80,7 @@ export default function ProfesionalDetailFull() {
         </div>
         <h1 className='text-2xl fontArci text-center'>{`${personalData.name} ${personalData.last_name} `}</h1>
         <p className='text-center'>{mainStudy.title}</p>
+        {renderHomologationBadge(mainStudy.isHomologated)}
         <button className='btn bg-(--main-arci) text-white'>Agregar Al Proceso</button>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
@@ -81,76 +91,95 @@ export default function ProfesionalDetailFull() {
         </ModalForPreviewTextLink>
       </div>
       <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
-        <div className='fileSpace bg-gray-50 w-full rounded-sm p-2 grid grid-cols-3 gap-2 shadow-xl'>
-          <div className='flex max-w-xs shrink-0 justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
+        <div className='fileSpace grid w-full grid-cols-1 gap-2 rounded-sm bg-gray-50 p-2 shadow-xl sm:grid-cols-3'>
+          <div className='flex min-h-20 w-full justify-center items-center border-2 border-dashed border-gray-300 rounded-md p-2'>
             <IoDocumentAttachOutline size={36} />
           </div>
-          <div>
-            {mainStudy.link ? (
+          <div className='sm:col-span-2'>
+            {personalData.cv_link ? (
               <div className='flex flex-col'>
-                <span>Link:</span>
-                <a href={mainStudy.link} target='_blank' className='text-accent link'>
-                  Ver aquí
+                <span>CV Link:</span>
+                <a href={personalData.cv_link} target='_blank' rel='noopener noreferrer' className='text-accent link'>
+                  Previsualizar
                 </a>
               </div>
             ) : null}
-            {mainStudy.file ? (
+            {personalData.cv_file ? (
               <div className='flex flex-col'>
-                <span>Archivo:</span>
-                <a href={mainStudy.file} target='_blank' className='text-accent link'>
-                  Ver aquí
+                <span>CV Archivo:</span>
+                <a href={personalData.cv_file} target='_blank' rel='noopener noreferrer' className='text-accent link'>
+                  Previsualizar
                 </a>
               </div>
             ) : null}
+            {!personalData.cv_link && !personalData.cv_file ? <span>Aún no existe CV registrada.</span> : null}
           </div>
         </div>
         <div className='dataSpace bg-gray-50 w-full rounded-sm p-2 grid mt-2 shadow-xl'>
           <h2 className='text-bold text-xl text-nowrap dataSpaceTitle pl-4'>Datos Personales</h2>
           <div className='w-full'>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Nombre</h3>
-              <p className='text-(--main-arci)'>{personalData.name}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{personalData.name}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Apellido</h3>
-              <p className='text-(--main-arci)'>{personalData.last_name}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{personalData.last_name}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='text-light'>Fecha de Nacimiento</h3>
-              <p className='text-(--main-arci)'>{fechaString}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{fechaString}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Email</h3>
-              <p className='text-(--main-arci)'>{data?.payload.email}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{data?.payload.email}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Numero de Contacto</h3>
-              <p className='text-(--main-arci)'>{personalData.phone}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{personalData.phone}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Pais</h3>
-              <p className='text-(--main-arci)'>{countryName?.name}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{countryName?.name}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Ciudad</h3>
-              <p className='text-(--main-arci)'>{personalData.city}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{personalData.city}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Categoría de Profesión</h3>
-              <p className='text-(--main-arci)'>{useHandleCategoryName(mainStudy.sub_area)}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{useHandleCategoryName(mainStudy.sub_area)}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Profesión</h3>
-              <p className='text-(--main-arci)'>{mainStudy.title}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{mainStudy.title}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Institución</h3>
-              <p className='text-(--main-arci)'>{mainStudy.institution}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{mainStudy.institution}</p>
             </div>
-            <div className='flex justify-between'>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Status</h3>
-              <p className='text-(--main-arci)'>{handleStatusName(mainStudy.status)}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{handleStatusName(mainStudy.status)}</p>
             </div>
+            {mainStudy?.link || mainStudy?.file ? (
+              <div className='pt-2'>
+                <h3 className='font-light'>Respaldo del Título Principal</h3>
+                <div className='mt-1 flex flex-wrap gap-2'>
+                  {mainStudy?.link ? (
+                    <a href={mainStudy.link} target='_blank' rel='noopener noreferrer' className='btn btn-sm bg-(--main-arci) text-white'>
+                      Ver Link
+                    </a>
+                  ) : null}
+                  {mainStudy?.file ? (
+                    <a href={mainStudy.file} target='_blank' rel='noopener noreferrer' className='btn btn-sm bg-(--soft-arci) text-white'>
+                      Ver Archivo
+                    </a>
+                  ) : null}
+                </div>
+              </div>
+            ) : null}
+            {Boolean(mainStudy.isHomologated) ? <div className='pt-2'>{renderHomologationBadge(mainStudy.isHomologated)}</div> : null}
           </div>
         </div>
       </div>
@@ -159,7 +188,10 @@ export default function ProfesionalDetailFull() {
         <div className='flex flex-col gap-2'>
           {speciality.map((item: any, index: number) => (
             <div key={index} className='bg-white rounded-md p-1'>
-              <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+              <div className='flex items-start justify-between gap-2'>
+                <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+                {renderHomologationBadge(item.isHomologated)}
+              </div>
               <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
               <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
               {item.link ? (
@@ -184,7 +216,10 @@ export default function ProfesionalDetailFull() {
         <h1 className='text-2xl fontArci text'>Certificaciones</h1>
         {certifications.map((item: any, index: number) => (
           <div key={index} className='bg-white rounded-md p-1'>
-            <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+            <div className='flex items-start justify-between gap-2'>
+              <h3 className='fontArci text-(--main-arci)'>{item.title}</h3>
+              {renderHomologationBadge(item.isHomologated)}
+            </div>
             <p className='text-sm text-(--soft-arci)'>{item.institution}</p>
             <p className='text-xs'>{handleDateToYear(item.end_date)}</p>
             {item.link ? (

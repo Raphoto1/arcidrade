@@ -5,6 +5,7 @@ import prisma from "@/utils/db";
 import { updateUserStatusByIdService } from "../service/userData.service";
 import { updateInstitutionDataService } from "@/service/institutionData.service";
 import { updateUserDataByIdService } from "@/service/userData.service";
+import { deleteFileService } from "@/service/File.service";
 
 
 export const listInvitations = async () => {
@@ -204,11 +205,125 @@ export const activateUser = async (id: string) => {
   }
 }
 
+// Función auxiliar para recolectar todos los archivos del usuario
+const collectUserFiles = async (userId: string): Promise<string[]> => {
+  const files: string[] = [];
+  
+  try {
+    // Archivos de Profesional_data
+    const profesionalData = await prisma.profesional_data.findUnique({
+      where: { user_id: userId },
+      select: { avatar: true, cv_file: true }
+    });
+    if (profesionalData?.avatar) files.push(profesionalData.avatar);
+    if (profesionalData?.cv_file) files.push(profesionalData.cv_file);
+
+    // Archivos de Main_study
+    const mainStudy = await prisma.main_study.findUnique({
+      where: { user_id: userId },
+      select: { file: true }
+    });
+    if (mainStudy?.file) files.push(mainStudy.file);
+
+    // Archivos de Study_specialization
+    const specializations = await prisma.study_specialization.findMany({
+      where: { user_id: userId },
+      select: { file: true }
+    });
+    specializations.forEach(spec => {
+      if (spec.file) files.push(spec.file);
+    });
+
+    // Archivos de Profesional_certifications
+    const certifications = await prisma.profesional_certifications.findMany({
+      where: { user_id: userId },
+      select: { file: true }
+    });
+    certifications.forEach(cert => {
+      if (cert.file) files.push(cert.file);
+    });
+
+    // Archivos de Experience
+    const experiences = await prisma.experience.findMany({
+      where: { user_id: userId },
+      select: { file: true }
+    });
+    experiences.forEach(exp => {
+      if (exp.file) files.push(exp.file);
+    });
+
+    // Archivos de Institution_Data
+    const institutionData = await prisma.institution_Data.findUnique({
+      where: { user_id: userId },
+      select: { avatar: true }
+    });
+    if (institutionData?.avatar) files.push(institutionData.avatar);
+
+    // Archivos de Institution_Certifications
+    const institutionCerts = await prisma.institution_Certifications.findMany({
+      where: { user_id: userId },
+      select: { file: true }
+    });
+    institutionCerts.forEach(cert => {
+      if (cert.file) files.push(cert.file);
+    });
+
+    // Archivos de Goals
+    const goals = await prisma.goals.findMany({
+      where: { user_id: userId },
+      select: { file: true }
+    });
+    goals.forEach(goal => {
+      if (goal.file) files.push(goal.file);
+    });
+
+    // Archivos de colaborator_data
+    const colabData = await prisma.colaborator_data.findMany({
+      where: { user_id: userId },
+      select: { avatar: true, file: true }
+    });
+    colabData.forEach(colab => {
+      if (colab.avatar) files.push(colab.avatar);
+      if (colab.file) files.push(colab.file);
+    });
+
+  } catch (error) {
+    console.error("Error collecting user files:", error);
+  }
+
+  return files;
+};
+
 export const deleteUser = async (id: string) => {
   const chkUser = await getServerSession(authOptions);
   if (!chkUser) throw new Error("No autorizado");
   if (chkUser.user.area !== "victor" && chkUser.user.area !== "colab" && chkUser.user.area !== "manager") throw new Error("No autorizado");
   try {
+    // Recolectar todos los archivos del usuario
+    const userFiles = await collectUserFiles(id);
+    
+    // Eliminar archivos del blob
+    for (const fileUrl of userFiles) {
+      if (fileUrl) {
+        try {
+          await deleteFileService(fileUrl);
+        } catch (error) {
+          console.error(`Error deleting file ${fileUrl}:`, error);
+          // Continuar con los demás archivos incluso si uno falla
+        }
+      }
+    }
+
+    // Limpiar datos del usuario en procesos
+    // 1. Eliminar registros donde el usuario está listado como profesional
+    await prisma.profesionals_listed.deleteMany({
+      where: {
+        profesional_id: id
+      }
+    });
+
+    // 2. Los procesos del usuario se eliminarán automáticamente con CASCADE
+
     // Eliminar el usuario de Auth - con CASCADE se eliminarán todos los datos relacionados
     const result = await prisma.auth.delete({
       where: {

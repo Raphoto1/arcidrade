@@ -17,7 +17,7 @@ export default function ModalForPreviewBtnLong({ children, title }: { title?: st
       <button className='btn bg-[var(--main-arci)] text-white text-sm p-1 h-auto w-full' onClick={openModal}>
         {title || null}
       </button>
-      <dialog ref={modalRef} className='modal modal-start overflow-y-auto h-full md:w-full'>
+      <dialog ref={modalRef} className='modal modal-start overflow-y-auto h-full md:w-full' onClick={(event) => event.target === event.currentTarget && modalRef.current?.close()}>
         <div className='modal-box md:w-full overflow-y-auto max-h-10/12 md:h-auto'>
           <form method='dialog'>
             <button className='btn btn-sm btn-circle btn-ghost absolute right-1 top-1'>✕</button>

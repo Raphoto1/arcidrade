@@ -27,6 +27,7 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
   const [countryList, setCountryList] = useState<ICountry[]>([]);
   const [selectedSubArea, setSelectedSubArea] = useState(subArea || ""); // Estado para manejar subArea seleccionado
   const [isLoading, setIsLoading] = useState(false); // Estado de carga
+  const [isHomologated, setIsHomologated] = useState(false);
 
   useEffect(() => {
     const countryData = Country.getAllCountries();
@@ -75,6 +76,7 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
         endDate: formData.endDate || "",
         // Incluir subArea: desde props si existe, o desde selección si no
         subArea: subArea || selectedSubArea,
+        isHomologated,
       };
 
       const response = await useHandleSubmitText(payload, "/api/platform/profesional/speciality/");
@@ -94,11 +96,11 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
 
       <div className="flex justify-center items-center h-1/2 p-2 min-w-xl md:min-w-xl">
         <div className="flex-col justify-start h-full bg-gray-200 w-2/3 align-middle items-center rounded-sm p-4 md:justify-center">
-          <h2 className="text-2xl text-start font-[var(--font-oswald)]">Especialidad</h2>
+          <h2 className="text-2xl text-start font-(--font-oswald)">Especialidad</h2>
           
           {/* Mostrar categoría si existe o selector si es null */}
           {subArea ? (
-            <p>Categoría de Profesión: <span className="font-semibold text-[var(--main-arci)]">{useHandleCategoryName(subArea)}</span></p>
+            <p>Categoría de Profesión: <span className="font-semibold text-(--main-arci)">{useHandleCategoryName(subArea)}</span></p>
           ) : (
             <div className="w-full mb-4">
               {/* Mensaje motivacional para actualizar perfil */}
@@ -185,6 +187,17 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
               </select>
             </div>
 
+            <div>
+              <label className='flex items-center justify-between max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+                <span className='text-sm font-medium'>Título Homologado UE</span>
+                <div className='flex items-center gap-2'>
+                  <span className='text-xs text-gray-500'>No</span>
+                  <input type='checkbox' className='toggle toggle-success toggle-lg' checked={isHomologated} onChange={(e) => setIsHomologated(e.target.checked)} />
+                  <span className='text-xs text-green-700 font-semibold'>Sí</span>
+                </div>
+              </label>
+            </div>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="startDate" className="block font-semibold mb-1">Fecha de inicio</label>
@@ -252,7 +265,7 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
             <div className="flex justify-center gap-4 mt-6">
               <button 
                 type="submit" 
-                className="btn bg-[var(--main-arci)] text-white"
+                className="btn bg-(--main-arci) text-white"
                 disabled={isLoading}
               >
                 {isLoading ? (
@@ -266,7 +279,7 @@ export default function ProfesionalSpecialityForm({ subArea }: { subArea: any })
               </button>
               <button 
                 type="button" 
-                className="btn bg-[var(--orange-arci)] text-white" 
+                className="btn bg-(--orange-arci) text-white"
                 onClick={closeModal}
                 disabled={isLoading}
               >

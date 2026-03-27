@@ -16,11 +16,11 @@ export default function ModalForFormsSoftBlue({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-[var(--soft-arci)] h-auto w-auto p-1 min-w-full' onClick={openModal}>
+        <button className='btn bg-(--soft-arci) h-auto w-auto p-1 min-w-full' onClick={openModal}>
           {title}
         </button>
       )}
-      <dialog ref={modalRef} className='modal modal-middle sm:modal-middle' aria-labelledby='modal-title'>
+      <dialog ref={modalRef} className='modal modal-middle sm:modal-middle' aria-labelledby='modal-title' onClick={(event) => event.target === event.currentTarget && closeModal()}>
         <ModalContext.Provider value={{ closeModal }}>
           <div className='modal-box max-h-90vh mb-10'>
             <form method='dialog'>

@@ -2,6 +2,7 @@
 //imports de app
 import { useEffect } from "react";
 import { IoDocumentAttachOutline } from "react-icons/io5";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { useSession } from "next-auth/react";
 import { Country, State, City } from "country-state-city";
 import { ICountry, IState, ICity } from "country-state-city";
@@ -151,6 +152,14 @@ export default function PersonalData() {
           <div className='flex justify-between'>
             <h3 className='font-light'>Status:</h3>
             <p className='text-(--main-arci)'>{useHandleStatusName(studyData?.status) || "No Registra Información"}</p>
+          </div>
+          <div className='flex justify-between items-center'>
+            <h3 className='font-light'>Título Homologado para Unión Europea:</h3>
+            {Boolean(studyData?.isHomologated) ? (
+              <FaCheckCircle className='text-green-600 text-lg' title='Homologado' aria-label='Homologado' />
+            ) : (
+              <FaTimesCircle className='text-red-500 text-lg' title='No homologado' aria-label='No homologado' />
+            )}
           </div>
           <div className='flex justify-between'>
             <h3 className='font-light'>Respaldo:</h3>

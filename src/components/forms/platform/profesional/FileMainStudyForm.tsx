@@ -1,37 +1,68 @@
 'use client'
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { useProfesional } from "@/hooks/usePlatPro";
 
+interface FileMainStudyFormValues {
+  file?: FileList;
+  link?: string;
+  isHomologated: boolean;
+}
+
 export default function FileMainStudyForm() {
-  const { mutate } = useProfesional();
+  const { data: profesionalData, mutate } = useProfesional();
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const [type, setType] = useState("archivo"); // Inicializa el tipo como archivo
+  const currentIsHomologated = Boolean(profesionalData?.payload?.[1]?.isHomologated);
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors },
-  } = useForm();
+  } = useForm<FileMainStudyFormValues>({
+    defaultValues: {
+      isHomologated: false,
+    },
+  });
 
-  const onSubmit = handleSubmit(async (data: any) => {
+  useEffect(() => {
+    setValue("isHomologated", currentIsHomologated);
+  }, [currentIsHomologated, setValue]);
+
+  const onSubmit = handleSubmit(async (data) => {
     let formData = new FormData();
-    if (type === "enlace") {
-      formData = new FormData();
+    formData.append("isHomologated", String(Boolean(data.isHomologated)));
+
+    if (type === "enlace" && data.link) {
       formData.append("link", data.link);
     } else if (type === "archivo") {
       const file = data.file?.[0];
-      formData = new FormData();
-      formData.append("file", file);
+      if (file) {
+        formData.append("file", file);
+      }
     }
-    const res = await fetch(`/api/platform/upload/mainstudy`, {
-      method: "POST",
-      body: formData,
-    });
-    const result = await res.json();
+    try {
+      const res = await fetch(`/api/platform/upload/mainstudy`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
 
-    mutate();
-    closeModal();
+      if (!res.ok) {
+        const message = result?.error || "No se pudo actualizar el título principal";
+        showToast(message, "error");
+        return;
+      }
+
+      showToast("Título principal actualizado correctamente", "success");
+      mutate();
+      closeModal();
+    } catch (error) {
+      showToast("Error de conexión al actualizar el título principal", "error");
+    }
   });
 
   return (
@@ -59,14 +90,22 @@ export default function FileMainStudyForm() {
                 <input type='text' {...register("link")} />
               </div>
             )}
+            <label className='flex items-center justify-between mt-2 max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+              <span className='text-sm font-medium'>Homologado</span>
+              <div className='flex items-center gap-2'>
+                <span className='text-xs text-gray-500'>No</span>
+                <input type='checkbox' className='toggle toggle-success toggle-lg' {...register("isHomologated")} />
+                <span className='text-xs text-green-700 font-semibold'>Sí</span>
+              </div>
+            </label>
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-              <button className='btn bg-[var(--soft-arci)]' type='submit'>
+              <button className='btn bg-(--soft-arci)' type='submit'>
                 Agregar Título
               </button>
             </div>
           </form>
           <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
-            <button className='btn btn-wide bg-[var(--orange-arci)]' onClick={closeModal}>
+            <button className='btn btn-wide bg-(--orange-arci)' onClick={closeModal}>
               Cancelar
             </button>
           </div>
