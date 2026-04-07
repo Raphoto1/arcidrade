@@ -1,13 +1,16 @@
 'use client'
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useHandleStatusName } from "@/hooks/useUtils";
 import RichTextPreview from "@/components/ui/RichTextPreview";
+import { trackPublicOfferClick } from "@/utils/analytics";
 
 export default function InstitutionProcessCardPublic(props: any) {
   const processData = props.processData; // Datos del proceso completos desde el endpoint público
   const isFake = props.isFake || false;
   const showRegisterCta = props.showRegisterCta !== false;
+  const trackingSource = props.trackingSource || "public_offers";
   const registerUrl =
     props.registerUrl || (processData?.id ? `/completeInvitationByProcess/${processData.id}` : "/auth/register");
 
@@ -19,6 +22,17 @@ export default function InstitutionProcessCardPublic(props: any) {
   if (!processPack.id) {
     return null;
   }
+
+  const handleRegisterClick = () => {
+    trackPublicOfferClick({
+      processId: processPack.id,
+      position: processPack.position,
+      institutionName: institutionData.name,
+      area: processPack.area,
+      mainSpeciality: processPack.main_speciality,
+      source: trackingSource,
+    });
+  };
 
   return (
     <div className='card w-96 bg-base-100 card-sm shadow-sm max-w-80'>
@@ -75,12 +89,13 @@ export default function InstitutionProcessCardPublic(props: any) {
 
           {showRegisterCta && (
             <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
-              <a 
-                href={registerUrl} 
+              <Link
+                href={registerUrl}
+                onClick={handleRegisterClick}
                 className='btn btn-sm bg-(--main-arci) hover:bg-(--main-arci)/90 text-white'
               >
                 Regístrese
-              </a>
+              </Link>
               <span className='text-xs text-center mt-1 text-(--dark-gray)'>
                 para aplicar
               </span>

@@ -8,12 +8,12 @@ export default function page() {
               
       <p className='text-sm md:text-base text-gray-600'>
         ¿Ya te registraste?{" "}
-        <Link href='/auth/login' className='text-[var(--main-arci)] font-semibold hover:underline'>
+        <Link href='/auth/login' className='text-(--main-arci) font-semibold hover:underline'>
           Ingresa aquí
         </Link>
       </p>
           </div>
-      <OffersPublic />
+      <OffersPublic trackingSource='offers_page' />
     </div>
   );
 }

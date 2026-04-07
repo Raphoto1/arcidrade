@@ -4,6 +4,79 @@
 ╚════════════════════════════════════════════════════════════════════════════╝
 
 ╔════════════════════════════════════════════════════════════════════════════╗
+║                ACTUALIZACIÓN FUNCIONAL Y SEGURIDAD - 27/03/2026           ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+✅ EXPORTACIÓN DE PERFIL PROFESIONAL (EXCEL/PDF)
+   ├─ Nuevo hook centralizado:
+   │  • src/hooks/useProfessionalProfileDownload.ts
+   │  • Descarga de Excel (XLSX + ZIP con adjuntos)
+   │  • Descarga de PDF (resumen + tablas + adjuntos)
+   │
+   ├─ Refactor de utilidades por responsabilidad:
+   │  • src/utils/professionalProfileDownload.shared.ts
+   │  • src/utils/professionalProfileDownload.excel.ts
+   │  • src/utils/professionalProfileDownload.pdf.ts
+   │  • src/utils/professionalProfileDownload.utils.ts (barrel de shared)
+   │
+   └─ Integración en UI:
+      • src/components/platform/pieces/ProfesionalDetailFullById.tsx
+      • Botones "Descargar Excel" y "Descargar PDF" con estados de carga/error
+
+✅ ENDURECIMIENTO DE SEGURIDAD (PERMISOS Y RUTAS)
+   ├─ Nuevo helper de permisos:
+   │  • src/utils/platformPermissions.ts
+   │
+   ├─ Ruta protegida por sesión + rol + ownership:
+   │  • src/app/api/platform/profesional/[id]/route.ts
+   │  • Profesional: solo puede ver su propio perfil
+   │  • Staff autorizado: victor/admin/colab/manager
+   │
+   ├─ Middleware alineado con enum de áreas (incluye admin):
+   │  • src/middleware.ts
+   │
+   └─ Test agregado:
+      • src/__tests__/api/profesionalByIdRoute.test.ts
+      • Casos cubiertos: 401, 403, self-access, staff-access
+
+✅ GOOGLE ANALYTICS 4 (CONSENT-BASED)
+   ├─ Integración mediante @next/third-parties/google:
+   │  • src/components/analytics/GoogleAnalytics.tsx
+   │
+   ├─ Activación condicional:
+   │  • Solo carga con NEXT_PUBLIC_GA_MEASUREMENT_ID
+   │  • Solo carga con consentimiento cookieConsent=all
+   │
+   ├─ Sincronización inmediata de consentimiento:
+   │  • src/components/CookieBanner.tsx (evento cookie-consent-changed)
+   │
+   └─ Variables de entorno/documentación:
+      • .env
+      • .env.production.example
+      • README.md
+
+✅ AJUSTES DE UI/UX RECIENTES
+   ├─ Vista de detalle profesional reorganizada:
+   │  • foto + resumen + presentación en una columna
+   │  • bloque de datos personales en 2 columnas (desktop)
+   │  • fallback visual para datos vacíos: "No se ha registrado este dato"
+   │
+   ├─ Homologación visual de botones en modales:
+   │  • src/components/modals/ModalForPreview.tsx
+   │
+   └─ Administración (móvil):
+      • src/components/platform/Victor/AdminButtons.tsx
+      • título "Administración" + botones full-width en mobile
+
+✅ ESTADO DE VERIFICACIÓN
+   ├─ Build:
+   │  • npm run build → OK
+   └─ Tests:
+      • npx vitest run src/__tests__/api/profesionalByIdRoute.test.ts → 4/4 OK
+
+═══════════════════════════════════════════════════════════════════════════════
+
+╔════════════════════════════════════════════════════════════════════════════╗
 ║              MANEJO DE DESCRIPCIONES CON QUILL - 20/02/2026               ║
 ║                    (Ver: guides/QUILL_DESCRIPTIONS_GUIDE.md)              ║
 ╚════════════════════════════════════════════════════════════════════════════╝

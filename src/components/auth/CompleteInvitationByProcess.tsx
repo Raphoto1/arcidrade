@@ -4,6 +4,7 @@ import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { subAreaOptions } from "@/static/data/staticData";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import InstitutionProcessCardPublic from "@/components/pieces/InstitutionProcessCardPublic";
+import { trackProfessionalProcessApplication } from "@/utils/analytics";
 
 export default function CompleteInvitationByProcess() {
   const router = useRouter();
@@ -192,6 +193,15 @@ export default function CompleteInvitationByProcess() {
       if (!response.ok) {
         throw new Error(data.error || "Error al crear cuenta");
       }
+
+      trackProfessionalProcessApplication({
+        processId,
+        position: processData?.position,
+        institutionName: processData?.auth?.institution_data?.name,
+        area: processData?.area || formData.sub_area,
+        mainSpeciality: processData?.main_speciality,
+        source: 'direct_process_registration',
+      });
 
       alert("Cuenta creada exitosamente. Ahora puedes iniciar sesion.");
       router.push("/auth/login");

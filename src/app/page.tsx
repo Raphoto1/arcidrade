@@ -53,7 +53,7 @@ export default function Home() {
       <GridHomeWindowsCities />
       <BrColors title={"Principales Especialidades"} />
       <GridHomeWindowsSpecialities />
-      <OffersPublic />
+      <OffersPublic trackingSource='home' />
     </main>
   );
 }

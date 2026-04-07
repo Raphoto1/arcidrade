@@ -4,6 +4,7 @@ import { useModal } from "@/context/ModalContext";
 import { useProfesionalsListedInProcess, useActiveProcessesByUser } from "@/hooks/useProcess";
 import { useSession } from "next-auth/react";
 import { useToast } from "@/context/ToastContext";
+import { trackProfessionalProcessApplication } from "@/utils/analytics";
 
 export default function ConfirmAddProfesionalToProcessForm(props: any) {
 
@@ -55,6 +56,15 @@ export default function ConfirmAddProfesionalToProcessForm(props: any) {
       
       // Revalidar la lista de postulaciones del usuario profesional
       mutateUserProcesses();
+
+      trackProfessionalProcessApplication({
+        processId: props.ProcessId,
+        position: props.processPosition,
+        institutionName: props.institutionName,
+        area: props.processArea,
+        mainSpeciality: props.processMainSpeciality,
+        source: props.analyticsSource || 'professional_platform',
+      });
 
       // Mostrar mensaje de éxito
       showToast('Postulación enviada correctamente', 'success');

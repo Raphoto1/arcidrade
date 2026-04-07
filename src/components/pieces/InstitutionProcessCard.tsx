@@ -113,7 +113,16 @@ export default function InstitutionProcessCard(props: any) {
             )}
             {btnActive && session?.user?.area === "profesional" && !alreadyApplied && (
               <ModalForFormsGreenBtn title={"Aplicar al Proceso"}>
-                <ConfirmAddProfesionalToProcessForm ProcessId={processPack.id} UserID={session?.user.id} addedBy={"profesional"} processPosition={processPack.position} />
+                <ConfirmAddProfesionalToProcessForm
+                  ProcessId={processPack.id}
+                  UserID={session?.user.id}
+                  addedBy={"profesional"}
+                  processPosition={processPack.position}
+                  institutionName={institutionInfo.name}
+                  processArea={processPack.area}
+                  processMainSpeciality={processPack.main_speciality}
+                  analyticsSource={'professional_offer_modal'}
+                />
               </ModalForFormsGreenBtn>
             )}
             {btnActive && session?.user?.area === "profesional" && alreadyApplied && (

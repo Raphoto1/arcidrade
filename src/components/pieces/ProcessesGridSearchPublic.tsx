@@ -14,6 +14,7 @@ import { medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/s
 export default function ProcessesGridSearchPublic(props: any) {
   const isFake = props.isFake
   const applyButton = props.applyButton || false
+  const trackingSource = props.trackingSource || "public_offers"
   const [searchTerm, setSearchTerm] = useState("");
   const [specialityFilter, setSpecialityFilter] = useState("");
   const [selectedSubArea, setSelectedSubArea] = useState("");
@@ -156,6 +157,7 @@ export default function ProcessesGridSearchPublic(props: any) {
                       key={process.id || index} 
                       processData={process}
                       isFake={isFake}
+                      trackingSource={trackingSource}
                     />
                   ))
           ) : (

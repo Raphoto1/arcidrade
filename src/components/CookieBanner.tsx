@@ -6,6 +6,12 @@ export default function CookieBanner() {
   const [showBanner, setShowBanner] = useState(false)
   const [showDetails, setShowDetails] = useState(false)
 
+  const setConsent = (value: 'all' | 'essential' | 'rejected') => {
+    localStorage.setItem('cookieConsent', value)
+    window.dispatchEvent(new Event('cookie-consent-changed'))
+    setShowBanner(false)
+  }
+
   useEffect(() => {
     // Verificar si ya aceptó las cookies
     const cookieConsent = localStorage.getItem('cookieConsent')
@@ -15,18 +21,15 @@ export default function CookieBanner() {
   }, [])
 
   const acceptAll = () => {
-    localStorage.setItem('cookieConsent', 'all')
-    setShowBanner(false)
+    setConsent('all')
   }
 
   const acceptEssential = () => {
-    localStorage.setItem('cookieConsent', 'essential')
-    setShowBanner(false)
+    setConsent('essential')
   }
 
   const rejectAll = () => {
-    localStorage.setItem('cookieConsent', 'rejected')
-    setShowBanner(false)
+    setConsent('rejected')
   }
 
   if (!showBanner) return null

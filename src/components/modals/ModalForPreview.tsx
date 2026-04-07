@@ -14,7 +14,11 @@ export default function ModalForPreview({ children, title }: { title?: string } 
 
   return (
     <div>
-      <button className='btn bg-(--main-arci) h-auto w-auto px-2 py-1 min-w-0 text-white' onClick={openModal}>
+      <button
+        className='btn h-auto w-auto p-1 min-w-full text-white'
+        style={{ backgroundColor: "var(--main-arci)" }}
+        onClick={openModal}
+      >
         {title || null}
       </button>
       <dialog ref={modalRef} className='modal px-2 py-2 sm:px-4' onClick={(event) => event.target === event.currentTarget && modalRef.current?.close()}>

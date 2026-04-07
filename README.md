@@ -129,6 +129,12 @@ pharmacistOptions: ["Farmacia Hospitalaria", "Industria Farmacéutica", ...]
 - Filtrado por especialidad y ubicación
 - Postulación directa a procesos
 
+#### 📤 **Exportación de Perfil (Excel + PDF)**
+- Descarga de perfil completo en Excel (`.xlsx`).
+- Si existen adjuntos, se empaqueta en `.zip` con carpeta de evidencias.
+- Descarga de perfil en PDF con resumen, tablas y enlaces de respaldo.
+- Disponible para perfiles autorizados dentro de plataforma (staff).
+
 ### **Para Instituciones Médicas**
 
 #### 🏥 **Gestión Institucional**
@@ -310,6 +316,19 @@ const getSpecialityOptions = () => {
 };
 ```
 
+### **Seguridad de Acceso por Perfil (Server-Side)**
+- Ruta protegida: `/api/platform/profesional/[id]`.
+- Se valida sesión activa (`getServerSession`).
+- Se valida ownership para `profesional` (solo su propio `referCode`).
+- Se valida rol para staff autorizado (`victor`, `admin`, `colab`, `manager`).
+- Permisos centralizados en `src/utils/platformPermissions.ts`.
+
+### **Google Analytics 4 con Consentimiento**
+- Integración mediante `@next/third-parties/google`.
+- Carga condicional por variable `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
+- Solo activa tracking cuando el consentimiento de cookies es `all`.
+- Actualiza estado de consentimiento en tiempo real (evento `cookie-consent-changed`).
+
 ### **Sistema de Invitaciones Masivas**
 - Carga de archivos CSV
 - Validación de emails
@@ -348,6 +367,8 @@ npm run test:coverage
 ```
 src/__tests__/
 ├── setup.ts                    # Configuración global (jest-dom)
+├── api/
+│   └── profesionalByIdRoute.test.ts # Seguridad de acceso a perfil por ID
 └── utils/
     ├── htmlHelpers.test.ts     # Tests de stripHtml, getHtmlPreview, sanitizeAndStyleHtml
     ├── retryUtils.test.ts      # Tests de withRetry y withPrismaRetry
@@ -365,7 +386,8 @@ src/__tests__/
 | `cookieConsent.test.ts` | 12 | `getCookieConsent`, `hasCookieConsent`, `resetCookieConsent` |
 | `encrypter.test.ts` | 9 | `encrypt`, `compare` |
 | `quillProcessor.test.ts` | 13 | `processQuillHTML` |
-| **Total** | **65** | |
+| `profesionalByIdRoute.test.ts` | 4 | Autorización de `/api/platform/profesional/[id]` |
+| **Total** | **69** | |
 
 ### **Configuración**
 
@@ -420,7 +442,16 @@ EMAIL_SERVER_PASSWORD="your-password"
 EMAIL_SERVER_HOST="smtp.your-provider.com"
 EMAIL_SERVER_PORT="587"
 EMAIL_FROM="noreply@your-domain.com"
+
+# Google Analytics 4 (opcional)
+NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
 ```
+
+### **Google Analytics 4**
+- Se integra mediante `@next/third-parties/google`.
+- Se activa solo si existe `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
+- Respeta consentimiento de cookies: solo carga cuando `cookieConsent = all`.
+- Para desactivar analytics en un entorno, omite la variable `NEXT_PUBLIC_GA_MEASUREMENT_ID`.
 
 ### **Consideraciones de Producción**
 - Configurar SSL/TLS para base de datos
@@ -439,6 +470,10 @@ La plataforma incluye sistema de analytics para:
 - Especialidades más demandadas
 - Ubicaciones con mayor actividad
 - Tiempo promedio de contratación
+
+Configuración actual:
+- Vercel Analytics para métricas web generales.
+- Google Analytics 4 para analítica de comportamiento (opcional y condicionado a consentimiento de cookies).
 
 ---
 
