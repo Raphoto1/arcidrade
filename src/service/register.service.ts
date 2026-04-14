@@ -95,7 +95,9 @@ export async function registerDirectUser(
     const hashedPassword = await encrypt(password);
 
     // Determinar el área según el tipo de cuenta
-    const userArea = accountType === 'institution' ? 'institution' : 'profesional';
+    const userArea = accountType === 'institution' ? 'institution' 
+      : accountType === 'profesional_general' ? 'profesional_general' 
+      : 'profesional';
 
     // Crear usuario con estado "active" (usuario registrado directamente)
     const user = await prisma.auth.create({
@@ -125,7 +127,7 @@ export async function registerDirectUser(
         },
       });
     } else {
-      // Crear perfil de profesional con fake_name generado
+      // Crear perfil de profesional (salud o general) con fake_name generado
       const fakeProfessionalName = faker.person.firstName();
       await prisma.profesional_data.create({
         data: {
@@ -136,12 +138,19 @@ export async function registerDirectUser(
         },
       });
 
-      // Crear main_study con sub_area solo para profesionales
+      // Para profesional_general el sub_area del enum es siempre 'general';
+      // el nombre específico elegido se guarda como title (vacío si no hay catálogo aún)
+      const resolvedSubArea = 'general';
+      const resolvedTitle = accountType === 'profesional_general' && sub_area && sub_area !== 'general'
+        ? sub_area
+        : '';
+
+      // Crear main_study con sub_area
       await prisma.main_study.create({
         data: {
           user_id: user.referCode,
-          sub_area: sub_area as any, // El enum Sub_area
-          title: "", // Vacío por ahora
+          sub_area: resolvedSubArea as any, // El enum Sub_area
+          title: resolvedTitle,
           status: "", // Vacío por ahora
         },
       });

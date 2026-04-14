@@ -27,6 +27,15 @@ export const useProfesional = (enabled: boolean = true) => {
   return { data, error, isLoading, mutate };
 };
 
+export const useProfesionalGeneral = (enabled: boolean = true) => {
+  const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(
+    enabled ? "/api/platform/profesional-general/" : null,
+    enabled ? fetcher : null,
+    swrConfig
+  );
+  return { data, error, isLoading, mutate };
+};
+
 export const useProfesionalById = (id: string) => { 
   const { data, error, isLoading, mutate } = useSWR<ProfesionalResponse>(`/api/platform/profesional/${id}`, fetcher, swrConfig);
   return { data, error, isLoading, mutate };

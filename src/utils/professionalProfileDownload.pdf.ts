@@ -19,6 +19,7 @@ type BuildProfilePdfParams = {
   speciality: any[];
   certifications: any[];
   experience: any[];
+  extraData?: any;
   attachments: AttachmentEntry[];
   fullLogoDataUrl: string | null;
   compactLogoDataUrl: string | null;
@@ -34,6 +35,7 @@ export const buildProfilePdf = ({
   speciality,
   certifications,
   experience,
+  extraData = {},
   attachments,
   fullLogoDataUrl,
   compactLogoDataUrl,
@@ -153,6 +155,8 @@ export const buildProfilePdf = ({
       ["Categoria profesional", categoryName],
       ["Profesion principal", sanitizeValue(mainStudy.title)],
       ["Homologado UE", sanitizeValue(Boolean(mainStudy.isHomologated))],
+      ["Documentacion europea", Boolean(extraData.has_european_docs) ? "Si" : "No"],
+      ["Requiere sponsor", Boolean(extraData.needs_sponsor) ? "Si" : "No"],
       ["Total especialidades", sanitizeValue(speciality.length)],
       ["Total certificaciones", sanitizeValue(certifications.length)],
       ["Total experiencias", sanitizeValue(experience.length)],
@@ -241,6 +245,12 @@ export const buildProfilePdf = ({
       ? attachments.map((item) => [item.label, item.section, item.sourceType, item.url])
       : [["Sin adjuntos", "-", "-", "-"]],
     ...sectionTableConfig,
+    columnStyles: {
+      0: { cellWidth: 110 },
+      1: { cellWidth: 100 },
+      2: { cellWidth: 80 },
+      3: { cellWidth: "auto" },
+    },
   });
   cursorY = ((doc as any).lastAutoTable?.finalY || cursorY) + 14;
 

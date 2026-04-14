@@ -74,6 +74,7 @@ export default function ProfesionalCertificationUpdateForm(props:any) {
         mutate2(),
         globalMutate("/api/platform/profesional/certification"),
         globalMutate("/api/platform/profesional/certification/"),
+        globalMutate("/api/platform/profesional/complete"),
       ]);
       closeModal();
     }

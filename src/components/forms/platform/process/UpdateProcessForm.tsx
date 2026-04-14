@@ -76,8 +76,11 @@ export default function UpdateProcessForm({ id }: { id: number }) {
   const subAreaOptions = [
     { value: "doctor", label: "Médico" },
     { value: "nurse", label: "Enfermería" },
-    { value: "pharmacist", label: "Farmacia" }
+    { value: "pharmacist", label: "Farmacia" },
+    { value: "general", label: "General" }
   ];
+
+  const isGeneralSelected = subAreaSelected === 'general';
 
   // Función para obtener las especialidades según la categoría seleccionada
   const getSpecialityOptions = () => {
@@ -237,6 +240,7 @@ export default function UpdateProcessForm({ id }: { id: number }) {
               {errors.subArea?.message && <span className='text-xs text-red-500'>{String(errors.subArea.message)}</span>}
             </div>
 
+            {!isGeneralSelected && (
             <div>
               <label className='block font-semibold mb-1'>Especialidad principal</label>
               {titleCategorySelected.map((selected, idx) => (
@@ -260,6 +264,7 @@ export default function UpdateProcessForm({ id }: { id: number }) {
                 + Agregar especialidad Secundaria
               </button>
             </div>
+            )}
 
             <div>
               <label htmlFor='titleStatus' className='block font-semibold mb-1'>

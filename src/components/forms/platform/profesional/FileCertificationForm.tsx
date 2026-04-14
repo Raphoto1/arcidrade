@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
 import { useProfesional, useProfesionalCertifications, useProfesionalSpecialities } from "@/hooks/usePlatPro";
+import { mutate as globalMutate } from "swr";
 
 export default function FileCertificationForm(id: any) {
   const { mutate } = useProfesionalCertifications();
@@ -32,6 +33,7 @@ export default function FileCertificationForm(id: any) {
     const result = await res.json();
 
     mutate();
+    globalMutate("/api/platform/profesional/complete");
     closeModal();
   });
 

@@ -11,7 +11,7 @@ export async function POST(request: Request): Promise<NextResponse> {
     return NextResponse.json({ error: "Archivo inválido" }, { status: 400 });
   }
 //hacer blob upload a nuueva carpeta avatar
-  const blob = uploadUserAvatar(file);
+  const blob = await uploadUserAvatar(file);
 
   return NextResponse.json(blob);
 }

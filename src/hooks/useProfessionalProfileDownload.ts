@@ -33,10 +33,11 @@ export const useProfessionalProfileDownload = ({ payload, userId, countryName, i
   const speciality = payload?.study_specialization || [];
   const certifications = payload?.profesional_certifications || [];
   const experience = payload?.experience || [];
+  const extraData = payload?.profesional_extra_data || {};
   const fullName = getFullName(personalData.name, personalData.last_name) || userId;
   const categoryName = useHandleCategoryName(mainStudy.sub_area);
 
-  const sharedData = { personalData, mainStudy, speciality, certifications, experience };
+  const sharedData = { personalData, mainStudy, speciality, certifications, experience, extraData };
 
   const handleDownloadProfilePdf = async () => {
     if (!isEnabled) {

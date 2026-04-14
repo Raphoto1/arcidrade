@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 
 import InstitutionMain from "@/components/platform/institution/InstitutionMain";
 import Profesional from "@/components/platform/profesional/Profesional";
+import ProfesionalGeneral from "@/components/platform/ProfesionalGeneral/ProfesionalGeneral";
 import Manager from "@/components/platform/Manager";
 import Campaign from "@/components/platform/campaign/Campaign";
 import Victor from "@/components/platform/Victor/Victor";
@@ -14,7 +15,7 @@ export default function Page() {
   const { data: session, status } = useSession();
 
   if (status === "loading") {
-    return <PageSkeleton text="Cargando sesión..." />;
+    return <PageSkeleton text='Cargando sesión...' />;
   }
 
   if (!session?.user?.area) {
@@ -26,6 +27,8 @@ export default function Page() {
       return <InstitutionMain />;
     case "profesional":
       return <Profesional />;
+    case "profesional_general":
+      return <ProfesionalGeneral />;
     case "manager":
       return <Manager />;
     case "campaign":

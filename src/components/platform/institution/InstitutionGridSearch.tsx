@@ -35,6 +35,8 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
         return medicalOptions;
     }
   };
+
+  const showSpecialityFilter = selectedSubArea !== 'general';
   
   // Debounce para el término de búsqueda
   useEffect(() => {
@@ -175,7 +177,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
               </div>
 
               {/* Filtro por especialidad */}
-              <div>
+              {showSpecialityFilter && <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
                   Especialidad
                 </label>
@@ -191,7 +193,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
                     </option>
                   ))}
                 </select>
-              </div>
+              </div>}
 
               {/* Filtro por homologación */}
               <div className='flex items-center'>

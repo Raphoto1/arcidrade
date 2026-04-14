@@ -7,6 +7,7 @@ import { ICountry, IState, ICity } from "country-state-city";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalExperience, useProfesionalExperiences } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+import { mutate as globalMutate } from "swr";
 
 export default function ProfesionalExperienceUpdateForm(props:any) {
   const { closeModal } = useModal();
@@ -21,6 +22,7 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
     formState: { errors },
   } = useForm();
 
+  const [isCurrentlyActive, setIsCurrentlyActive] = useState(false);
   const [studyCountry, setStudyCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [countryList, setCountryList] = useState<ICountry[]>([]);
@@ -47,6 +49,7 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
 
       setStudyCountry(data.payload.country);
       setSelectedState(data.payload.state);
+      if (!data.payload.end_date) setIsCurrentlyActive(true);
 
       const selectedCountry = Country.getAllCountries().find(c => c.name === data.payload.country);
       if (selectedCountry) {
@@ -99,6 +102,7 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
     if (response.ok) {
       mutate();
       mutate2();
+      globalMutate("/api/platform/profesional/complete");
       closeModal();
     }
   });
@@ -122,7 +126,8 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
       <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
         <div>
           <label className='font-semibold'>Fecha de inicio</label>
-          <input type='date' {...register("startDate")} className='input input-bordered w-full' />
+          <input type='date' {...register("startDate", { required: "Este campo es obligatorio" })} className='input input-bordered w-full' />
+          {errors.startDate && <span className='text-xs text-red-500'>{String(errors.startDate.message)}</span>}
         </div>
         <div>
           <label className='font-semibold'>Fecha de finalización</label>
@@ -130,14 +135,28 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
             type='date'
             {...register("endDate", {
               validate: (value) => {
-                if (!value) return true;
+                if (!value || isCurrentlyActive) return true;
                 const start = new Date(getValues("startDate"));
                 const end = new Date(value);
                 return end >= start || "La fecha de finalización no puede ser menor que la de inicio";
               },
             })}
-            className='input input-bordered w-full'
+            disabled={isCurrentlyActive}
+            className='input input-bordered w-full disabled:opacity-40'
           />
+          <label className='flex items-center gap-2 mt-2 cursor-pointer select-none'>
+            <div
+              onClick={() => setIsCurrentlyActive(!isCurrentlyActive)}
+              className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
+                isCurrentlyActive ? 'bg-[var(--soft-arci)]' : 'bg-gray-300'
+              }`}
+            >
+              <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
+                isCurrentlyActive ? 'translate-x-5' : 'translate-x-0'
+              }`} />
+            </div>
+            <span className='text-sm font-medium'>Actualmente activo</span>
+          </label>
           {errors.endDate && <span className='text-xs text-red-500'>{String(errors.endDate.message)}</span>}
         </div>
       </div>
@@ -154,8 +173,8 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
       </div>
 
       <div>
-        <label className='font-semibold'>Estado</label>
-        <select {...register("state", { required: "Este campo es obligatorio" })} value={selectedState} onChange={handleStateChange} className='select select-bordered w-full'>
+        <label className='font-semibold'>Estado <span className='text-gray-400 font-normal text-sm'>(Opcional)</span></label>
+        <select {...register("state")} value={selectedState} onChange={handleStateChange} className='select select-bordered w-full'>
           <option value=''>Seleccione un estado</option>
           {stateList.map((s, i) => (
             <option key={i} value={s.name}>{s.name}</option>
@@ -165,7 +184,7 @@ export default function ProfesionalExperienceUpdateForm(props:any) {
       </div>
 
       <div>
-        <label className='font-semibold'>Ciudad</label>
+        <label className='font-semibold'>Ciudad <span className='text-gray-400 font-normal text-sm'>(Opcional)</span></label>
         <select {...register("city")} className='select select-bordered w-full'>
           <option value=''>Seleccione una ciudad</option>
           {cityList.map((c, i) => (

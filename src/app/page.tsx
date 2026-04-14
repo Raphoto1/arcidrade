@@ -1,19 +1,6 @@
-//app imports
-import Image from "next/image";
-import Link from "next/link";
-//project imports
-import Carrousel from "@/components/home/Carousel";
-import Steps from "@/components/home/Steps";
-import GridHomeWindows from "@/components/home/GridHomeWindows";
-import GridHomeWindowsCities from "@/components/home/GridHomeWindowsCities";
-import GridHomeWindowsSpecialities from "@/components/home/GridHomeWindowsSpecialities";
-import BrColors from "@/components/pieces/BrColors";
-import ThreeColumnGrid from "@/components/Grids/ThreeColumnGrid";
-import InstitutionGridSearch from "@/components/platform/institution/InstitutionGridSearch";
-import ProfesionalGridSearch from "@/components/platform/institution/ProfesionalGridSearch";
+import HomeContent from "@/components/home/HomeContent";
 import { generatePageMetadata } from "@/config/metadata";
 import HomeStructuredData from "@/components/seo/HomeStructuredData";
-import OffersPublic from "@/components/home/OffersPublic";
 
 // SEO optimizada para la página principal
 export const metadata = generatePageMetadata(
@@ -37,23 +24,9 @@ export const metadata = generatePageMetadata(
 
 export default function Home() {
   return (
-    <main className='flex flex-col items-center gap- min-h-screen justify-center'>
+    <>
       <HomeStructuredData />
-      <Carrousel />
-      <p className='text-sm md:text-base text-gray-600 md:mt-4'>
-        ¿Ya te registraste?{" "}
-        <Link href='/auth/login' className='text-(--main-arci) font-bold hover:underline'>
-          Ingresa aquí
-        </Link>
-      </p>
-      <Steps />
-      <GridHomeWindows />
-      <ThreeColumnGrid />
-      <BrColors title={"Principales Provincias"} />
-      <GridHomeWindowsCities />
-      <BrColors title={"Principales Especialidades"} />
-      <GridHomeWindowsSpecialities />
-      <OffersPublic trackingSource='home' />
-    </main>
+      <HomeContent className='flex min-h-screen flex-col items-center justify-center' offersTrackingSource='home' />
+    </>
   );
 }

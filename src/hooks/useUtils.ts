@@ -19,6 +19,8 @@ export const useHandleCategoryName = (category: string | undefined) => {
       return "Enfermero/a";
     } else if (category === "pharmacist") {
       return "Farmacéutico/a";
+    } else if (category === "general") {
+      return "General";
     } else {
       return "No Registrado";
     }

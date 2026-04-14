@@ -190,6 +190,7 @@ export const getProfesionalFullByIdDao = async (user_id: string | undefined) => 
           study_specialization: true,
           profesional_certifications: true,
           experience: true,
+          profesional_extra_data: true,
         },
       });
       if (fullUser) {
@@ -245,7 +246,7 @@ export const getAllProfesionalsPaginatedDao = async (page: number = 1, limit: nu
     
     // Construir el where clause base
     const whereClause: any = {
-      area: "profesional",
+      area: { in: ["profesional", "profesional_general"] },
       status: status || "active", // Usar el status proporcionado o 'active' por defecto
     };
 
@@ -757,5 +758,32 @@ export const updateUserExperienceByIdDao = async (id: number | undefined, data: 
   } catch (error) {
     console.error(error);
     throw new Error("error dao");
+  }
+};
+
+// Platform - Profesional_extra_data___________________________________________________
+export const getProfesionalExtraDataDao = async (user_id: string | undefined) => {
+  try {
+    const result = await prisma.profesional_extra_data.findUnique({
+      where: { user_id },
+    });
+    return result;
+  } catch (error) {
+    console.error("Error en getProfesionalExtraDataDao:", error);
+    throw new Error("Error al obtener datos extra del profesional");
+  }
+};
+
+export const upsertProfesionalExtraDataDao = async (user_id: string, data: { has_european_docs: boolean; needs_sponsor: boolean }) => {
+  try {
+    const result = await prisma.profesional_extra_data.upsert({
+      where: { user_id },
+      create: { user_id, ...data },
+      update: data,
+    });
+    return result;
+  } catch (error) {
+    console.error("Error en upsertProfesionalExtraDataDao:", error);
+    throw new Error("Error al guardar datos extra del profesional");
   }
 };

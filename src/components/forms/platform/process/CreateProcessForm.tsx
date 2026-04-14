@@ -20,8 +20,11 @@ export default function CreateProcessForm() {
   const subAreaOptions = [
     { value: "doctor", label: "Médico" },
     { value: "nurse", label: "Enfermería" },
-    { value: "pharmacist", label: "Farmacia" }
+    { value: "pharmacist", label: "Farmacia" },
+    { value: "general", label: "General" }
   ];
+
+  const isGeneralSelected = subAreaSelected === 'general';
 
   // Función para obtener las especialidades según la categoría seleccionada
   const getSpecialityOptions = () => {
@@ -156,6 +159,7 @@ export default function CreateProcessForm() {
               </select>
               {errors.subArea?.message && <span className='text-xs text-red-500'>{String(errors.subArea.message)}</span>}
             </div>
+            {!isGeneralSelected && (
             <div>
               <label className='block font-semibold mb-1'>Categoría(s) más cercana(s) de la especialidad</label>
               {!subAreaSelected && (
@@ -167,7 +171,7 @@ export default function CreateProcessForm() {
                 <div key={idx} className='flex items-center gap-2 mb-2'>
                   <select
                     {...register(`title_category_${idx}`, { 
-                      required: subAreaSelected ? "Este campo es obligatorio" : false 
+                      required: subAreaSelected && !isGeneralSelected ? "Este campo es obligatorio" : false 
                     })}
                     value={selected}
                     onChange={(e) => handleTitleCategorySelected(idx, e.target.value)}
@@ -200,6 +204,7 @@ export default function CreateProcessForm() {
               {/* Mostrar errores solo para el primer campo */}
               {errors.title_category_0?.message && <span className='text-xs text-red-500'>{String(errors.title_category_0.message)}</span>}
             </div>
+            )}
             <div>
               <label htmlFor='titleStatus' className='block font-semibold mb-1'>
                 Estado del título

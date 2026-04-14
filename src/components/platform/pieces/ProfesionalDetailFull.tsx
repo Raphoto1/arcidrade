@@ -3,17 +3,19 @@
 import React from "react";
 import Image from "next/image";
 import { IoDocumentAttachOutline } from "react-icons/io5";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { fakerES as faker } from "@faker-js/faker";
 import { ICountry } from "country-state-city";
 import { Country } from "country-state-city";
 //imports propios
-import { useProfesionalFull } from "@/hooks/usePlatPro";
+import { useProfesionalFull, useProfesionalGeneral } from "@/hooks/usePlatPro";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
 import { useHandleCategoryName } from "@/hooks/useUtils";
 
-export default function ProfesionalDetailFull() {
+export default function ProfesionalDetailFull({ hideEspecialidad = false }: { hideEspecialidad?: boolean }) {
   const { data, error, isLoading } = useProfesionalFull();
+  const { data: generalData } = useProfesionalGeneral();
   
   // Validación defensiva para prevenir errores
   const payload = data?.payload || {};
@@ -22,6 +24,8 @@ export default function ProfesionalDetailFull() {
   const speciality = payload.study_specialization || [];
   const certifications = payload.profesional_certifications || [];
   const experience = payload.experience || [];
+  // extraData: primero del payload full (mismo request), fallback a useProfesionalGeneral
+  const extraData = payload.profesional_extra_data || generalData?.payload?.[2] || {};
   
   const fakeLastName = faker.person.lastName(); // Generar un apellido falso
   const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
@@ -148,7 +152,7 @@ export default function ProfesionalDetailFull() {
             </div>
             <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Categoría de Profesión</h3>
-              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{useHandleCategoryName(mainStudy.sub_area)}</p>
+              <p className='min-w-0 wrap-break-word text-right text-(--main-arci)'>{hideEspecialidad ? "General" : useHandleCategoryName(mainStudy.sub_area)}</p>
             </div>
             <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-start gap-2'>
               <h3 className='font-light'>Profesión</h3>
@@ -180,10 +184,32 @@ export default function ProfesionalDetailFull() {
               </div>
             ) : null}
             {Boolean(mainStudy.isHomologated) ? <div className='pt-2'>{renderHomologationBadge(mainStudy.isHomologated)}</div> : null}
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-2 pt-2 border-t mt-2'>
+              <h3 className='font-light'>Documentación Europea (UE)</h3>
+              <div className='flex justify-end'>
+                {Boolean(extraData.has_european_docs) ? (
+                  <FaCheckCircle className='text-green-600 text-lg' title='Tiene documentación europea' />
+                ) : (
+                  <FaTimesCircle className='text-red-500 text-lg' title='No tiene documentación europea' />
+                )}
+              </div>
+            </div>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-2'>
+              <h3 className='font-light'>Requiere Sponsor</h3>
+              <div className='flex justify-end'>
+                {Boolean(extraData.needs_sponsor) ? (
+                  <FaCheckCircle className='text-green-600 text-lg' title='Requiere sponsor' />
+                ) : (
+                  <FaTimesCircle className='text-red-500 text-lg' title='No requiere sponsor' />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>
       <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+        {!hideEspecialidad && (
+        <>
         <h1 className='text-2xl fontArci mb-2'>Especialidades</h1>
         <div className='flex flex-col gap-2'>
           {speciality.map((item: any, index: number) => (
@@ -211,6 +237,8 @@ export default function ProfesionalDetailFull() {
             </div>
           ))}
         </div>
+        </>
+        )}
       </div>
       <div className='bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
         <h1 className='text-2xl fontArci mb-2'>Certificaciones</h1>

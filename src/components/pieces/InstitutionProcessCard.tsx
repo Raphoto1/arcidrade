@@ -5,7 +5,7 @@ import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useInstitutionById, useInstitutionFullById } from "@/hooks/usePlatInst";
 import { useProcess, useProfesionalsListedInProcess } from "@/hooks/useProcess";
-import { useHandleStatusName } from "@/hooks/useUtils";
+import { useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
 import ModalForPreviewTextLink from "../modals/ModalForPreviewTextLink";
 import UserDescription from "../platform/pieces/UserDescription";
 import ModalForPreview from "../modals/ModalForPreview";
@@ -93,8 +93,17 @@ export default function InstitutionProcessCard(props: any) {
         )}
         <div className='flex justify-between card-actions items-end'>
           <div className='extraInfo font-roboto-condensed text-red-700'>
-            <p>Especialización solicitada</p>
-            <p className='font-bold text-xl capitalize text-wrap max-w-30'>{processPack.main_speciality || "especialización de la oferta"}</p>
+            {processPack.area === 'general' ? (
+              <>
+                <p>Categoría</p>
+                <p className='font-bold text-xl capitalize text-wrap max-w-30'>{useHandleCategoryName(processPack.area)}</p>
+              </>
+            ) : (
+              <>
+                <p>Especialización solicitada</p>
+                <p className='font-bold text-xl capitalize text-wrap max-w-30'>{processPack.main_speciality || "especialización de la oferta"}</p>
+              </>
+            )}
           </div>
           <div className='rightActions flex flex-col justify-end font-roboto-condensed'>
             {/* <p>state</p> REVISAR LOGICA SIGUIENTE*/}
@@ -111,7 +120,7 @@ export default function InstitutionProcessCard(props: any) {
                 )}
               </ModalForPreview>
             )}
-            {btnActive && session?.user?.area === "profesional" && !alreadyApplied && (
+            {btnActive && (session?.user?.area === "profesional" || session?.user?.area === "profesional_general") && !alreadyApplied && (
               <ModalForFormsGreenBtn title={"Aplicar al Proceso"}>
                 <ConfirmAddProfesionalToProcessForm
                   ProcessId={processPack.id}
@@ -125,7 +134,7 @@ export default function InstitutionProcessCard(props: any) {
                 />
               </ModalForFormsGreenBtn>
             )}
-            {btnActive && session?.user?.area === "profesional" && alreadyApplied && (
+            {btnActive && (session?.user?.area === "profesional" || session?.user?.area === "profesional_general") && alreadyApplied && (
               <p className='text-xs text-gray-500'>Ya aplicaste a este proceso</p>
             )}
           </div>

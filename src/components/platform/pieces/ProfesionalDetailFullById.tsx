@@ -3,6 +3,7 @@
 import React from "react";
 import Image from "next/image";
 import { IoDocumentAttachOutline } from "react-icons/io5";
+import { FaCheckCircle, FaTimesCircle } from "react-icons/fa";
 import { ICountry } from "country-state-city";
 import { Country } from "country-state-city";
 import { useSession } from "next-auth/react";
@@ -26,6 +27,7 @@ export default function ProfesionalDetailFull(props: any) {
   const speciality = payload.study_specialization || [];
   const certifications = payload.profesional_certifications || [];
   const experience = payload.experience || [];
+  const extraData = payload.profesional_extra_data || {};
   
   const fechaEnDate = personalData.birth_date ? new Date(personalData.birth_date) : new Date();
   const fechaString = fechaEnDate.toLocaleString("es-ES", { year: "numeric", month: "2-digit", day: "2-digit" });
@@ -267,6 +269,26 @@ export default function ProfesionalDetailFull(props: any) {
                 {renderHomologationBadge(mainStudy.isHomologated)}
               </div>
             ) : null}
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-2 pt-2 border-t mt-2'>
+              <h3 className='font-light'>Documentación Europea (UE):</h3>
+              <div className='flex justify-end'>
+                {Boolean(extraData.has_european_docs) ? (
+                  <FaCheckCircle className='text-green-600 text-lg' title='Tiene documentación europea' />
+                ) : (
+                  <FaTimesCircle className='text-red-500 text-lg' title='No tiene documentación europea' />
+                )}
+              </div>
+            </div>
+            <div className='grid grid-cols-[minmax(0,1fr)_minmax(0,1fr)] items-center gap-2'>
+              <h3 className='font-light'>Requiere Sponsor:</h3>
+              <div className='flex justify-end'>
+                {Boolean(extraData.needs_sponsor) ? (
+                  <FaCheckCircle className='text-green-600 text-lg' title='Requiere sponsor' />
+                ) : (
+                  <FaTimesCircle className='text-red-500 text-lg' title='No requiere sponsor' />
+                )}
+              </div>
+            </div>
           </div>
         </div>
       </div>

@@ -7,7 +7,7 @@ import { Country } from "country-state-city";
 import { useHandleCategoryName } from "@/hooks/useUtils";
 import Loader from "@/components/pieces/Loader";
 
-export default function ProfesionalDetail() {
+export default function ProfesionalDetail({ hideEspecialidad = false }: { hideEspecialidad?: boolean }) {
   const { data, error, isLoading } = useProfesionalFull();
 
   // Validación defensiva para prevenir errores
@@ -128,7 +128,7 @@ export default function ProfesionalDetail() {
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Categoria de Profesión</h3>
-                <p className='text-(--main-arci)'>{useHandleCategoryName(mainStudy.sub_area)}</p>
+                <p className='text-(--main-arci)'>{hideEspecialidad ? "General" : useHandleCategoryName(mainStudy.sub_area)}</p>
               </div>
               <div className='flex justify-between'>
                 <h3 className='font-light'>Profesión</h3>
@@ -147,6 +147,8 @@ export default function ProfesionalDetail() {
         </div>
 
         <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
+          {!hideEspecialidad && (
+          <>
           <h1 className='text-2xl fontArci text mb-2'>Especialidades</h1>
           <div className='flex flex-col gap-2'>
             {speciality?.map((item: any, index: number) => (
@@ -157,6 +159,8 @@ export default function ProfesionalDetail() {
               </div>
             ))}
           </div>
+          </>
+          )}
         </div>
         <div className=' bg-gray-200 p-2 rounded-sm z-10 md:w-full'>
           <h1 className='text-2xl fontArci text mb-2'>Certificaciones</h1>

@@ -44,8 +44,11 @@ export default function InstitutionGridSearchSelection({
   const subAreaOptions = [
     { value: "doctor", label: "Médico" },
     { value: "nurse", label: "Enfermería" },
-    { value: "pharmacist", label: "Farmacia" }
+    { value: "pharmacist", label: "Farmacia" },
+    { value: "general", label: "General" }
   ];
+
+  const isGeneralSelected = selectedSubArea === 'general' || lockedSubArea === 'general';
 
   // Función para obtener las especialidades según la categoría seleccionada
   const getSpecialityOptions = () => {
@@ -225,7 +228,7 @@ export default function InstitutionGridSearchSelection({
               )}
 
               {/* Filtro por especialidad */}
-              {isSpecialityLocked ? (
+              {!isGeneralSelected && (isSpecialityLocked ? (
                 <div>
                   <label className='block text-sm font-medium text-gray-700 mb-1'>Especialidad</label>
                   <div className='w-full p-2 border border-gray-200 rounded-md bg-gray-100 text-sm text-gray-700'>
@@ -249,7 +252,7 @@ export default function InstitutionGridSearchSelection({
                     ))}
                   </select>
                 </div>
-              )}
+              ))}
 
               {/* Filtro por homologación */}
               <div className='flex items-end'>

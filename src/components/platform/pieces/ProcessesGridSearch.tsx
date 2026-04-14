@@ -22,8 +22,11 @@ export default function ProcessesGridSearch(props: any) {
   const subAreaOptions = [
     { value: "doctor", label: "Médico" },
     { value: "nurse", label: "Enfermería" },
-    { value: "pharmacist", label: "Farmacia" }
+    { value: "pharmacist", label: "Farmacia" },
+    { value: "general", label: "General" }
   ];
+
+  const isGeneralSelected = selectedSubArea === 'general';
 
   // Función para obtener las especialidades según la categoría seleccionada
   const getSpecialityOptions = () => {
@@ -120,6 +123,7 @@ export default function ProcessesGridSearch(props: any) {
             </select>
           </div>
           {/* Filtro por especialidad */}
+          {!isGeneralSelected && (
           <div className='flex flex-col justify-center mb-4 md:mb-0'>
             <label className='text-sm font-medium text-gray-700 mb-1'>
               {selectedSubArea ? `Especialidad ${subAreaOptions.find(opt => opt.value === selectedSubArea)?.label}` : 'Especialidad'}
@@ -137,6 +141,7 @@ export default function ProcessesGridSearch(props: any) {
               ))}
             </select>
           </div>
+          )}
         </div>
         {/* Resultados */}
         <div className='mb-4 text-center'>

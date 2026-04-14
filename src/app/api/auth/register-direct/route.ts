@@ -30,8 +30,16 @@ export async function POST(request: Request) {
           { status: 400 }
         );
       }
+    } else if (accountType === 'profesional_general') {
+      // sub_area es opcional: si no viene se usa 'general' como fallback en el servicio
+      if (!nombre) {
+        return NextResponse.json(
+          { error: "El nombre es requerido" },
+          { status: 400 }
+        );
+      }
     } else {
-      // Validaciones para profesional
+      // Validaciones para profesional de la salud
       if (!nombre || !sub_area) {
         return NextResponse.json(
           { error: "Nombre y categoría profesional son requeridos" },

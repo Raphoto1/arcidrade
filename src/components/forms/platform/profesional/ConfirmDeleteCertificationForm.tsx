@@ -1,6 +1,7 @@
 import React from "react";
 import { useModal } from "@/context/ModalContext";
 import { useProfesionalCertifications, useProfesionalSpecialities } from "@/hooks/usePlatPro";
+import { mutate as globalMutate } from "swr";
 
 export default function ConfirmDeleteCertificationForm(id: any) {
   const { mutate } = useProfesionalCertifications();
@@ -18,6 +19,7 @@ export default function ConfirmDeleteCertificationForm(id: any) {
     const result = await response.json();
 
     mutate();
+    globalMutate("/api/platform/profesional/complete");
     closeModal();
   };
   return (

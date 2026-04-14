@@ -13,6 +13,7 @@ export default function GenerateInvitation() {
   const options = [
     { value: "institution", label: "Institución" },
     { value: "profesional", label: "Profesional" },
+    { value: "profesional_general", label: "Profesional General" },
     { value: "colab", label: "Colaborador" },
     { value: "campaign", label: "Campaña" },
   ];

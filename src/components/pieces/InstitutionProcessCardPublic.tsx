@@ -2,7 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useHandleStatusName } from "@/hooks/useUtils";
+import { useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
 import RichTextPreview from "@/components/ui/RichTextPreview";
 import { trackPublicOfferClick } from "@/utils/analytics";
 
@@ -81,10 +81,21 @@ export default function InstitutionProcessCardPublic(props: any) {
         
         <div className='flex justify-between card-actions items-end mt-2'>
           <div className='extraInfo font-roboto-condensed text-red-700'>
-            <p>Especialización solicitada</p>
-            <p className='font-bold text-xl capitalize text-wrap max-w-30'>
-              {processPack.main_speciality || "especialización de la oferta"}
-            </p>
+            {processPack.area === 'general' ? (
+              <>
+                <p>Categoría</p>
+                <p className='font-bold text-xl capitalize text-wrap max-w-30'>
+                  {useHandleCategoryName(processPack.area)}
+                </p>
+              </>
+            ) : (
+              <>
+                <p>Especialización solicitada</p>
+                <p className='font-bold text-xl capitalize text-wrap max-w-30'>
+                  {processPack.main_speciality || "especialización de la oferta"}
+                </p>
+              </>
+            )}
           </div>
 
           {showRegisterCta && (
@@ -103,7 +114,7 @@ export default function InstitutionProcessCardPublic(props: any) {
           )}
         </div>
 
-        {processPack.extra_specialities && processPack.extra_specialities.length > 0 && (
+        {processPack.area !== 'general' && processPack.extra_specialities && processPack.extra_specialities.length > 0 && (
           <div className='mt-2 border-t pt-2'>
             <p className='text-xs font-semibold text-(--dark-gray)'>Especialidades adicionales:</p>
             <div className='flex flex-wrap gap-1 mt-1'>

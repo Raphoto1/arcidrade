@@ -26,10 +26,22 @@ export const fetcher = async (url, options = {}) => {
       });
       
       clearTimeout(timeoutId);
+      const responseText = await response.text();
+      const parseJsonSafely = () => {
+        if (!responseText || !responseText.trim()) {
+          return {};
+        }
+
+        try {
+          return JSON.parse(responseText);
+        } catch {
+          throw new Error(`Respuesta invalida del servidor para ${url}`);
+        }
+      };
       
       // Manejo de errores HTTP
       if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
+        const errorData = parseJsonSafely();
         const error = new Error(
           errorData.message || `HTTP ${response.status}: ${response.statusText}`
         );
@@ -39,7 +51,7 @@ export const fetcher = async (url, options = {}) => {
       }
       
       // Success
-      const data = await response.json();
+      const data = parseJsonSafely();
       return data;
       
     } catch (error) {

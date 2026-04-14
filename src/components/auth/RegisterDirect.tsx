@@ -1,14 +1,22 @@
 "use client";
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { subAreaOptions } from '@/static/data/staticData';
 import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai';
+
+interface GeneralSubArea {
+  id: number;
+  sub_area: string;
+}
 
 export default function RegisterDirect() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [generalSubAreas, setGeneralSubAreas] = useState<GeneralSubArea[]>([]);
+  const [loadingSubAreas, setLoadingSubAreas] = useState(false);
+  const [subAreasUnavailable, setSubAreasUnavailable] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
     password: '',
@@ -18,6 +26,29 @@ export default function RegisterDirect() {
     accountType: 'profesional',
     institutionName: ''
   });
+
+  useEffect(() => {
+    if (formData.accountType !== 'profesional_general') return;
+    setSubAreasUnavailable(false);
+    setLoadingSubAreas(true);
+    fetch('/api/auth/general-subareas')
+      .then((r) => r.json())
+      .then((json) => {
+        if (json.payload && json.payload.length > 0) {
+          setGeneralSubAreas(json.payload);
+        } else {
+          // Sin categorías configuradas aún — fallback a 'general'
+          setSubAreasUnavailable(true);
+          setFormData(prev => ({ ...prev, sub_area: 'general' }));
+        }
+      })
+      .catch(() => {
+        // Error de red o servidor — fallback silencioso a 'general'
+        setSubAreasUnavailable(true);
+        setFormData(prev => ({ ...prev, sub_area: 'general' }));
+      })
+      .finally(() => setLoadingSubAreas(false));
+  }, [formData.accountType]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -104,8 +135,18 @@ export default function RegisterDirect() {
         alert('Por favor ingrese el nombre de la institución');
         return;
       }
+    } else if (formData.accountType === 'profesional_general') {
+      if (!formData.nombre.trim()) {
+        alert('Por favor ingrese su nombre completo');
+        return;
+      }
+      // sub_area es opcional cuando no hay categorías disponibles (fallback a 'general')
+      if (!subAreasUnavailable && generalSubAreas.length > 0 && !formData.sub_area) {
+        alert('Por favor seleccione una categoría profesional');
+        return;
+      }
     } else {
-      // Validaciones para profesional
+      // Validaciones para profesional de la salud
       if (!formData.nombre.trim()) {
         alert('Por favor ingrese su nombre completo');
         return;
@@ -129,6 +170,10 @@ export default function RegisterDirect() {
         payload.institutionName = formData.institutionName;
         payload.nombre = formData.institutionName; // Usar nombre institución como nombre
         payload.sub_area = ''; // Vacío para institución
+      } else if (formData.accountType === 'profesional_general') {
+        payload.nombre = formData.nombre;
+        payload.sub_area = formData.sub_area; // nombre de la sub-área general elegida
+        payload.institutionName = '';
       } else {
         payload.nombre = formData.nombre;
         payload.sub_area = formData.sub_area;
@@ -198,6 +243,7 @@ export default function RegisterDirect() {
               >
                 <option value='profesional'>👨‍⚕️ Profesional de la Salud</option>
                 <option value='institution'>🏥 Institución de Salud</option>
+                <option value='profesional_general'>🧑‍💼 Profesional General</option>
               </select>
             </div>
 
@@ -298,9 +344,9 @@ export default function RegisterDirect() {
                     />
                   </div>
                 </>
-              ) : (
+              ) : formData.accountType === 'profesional_general' ? (
                 <>
-                  {/* Nombre Completo para Profesional */}
+                  {/* Nombre Completo para Profesional General */}
                   <div className='mb-2 md:col-span-2'>
                     <label htmlFor='nombre' className='block text-sm font-medium mb-2'>
                       Nombre *
@@ -316,7 +362,61 @@ export default function RegisterDirect() {
                     />
                   </div>
 
-                  {/* Sub Area para Profesional */}
+                  {/* Sub Área para Profesional General */}
+                  <div className='mb-2 md:col-span-2'>
+                    <label htmlFor='sub_area' className='block text-sm font-medium mb-2'>
+                      Categoría Profesional *
+                    </label>
+                    {loadingSubAreas ? (
+                      <div className='flex items-center gap-2 h-12'>
+                        <span className='loading loading-spinner loading-sm' />
+                        <span className='text-sm text-gray-500'>Cargando categorías...</span>
+                      </div>
+                    ) : subAreasUnavailable ? (
+                      <div className='flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-md px-3 py-2'>
+                        <span className='text-blue-500 text-lg'>ℹ️</span>
+                        <p className='text-sm text-blue-700'>
+                          Las categorías estarán disponibles próximamente. Tu perfil se registrará como <strong>Profesional General</strong>.
+                        </p>
+                      </div>
+                    ) : (
+                      <select
+                        name='sub_area'
+                        id='sub_area'
+                        value={formData.sub_area}
+                        onChange={handleChange}
+                        className='select select-bordered w-full'
+                        required
+                      >
+                        <option value=''>Seleccione una categoría</option>
+                        {generalSubAreas.map((item) => (
+                          <option key={item.id} value={item.sub_area}>
+                            {item.sub_area}
+                          </option>
+                        ))}
+                      </select>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <>
+                  {/* Nombre Completo para Profesional de la Salud */}
+                  <div className='mb-2 md:col-span-2'>
+                    <label htmlFor='nombre' className='block text-sm font-medium mb-2'>
+                      Nombre *
+                    </label>
+                    <input 
+                      type='text' 
+                      name='nombre' 
+                      id='nombre'
+                      value={formData.nombre}
+                      onChange={handleChange}
+                      className='input input-bordered w-full'
+                      required
+                    />
+                  </div>
+
+                  {/* Sub Area para Profesional de la Salud */}
                   <div className='mb-2 md:col-span-2'>
                     <label htmlFor='sub_area' className='block text-sm font-medium mb-2'>
                       Categoría Profesional *

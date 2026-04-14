@@ -7,6 +7,7 @@ import { ICountry, IState, ICity } from "country-state-city";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalExperiences } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+import { mutate as globalMutate } from "swr";
 
 export default function ProfesionalExperienceForm() {
   const { closeModal } = useModal();
@@ -19,6 +20,7 @@ export default function ProfesionalExperienceForm() {
     formState: { errors },
   } = useForm();
 
+  const [isCurrentlyActive, setIsCurrentlyActive] = useState(false);
   const [studyCountry, setStudyCountry] = useState("");
   const [selectedState, setSelectedState] = useState("");
   const [countryList, setCountryList] = useState<ICountry[]>([]);
@@ -66,6 +68,7 @@ export default function ProfesionalExperienceForm() {
     const response = await useHandleSubmitText(payload, "/api/platform/profesional/experience/");
     if (response.ok) {
       mutate();
+      globalMutate("/api/platform/profesional/complete");
       closeModal();
     }
   });
@@ -95,7 +98,8 @@ export default function ProfesionalExperienceForm() {
             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
               <div>
                 <label htmlFor='startDate' className='block font-semibold mb-1'>Fecha de inicio</label>
-                <input type='date' {...register("startDate")} className='input input-bordered w-full' />
+                <input type='date' {...register("startDate", { required: "Este campo es obligatorio" })} className='input input-bordered w-full' />
+                {errors.startDate?.message && <span className='text-xs text-red-500'>{String(errors.startDate.message)}</span>}
               </div>
               <div>
                 <label htmlFor='endDate' className='block font-semibold mb-1'>Fecha de finalización</label>
@@ -103,14 +107,28 @@ export default function ProfesionalExperienceForm() {
                   type='date'
                   {...register("endDate", {
                     validate: (value) => {
-                      if (!value) return true;
+                      if (!value || isCurrentlyActive) return true;
                       const start = new Date(getValues("startDate"));
                       const end = new Date(value);
                       return end >= start || "La fecha de finalización no puede ser menor que la de inicio";
                     },
                   })}
-                  className='input input-bordered w-full'
+                  disabled={isCurrentlyActive}
+                  className='input input-bordered w-full disabled:opacity-40'
                 />
+                <label className='flex items-center gap-2 mt-2 cursor-pointer select-none'>
+                  <div
+                    onClick={() => setIsCurrentlyActive(!isCurrentlyActive)}
+                    className={`relative w-10 h-5 rounded-full transition-colors duration-200 ${
+                      isCurrentlyActive ? 'bg-[var(--soft-arci)]' : 'bg-gray-300'
+                    }`}
+                  >
+                    <span className={`absolute top-0.5 left-0.5 w-4 h-4 bg-white rounded-full shadow transition-transform duration-200 ${
+                      isCurrentlyActive ? 'translate-x-5' : 'translate-x-0'
+                    }`} />
+                  </div>
+                  <span className='text-sm font-medium'>Actualmente activo</span>
+                </label>
                 {errors.endDate?.message && <span className='text-xs text-red-500'>{String(errors.endDate.message)}</span>}
               </div>
             </div>
@@ -134,10 +152,10 @@ export default function ProfesionalExperienceForm() {
 
             {/* Estado */}
             <div>
-              <label htmlFor='state' className='block font-semibold mb-1'>Estado</label>
+              <label htmlFor='state' className='block font-semibold mb-1'>Estado <span className='text-gray-400 font-normal text-sm'>(Opcional)</span></label>
               <select
                 id='state'
-                {...register("state", { required: "Este campo es obligatorio" })}
+                {...register("state")}
                 value={selectedState}
                 onChange={handleStateChange}
                 className='select select-bordered w-full'>
@@ -151,7 +169,7 @@ export default function ProfesionalExperienceForm() {
 
             {/* Ciudad */}
             <div>
-              <label htmlFor='city' className='block font-semibold mb-1'>Ciudad</label>
+              <label htmlFor='city' className='block font-semibold mb-1'>Ciudad <span className='text-gray-400 font-normal text-sm'>(Opcional)</span></label>
               <select
                 id='city'
                 {...register("city")}

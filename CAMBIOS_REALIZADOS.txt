@@ -1,7 +1,60 @@
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║                          CAMBIOS REALIZADOS - PROYECTO                    ║
-║                          Actualizado: 20 de Febrero, 2026                 ║
+║                          Actualizado: 14 de Abril, 2026                   ║
 ╚════════════════════════════════════════════════════════════════════════════╝
+
+╔════════════════════════════════════════════════════════════════════════════╗
+║              SOPORTE DE CATEGORÍA "GENERAL" - 14/04/2026                  ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+✅ CONTEXTO
+   Los usuarios con area="profesional_general" tienen sub_area="general" en la
+   BD (enum Sub_area). Hasta este cambio no aparecían en las búsquedas ni se
+   mostraban correctamente en la UI.
+
+✅ DAO - getAllProfesionalsPaginatedDao
+   └─ src/dao/dao.tsx
+      • Antes: filtro area: "profesional"
+      • Ahora:  filtro area: { in: ["profesional", "profesional_general"] }
+        → Los profesionales generales ahora aparecen en los listados
+
+✅ HOOK useHandleCategoryName
+   └─ src/hooks/useUtils.ts
+      • Agregado caso: category === "general" → "General"
+        → Corrige la card, detalles, pildoras y cualquier componente que use
+          este hook (antes mostraba "No Registrado")
+
+✅ DATOS ESTÁTICOS - subAreaOptions
+   └─ src/static/data/staticData.ts
+      • Agregada opción: { value: 'general', label: 'General' }
+        → Afecta todos los componentes que importan subAreaOptions:
+          CompleteInvitationByProcess, RegisterDirect, CreateProcessForm,
+          UpdateProcessForm, ProfesionalProfileHookForm, ProcessesGridSearch
+
+✅ COMPONENTES ACTUALIZADOS
+   Los siguientes componentes ahora ocultan el selector de especialidades
+   (médicas/enfermería/farmacia) cuando la categoría seleccionada es "general",
+   ya que no aplica especialidades para ese perfil:
+
+   ├─ src/components/platform/institution/InstitutionGridSearch.tsx
+   │  • Variable showSpecialityFilter = selectedSubArea !== 'general'
+   │
+   ├─ src/components/platform/institution/InstitutionGridSearchSelection.tsx
+   │  • Variable isGeneralSelected (cubre selección libre y lockedSubArea)
+   │  • Filtro de especialidad envuelto en {!isGeneralSelected && (...)}
+   │
+   ├─ src/components/platform/pieces/ProcessesGridSearch.tsx
+   │  • Filtro de especialidad envuelto en {!isGeneralSelected && (...)}
+   │
+   ├─ src/components/forms/platform/process/CreateProcessForm.tsx
+   │  • Bloque de especialidades envuelto en {!isGeneralSelected && (...)}
+   │  • subAreaOptions local actualizado con "General"
+   │
+   └─ src/components/forms/platform/process/UpdateProcessForm.tsx
+      • Bloque de especialidades envuelto en {!isGeneralSelected && (...)}
+      • subAreaOptions local actualizado con "General"
+
+═══════════════════════════════════════════════════════════════════════════════
 
 ╔════════════════════════════════════════════════════════════════════════════╗
 ║                ACTUALIZACIÓN FUNCIONAL Y SEGURIDAD - 27/03/2026           ║

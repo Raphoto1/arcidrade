@@ -22,6 +22,7 @@ type CreateWorkbookParams = {
   speciality: any[];
   certifications: any[];
   experience: any[];
+  extraData?: any;
   includedAttachments: PackagedAttachment[];
   failedAttachments: FailedAttachment[];
 };
@@ -37,6 +38,7 @@ export const createWorkbook = ({
   speciality,
   certifications,
   experience,
+  extraData = {},
   includedAttachments,
   failedAttachments,
 }: CreateWorkbookParams): XLSX.WorkBook => {
@@ -50,6 +52,8 @@ export const createWorkbook = ({
     categoria_profesional: categoryName,
     profesion_principal: sanitizeValue(mainStudy.title),
     homologado_ue: Boolean(mainStudy.isHomologated),
+    documentacion_europea: Boolean(extraData.has_european_docs),
+    requiere_sponsor: Boolean(extraData.needs_sponsor),
     total_especialidades: speciality.length,
     total_certificaciones: certifications.length,
     total_experiencias: experience.length,

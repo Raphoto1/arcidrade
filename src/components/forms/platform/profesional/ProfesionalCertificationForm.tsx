@@ -8,6 +8,7 @@ import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
 import { useProfesionalCertifications } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
+import { mutate as globalMutate } from "swr";
 
 export default function ProfesionalCertificationForm() {
   const { closeModal } = useModal();
@@ -49,6 +50,7 @@ export default function ProfesionalCertificationForm() {
   const response = await useHandleSubmitText(payload, "/api/platform/profesional/certification/");
     if (response.ok) {
       mutate();
+      globalMutate("/api/platform/profesional/complete");
       closeModal();
     }
   });

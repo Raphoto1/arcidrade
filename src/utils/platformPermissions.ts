@@ -11,7 +11,7 @@ export const canViewProfessionalProfileById = (
   requestedUserId?: string | null,
   sessionUserId?: string | null,
 ) => {
-  if (area === "profesional") {
+  if (area === "profesional" || area === "profesional_general") {
     return Boolean(requestedUserId) && requestedUserId === sessionUserId;
   }
 

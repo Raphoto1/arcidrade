@@ -32,11 +32,22 @@ model Auth {
   study_specialization       Study_specialization[]
   fail_mail                  fail_mail?
   colaborator_data           colaborator_data[]
+  profesional_extra_data     Profesional_extra_data?
 
   // Índices para mejorar performance de queries
   @@index([status])
   @@index([area])
   @@index([status, area])
+}
+
+model Profesional_extra_data {
+  id                  Int      @id @default(autoincrement())
+  user_id             String   @unique
+  has_european_docs   Boolean  @default(false)
+  needs_sponsor       Boolean  @default(false)
+  created_at          DateTime @default(now())
+  updated_at          DateTime @updatedAt
+  auth                Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model fail_mail {
@@ -310,9 +321,92 @@ model colaborator_data {
   auth        Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
+model HomePageOrder {
+  id          Int      @id @default(autoincrement())
+  area        String
+  order       Int
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model HomePageDataCarousel {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model HomePageDataMainEspecialities {
+  id          Int      @id @default(autoincrement())
+  speciality   String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model AboutPageData {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ServicesPageData {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model ContactPageData {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model FooterData {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model GeneralProfesionalSubAreas {
+  id          Int      @id @default(autoincrement())
+  sub_area     String
+  description String?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
 enum AreasAvailable {
   institution
   profesional
+  profesional_general
   manager
   colab
   campaign
@@ -367,4 +461,5 @@ enum Sub_area {
   doctor
   nurse
   pharmacist
+  general
 }

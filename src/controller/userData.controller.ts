@@ -33,7 +33,7 @@ import {
   getAllProfesionalsPaginatedService,
 } from "@/service/userData.service";
 import { deleteFileService, uploadFileService } from "@/service/File.service";
-import { updateProfesionalAuthStatusDao, updateProfesionalMainStudyDao } from "@/dao/dao";
+import { updateProfesionalAuthStatusDao, updateProfesionalMainStudyDao, getProfesionalExtraDataDao, upsertProfesionalExtraDataDao } from "@/dao/dao";
 import { getInstitutionDataByUserIdService, updateInstitutionCertificationService, updateInstitutionDataService } from "@/service/institutionData.service";
 import { getInstitutionCertification, updateInstitutionCertification } from "./institutionData.controller";
 import { getColabDataService, updateColabDataService } from "@/service/colab.service";
@@ -99,6 +99,50 @@ export const createUserData = async (data: any) => {
     case "institution":
       const fakeNameInstitution = await faker.company.name();
       break;
+    case "profesional_general":
+      try {
+        if (!data.name) {
+          throw new Error("El campo 'Nombre' es requerido");
+        }
+
+        const fakeNameProfGeneral = await faker.person.firstName();
+        const profGeneralDataPack = {
+          user_id: session.user.id,
+          fake_name: fakeNameProfGeneral,
+          name: data.name,
+          last_name: data.last_name || null,
+          phone: data.phone || null,
+          birth_date: data.birthDate ? new Date(data.birthDate) : null,
+          country: data.country || null,
+          state: data.state || null,
+          city: data.city || null,
+        };
+
+        await createUserDataService(profGeneralDataPack);
+
+        const profGeneralMainStudyPack = {
+          user_id: session.user.id,
+          title: data.title || null,
+          status: data.titleStatus || null,
+          institution: data.titleInstitution || null,
+          country: data.studyCountry || null,
+          isHomologated: Boolean(data.isHomologated),
+          sub_area: data.sub_area || null,
+        };
+        await createUserDataMainStudy(profGeneralMainStudyPack);
+
+        await upsertProfesionalExtraDataDao(session.user.id, {
+          has_european_docs: Boolean(data.hasEuropeanDocs),
+          needs_sponsor: Boolean(data.needsSponsor),
+        });
+
+        await updateProfesionalAuthStatusDao(session.user.id, "active");
+
+        return true;
+      } catch (error) {
+        console.error('[createUserData/profesional_general] Error:', error);
+        throw error instanceof Error ? error : new Error(String(error));
+      }
     default:
       break;
   }
@@ -137,6 +181,18 @@ export const getUserData = async (): Promise<any> => {
     const sendPack = [userData ?? null, userMainStudy ?? null];
     return sendPack;
   }
+};
+
+export const getUserDataGeneral = async (): Promise<any> => {
+  const session = await getServerSession(authOptions);
+  if (!session?.user.id) throw new Error("Sesión inválida");
+  const userData = await getUserDataService(session.user.id);
+  const mainStudy = await getMainStudyService(session.user.id);
+  const extraData = await getProfesionalExtraDataDao(session.user.id);
+  if (userData == null) {
+    return [{} as Profesional_data, {} as Main_study, null];
+  }
+  return [userData, mainStudy ?? null, extraData ?? null];
 };
 
 export const getUserFull = async () => {
@@ -367,6 +423,15 @@ export const uploadUserAvatar = async (file: File) => {
       //obtengo la url del archivo y la cargo a la db
       const avatarUrl = await uploadResult?.url;
       const dbUpdate = await updateColabDataService({ avatar: avatarUrl }, userId);
+      return dbUpdate;
+    } else if (session?.user.area === "profesional_general") {
+      const chkUserAvatar = await getUserData();
+      if (chkUserAvatar[0].avatar) {
+        const deleteFile = await deleteFileService(chkUserAvatar[0].avatar);
+      }
+      const uploadResult = await uploadFileService(file, `avatar`, userId);
+      const avatarUrl = await uploadResult?.url;
+      const dbUpdate = await updateUserData({ avatar: avatarUrl });
       return dbUpdate;
     }
   } catch (error) {
@@ -646,6 +711,17 @@ export const uploadUserCertificationLink = async (id: number, link: any) => {
         const updateDb = await updateInstitutionCertificationService(id, { link: link });
         return updateDb;
       }
+    } else if (session?.user.area === "profesional_general") {
+      const chk = await getCertificationById(id);
+      if (chk?.file) {
+        const deleteFile = await deleteFileService(chk?.file);
+        const updatePack = { link: link, file: null };
+        const updateDb = await updateUserCertificationService(id, updatePack);
+        return updateDb;
+      } else {
+        const updateDb = await updateUserCertificationService(id, { link: link });
+        return updateDb;
+      }
     }
   } catch (error) {
     console.error(error);
@@ -696,6 +772,23 @@ export const uploadUserCertificationFile = async (id: number, file: any) => {
       const updateDb = await updateInstitutionCertificationService(id, { file: uploadFile.url });
       return updateDb;
     }
+  } else if (session?.user.area === "profesional_general") {
+    const chk = await getCertificationById(id);
+    if (chk?.link) {
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updatePack = { link: null, file: uploadFile.url };
+      const updateDb = await updateUserCertificationService(id, updatePack);
+      return updateDb;
+    } else if (chk?.file) {
+      const deleteBlob = await deleteFileService(chk.file);
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
+      return updateDb;
+    } else {
+      const uploadFile = await uploadFileService(file, "certification", userId);
+      const updateDb = await updateUserCertificationService(id, { file: uploadFile.url });
+      return updateDb;
+    }
   }
 };
 //experience___________________________________________________________________________________
@@ -725,9 +818,15 @@ export const createUserExperience = async (data: any) => {
   try {
     const session = await getServerSession(authOptions);
     const userId = session?.user.id;
-    //ajuste de fecha endDate
+    //ajuste de fechas
+    let startDateFix = data.startDate;
+    if (!startDateFix || startDateFix === "") {
+      startDateFix = null;
+    } else {
+      startDateFix = new Date(data.startDate);
+    }
     let endDateFix = data.endDate;
-    if (endDateFix === "") {
+    if (!endDateFix || endDateFix === "") {
       endDateFix = null;
     } else {
       endDateFix = new Date(data.endDate);
@@ -736,7 +835,7 @@ export const createUserExperience = async (data: any) => {
       user_id: userId,
       title: data.title,
       institution: data.institution,
-      start_date: new Date(data.startDate),
+      start_date: startDateFix,
       end_date: endDateFix,
       country: data.country,
       state: data.state,

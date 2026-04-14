@@ -72,8 +72,17 @@ if (process.env.NODE_ENV === 'production') {
   }
 } else {
   // En desarrollo, usar singleton global para evitar múltiples instancias con HMR
-  if (!(global as any).prisma) {
-    console.log('[DB] Initializing development database connection...');
+  // Invalidar el singleton si el cliente generado no tiene el modelo esperado
+  const existingSingleton = (global as any).prisma;
+  const singletoneIsStale = existingSingleton && !existingSingleton.generalProfesionalSubAreas;
+
+  if (!(global as any).prisma || singletoneIsStale) {
+    if (singletoneIsStale) {
+      console.log('[DB] Stale Prisma singleton detected (missing models), recreating...');
+      try { existingSingleton.$disconnect(); } catch {}
+    } else {
+      console.log('[DB] Initializing development database connection...');
+    }
 
     adapter = new PrismaPg(poolConfig)
     

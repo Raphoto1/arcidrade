@@ -214,5 +214,6 @@ export const pharmacistOptions: any = [
 export const subAreaOptions = [
   { value: 'doctor', label: 'Doctor' },
   { value: 'nurse', label: 'Enfermería' },
-  { value: 'pharmacist', label: 'Farmacéutico' }
+  { value: 'pharmacist', label: 'Farmacéutico' },
+  { value: 'general', label: 'General' }
 ];

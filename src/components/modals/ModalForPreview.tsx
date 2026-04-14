@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 
-export default function ModalForPreview({ children, title }: { title?: string } & React.PropsWithChildren<{}>) {
+export default function ModalForPreview({ children, title, btnClassName, btnStyle, icon }: { title?: string; btnClassName?: string; btnStyle?: React.CSSProperties; icon?: React.ReactNode } & React.PropsWithChildren<{}>) {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const openModal = () => {
@@ -15,11 +15,16 @@ export default function ModalForPreview({ children, title }: { title?: string } 
   return (
     <div>
       <button
-        className='btn h-auto w-auto p-1 min-w-full text-white'
-        style={{ backgroundColor: "var(--main-arci)" }}
+        className={btnClassName || 'btn h-auto w-auto p-1 min-w-full text-white'}
+        style={btnStyle || (btnClassName ? undefined : { backgroundColor: "var(--main-arci)" })}
         onClick={openModal}
       >
-        {title || null}
+        {(icon || title) ? (
+          <span className='flex items-center justify-center gap-2'>
+            {icon}
+            {title || null}
+          </span>
+        ) : null}
       </button>
       <dialog ref={modalRef} className='modal px-2 py-2 sm:px-4' onClick={(event) => event.target === event.currentTarget && modalRef.current?.close()}>
         <div className='modal-box relative w-full max-w-[min(100vw-1rem,72rem)] max-h-[92vh] overflow-y-auto overflow-x-hidden p-4 sm:p-6'>
