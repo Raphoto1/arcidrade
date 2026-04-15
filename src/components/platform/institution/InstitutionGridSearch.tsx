@@ -1,17 +1,19 @@
 'use client';
 import React, { useState, useEffect } from "react";
+import * as XLSX from 'xlsx';
 import InstitutionCard from "../../pieces/InstitutionCard";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import { ImSearch } from "react-icons/im";
-import { FiFilter, FiX, FiChevronLeft, FiChevronRight } from "react-icons/fi";
+import { FiFilter, FiX, FiChevronLeft, FiChevronRight, FiDownload } from "react-icons/fi";
 import { usePaginatedProfesionals } from "@/hooks/usePlatPro";
 import { medicalOptions, nurseOptions, pharmacistOptions, subAreaOptions } from "@/static/data/staticData";
 
 interface InstitutionGridSearchProps {
   isFake?: boolean;
+  showExport?: boolean;
 }
 
-export default function InstitutionGridSearch({ isFake = true }: InstitutionGridSearchProps) {
+export default function InstitutionGridSearch({ isFake = true, showExport = false }: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -20,6 +22,7 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
   const [selectedHomologation, setSelectedHomologation] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
   const [isPageChanging, setIsPageChanging] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const itemsPerPage = 6;
   
   // Función para obtener las opciones de especialidad según el subArea
@@ -105,6 +108,125 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
     setSelectedHomologation(false);
   };
 
+  // Exportar resultados actuales a CSV
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    try {
+      const searchParam = debouncedSearchTerm ? `&search=${encodeURIComponent(debouncedSearchTerm)}` : '';
+      const specialityParam = selectedSpeciality ? `&speciality=${encodeURIComponent(selectedSpeciality)}` : '';
+      const subAreaParam = selectedSubArea ? `&subArea=${encodeURIComponent(selectedSubArea)}` : '';
+      const homologatedAnyParam = selectedHomologation ? `&homologatedAny=true` : '';
+      const url = `/api/platform/profesional/paginated?page=1&limit=1000&status=active&export=true${searchParam}${specialityParam}${subAreaParam}${homologatedAnyParam}`;
+
+      const res = await fetch(url);
+      const json = await res.json();
+
+      if (!res.ok) throw new Error(json?.error || 'Error en la API');
+
+      const profesionals: any[] = json?.data || [];
+      if (profesionals.length === 0) {
+        alert('No hay profesionales para exportar con los filtros actuales.');
+        return;
+      }
+
+      const subAreaLabel = (v: string) => subAreaOptions.find((o) => o.value === v)?.label || v || '-';
+      const yesNo = (v: boolean) => v ? 'Sí' : 'No';
+      const timestamp = new Date().toISOString().slice(0, 10);
+
+      // --- Hoja 1: Resumen general ---
+      const resumenRows = profesionals.map((p: any) => {
+        const pd = p.profesional_data || {};
+        const ms = p.main_study || {};
+        return {
+          'Nombre': pd.name || '-',
+          'Apellido': pd.last_name || '-',
+          'País': pd.country || '-',
+          'Ciudad': pd.city || '-',
+          'Categoría': subAreaLabel(ms.sub_area),
+          'Título principal': ms.title || '-',
+          'Institución estudio': ms.institution || '-',
+          'País de estudio': ms.country || '-',
+          'Homologado UE': yesNo(ms.isHomologated),
+          'Estado': p.status || '-',
+        };
+      });
+
+      // --- Hoja 2: Especializaciones ---
+      const especRows: any[] = [];
+      profesionals.forEach((p: any) => {
+        const pd = p.profesional_data || {};
+        const nombre = `${pd.name || ''} ${pd.last_name || ''}`.trim() || '-';
+        (p.study_specialization || []).forEach((sp: any) => {
+          especRows.push({
+            'Profesional': nombre,
+            'País': pd.country || '-',
+            'Especialización': sp.title || '-',
+            'Categoría esp.': sp.title_category || '-',
+            'Institución': sp.institution || '-',
+            'País inst.': sp.country || '-',
+            'Homologado UE': yesNo(sp.isHomologated),
+          });
+        });
+      });
+
+      // --- Hoja 3: Experiencia ---
+      const expRows: any[] = [];
+      profesionals.forEach((p: any) => {
+        const pd = p.profesional_data || {};
+        const nombre = `${pd.name || ''} ${pd.last_name || ''}`.trim() || '-';
+        (p.experience || []).forEach((ex: any) => {
+          expRows.push({
+            'Profesional': nombre,
+            'País': pd.country || '-',
+            'Cargo / Rol': ex.title || '-',
+            'Empresa / Institución': ex.institution || '-',
+            'País exp.': ex.country || '-',
+            'Desde': ex.start_date ? new Date(ex.start_date).toLocaleDateString('es-ES') : '-',
+            'Hasta': ex.end_date ? new Date(ex.end_date).toLocaleDateString('es-ES') : 'Actualidad',
+          });
+        });
+      });
+
+      // --- Hoja 4: Certificaciones ---
+      const certRows: any[] = [];
+      profesionals.forEach((p: any) => {
+        const pd = p.profesional_data || {};
+        const nombre = `${pd.name || ''} ${pd.last_name || ''}`.trim() || '-';
+        (p.profesional_certifications || []).forEach((c: any) => {
+          certRows.push({
+            'Profesional': nombre,
+            'País': pd.country || '-',
+            'Certificación': c.title || '-',
+            'Institución': c.institution || '-',
+            'Homologado UE': yesNo(c.isHomologated),
+          });
+        });
+      });
+
+      // --- Construir el workbook ---
+      const wb = XLSX.utils.book_new();
+      const addSheet = (data: any[], name: string) => {
+        const ws = XLSX.utils.json_to_sheet(data.length > 0 ? data : [{ '(sin datos)': '' }]);
+        // Ancho automático
+        const cols = Object.keys(data[0] || { '(sin datos)': '' }).map((k) => ({ wch: Math.max(k.length, 14) }));
+        ws['!cols'] = cols;
+        XLSX.utils.book_append_sheet(wb, ws, name);
+      };
+
+      addSheet(resumenRows, 'Resumen');
+      addSheet(especRows, 'Especializaciones');
+      addSheet(expRows, 'Experiencia');
+      addSheet(certRows, 'Certificaciones');
+
+      XLSX.writeFile(wb, `profesionales_${timestamp}.xlsx`);
+    } catch (e) {
+      console.error('Error al exportar:', e);
+      alert('Error al exportar. Intenta de nuevo.');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   // Verificar si hay filtros activos
   const hasActiveFilters = debouncedSearchTerm || selectedSpeciality || selectedSubArea || selectedHomologation;
 
@@ -141,6 +263,22 @@ export default function InstitutionGridSearch({ isFake = true }: InstitutionGrid
               <div className="loading loading-spinner loading-xs ml-1"></div>
             )}
           </button>
+
+          {/* Botón de exportar CSV */}
+          {showExport && (
+            <button
+              onClick={handleExportCSV}
+              disabled={isExporting}
+              className="btn btn-sm w-full bg-(--main-arci) text-white hover:bg-(--soft-arci) border-none sm:w-auto flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isExporting ? (
+                <div className="loading loading-spinner loading-xs" />
+              ) : (
+                <FiDownload size={16} />
+              )}
+              {isExporting ? 'Exportando...' : 'Exportar Excel'}
+            </button>
+          )}
         </div>
 
         {/* Panel de filtros */}

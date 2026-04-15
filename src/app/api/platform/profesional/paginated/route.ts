@@ -12,10 +12,13 @@ export const GET = async (request: NextRequest) => {
     const status = searchParams.get('status') || 'active'; // Por defecto 'active'
     const homologatedAny = searchParams.get('homologatedAny') === 'true';
 
+    const isExport = searchParams.get('export') === 'true';
+    const maxLimit = isExport ? 1000 : 50;
+
     // Validar parámetros
-    if (page < 1 || limit < 1 || limit > 50) {
+    if (page < 1 || limit < 1 || limit > maxLimit) {
       return NextResponse.json({ 
-        error: "Parámetros inválidos. Page debe ser >= 1, limit debe estar entre 1 y 50" 
+        error: `Parámetros inválidos. Page debe ser >= 1, limit debe estar entre 1 y ${maxLimit}` 
       }, { status: 400 });
     }
 

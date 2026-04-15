@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 //imports Propios
 import Grid from "../../pieces/Grid";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
@@ -28,6 +28,8 @@ import ConfirmMakeProcessAutoForm from "@/components/forms/platform/victor/Confi
 import Loader from "@/components/pieces/Loader";
 import ExportProcessExcelForm from "@/components/forms/platform/process/ExportProcessExcelForm";
 import RichTextDisplay from "@/components/ui/RichTextDisplay";
+import { FiDownload } from "react-icons/fi";
+import * as XLSX from 'xlsx';
 
 export default function ProcessVictor(props: any) {
   const { data, error, isLoading, mutate } = useProcess(props.id);
@@ -42,6 +44,47 @@ export default function ProcessVictor(props: any) {
   const profesionalsArci = profesionalsSelected?.payload?.filter((profesional: any) => profesional.is_arcidrade) || [];
   const existingCandidateIds = profesionalsSelected?.payload?.map((profesional: any) => profesional.profesional_id) || [];
   const { diasRestantesFormateados } = useCalcApprovalDate(processData?.start_date, processData?.approval_date);
+
+  const [isExportingSection, setIsExportingSection] = useState(false);
+
+  const handleExportSection = async (candidates: any[], sectionTitle: string) => {
+    if (isExportingSection || candidates.length === 0) return;
+    setIsExportingSection(true);
+    try {
+      const rows: any[] = [];
+      for (const candidate of candidates) {
+        const res = await fetch(`/api/platform/profesional/${candidate.profesional_id}`);
+        if (!res.ok) continue;
+        const result = await res.json();
+        const payload = result?.payload;
+        const pData = payload?.profesional_data || {};
+        const mainStudy = payload?.main_study || {};
+        rows.push({
+          "Profesional Id": candidate.profesional_id ?? "",
+          Nombre: [pData.name, pData.last_name].filter(Boolean).join(" ") || pData.fake_name || "",
+          Email: payload?.email ?? "",
+          Teléfono: pData.phone ?? "",
+          País: pData.country ?? "",
+          Ciudad: pData.city ?? "",
+          "Estado Proceso": candidate.status ?? "",
+          "Agregado Por": candidate.added_by ?? "",
+          Feedback: candidate.feedback ?? "",
+          "Fecha Agregado": candidate.created_at ? new Date(candidate.created_at).toLocaleDateString("es-ES") : "",
+          "Estudio Principal": mainStudy.title ?? "",
+          "Estado Estudio": mainStudy.status ?? "",
+        });
+      }
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows.length > 0 ? rows : [{}]), sectionTitle.substring(0, 31));
+      const date = new Date().toISOString().split("T")[0];
+      const safeName = sectionTitle.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/\s+/g, "_");
+      XLSX.writeFile(wb, `${safeName}_${date}.xlsx`);
+    } catch {
+      alert("Error al exportar. Intente nuevamente.");
+    } finally {
+      setIsExportingSection(false);
+    }
+  };
 
   // Memoizar el formateo de fecha para evitar recálculos
   const formattedStartDate = useMemo(() => {
@@ -155,6 +198,7 @@ export default function ProcessVictor(props: any) {
                   addedBy='arcidrade'
                   isArci={true}
                   existingCandidateIds={existingCandidateIds}
+                  showExport={true}
                 />
               </ModalForPreviewBtnLong>
             )}
@@ -224,7 +268,22 @@ export default function ProcessVictor(props: any) {
         </div>
       </div>
       <div className='w-full pt-2'>
-        <h2 className='text-xl font-bold text-(--main-arci) text-center mb-4'>Seleccionados</h2>
+        <div className='flex items-center justify-center gap-3 mb-4'>
+          <h2 className='text-xl font-bold text-(--main-arci)'>Seleccionados</h2>
+          {profesionals.length > 0 && (
+            <button
+              onClick={() => handleExportSection(profesionals, "Seleccionados")}
+              disabled={isExportingSection}
+              className='btn btn-sm bg-white border border-gray-300 hover:bg-gray-50 flex items-center gap-2 disabled:opacity-50'>
+              {isExportingSection ? (
+                <div className="loading loading-spinner loading-xs"></div>
+              ) : (
+                <FiDownload size={14} />
+              )}
+              Exportar
+            </button>
+          )}
+        </div>
         <div className={`w-full bg-gray-100 rounded-lg p-4 ${profesionals?.length > 0 ? "min-h-50" : "h-auto"}`}>
           {profesionals?.length > 0 ? (
             <Grid>
@@ -248,6 +307,7 @@ export default function ProcessVictor(props: any) {
                     processId={processData?.id}
                     processPosition={processData?.position}
                     existingCandidateIds={existingCandidateIds}
+                    showExport={true}
                   />
                 </ModalForPreviewBtnLong>
               )}
@@ -264,7 +324,22 @@ export default function ProcessVictor(props: any) {
       </div>
       {processData?.type == "arcidrade" ? (
         <div className='w-full pt-2'>
-          <h2 className='text-xl font-bold text-(--main-arci) text-center mb-4'>Seleccionados Arcidrade</h2>
+          <div className='flex items-center justify-center gap-3 mb-4'>
+            <h2 className='text-xl font-bold text-(--main-arci)'>Seleccionados Arcidrade</h2>
+            {profesionalsArci.length > 0 && (
+              <button
+                onClick={() => handleExportSection(profesionalsArci, "Seleccionados Arcidrade")}
+                disabled={isExportingSection}
+                className='btn btn-sm bg-white border border-gray-300 hover:bg-gray-50 flex items-center gap-2 disabled:opacity-50'>
+                {isExportingSection ? (
+                  <div className="loading loading-spinner loading-xs"></div>
+                ) : (
+                  <FiDownload size={14} />
+                )}
+                Exportar
+              </button>
+            )}
+          </div>
           <div className={`w-full bg-gray-100 rounded-lg p-4 ${profesionalsArci?.length > 0 ? "min-h-50" : "h-auto"}`}>
             {profesionalsArci?.length > 0 ? (
               <Grid>

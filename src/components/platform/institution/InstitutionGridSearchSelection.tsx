@@ -3,9 +3,10 @@ import React, { useState, useEffect } from "react";
 import InstitutionCard from "../../pieces/InstitutionCard";
 import ProfesionalCard from "@/components/pieces/ProfesionalCard";
 import { ImSearch } from "react-icons/im";
-import { FiFilter, FiX } from "react-icons/fi";
+import { FiFilter, FiX, FiDownload } from "react-icons/fi";
 import { usePaginatedProfesionals } from "@/hooks/usePlatPro";
 import { medicalOptions, nurseOptions, pharmacistOptions } from "@/static/data/staticData";
+import * as XLSX from 'xlsx';
 
 interface InstitutionGridSearchProps {
   isFake?: boolean;
@@ -17,6 +18,7 @@ interface InstitutionGridSearchProps {
   lockedSubArea?: string;
   lockedSpeciality?: string;
   lockSpeciality?: boolean;
+  showExport?: boolean;
 }
 //REVISAR ADDEDBY CON MIGRATION
 export default function InstitutionGridSearchSelection({
@@ -29,6 +31,7 @@ export default function InstitutionGridSearchSelection({
   lockedSubArea,
   lockedSpeciality,
   lockSpeciality = false,
+  showExport = false,
 }: InstitutionGridSearchProps) {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchTerm, setSearchTerm] = useState("");
@@ -37,6 +40,7 @@ export default function InstitutionGridSearchSelection({
   const [selectedSubArea, setSelectedSubArea] = useState(lockedSubArea || "");
   const [selectedHomologation, setSelectedHomologation] = useState(false);
   const [showFilters, setShowFilters] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const itemsPerPage = 9;
   const isSpecialityLocked = Boolean(lockSpeciality && lockedSpeciality);
 
@@ -150,6 +154,93 @@ export default function InstitutionGridSearchSelection({
   // Verificar si hay filtros activos
   const hasActiveFilters = debouncedSearchTerm || selectedSpeciality || selectedSubArea || selectedHomologation;
 
+  const handleExportXLSX = async () => {
+    setIsExporting(true);
+    try {
+      const params = new URLSearchParams({
+        page: "1",
+        limit: "1000",
+        status: "active",
+        export: "true",
+      });
+      if (debouncedSearchTerm) params.set("search", debouncedSearchTerm);
+      if (selectedSpeciality) params.set("speciality", selectedSpeciality);
+      if (selectedSubArea) params.set("subArea", getSubAreaForAPI());
+      if (selectedHomologation) params.set("homologated", "true");
+
+      const res = await fetch(`/api/platform/profesional/paginated?${params.toString()}`);
+      if (!res.ok) throw new Error("Error al obtener datos");
+      const result = await res.json();
+      const data = result.data || [];
+
+      const resumen = data.map((p: any) => ({
+        Nombre: p.profesional_data?.name ?? "",
+        Apellido: p.profesional_data?.last_name ?? "",
+        País: p.profesional_data?.country ?? "",
+        Ciudad: p.profesional_data?.city ?? "",
+        Categoría: p.profesional_data?.sub_area ?? "",
+        "Título principal": p.main_study?.title ?? "",
+        "Institución estudio": p.main_study?.institution ?? "",
+        "País de estudio": p.main_study?.country ?? "",
+        "Homologado UE": p.main_study?.homologated ? "Sí" : "No",
+        Estado: p.main_study?.status ?? "",
+      }));
+
+      const especializaciones: any[] = [];
+      data.forEach((p: any) => {
+        (p.specializations || []).forEach((s: any) => {
+          especializaciones.push({
+            Nombre: p.profesional_data?.name ?? "",
+            Apellido: p.profesional_data?.last_name ?? "",
+            Especialización: s.speciality ?? "",
+            Área: s.area ?? "",
+          });
+        });
+      });
+
+      const experiencia: any[] = [];
+      data.forEach((p: any) => {
+        (p.experiences || []).forEach((e: any) => {
+          experiencia.push({
+            Nombre: p.profesional_data?.name ?? "",
+            Apellido: p.profesional_data?.last_name ?? "",
+            Institución: e.institution ?? "",
+            Puesto: e.position ?? "",
+            "Fecha Inicio": e.start_date ? new Date(e.start_date).toLocaleDateString("es-ES") : "",
+            "Fecha Fin": e.end_date ? new Date(e.end_date).toLocaleDateString("es-ES") : "",
+            "En curso": e.current ? "Sí" : "No",
+          });
+        });
+      });
+
+      const certificaciones: any[] = [];
+      data.forEach((p: any) => {
+        (p.certifications || []).forEach((c: any) => {
+          certificaciones.push({
+            Nombre: p.profesional_data?.name ?? "",
+            Apellido: p.profesional_data?.last_name ?? "",
+            Certificación: c.title ?? "",
+            Institución: c.institution ?? "",
+            Año: c.year ?? "",
+          });
+        });
+      });
+
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(resumen.length > 0 ? resumen : [{}]), "Resumen");
+      if (especializaciones.length > 0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(especializaciones), "Especializaciones");
+      if (experiencia.length > 0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(experiencia), "Experiencia");
+      if (certificaciones.length > 0) XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(certificaciones), "Certificaciones");
+
+      const date = new Date().toISOString().split("T")[0];
+      XLSX.writeFile(wb, `candidatos_${date}.xlsx`);
+    } catch {
+      alert("Error al exportar. Intente nuevamente.");
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   // Mostrar error solo si hay error
   // Mostrar error con más detalle
   if (error) {
@@ -188,6 +279,21 @@ export default function InstitutionGridSearchSelection({
               <div className="loading loading-spinner loading-xs ml-1"></div>
             )}
           </button>
+
+          {/* Botón de exportar */}
+          {showExport && (
+            <button
+              onClick={handleExportXLSX}
+              disabled={isExporting}
+              className='btn btn-sm w-full bg-white border border-gray-300 hover:bg-gray-50 sm:w-auto flex items-center gap-2 disabled:opacity-50'>
+              {isExporting ? (
+                <div className="loading loading-spinner loading-xs"></div>
+              ) : (
+                <FiDownload size={16} />
+              )}
+              {isExporting ? "Exportando..." : "Exportar Excel"}
+            </button>
+          )}
         </div>
 
         {/* Panel de filtros */}

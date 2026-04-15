@@ -11,6 +11,7 @@ export default function CompleteInvitationByProcess() {
   const params = useParams() as { id?: string | string[] };
   const searchParams = useSearchParams();
   const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [processData, setProcessData] = useState<any>(null);
@@ -167,6 +168,11 @@ export default function CompleteInvitationByProcess() {
       return;
     }
 
+    if (!acceptedTerms) {
+      alert("Debes aceptar los términos y condiciones para continuar");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -175,6 +181,7 @@ export default function CompleteInvitationByProcess() {
         password: formData.password,
         accountType: "profesional",
         processId,
+        termsAccepted: acceptedTerms,
       };
       payload.nombre = formData.nombre;
       payload.sub_area = formData.sub_area;
@@ -366,11 +373,44 @@ export default function CompleteInvitationByProcess() {
                 </div>
               </div>
 
-              <div className='grid grid-cols-2 justify-center gap-2 items-center align-middle mt-6'>
+              {/* Términos y condiciones */}
+              <div className='flex items-start gap-3 mt-6 bg-white rounded-md px-4 py-3 border border-gray-300'>
                 <button
-                  className='btn btn-wide bg-(--main-arci) text-white hover:bg-(--soft-arci) font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105'
+                  type='button'
+                  role='checkbox'
+                  aria-checked={acceptedTerms}
+                  onClick={() => setAcceptedTerms(!acceptedTerms)}
+                  className={`mt-0.5 shrink-0 w-5 h-5 rounded border-2 flex items-center justify-center transition-colors ${
+                    acceptedTerms
+                      ? 'bg-(--main-arci) border-(--main-arci)'
+                      : 'bg-white border-gray-400'
+                  }`}
+                >
+                  {acceptedTerms && (
+                    <svg className='w-3 h-3 text-white' fill='none' viewBox='0 0 12 12' stroke='currentColor' strokeWidth={2.5}>
+                      <path strokeLinecap='round' strokeLinejoin='round' d='M2 6l3 3 5-5' />
+                    </svg>
+                  )}
+                </button>
+                <span onClick={() => setAcceptedTerms(!acceptedTerms)} className='text-sm text-gray-700 cursor-pointer'>
+                  He leído y acepto los{' '}
+                  <a
+                    href='/terminos'
+                    target='_blank'
+                    rel='noopener noreferrer'
+                    className='text-(--main-arci) underline hover:text-(--soft-arci) font-medium'
+                  >
+                    términos y condiciones
+                  </a>{' '}
+                  de uso de la plataforma.
+                </span>
+              </div>
+
+              <div className='grid grid-cols-2 justify-center gap-2 items-center align-middle mt-4'>
+                <button
+                  className='btn btn-wide bg-(--main-arci) text-white hover:bg-(--soft-arci) font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none'
                   type='submit'
-                  disabled={loading}
+                  disabled={loading || !acceptedTerms}
                 >
                   {loading ? (
                     <>
