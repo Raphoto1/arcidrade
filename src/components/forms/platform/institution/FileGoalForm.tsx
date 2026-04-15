@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { useProfesional, useProfesionalCertifications, useProfesionalExperience, useProfesionalExperiences, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function FileGoalForm(id: any) {
   const { mutate } = useProfesionalExperiences();
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const path = `/api/platform/upload/goal/${id.id}`
   const [type, setType] = useState("archivo"); // Inicializa el tipo como archivo
   const {
@@ -25,14 +27,22 @@ export default function FileGoalForm(id: any) {
       formData = new FormData();
       formData.append("file", file);
     }
-    const res = await fetch(path, {
-      method: "POST",
-      body: formData,
-    });
-    const result = await res.json();
-
-    mutate();
-    closeModal();
+    try {
+      const res = await fetch(path, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        showToast(result?.error || "No se pudo guardar el respaldo del logro", "error");
+        return;
+      }
+      showToast("Respaldo del logro guardado correctamente", "success");
+      mutate();
+      closeModal();
+    } catch {
+      showToast("Error de conexión al guardar el respaldo", "error");
+    }
   });
 
   return (

@@ -27,7 +27,7 @@ export const POST = async (req: NextRequest, { params }: any) => {
       return NextResponse.json({ error: "Error al agregar cv" }, { status: 400 });
     }
   } catch (error) {
-    console.error("Error in Profesional API: delete", error);
-    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+    const message = error instanceof Error ? error.message : "Error al guardar respaldo de certificación";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 };

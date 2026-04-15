@@ -1,5 +1,12 @@
 import type { NextConfig } from "next";
 
+// Extrae el store ID del token: vercel_blob_rw_{STORE_ID}_{SECRET}
+const blobToken = process.env.BLOB_READ_WRITE_TOKEN ?? "";
+const blobStoreId = blobToken.split("_")[3]?.toLowerCase() ?? "";
+const blobHostname = blobStoreId
+  ? `${blobStoreId}.public.blob.vercel-storage.com`
+  : null;
+
 const nextConfig: NextConfig = {
   /* config options here */
   eslint: {
@@ -18,8 +25,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL("https://images.pexels.com/photos/**"),
       new URL("https://img.daisyui.com/**"),
-      new URL("https://my-store-id.public.blob.vercel-storage.com/**"),
-      { hostname: "*.public.blob.vercel-storage.com" },
+      ...(blobHostname ? [{ hostname: blobHostname }] : []),
       { hostname: "avatars.githubusercontent.com" }
     ],
   },

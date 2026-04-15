@@ -12,6 +12,7 @@ import { useProfesionalFull, useProfesionalGeneral } from "@/hooks/usePlatPro";
 import ModalForPreviewTextLink from "@/components/modals/ModalForPreviewTextLink";
 import UserDescription from "./UserDescription";
 import { useHandleCategoryName } from "@/hooks/useUtils";
+import FilePreviewModal from "@/components/platform/pieces/FilePreviewModal";
 
 export default function ProfesionalDetailFull({ hideEspecialidad = false }: { hideEspecialidad?: boolean }) {
   const { data, error, isLoading } = useProfesionalFull();
@@ -111,9 +112,7 @@ export default function ProfesionalDetailFull({ hideEspecialidad = false }: { hi
             {personalData.cv_file ? (
               <div className='flex flex-col'>
                 <span>CV Archivo:</span>
-                <a href={personalData.cv_file} target='_blank' rel='noopener noreferrer' className='text-accent link'>
-                  Previsualizar
-                </a>
+                <FilePreviewModal url={personalData.cv_file} label="Ver CV" btnClassName="text-accent link btn btn-sm btn-ghost p-0 h-auto min-h-0 font-normal" />
               </div>
             ) : null}
             {!personalData.cv_link && !personalData.cv_file ? <span>Aún no existe CV registrada.</span> : null}

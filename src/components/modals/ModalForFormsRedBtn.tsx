@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import { ModalContext } from "@context/ModalContext";
+import ModalToastContainer from "./ModalToastContainer";
 
 interface ModalProps {
   title?: string;
@@ -34,6 +35,7 @@ export default function ModalForFormsRedBtn({ children, title }: ModalProps) {
               </h2>
             )}
             {children}
+            <ModalToastContainer />
           </div>
         </ModalContext.Provider>
       </dialog>

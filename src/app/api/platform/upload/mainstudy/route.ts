@@ -31,7 +31,8 @@ export async function POST(request: Request): Promise<NextResponse> {
       return NextResponse.json({ error: "Error al agregar cv" }, { status: 400 });
     }
   } catch (error) {
-    return NextResponse.json({ error: "Error al agregar cv" }, { status: 400 });
+    const message = error instanceof Error ? error.message : "Error al actualizar título principal";
+    return NextResponse.json({ error: message }, { status: 400 });
   }
 }
 

@@ -246,17 +246,14 @@ export const getProfesionalByReferCode = async (refCode: string) => {
 export const uploadUserCv = async (file: File) => {
   try {
     const session = await getServerSession(authOptions);
-    let userId = session?.user.id;
+    if (!session?.user.id) throw new Error("Sesión inválida");
+    const userId = session.user.id;
     const chkUserCvFile = await getUserData();
     if (chkUserCvFile[0].cv_file) {
-      const deleteFile = await deleteFileService(chkUserCvFile[0].cv_file);
-    }
-    if (!session) {
-      userId = "error";
+      await deleteFileService(chkUserCvFile[0].cv_file);
     }
     const uploadResult = await uploadFileService(file, `cv`, userId);
-    //obtengo la url del archivo y la cargo a la db
-    const cvUrl = await uploadResult?.url;
+    const cvUrl = uploadResult?.url;
     const dbUpdate = await updateUserData({ cv_file: cvUrl });
     return dbUpdate;
   } catch (error) {

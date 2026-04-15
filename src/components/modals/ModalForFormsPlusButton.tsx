@@ -1,6 +1,7 @@
 "use client";
 import React, { useRef } from "react";
 import { ModalContext } from "@context/ModalContext";
+import ModalToastContainer from "./ModalToastContainer";
 import { FaPlusCircle } from "react-icons/fa";
 import { CiCirclePlus } from "react-icons/ci";
 
@@ -36,6 +37,7 @@ export default function ModalForFormsPlusButton({ children, title }: ModalProps)
               </h2>
             )}
             {children}
+            <ModalToastContainer />
           </div>
         </ModalContext.Provider>
       </dialog>

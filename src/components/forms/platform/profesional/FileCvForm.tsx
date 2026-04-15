@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { useProfesional } from "@/hooks/usePlatPro";
 
 export default function FileCvForm() {
   const {mutate} =useProfesional()
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const [type, setType] = useState("archivo"); // Inicializa el tipo como archivo
   const {
     register,
@@ -24,14 +26,22 @@ export default function FileCvForm() {
       formData = new FormData();
       formData.append("file", file);
     }
-    const res = await fetch(`/api/platform/upload/cv`, {
-      method: "POST",
-      body: formData,
-    });
-    const result = await res.json();
-
-    mutate();
-    closeModal();
+    try {
+      const res = await fetch(`/api/platform/upload/cv`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        showToast(result?.error || "No se pudo actualizar el curriculum", "error");
+        return;
+      }
+      showToast("Curriculum actualizado correctamente", "success");
+      mutate();
+      closeModal();
+    } catch {
+      showToast("Error de conexión al actualizar el curriculum", "error");
+    }
   });
 
   return (

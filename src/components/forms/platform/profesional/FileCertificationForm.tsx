@@ -2,12 +2,14 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { useProfesional, useProfesionalCertifications, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 import { mutate as globalMutate } from "swr";
 
 export default function FileCertificationForm(id: any) {
   const { mutate } = useProfesionalCertifications();
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const path = `/api/platform/upload/certification/${id.id}`
   const [type, setType] = useState("archivo"); // Inicializa el tipo como archivo
   const {
@@ -26,15 +28,23 @@ export default function FileCertificationForm(id: any) {
       formData = new FormData();
       formData.append("file", file);
     }
-    const res = await fetch(path, {
-      method: "POST",
-      body: formData,
-    });
-    const result = await res.json();
-
-    mutate();
-    globalMutate("/api/platform/profesional/complete");
-    closeModal();
+    try {
+      const res = await fetch(path, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        showToast(result?.error || "No se pudo guardar el respaldo de certificación", "error");
+        return;
+      }
+      showToast("Respaldo de certificación guardado correctamente", "success");
+      mutate();
+      globalMutate("/api/platform/profesional/complete");
+      closeModal();
+    } catch {
+      showToast("Error de conexión al guardar el respaldo", "error");
+    }
   });
 
   return (

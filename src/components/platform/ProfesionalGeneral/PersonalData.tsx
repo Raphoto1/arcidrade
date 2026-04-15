@@ -13,6 +13,7 @@ import ProfesionalGeneralProfileHookForm from "@/components/forms/platform/profe
 import FileCvFormGeneral from "@/components/forms/platform/profesional-general/FileCvForm";
 import ConfirmDeleteCvFormGeneral from "@/components/forms/platform/profesional-general/ConfirmDeleteCvForm";
 import FileMainStudyFormGeneral from "@/components/forms/platform/profesional-general/FileMainStudyForm";
+import FilePreviewModal from "@/components/platform/pieces/FilePreviewModal";
 import ConfirmDeleteMainStudyFormGeneral from "@/components/forms/platform/profesional-general/ConfirmDeleteMainStudyForm";
 import Loader from "@/components/pieces/Loader";
 import { useHandleStatusName } from "@/hooks/useUtils";
@@ -92,9 +93,7 @@ export default function PersonalData() {
           ) : personalData.cv_file ? (
             <div className="flex flex-col">
               <span>Archivo</span>
-              <a className="link text-blue-300" href={personalData.cv_file} target="_blank" rel="noopener noreferrer">
-                Previsualizar
-              </a>
+              <FilePreviewModal url={personalData.cv_file} label="Ver CV" btnClassName="link text-blue-300 btn btn-sm btn-ghost p-0 h-auto min-h-0 font-normal" />
             </div>
           ) : (
             <span>Aún no existe CV registrada.</span>

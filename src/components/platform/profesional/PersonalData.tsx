@@ -18,6 +18,7 @@ import FileMainStudyForm from "@/components/forms/platform/profesional/FileMainS
 import ConfirmDeleteMainStudyForm from "@/components/forms/platform/profesional/ConfirmDeleteMainStudyForm";
 import { useProfesional } from "@/hooks/usePlatPro";
 import { useHandleStatusName, useHandleCategoryName } from "@/hooks/useUtils";
+import FilePreviewModal from "@/components/platform/pieces/FilePreviewModal";
 import Loader from "@/components/pieces/Loader";
 
 export default function PersonalData() {
@@ -85,9 +86,7 @@ export default function PersonalData() {
           ) : personalData?.cv_file ? (
             <div className='flex flex-col'>
               <span>Archivo</span>
-              <a className='link text-blue-300' href={personalData.cv_file} target='_blank' rel='noopener noreferrer'>
-                Previsualizar
-              </a>
+              <FilePreviewModal url={personalData.cv_file} label="Ver CV" btnClassName="link text-blue-300 btn btn-sm btn-ghost p-0 h-auto min-h-0 font-normal" />
             </div>
           ) : (
             <span>Aún no existe CV registrada.</span>
@@ -169,9 +168,7 @@ export default function PersonalData() {
               </a>
             ) : null}
             {studyData?.file ? (
-              <a href={studyData.file} target='_blank' rel='noopener noreferrer' className='text-(--main-arci) link'>
-                Previsualizar Archivo
-              </a>
+              <FilePreviewModal url={studyData.file} label="Ver Título" btnClassName="text-(--main-arci) link btn btn-sm btn-ghost p-0 h-auto min-h-0 font-normal" />
             ) : null}
             {!studyData?.link && !studyData?.file && <p className='text-(--main-arci)'>No Cargado</p>}
           </div>
@@ -192,7 +189,7 @@ export default function PersonalData() {
             </div>
           ) : null}
 
-          <ModalForForm title={personalData?.name == null ? "Agregar Información" : "Modificar"}>
+          <ModalForForm title={personalData?.name == null ? "Agregar Información" : "Modificar Perfil"}>
             <ProfesionalProfileHookForm />
           </ModalForForm>
         </div>

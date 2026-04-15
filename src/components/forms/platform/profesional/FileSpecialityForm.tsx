@@ -2,11 +2,13 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { useProfesional, useProfesionalSpecialities } from "@/hooks/usePlatPro";
 
 export default function FileSpecialityForm(id: any) {
   const { mutate } = useProfesionalSpecialities();
   const { closeModal } = useModal();
+  const { showToast } = useToast();
   const path = `/api/platform/upload/specialization/${id.id}`
   const [type, setType] = useState("archivo"); // Inicializa el tipo como archivo
   const {
@@ -25,14 +27,22 @@ export default function FileSpecialityForm(id: any) {
       formData = new FormData();
       formData.append("file", file);
     }
-    const res = await fetch(path, {
-      method: "POST",
-      body: formData,
-    });
-    const result = await res.json();
-
-    mutate();
-    closeModal();
+    try {
+      const res = await fetch(path, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        showToast(result?.error || "No se pudo guardar el respaldo de especialidad", "error");
+        return;
+      }
+      showToast("Respaldo de especialidad guardado correctamente", "success");
+      mutate();
+      closeModal();
+    } catch {
+      showToast("Error de conexión al guardar el respaldo", "error");
+    }
   });
 
   return (

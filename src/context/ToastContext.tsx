@@ -10,6 +10,8 @@ interface Toast {
 
 interface ToastContextType {
   showToast: (message: string, type: 'success' | 'error' | 'info' | 'warning') => void;
+  toasts: Toast[];
+  removeToast: (id: number) => void;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -46,7 +48,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <ToastContext.Provider value={{ showToast }}>
+    <ToastContext.Provider value={{ showToast, toasts, removeToast }}>
       {children}
       <div className="toast toast-top toast-end z-9999">
         {toasts.map(toast => (

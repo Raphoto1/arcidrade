@@ -2,11 +2,13 @@
 import React from "react";
 import { useForm } from "react-hook-form";
 import { useModal } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 import { useProfesionalGeneral } from "@/hooks/usePlatPro";
 
 export default function AvatarFormGeneral() {
   const { mutate } = useProfesionalGeneral();
   const { closeModal } = useModal();
+  const { showToast } = useToast();
 
   const { register, handleSubmit } = useForm();
 
@@ -14,13 +16,22 @@ export default function AvatarFormGeneral() {
     const file = data.file?.[0];
     const formData = new FormData();
     formData.append("file", file);
-    const res = await fetch(`/api/platform/upload/avatar`, {
-      method: "POST",
-      body: formData,
-    });
-    await res.json();
-    mutate();
-    closeModal();
+    try {
+      const res = await fetch(`/api/platform/upload/avatar`, {
+        method: "POST",
+        body: formData,
+      });
+      const result = await res.json();
+      if (!res.ok) {
+        showToast(result?.error || "No se pudo actualizar la imagen de perfil", "error");
+        return;
+      }
+      showToast("Imagen de perfil actualizada correctamente", "success");
+      mutate();
+      closeModal();
+    } catch {
+      showToast("Error de conexión al actualizar la imagen de perfil", "error");
+    }
   });
 
   return (

@@ -8,6 +8,7 @@ import ConfirmDeleteCertificationForm from "@/components/forms/platform/profesio
 import ModalForFormsSoftBlue from "@/components/modals/ModalForFormsSoftBlue";
 import FileCertificationForm from "@/components/forms/platform/profesional/FileCertificationForm";
 import ProfesionalCertificationUpdateForm from "@/components/forms/platform/profesional/ProfesionalCertificationUpdateForm";
+import FilePreviewModal from "@/components/platform/pieces/FilePreviewModal";
 
 export default function Certificate(props: any) {
   const date = new Date(props.end_date);
@@ -38,9 +39,7 @@ export default function Certificate(props: any) {
           {props.file ? (
             <div>
               <h4 className='mt-2 font-semibold'>Archivo</h4>
-              <a href={props.file} target='_blank' className='text-sm text-gray-700'>
-                preview
-              </a>
+              <FilePreviewModal url={props.file} label="Ver archivo" btnClassName="btn btn-sm btn-ghost text-sm text-gray-700 p-0 h-auto min-h-0" />
             </div>
           ) : null}
         </div>

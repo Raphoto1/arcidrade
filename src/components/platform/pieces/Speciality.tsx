@@ -9,6 +9,7 @@ import ModalForFormsSoftBlue from "@/components/modals/ModalForFormsSoftBlue";
 import FileSpecialityForm from "@/components/forms/platform/profesional/FileSpecialityForm";
 import ProfesionalSpecialityUpdateForm from "@/components/forms/platform/profesional/ProfesionalSpecialityUpdateForm";
 import { useProfesionalSpecialities } from "@/hooks/usePlatPro";
+import FilePreviewModal from "@/components/platform/pieces/FilePreviewModal";
 
 export default function Speciality(props: any) {
   const {mutate} = useProfesionalSpecialities()
@@ -66,7 +67,7 @@ export default function Speciality(props: any) {
           </div> : null}
           {props.file?<div>
             <h4 className='mt-2 font-semibold'>Archivo</h4>
-            <a href={props.file} target="_blank" className='text-sm text-gray-700 link'>preview</a>
+            <FilePreviewModal url={props.file} label="Ver archivo" btnClassName="btn btn-sm btn-ghost text-sm text-gray-700 p-0 h-auto min-h-0" />
           </div>:null}
         </div>
 
