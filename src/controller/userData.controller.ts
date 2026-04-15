@@ -87,6 +87,11 @@ export const createUserData = async (data: any) => {
         const resultUserData = await createUserDataService(profesionalDataPack);
         
         const resultMainStudy = await createUserDataMainStudy(profesionalMainStudyPack);
+
+        await upsertProfesionalExtraDataDao(session.user.id, {
+          has_european_docs: Boolean(data.hasEuropeanDocs),
+          needs_sponsor: Boolean(data.needsSponsor),
+        });
         
         const updateAuthStatus = await updateProfesionalAuthStatusDao(session.user.id, "active");
         

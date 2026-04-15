@@ -5,7 +5,7 @@ import { addProfesionalToProcess } from "@/controller/process.controller";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { email, password, nombre, sub_area, accountType, institutionName, processId, process_id } = body;
+    const { email, password, nombre, sub_area, accountType, institutionName, processId, process_id, termsAccepted } = body;
 
     // Validaciones básicas
     if (!email || !password || !accountType) {
@@ -55,7 +55,8 @@ export async function POST(request: Request) {
       nombre, 
       sub_area, 
       accountType,
-      institutionName
+      institutionName,
+      termsAccepted === true
     );
 
     if (!user) {

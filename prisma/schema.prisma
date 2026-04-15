@@ -33,6 +33,7 @@ model Auth {
   fail_mail                  fail_mail?
   colaborator_data           colaborator_data[]
   profesional_extra_data     Profesional_extra_data?
+  institution_extra_data     Institution_extra_data?
 
   // Índices para mejorar performance de queries
   @@index([status])
@@ -41,13 +42,25 @@ model Auth {
 }
 
 model Profesional_extra_data {
-  id                  Int      @id @default(autoincrement())
-  user_id             String   @unique
-  has_european_docs   Boolean  @default(false)
-  needs_sponsor       Boolean  @default(false)
-  created_at          DateTime @default(now())
-  updated_at          DateTime @updatedAt
-  auth                Auth     @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
+  id                  Int       @id @default(autoincrement())
+  user_id             String    @unique
+  has_european_docs   Boolean   @default(false)
+  needs_sponsor       Boolean   @default(false)
+  terms_accepted      Boolean   @default(false)
+  terms_accepted_at   DateTime?
+  created_at          DateTime  @default(now())
+  updated_at          DateTime  @updatedAt
+  auth                Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
+}
+
+model Institution_extra_data {
+  id                Int       @id @default(autoincrement())
+  user_id           String    @unique
+  terms_accepted    Boolean   @default(false)
+  terms_accepted_at DateTime?
+  created_at        DateTime  @default(now())
+  updated_at        DateTime  @updatedAt
+  auth              Auth      @relation(fields: [user_id], references: [referCode], onDelete: Cascade)
 }
 
 model fail_mail {

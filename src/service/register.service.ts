@@ -79,7 +79,8 @@ export async function registerDirectUser(
   nombre: string, 
   sub_area: string,
   accountType: string = 'profesional',
-  institutionName?: string
+  institutionName?: string,
+  termsAccepted: boolean = false
 ) {
   try {
     // Verificar si el email ya existe
@@ -126,6 +127,15 @@ export async function registerDirectUser(
           country: "", // Vacío por ahora
         },
       });
+
+      // Guardar aceptación de términos para institución
+      await prisma.institution_extra_data.create({
+        data: {
+          user_id: user.referCode,
+          terms_accepted: termsAccepted,
+          terms_accepted_at: termsAccepted ? new Date() : null,
+        },
+      });
     } else {
       // Crear perfil de profesional (salud o general) con fake_name generado
       const fakeProfessionalName = faker.person.firstName();
@@ -152,6 +162,15 @@ export async function registerDirectUser(
           sub_area: resolvedSubArea as any, // El enum Sub_area
           title: resolvedTitle,
           status: "", // Vacío por ahora
+        },
+      });
+
+      // Guardar aceptación de términos y condiciones
+      await prisma.profesional_extra_data.create({
+        data: {
+          user_id: user.referCode,
+          terms_accepted: termsAccepted,
+          terms_accepted_at: termsAccepted ? new Date() : null,
         },
       });
     }

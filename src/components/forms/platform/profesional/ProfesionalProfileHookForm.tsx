@@ -8,7 +8,7 @@ import { mutate as globalMutate } from "swr";
 
 import { optionsTitleStatus } from "@/static/data/staticData";
 import { useHandleSubmitText } from "@/hooks/useFetch";
-import { useProfesional } from "@/hooks/usePlatPro";
+import { useProfesional, useProfesionalFull } from "@/hooks/usePlatPro";
 import { useModal } from "@/context/ModalContext";
 import { useToast } from "@/context/ToastContext";
 
@@ -19,11 +19,18 @@ const subAreaOptions = [
   { value: "pharmacist", label: "Farmacéutico/a" }
 ];
 
+const EU_COUNTRY_CODES = new Set([
+  "AT","BE","BG","CY","CZ","DE","DK","EE","ES","FI",
+  "FR","GR","HR","HU","IE","IT","LT","LU","LV","MT",
+  "NL","PL","PT","RO","SE","SI","SK",
+]);
+
 export default function ProfesionalProfileHookForm() {
   const { closeModal } = useModal();
   const { showToast } = useToast();
   const { data: session } = useSession();
   const { data, error, isLoading, mutate } = useProfesional();
+  const { data: fullData } = useProfesionalFull();
 
   const {
     register,
@@ -46,6 +53,8 @@ export default function ProfesionalProfileHookForm() {
       titleInstitution: "",
       titleStatus: "",
       isHomologated: false,
+      hasEuropeanDocs: false,
+      needsSponsor: false,
     },
   });
 
@@ -64,6 +73,7 @@ export default function ProfesionalProfileHookForm() {
   const [submitError, setSubmitError] = useState<string | null>(null);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const hasValidCountrySelected = countryList.some((country) => country.isoCode === countrySelected);
+  const isOutsideEU = countrySelected !== "" && !EU_COUNTRY_CODES.has(countrySelected);
 
   // Cargar datos básicos que no dependen de listas externas
   useEffect(() => {
@@ -77,6 +87,8 @@ export default function ProfesionalProfileHookForm() {
         const fecha = new Date(userData.birth_date);
         formattedBirthDate = fecha.toISOString().split("T")[0];
       }
+
+      const extraData = fullData?.payload?.profesional_extra_data || null;
 
       // Actualizar campos básicos inmediatamente
       reset({
@@ -94,6 +106,8 @@ export default function ProfesionalProfileHookForm() {
         titleInstitution: mainStudy?.institution || "",
         titleStatus: mainStudy?.status || "",
         isHomologated: Boolean(mainStudy?.isHomologated),
+        hasEuropeanDocs: Boolean(extraData?.has_european_docs),
+        needsSponsor: Boolean(extraData?.needs_sponsor),
       });
 
       // Actualizar estados que no dependen de listas externas
@@ -102,7 +116,7 @@ export default function ProfesionalProfileHookForm() {
       setSubAreaSelected(mainStudy?.sub_area || "");
       setStudyCountry(mainStudy?.country || "");
     }
-  }, [data, session, reset]);
+  }, [data, fullData, session, reset]);
 
   // Cargar datos geográficos cuando los países estén disponibles
   useEffect(() => {
@@ -523,6 +537,29 @@ export default function ProfesionalProfileHookForm() {
                 </div>
               </div>
             )}
+
+            {/* Documentación europea y sponsor */}
+            <div className='mt-4 grid gap-3'>
+              {isOutsideEU && (
+                <label className='flex items-center justify-between max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+                  <span className='text-sm font-medium'>Documentación Europea (UE)</span>
+                  <div className='flex items-center gap-2'>
+                    <span className='text-xs text-gray-500'>No</span>
+                    <input type='checkbox' className='toggle toggle-success toggle-lg' {...register("hasEuropeanDocs")} />
+                    <span className='text-xs text-green-700 font-semibold'>Sí</span>
+                  </div>
+                </label>
+              )}
+              <label className='flex items-center justify-between max-w-xs rounded-md border border-gray-300 px-3 py-2'>
+                <span className='text-sm font-medium'>Requiere Sponsor</span>
+                <div className='flex items-center gap-2'>
+                  <span className='text-xs text-gray-500'>No</span>
+                  <input type='checkbox' className='toggle toggle-warning toggle-lg' {...register("needsSponsor")} />
+                  <span className='text-xs text-yellow-700 font-semibold'>Sí</span>
+                </div>
+              </label>
+            </div>
+
             <div className='grid justify-center gap-2 mt-5 items-center align-middle'>
               <button className='btn bg-(--soft-arci)' type='submit' disabled={isSubmitting}>
                 {isSubmitting ? (

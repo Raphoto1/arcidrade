@@ -12,6 +12,7 @@ interface GeneralSubArea {
 export default function RegisterDirect() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [generalSubAreas, setGeneralSubAreas] = useState<GeneralSubArea[]>([]);
@@ -62,6 +63,11 @@ export default function RegisterDirect() {
     e.preventDefault();
     
     // Validaciones
+    if (!acceptedTerms) {
+      alert('Debes aceptar los términos y condiciones para continuar');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
       alert('Las contraseñas no coinciden');
       return;
@@ -164,6 +170,7 @@ export default function RegisterDirect() {
         email: formData.email,
         password: formData.password,
         accountType: formData.accountType,
+        termsAccepted: acceptedTerms,
       };
 
       if (formData.accountType === 'institution') {
@@ -441,11 +448,34 @@ export default function RegisterDirect() {
               )}
             </div>
 
-            <div className='grid grid-cols-2 justify-center gap-2 items-center align-middle mt-6'>
+            {/* Términos y condiciones */}
+            <div className='flex items-start gap-3 mt-6 bg-white rounded-md px-4 py-3 border border-gray-300'>
+              <input
+                type='checkbox'
+                id='acceptedTerms'
+                checked={acceptedTerms}
+                onChange={(e) => setAcceptedTerms(e.target.checked)}
+                className='checkbox checkbox-sm mt-0.5 shrink-0'
+              />
+              <label htmlFor='acceptedTerms' className='text-sm text-gray-700 cursor-pointer'>
+                He leído y acepto los{' '}
+                <a
+                  href='/terminos'
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='text-(--main-arci) underline hover:text-(--soft-arci) font-medium'
+                >
+                  términos y condiciones
+                </a>{' '}
+                de uso de la plataforma.
+              </label>
+            </div>
+
+            <div className='grid grid-cols-2 justify-center gap-2 items-center align-middle mt-4'>
               <button 
-                className='btn btn-wide bg-(--main-arci) text-white hover:bg-(--soft-arci) font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105' 
+                className='btn btn-wide bg-(--main-arci) text-white hover:bg-(--soft-arci) font-semibold shadow-lg hover:shadow-xl transition-all duration-200 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none disabled:shadow-none' 
                 type='submit'
-                disabled={loading}
+                disabled={loading || !acceptedTerms}
               >
                 {loading ? (
                   <>
