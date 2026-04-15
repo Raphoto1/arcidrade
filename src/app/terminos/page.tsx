@@ -23,7 +23,7 @@ export default function Terminos() {
             Arcidrade es una plataforma digital orientada a profesionales de la salud y
             profesionales generales que facilita la gestión de perfiles, conexiones,
             procesos de búsqueda de talento y colaboración institucional. El acceso a
-            determinadas funcionalidades puede requerir registro previo.
+            determinadas funcionalidades puede requerir registro previo. 
           </p>
         </section>
 
