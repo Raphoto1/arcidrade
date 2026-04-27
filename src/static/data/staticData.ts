@@ -1,3 +1,5 @@
+import { link } from "fs";
+
 export const offers: any = [
   { title: "Ofertas de empleo", image: "https://images.pexels.com/photos/296115/pexels-photo-296115.jpeg", link: "/offers " },
   { title: "Ofertas Profesionales", image: "https://images.pexels.com/photos/37347/office-sitting-room-executive-sitting.jpg", link: "/offers " },
@@ -79,20 +81,22 @@ export const servicesItems: any = [
     longText: "Estrategias de acceso a mercado, cumplimiento regulatorio y análisis competitivo en el sector salud. Alianzas con hospitales y distribuidores.",
     image: "https://images.pexels.com/photos/8376180/pexels-photo-8376180.jpeg",
   },
-    {
-    title: "Formación para Visitadores Médicos y Ventas",
-    extraText: "Cursos prácticos y en video para capacitar a visitadores médicos y equipos comerciales en implantes.",
-    longText: "Espacio dedicado a la formación profesional de visitadores médicos y equipos de ventas, con contenido estructurado y módulos en video para fortalecer habilidades técnicas y comerciales. Esta sección crecerá a medida que el proyecto avance.",
-    image: "https://images.pexels.com/photos/3985154/pexels-photo-3985154.jpeg",
+  {
+    title: "Certified Operating Room Technical Sales Specialist (C-ORTSS)",
+    extraText: "Cursos prácticos y en video para capacitar a visitadores médicos y equipos comerciales en quirófano.",
+    longText:
+      "Espacio dedicado a la formación profesional de visitadores médicos y equipos de ventas, con contenido estructurado y módulos en video para fortalecer habilidades técnicas y comerciales.",
+    image: "https://images.pexels.com/photos/13697927/pexels-photo-13697927.jpeg",
+    contact:true
   },
 ];
 
 export const companyInfo: any = {
-    address: "312 W. 2nd St #2787, Casper, WY 82601, EE. UU.",
-    phone1: "📞 USA +1 (307) 776 3025 ",
-    phone2: "📞 SPAIN +34 675 519 929",
-    representative: " Eva M. Lopez, Ejecutivo de Consultoría",
-}
+  address: "312 W. 2nd St #2787, Casper, WY 82601, EE. UU.",
+  phone1: "📞 USA +1 (307) 776 3025 ",
+  phone2: "📞 SPAIN +34 675 519 929",
+  representative: " Eva M. Lopez, Ejecutivo de Consultoría",
+};
 
 export const optionsTitleStatus = [
   { value: "inProcess", label: "En Proceso" },
@@ -177,43 +181,43 @@ export const medicalOptions: any = [
 ];
 
 export const nurseOptions: any = [
-  { "id": 1, "name": "Enfermería Obstétrico-Ginecológica (Matrona)" },
-  { "id": 2, "name": "Enfermería de Salud Mental" },
-  { "id": 3, "name": "Enfermería del Trabajo" },
-  { "id": 4, "name": "Enfermería Geriátrica" },
-  { "id": 5, "name": "Enfermería Familiar y Comunitaria" },
-  { "id": 6, "name": "Enfermería Pediátrica" },
-  { "id": 7, "name": "Enfermería de Cuidados Intensivos" },
-  { "id": 8, "name": "Enfermería Oncológica" },
-  { "id": 9, "name": "Enfermería Quirúrgica" },
-  { "id": 10, "name": "Enfermería de Urgencias" },
-  { "id": 11, "name": "Enfermería Neonatal" },
-  { "id": 12, "name": "Enfermería de Rehabilitación" },
-  { "id": 13, "name": "Enfermería de Cuidados Paliativos" },
-  { "id": 14, "name": "Enfermería Forense" },
-  { "id": 15, "name": "Enfermería de Investigación" },
-  { "id": 16, "name": "Enfermería de Gestión de Casos" },
-  { "id": 17, "name": "Enfermería de Salud Pública" },
-  { "id": 18, "name": "Enfermería de Telemedicina" },
-  { "id": 19, "name": "Enfermería de Dermatología" },
-  { "id": 20, "name": "Enfermería de Cardiología" },
-  { "id": 21, "name": "Enfermería de Nefrología" },
-  { "id": 22, "name": "Enfermería Escolar" },
-  { "id": 23, "name": "Enfermería Militar" },
-  { "id": 24, "name": "Enfermería de Práctica Avanzada" },
-  { "id": 25, "name": "Técnico de Rayos X" }
-]
+  { id: 1, name: "Enfermería Obstétrico-Ginecológica (Matrona)" },
+  { id: 2, name: "Enfermería de Salud Mental" },
+  { id: 3, name: "Enfermería del Trabajo" },
+  { id: 4, name: "Enfermería Geriátrica" },
+  { id: 5, name: "Enfermería Familiar y Comunitaria" },
+  { id: 6, name: "Enfermería Pediátrica" },
+  { id: 7, name: "Enfermería de Cuidados Intensivos" },
+  { id: 8, name: "Enfermería Oncológica" },
+  { id: 9, name: "Enfermería Quirúrgica" },
+  { id: 10, name: "Enfermería de Urgencias" },
+  { id: 11, name: "Enfermería Neonatal" },
+  { id: 12, name: "Enfermería de Rehabilitación" },
+  { id: 13, name: "Enfermería de Cuidados Paliativos" },
+  { id: 14, name: "Enfermería Forense" },
+  { id: 15, name: "Enfermería de Investigación" },
+  { id: 16, name: "Enfermería de Gestión de Casos" },
+  { id: 17, name: "Enfermería de Salud Pública" },
+  { id: 18, name: "Enfermería de Telemedicina" },
+  { id: 19, name: "Enfermería de Dermatología" },
+  { id: 20, name: "Enfermería de Cardiología" },
+  { id: 21, name: "Enfermería de Nefrología" },
+  { id: 22, name: "Enfermería Escolar" },
+  { id: 23, name: "Enfermería Militar" },
+  { id: 24, name: "Enfermería de Práctica Avanzada" },
+  { id: 25, name: "Técnico de Rayos X" },
+];
 
 export const pharmacistOptions: any = [
-  { "id": 1, "name": "Farmacia De Oficina de Farmacia" },
-  { "id": 2, "name": "Farmacia Hospitalaria" },
-  { "id": 3, "name": "Industria Farmacéutica" },
-  { "id": 4, "name": "Farmacia de Atención Primaria" },
-]
+  { id: 1, name: "Farmacia De Oficina de Farmacia" },
+  { id: 2, name: "Farmacia Hospitalaria" },
+  { id: 3, name: "Industria Farmacéutica" },
+  { id: 4, name: "Farmacia de Atención Primaria" },
+];
 
 export const subAreaOptions = [
-  { value: 'doctor', label: 'Doctor' },
-  { value: 'nurse', label: 'Enfermería' },
-  { value: 'pharmacist', label: 'Farmacéutico' },
-  { value: 'general', label: 'General' }
+  { value: "doctor", label: "Doctor" },
+  { value: "nurse", label: "Enfermería" },
+  { value: "pharmacist", label: "Farmacéutico" },
+  { value: "general", label: "General" },
 ];

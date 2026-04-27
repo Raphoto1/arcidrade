@@ -7,7 +7,7 @@ export default function BrColors(props:{ title:string }) {
         <div className='color1 bg-(--soft-arci) h-3 min-w-auto'></div>
         <div className='color2 bg-(--orange-arci) h-2 min-w-auto'></div>
       </div>
-      <div className='title shrink-0 text-right font-oswald text-3xl font-bold md:text-4xl'>{props.title}</div>
+      <h2 className='title max-w-[70%] md:max-w-none text-right font-oswald text-3xl font-bold md:text-4xl'>{props.title}</h2>
     </div>
   );
 }

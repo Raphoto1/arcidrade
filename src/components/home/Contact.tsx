@@ -1,7 +1,9 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { companyInfo } from "@/static/data/staticData";
+import { ModalContext } from "@/context/ModalContext";
+import { useToast } from "@/context/ToastContext";
 interface ContactFormData {
   name: string;
   email: string;
@@ -10,20 +12,20 @@ interface ContactFormData {
   message: string;
 }
 
-export default function Contact() {
+export default function Contact({ defaultSubject }: { defaultSubject?: string } = {}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState<"success" | "error" | null>(null);
+  const modal = useContext(ModalContext);
+  const { showToast } = useToast();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-  } = useForm<ContactFormData>();
+  } = useForm<ContactFormData>({ defaultValues: { subject: defaultSubject ?? '' } });
 
   const onSubmit = async (data: ContactFormData) => {
     setIsLoading(true);
-    setSubmitStatus(null);
 
     try {
       const response = await fetch("/api/contact", {
@@ -40,12 +42,12 @@ export default function Contact() {
 
       const result = await response.json();
 
-        
-      setSubmitStatus("success");
-      reset();
+  reset();
+      showToast("¡Mensaje enviado! Te responderemos pronto.", "success");
+      modal?.closeModal();
     } catch (error) {
       console.error("Error al enviar formulario:", error);
-      setSubmitStatus("error");
+      showToast("Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.", "error");
     } finally {
         setIsLoading(false);
         
@@ -56,7 +58,7 @@ export default function Contact() {
     <div className='flex justify-center items-center p-2'>
       <div className='w-full max-w-2xl bg-gray-100 rounded-md p-6'>
         <div className='mb-6'>
-          <h2 className='text-2xl fontArci text-[var(--main-arci)] text-center mb-2'>Contáctanos</h2>
+          <h2 className='text-2xl fontArci text-(--main-arci) text-center mb-2'>Contáctanos</h2>
           <p className='text-center text-gray-600 fontRoboto'>Estamos aquí para ayudarte. Envíanos tu consulta y te responderemos pronto.</p>
         </div>
 
@@ -74,7 +76,7 @@ export default function Contact() {
                   required: "El nombre es requerido",
                   minLength: { value: 2, message: "El nombre debe tener al menos 2 caracteres" },
                 })}
-                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--main-arci)] focus:border-transparent'
+                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-(--main-arci) focus:border-transparent'
                 placeholder='Tu nombre completo'
               />
               {errors.name && <p className='text-red-500 text-sm mt-1'>{errors.name.message}</p>}
@@ -95,7 +97,7 @@ export default function Contact() {
                     message: "Email inválido",
                   },
                 })}
-                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--main-arci)] focus:border-transparent'
+                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-(--main-arci) focus:border-transparent'
                 placeholder='tu@email.com'
               />
               {errors.email && <p className='text-red-500 text-sm mt-1'>{errors.email.message}</p>}
@@ -112,7 +114,7 @@ export default function Contact() {
                 type='tel'
                 id='phone'
                 {...register("phone")}
-                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--main-arci)] focus:border-transparent'
+                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-(--main-arci) focus:border-transparent'
                 placeholder='+1 234 567 8900'
               />
             </div>
@@ -125,10 +127,11 @@ export default function Contact() {
               <select
                 id='subject'
                 {...register("subject", { required: "El asunto es requerido" })}
-                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--main-arci)] focus:border-transparent'>
+                className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-(--main-arci) focus:border-transparent'>
                 <option value=''>Selecciona un asunto</option>
                 <option value='informacion-general'>Información general</option>
                 <option value='soporte-tecnico'>Soporte técnico</option>
+                <option value='c-ortss'>C-ORTSS</option>
                 <option value='registro-profesional'>Registro como profesional</option>
                 <option value='registro-institucion'>Registro como institución</option>
                 <option value='colaboracion'>Oportunidades de colaboración</option>
@@ -150,30 +153,20 @@ export default function Contact() {
                 required: "El mensaje es requerido",
                 minLength: { value: 10, message: "El mensaje debe tener al menos 10 caracteres" },
               })}
-              className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-[var(--main-arci)] focus:border-transparent resize-vertical text-black'
+              className='w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-(--main-arci) focus:border-transparent resize-vertical text-black'
               placeholder='Escribe tu mensaje aquí...'
             />
             {errors.message && <p className='text-red-500 text-sm mt-1'>{errors.message.message}</p>}
           </div>
 
           {/* Mensajes de estado */}
-          {submitStatus === "success" && (
-            <div className='bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded'>¡Mensaje enviado exitosamente! Te responderemos pronto.</div>
-          )}
-
-          {submitStatus === "error" && (
-            <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded'>
-              Hubo un error al enviar el mensaje. Por favor, inténtalo de nuevo.
-            </div>
-          )}
-
           {/* Botones */}
           <div className='flex gap-3 justify-center pt-4'>
             <button
               type='submit'
               disabled={isLoading}
               className={`btn h-10 px-6 text-white text-center flex items-center ${
-                isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-[var(--main-arci)] hover:bg-[var(--soft-arci)]"
+                isLoading ? "bg-gray-400 cursor-not-allowed" : "bg-(--main-arci) hover:bg-(--soft-arci)"
               }`}>
               {isLoading ? (
                 <>
@@ -201,17 +194,17 @@ export default function Contact() {
         <div className='mt-8 pt-6 border-t border-gray-300 flex flex-col'>
           <div className='grid md:grid-cols-2 gap-4 text-center'>
             <div>
-              <h3 className='font-semibold text-[var(--main-arci)] mb-2'>Email</h3>
+              <h3 className='font-semibold text-(--main-arci) mb-2'>Email</h3>
               <p className='text-gray-600 text-sm'>contacto@arcidrade.com</p>
             </div>
 
             <div>
-              <h3 className='font-semibold text-[var(--main-arci)] mb-2'>Horario</h3>
+              <h3 className='font-semibold text-(--main-arci) mb-2'>Horario</h3>
               <p className='text-gray-600 text-sm'>Lun-Vie: 9:00 AM - 6:00 PM</p>
             </div>
           </div>
           <div className="flex flex-col items-center">
-            <h3 className='font-semibold text-[var(--main-arci)] mb-2'>Teléfono</h3>
+            <h3 className='font-semibold text-(--main-arci) mb-2'>Teléfono</h3>
             <div className='flex flex-col items-center text-gray-600 '>
               <p>{companyInfo.address}</p>
               <p>{companyInfo.phone1}</p>

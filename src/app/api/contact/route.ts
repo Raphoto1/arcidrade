@@ -82,6 +82,7 @@ export async function POST(request: NextRequest) {
       'registro-profesional',
       'registro-institucion',
       'colaboracion',
+      'c-ortss',
       'otro'
     ];
 

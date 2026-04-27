@@ -375,8 +375,9 @@ export async function sendContactMail(contactData: ContactFormData) {
     "soporte-tecnico": "Soporte Técnico",
     "registro-profesional": "Registro como Profesional",
     "registro-institucion": "Registro como Institución",
-    colaboracion: "Oportunidades de Colaboración",
-    otro: "Consulta General",
+    "c-ortss": "C-ORTSS",
+    "colaboracion": "Oportunidades de Colaboración",
+    "otro": "Consulta General",
   };
 
   const subjectText = subjectMapping[contactData.subject] || "Consulta General";
