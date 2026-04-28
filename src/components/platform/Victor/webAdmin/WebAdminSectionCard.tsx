@@ -13,6 +13,7 @@ type WebAdminSectionCardProps = {
   accentClassName: string;
   preview: ReactNode;
   items: SectionItem[];
+  extraContent?: ReactNode;
 };
 
 export default function WebAdminSectionCard({
@@ -23,6 +24,7 @@ export default function WebAdminSectionCard({
   accentClassName,
   preview,
   items,
+  extraContent,
 }: WebAdminSectionCardProps) {
   return (
     <article className='overflow-hidden rounded-3xl border border-gray-200 bg-white shadow-sm'>
@@ -53,6 +55,8 @@ export default function WebAdminSectionCard({
             </div>
           ))}
         </div>
+
+        {extraContent && <div className='mt-5'>{extraContent}</div>}
       </div>
     </article>
   );
