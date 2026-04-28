@@ -12,6 +12,9 @@ const { prismaMock, encryptMock, getProfesionalDataByRefferCodeDaoMock } = vi.ho
     main_study: {
       create: vi.fn(),
     },
+    profesional_extra_data: {
+      create: vi.fn(),
+    },
   },
   encryptMock: vi.fn(),
   getProfesionalDataByRefferCodeDaoMock: vi.fn(),
@@ -107,6 +110,11 @@ describe("direct professional CRUD - create/read", () => {
       title: "",
       status: "",
     });
+    prismaMock.profesional_extra_data.create.mockResolvedValue({
+      user_id: "prof-123",
+      terms_accepted: false,
+      terms_accepted_at: null,
+    });
   });
 
   it("crea un profesional por registro directo con auth, perfil y main_study", async () => {
@@ -140,9 +148,16 @@ describe("direct professional CRUD - create/read", () => {
     expect(prismaMock.main_study.create).toHaveBeenCalledWith({
       data: {
         user_id: "prof-123",
-        sub_area: "doctor",
+        sub_area: "general",
         title: "",
         status: "",
+      },
+    });
+    expect(prismaMock.profesional_extra_data.create).toHaveBeenCalledWith({
+      data: {
+        user_id: "prof-123",
+        terms_accepted: false,
+        terms_accepted_at: null,
       },
     });
     expect(result).toEqual({
@@ -150,6 +165,44 @@ describe("direct professional CRUD - create/read", () => {
       email: "pro@example.com",
       area: "profesional",
       status: "active",
+    });
+  });
+
+  it("registra profesional_general y persiste terms en Profesional_extra_data", async () => {
+    await registerDirectUser(
+      "general@example.com",
+      "secret-123",
+      "General User",
+      "kinesiologia",
+      "profesional_general",
+      undefined,
+      true
+    );
+
+    expect(prismaMock.auth.create).toHaveBeenCalledWith({
+      data: {
+        email: "general@example.com",
+        area: "profesional_general",
+        status: "active",
+        password: "hashed-secret",
+        invitation_sender: "external",
+        invitation_sender_id: "external",
+      },
+    });
+    expect(prismaMock.main_study.create).toHaveBeenCalledWith({
+      data: {
+        user_id: "prof-123",
+        sub_area: "general",
+        title: "kinesiologia",
+        status: "",
+      },
+    });
+    expect(prismaMock.profesional_extra_data.create).toHaveBeenCalledWith({
+      data: {
+        user_id: "prof-123",
+        terms_accepted: true,
+        terms_accepted_at: expect.any(Date),
+      },
     });
   });
 

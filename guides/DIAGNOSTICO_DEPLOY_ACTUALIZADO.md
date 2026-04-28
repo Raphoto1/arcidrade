@@ -1,5 +1,9 @@
 # 🔧 Diagnóstico de Errores en Deploy (Vercel)
 
+> Este documento es una guía rápida de diagnóstico en runtime.
+> La guía canónica de resolución y checklist integral está en [SOLUCION_DEPLOY_DB.md](./SOLUCION_DEPLOY_DB.md).
+> Para errores de migraciones Prisma (P3009, P3015, columnas faltantes) seguir primero [SOLUCION_DEPLOY_DB.md](./SOLUCION_DEPLOY_DB.md).
+
 ## Problema Actual
 Errores de conexión a la base de datos en Vercel después de actualizar las variables de entorno.
 

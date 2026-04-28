@@ -360,6 +360,9 @@ npm run test:watch
 
 # Ejecutar con reporte de cobertura de código
 npm run test:coverage
+
+# Ejecutar tests de registro directo (profesional/institución)
+npx vitest run src/__tests__/service/directProfessionalCrud.test.ts src/__tests__/service/directInstitutionCrud.test.ts
 ```
 
 ### **Estructura de Tests**
@@ -369,6 +372,9 @@ src/__tests__/
 ├── setup.ts                    # Configuración global (jest-dom)
 ├── api/
 │   └── profesionalByIdRoute.test.ts # Seguridad de acceso a perfil por ID
+├── service/
+│   ├── directProfessionalCrud.test.ts # Registro directo profesional/profesional_general + Profesional_extra_data
+│   └── directInstitutionCrud.test.ts  # Registro directo institución + Institution_extra_data
 └── utils/
     ├── htmlHelpers.test.ts     # Tests de stripHtml, getHtmlPreview, sanitizeAndStyleHtml
     ├── retryUtils.test.ts      # Tests de withRetry y withPrismaRetry
@@ -446,6 +452,15 @@ EMAIL_FROM="noreply@your-domain.com"
 # Google Analytics 4 (opcional)
 NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
 ```
+
+### **Notas Prisma en Deploy (Importante)**
+- `prisma.config.ts` usa `DIRECT_DATABASE_URL` para comandos de migración (`prisma migrate ...`).
+- En runtime, `src/utils/db.ts` usa `DATABASE_URL` cuando `NODE_ENV=production` y `DIRECT_DATABASE_URL` en desarrollo.
+- Si aparece error de columna faltante (por ejemplo `terms_accepted`) pero el schema local sí la tiene:
+  1. Verificar columnas reales en DB con SQL.
+  2. Ejecutar `npx prisma migrate status` en la misma URL de deploy.
+  3. Si falla por `P3015`, restaurar el archivo `migration.sql` faltante en la carpeta de migración.
+  4. Ejecutar `npx prisma migrate deploy` y validar nuevamente con `npx prisma migrate status`.
 
 ### **Google Analytics 4**
 - Se integra mediante `@next/third-parties/google`.

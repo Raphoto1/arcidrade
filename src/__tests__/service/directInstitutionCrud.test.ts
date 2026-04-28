@@ -9,6 +9,9 @@ const { prismaMock, encryptMock, getInstitutionDataByRefferCodeDaoMock } = vi.ho
     institution_Data: {
       create: vi.fn(),
     },
+    institution_extra_data: {
+      create: vi.fn(),
+    },
   },
   encryptMock: vi.fn(),
   getInstitutionDataByRefferCodeDaoMock: vi.fn(),
@@ -80,6 +83,11 @@ describe("direct institution CRUD - create/read", () => {
       name: "Hospital Central",
       country: "",
     });
+    prismaMock.institution_extra_data.create.mockResolvedValue({
+      user_id: "inst-123",
+      terms_accepted: false,
+      terms_accepted_at: null,
+    });
   });
 
   it("crea una institución por registro directo con auth y perfil institucional", async () => {
@@ -109,6 +117,13 @@ describe("direct institution CRUD - create/read", () => {
         fake_name: "Institucion Demo",
         name: "Hospital Central",
         country: "",
+      },
+    });
+    expect(prismaMock.institution_extra_data.create).toHaveBeenCalledWith({
+      data: {
+        user_id: "inst-123",
+        terms_accepted: false,
+        terms_accepted_at: null,
       },
     });
     expect(result).toEqual({

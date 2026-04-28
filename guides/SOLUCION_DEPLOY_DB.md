@@ -44,9 +44,12 @@ postgres://[USERNAME]:[PASSWORD]@db.prisma.io:5432/postgres?sslmode=require&conn
 ### 2️⃣ Verificar Configuración del Pool
 
 Tu archivo `src/utils/db.ts` YA TIENE configuración optimizada:
-- ✅ `max: 15` conexiones (correcto para Vercel)
-- ✅ `connectionTimeoutMillis: 20000` (20s)
+- ✅ `max: 10` conexiones (más conservador para Vercel serverless)
+- ✅ `min: 0` para liberar pool en idle
+- ✅ `connectionTimeoutMillis: 30000` (30s, mejor para cold starts)
+- ✅ `idleTimeoutMillis: 20000` (20s)
 - ✅ `statement_timeout: 30000` (30s)
+- ✅ `allowExitOnIdle: true` para cierre limpio en serverless
 - ✅ Error handling con logs detallados
 
 **NO REQUIERE CAMBIOS** - Ya está optimizado.
@@ -142,6 +145,52 @@ curl https://tu-dominio.vercel.app/api/health
 
 ## 🔍 Diagnóstico de Problemas Comunes
 
+### Error: Columna no existe (ej: `terms_accepted`) con Prisma `create()`
+
+**Síntomas:**
+```
+Invalid `prisma.profesional_extra_data.create()` invocation
+The column `terms_accepted` does not exist in the current database.
+```
+
+**Causas frecuentes:**
+1. La migración fue marcada/aplicada parcialmente en otra DB y el DDL no quedó igual.
+2. El deploy apunta a una DB distinta a la validada localmente.
+3. Hay drift en historial de migraciones.
+
+**Diagnóstico recomendado:**
+```bash
+# 1) Revisar historial Prisma en la URL activa
+npx prisma migrate status
+
+# 2) Validar columnas reales en SQL
+SELECT column_name
+FROM information_schema.columns
+WHERE table_schema = 'public'
+  AND table_name = 'Profesional_extra_data'
+ORDER BY ordinal_position;
+```
+
+**Resolución usada en este proyecto:**
+1. Restaurar archivo faltante de migración si Prisma reporta `P3015`.
+2. Aplicar migraciones pendientes con `npx prisma migrate deploy`.
+3. Verificar `Database schema is up to date!` con `npx prisma migrate status`.
+4. Reprobar flujo de registro.
+
+### Error: P3009 (migración fallida bloqueando deploy)
+
+**Síntoma:**
+```
+migrate found failed migrations in the target database
+Error: P3009
+```
+
+**Resolución:**
+1. Verificar nombre exacto de la migración fallida reportada por Prisma.
+2. Resolver estado con `prisma migrate resolve` según corresponda (`--rolled-back` o `--applied`).
+3. Ejecutar nuevamente `npx prisma migrate deploy`.
+4. Confirmar estado final con `npx prisma migrate status`.
+
 ### Error: P1001 - Can't reach database server
 
 **Causas:**
@@ -162,7 +211,7 @@ curl https://tu-dominio.vercel.app/api/health
 
 **Soluciones:**
 1. ✅ Usar región de Vercel cercana a tu BD
-2. ✅ Reducir `max` connections en pool (ya está en 15)
+2. ✅ Reducir `max` connections en pool (ya está en 10)
 3. ✅ Considerar usar Prisma Accelerate para caching
 
 ### Error: Pool exhausted
