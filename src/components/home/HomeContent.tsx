@@ -43,7 +43,7 @@ export default function HomeContent({
   return (
     <main className={className}>
       <Carousel />
-      <p className='text-sm text-gray-600 md:mt-4 md:text-base'>
+      <p className='text-sm text-gray-600 md:mt-4 md:text-base mb-4'>
         {loginPromptText}{" "}
         <Link href={loginHref} className='font-bold text-(--main-arci) hover:underline'>
           {loginLinkText}

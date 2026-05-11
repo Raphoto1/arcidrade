@@ -1,13 +1,80 @@
-import React from "react";
+"use client";
+
+import React, { useEffect, useMemo, useState } from "react";
 import { FiLayers, FiLayout, FiMonitor } from "react-icons/fi";
 
-const stats = [
-  { label: "Secciones editables", value: "4", note: "Home · About · Servicios · Artículos", icon: FiLayout },
-  { label: "Estado actual", value: "UI estática", note: "Sin persistencia todavía", icon: FiMonitor },
-  { label: "Próxima etapa", value: "DB + Blob", note: "Contenido dinámico y assets", icon: FiLayers },
-];
+type DbStatusResponse = {
+  status?: string;
+  totalTime?: string;
+};
 
 export default function WebAdminHeader() {
+  const [isCheckingDb, setIsCheckingDb] = useState(true);
+  const [dbConnected, setDbConnected] = useState(false);
+  const [dbLatency, setDbLatency] = useState<string | null>(null);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkDbStatus = async () => {
+      try {
+        const response = await fetch("/api/db-status", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const data = (await response.json()) as DbStatusResponse;
+        const isHealthy = response.ok && data?.status === "healthy";
+
+        if (!isMounted) return;
+
+        setDbConnected(isHealthy);
+        setDbLatency(typeof data?.totalTime === "string" ? data.totalTime : null);
+      } catch {
+        if (!isMounted) return;
+        setDbConnected(false);
+        setDbLatency(null);
+      } finally {
+        if (isMounted) {
+          setIsCheckingDb(false);
+        }
+      }
+    };
+
+    checkDbStatus();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const dbStat = useMemo(() => {
+    if (isCheckingDb) {
+      return {
+        value: "Verificando DB...",
+        note: "Corriendo test de conexión",
+      };
+    }
+
+    if (dbConnected) {
+      return {
+        value: "DB conectada",
+        note: dbLatency ? `Test OK · ${dbLatency}` : "Test OK",
+      };
+    }
+
+    return {
+      value: "Sin conexión DB",
+      note: "Falló test de conexión",
+    };
+  }, [dbConnected, dbLatency, isCheckingDb]);
+
+  const stats = [
+    { label: "Secciones editables", value: "4", note: "Home · About · Servicios · Artículos", icon: FiLayout },
+    { label: "Estado actual de Base de datos", value: dbStat.value, note: dbStat.note, icon: FiMonitor },
+    { label: "Próxima etapa", value: "Blob", note: "assets", icon: FiLayers },
+  ];
+
   return (
     <header className='overflow-hidden rounded-4xl bg-linear-to-r from-(--main-arci) via-(--main-arci) to-(--orange-arci) text-white shadow-lg'>
       <div className='flex flex-wrap items-center gap-4 px-6 py-5 md:px-8'>

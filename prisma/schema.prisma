@@ -364,6 +364,28 @@ model HomePageDataMainEspecialities {
   updated_at  DateTime @updatedAt
 }
 
+model HomePageDataMainProvinces {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
+model HomePageDataMainOffers {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description String?
+  image       String?
+  link        String?
+  order       Int?
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+}
+
 model AboutPageData {
   id          Int      @id @default(autoincrement())
   title       String
@@ -378,10 +400,12 @@ model AboutPageData {
 model ServicesPageData {
   id          Int      @id @default(autoincrement())
   title       String
+  extraText   String?
   description String?
   image       String?
   link        String?
   order       Int?
+  contact     Boolean  @default(false)
   created_at  DateTime @default(now())
   updated_at  DateTime @updatedAt
 }

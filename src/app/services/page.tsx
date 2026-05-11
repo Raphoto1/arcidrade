@@ -1,23 +1,8 @@
 //imports app
 import React from "react";
-import { servicesItems } from "@/static/data/staticData";
 // imports project
-//verificar info a cargar, generar o buscar imagenes en pexels
-import ServiceDescription from "@/components/services/ServiceDescription";
+import ServicesContent from "@/components/services/ServicesContent";
+
 export default function page() {
-  return (
-    <div>
-      {servicesItems.map((item: any, index: number) => (
-        <ServiceDescription
-          key={index}
-          title={item.title}
-          longText={item.longText}
-          mainImage={item.image}
-          ExtraText={item.extraText}
-          link={item.link}
-          contact={item.contact}
-        />
-      ))}
-    </div>
-  );
+  return <ServicesContent />;
 }

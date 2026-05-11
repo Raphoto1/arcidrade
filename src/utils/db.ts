@@ -74,7 +74,12 @@ if (process.env.NODE_ENV === 'production') {
   // En desarrollo, usar singleton global para evitar múltiples instancias con HMR
   // Invalidar el singleton si el cliente generado no tiene el modelo esperado
   const existingSingleton = (global as any).prisma;
-  const singletoneIsStale = existingSingleton && !existingSingleton.generalProfesionalSubAreas;
+  const singletoneIsStale =
+    existingSingleton &&
+    (!existingSingleton.generalProfesionalSubAreas ||
+      !existingSingleton.homePageDataMainOffers ||
+      !existingSingleton.aboutPageData ||
+      !existingSingleton.servicesPageData);
 
   if (!(global as any).prisma || singletoneIsStale) {
     if (singletoneIsStale) {
