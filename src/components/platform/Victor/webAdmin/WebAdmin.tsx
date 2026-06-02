@@ -57,10 +57,10 @@ export default function WebAdmin() {
           </WebAdminPanelModal>
 
           <WebAdminPanelModal
-            eyebrow='Futuro módulo'
-            title='Artículos'
-            description='Componente visual inicial para el futuro CMS editorial del blog o sección de contenido publicada.'
-            status='en desarrollo'
+            eyebrow='Modulo'
+            title='Articulos'
+            description='Modulo para administrar articulos con control de activacion por pieza y activacion global de seccion para navbar y pagina publica.'
+            status='Activo'
             accentClassName='bg-linear-to-r from-violet-500 to-fuchsia-500'
           >
             <WebAdminArticlesPanel />

@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import 'quill/dist/quill.core.css';
+import Quill from 'quill';
 import 'quill/dist/quill.snow.css';
 
 interface DescriptionRichTextProps {
@@ -36,8 +36,6 @@ export default function DescriptionRichText({
       if (quillRef.current || !editorRef.current) return;
 
       try {
-        const { default: Quill } = await import('quill');
-
         // Crear un nuevo contenedor limpio para Quill
         const container = document.createElement('div');
         if (editorRef.current) {
@@ -165,9 +163,7 @@ export default function DescriptionRichText({
           </button>
         </div>
       </div>
-      {isLoading && (
-        <div className="w-full h-50 bg-gray-100 rounded-md animate-pulse" />
-      )}
+      {isLoading && <div className="w-full rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-500">Inicializando editor...</div>}
       <div 
         ref={editorRef} 
         style={{ minHeight: currentHeight, display: isLoading ? 'none' : 'block' }}
@@ -177,7 +173,7 @@ export default function DescriptionRichText({
         .description-rich-text .ql-toolbar {
           border: 1px solid #e5e7eb !important;
           border-radius: 0.375rem 0.375rem 0 0 !important;
-          background-color: #f9fafb !important;
+          background-color: #ffffff !important;
           padding: 8px !important;
         }
 

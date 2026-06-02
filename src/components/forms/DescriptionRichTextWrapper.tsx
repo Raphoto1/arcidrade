@@ -14,9 +14,8 @@ interface DescriptionRichTextProps {
 const DescriptionRichText = dynamic(() => import('./DescriptionRichText'), {
   ssr: false,
   loading: () => (
-    <div className="w-full">
-      <div className="block font-semibold mb-1 text-sm">Descripción del Cargo</div>
-      <div className="w-full h-50 bg-gray-100 rounded-md animate-pulse" />
+    <div className="w-full rounded-md border border-gray-200 bg-white p-3 text-sm text-gray-500">
+      Cargando editor...
     </div>
   ),
 });

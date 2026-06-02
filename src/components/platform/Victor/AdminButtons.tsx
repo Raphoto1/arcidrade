@@ -11,7 +11,7 @@ export default function AdminButtons() {
   return (
     <div className='FatsActions w-full rounded-sm bg-gray-200 p-2'>
       <h1 className='text-center text-2xl fontArci'>Administración</h1>
-      <div className='mt-2 grid w-full grid-cols-1 gap-2 md:flex md:flex-wrap md:justify-center'>
+      <div className='mt-2 grid w-full grid-cols-1 gap-2 md:flex md:flex-wrap md:justify-center md:items-center'>
         <div className='w-full md:w-auto'>
           <ModalForPreview title='Administrar Procesos'>
             <AdminProcess />
@@ -36,7 +36,7 @@ export default function AdminButtons() {
           <ModalForPreview
             title='Administrar Home Page'
             icon={<FaGlobe className='text-lg shrink-0' />}
-            btnClassName='btn h-auto w-auto py-2 px-3 min-w-full text-white font-bold tracking-widest uppercase shadow-lg border border-white/30 hover:opacity-90 hover:scale-[1.02] transition-all duration-150'
+            btnClassName='btn h-auto w-auto py-1 px-1 min-w-full text-white font-bold tracking-widest uppercase shadow-lg hover:opacity-90 hover:scale-[1.02] transition-all duration-150'
             btnStyle={{ background: 'linear-gradient(135deg, var(--soft-arci) 0%, var(--main-arci) 100%)' }}
           >
             <WebAdmin />

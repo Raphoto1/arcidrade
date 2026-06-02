@@ -1,5 +1,6 @@
 import { MetadataRoute } from 'next'
 import { siteConfig } from '@/config/metadata'
+import { staticNewsArticles } from '@/static/data/newsData'
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = siteConfig.url
@@ -31,7 +32,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly',
       priority: 0.7,
     },
+    {
+      url: `${baseUrl}/news`,
+      lastModified,
+      changeFrequency: 'weekly',
+      priority: 0.85,
+    },
   ]
+
+  const newsPages: MetadataRoute.Sitemap = staticNewsArticles.map((article) => ({
+    url: `${baseUrl}/news/${article.slug}`,
+    lastModified: new Date(article.publishedAt),
+    changeFrequency: 'monthly',
+    priority: 0.8,
+  }))
 
   // TODO: Aquí podrías agregar páginas dinámicas si tienes:
   // - Páginas de ofertas públicas
@@ -39,5 +53,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
   // - Páginas de especialidades
   // - Páginas de ciudades
   
-  return staticPages
+  return [...staticPages, ...newsPages]
 }

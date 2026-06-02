@@ -25,6 +25,11 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       new URL("https://images.pexels.com/photos/**"),
       new URL("https://img.daisyui.com/**"),
+      {
+        protocol: "https",
+        hostname: "**.public.blob.vercel-storage.com",
+        pathname: "/**",
+      },
       ...(blobHostname ? [{ hostname: blobHostname }] : []),
       { hostname: "avatars.githubusercontent.com" }
     ],

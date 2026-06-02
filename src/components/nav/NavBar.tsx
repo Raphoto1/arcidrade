@@ -3,9 +3,33 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
+import useSWR from "swr";
+import { features } from "@/config/features";
+
+type SectionVisibilityResponse = {
+  success: boolean;
+  payload: {
+    sectionKey: string;
+    isActive: boolean;
+  };
+};
+
+const fetcher = async (url: string): Promise<SectionVisibilityResponse> => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error("No se pudo cargar la visibilidad de seccion");
+  }
+  return response.json();
+};
 
 function NavBar() {
   const { data: session } = useSession();
+  const { data: articlesVisibility } = useSWR<SectionVisibilityResponse>(
+    "/api/public/articles/section",
+    fetcher
+  );
+
+  const showArticlesInNav = Boolean(articlesVisibility?.success && articlesVisibility.payload.isActive);
 
   // Función simple para cerrar el dropdown móvil
   const closeDropdown = () => {
@@ -47,6 +71,16 @@ function NavBar() {
           <li>
             <Link href={"/offers"}>Ofertas</Link>
           </li>
+          {features.showNewsInNav && (
+            <li>
+              <Link href={"/news"}>Novedades</Link>
+            </li>
+          )}
+          {showArticlesInNav && (
+            <li>
+              <Link href={"/articles"}>Novedades</Link>
+            </li>
+          )}
         </ul>
       </div>
       <div className='navbar-end gap-3 pr-5 hidden lg:flex font-oswald'>
@@ -89,9 +123,19 @@ function NavBar() {
             <li>
               <Link href={"/services"} onClick={closeDropdown}>Servicios</Link>
             </li>
-                      <li>
-            <Link href={"/offers"}>Ofertas</Link>
-          </li>
+            <li>
+              <Link href={"/offers"} onClick={closeDropdown}>Ofertas</Link>
+            </li>
+            {features.showNewsInNav && (
+              <li>
+                <Link href={"/news"} onClick={closeDropdown}>Novedades</Link>
+              </li>
+            )}
+            {showArticlesInNav && (
+              <li>
+                <Link href={"/articles"} onClick={closeDropdown}>Novedades</Link>
+              </li>
+            )}
             {session ? (
               <>
                 <li>

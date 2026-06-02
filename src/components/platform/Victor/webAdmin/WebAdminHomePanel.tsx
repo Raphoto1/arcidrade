@@ -17,8 +17,8 @@ export default function WebAdminHomePanel() {
             <WebAdminHomePreview />
           </ModalForPreview>
         </div>
-        <MainGridOffersAdmin />
         <CarouselAdmin />
+        <MainGridOffersAdmin />
         <MainProvincesAdmin />
         <MainSpecialitiesAdmin />
       </div>

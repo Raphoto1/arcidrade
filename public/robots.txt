@@ -3,6 +3,8 @@ Allow: /
 Allow: /about
 Allow: /auth/login
 Allow: /services
+Allow: /news
+Allow: /news/
 
 # Block authenticated areas
 Disallow: /platform/
@@ -14,8 +16,6 @@ Disallow: /completeInvitation/
 Disallow: /test/
 
 # Block backup and admin files
-Disallow: *.js$
-Disallow: *.json$
 Disallow: /backup-database.js
 Disallow: /check-users.js
 Disallow: /restore-backup.js

@@ -6,6 +6,7 @@ import GridHomeWindows from "@/components/home/GridHomeWindows";
 import GridHomeWindowsCities from "@/components/home/GridHomeWindowsCities";
 import GridHomeWindowsSpecialities from "@/components/home/GridHomeWindowsSpecialities";
 import OffersPublic from "@/components/home/OffersPublic";
+import HomeArticlesPreview from "@/components/home/HomeArticlesPreview";
 import ThreeColumnGrid from "@/components/Grids/ThreeColumnGrid";
 import BrColors from "@/components/pieces/BrColors";
 
@@ -56,6 +57,7 @@ export default function HomeContent({
       <GridHomeWindowsCities />
       <BrColors title={specialitiesTitle} />
       <GridHomeWindowsSpecialities />
+      <HomeArticlesPreview />
       <OffersPublic trackingSource={offersTrackingSource} title={offersTitle} />
     </main>
   );

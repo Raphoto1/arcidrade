@@ -440,6 +440,30 @@ model GeneralProfesionalSubAreas {
   updated_at  DateTime @updatedAt
 }
 
+model Article {
+  id          Int      @id @default(autoincrement())
+  slug        String   @unique
+  title       String
+  shortText   String
+  image       String
+  contentHtml String
+  publishedAt DateTime
+  isActive    Boolean  @default(true)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt
+
+  @@index([publishedAt])
+  @@index([isActive])
+}
+
+model SiteSectionVisibility {
+  id         Int      @id @default(autoincrement())
+  sectionKey String   @unique
+  isActive   Boolean  @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+}
+
 enum AreasAvailable {
   institution
   profesional
