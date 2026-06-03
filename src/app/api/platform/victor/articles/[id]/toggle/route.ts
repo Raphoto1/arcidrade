@@ -4,8 +4,8 @@ import { authOptions } from "@/utils/authOptions";
 import prisma from "@/utils/db";
 import { withPrismaRetry } from "@/utils/retryUtils";
 
-function isVictor(session: any) {
-  return session?.user?.area === "victor";
+function canManageArticles(session: any) {
+  return ["victor", "colab"].includes(session?.user?.area);
 }
 
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
@@ -16,7 +16,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (!isVictor(session)) {
+    if (!canManageArticles(session)) {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
     }
 

@@ -96,4 +96,21 @@ describe("/api/platform/victor/articles/section route", () => {
       },
     });
   });
+
+  it("GET responde 200 con estado de seccion para Colab", async () => {
+    getServerSessionMock.mockResolvedValue({ user: { area: "colab" } });
+    getArticlesSectionVisibilityServiceMock.mockResolvedValue(false);
+
+    const response = await GET();
+    const body = await response.json();
+
+    expect(response.status).toBe(200);
+    expect(body).toEqual({
+      success: true,
+      payload: {
+        sectionKey: "articles",
+        isActive: false,
+      },
+    });
+  });
 });

@@ -12,6 +12,18 @@ Permitiendo procesos eficientes de reclutamiento, gestión de perfiles y creaci�
 
 ---
 
+## 🆕 **Novedades recientes**
+
+- **Soporte para categoría "general"** en profesionales, búsquedas e invitaciones, con ajuste automático de filtros y visualización.
+- **Exportación de perfil profesional** en Excel y PDF, incluyendo adjuntos cuando existen.
+- **Seguridad reforzada** en rutas de perfil profesional, con validación por sesión, rol y ownership.
+- **Google Analytics 4 con consentimiento**, para activar medición solo cuando el usuario lo permite.
+- **Mejoras de UI/UX** en el detalle profesional, modales y administración móvil.
+
+Si quieres ver el registro completo de actualizaciones, revisa [CAMBIOS_REALIZADOS.txt](./CAMBIOS_REALIZADOS.txt).
+
+---
+
 ## 🚀 **Inicio Rápido**
 
 ### Requisitos Previos
@@ -572,6 +584,8 @@ Este script verifica:
 ## � **Guías y Documentación**
 
 ### **Guías de Configuración** (`guides/`)
+
+- **[CAMBIOS_REALIZADOS.txt](./CAMBIOS_REALIZADOS.txt)** - Registro resumido de los cambios implementados y actualizaciones recientes
 
 #### 🔧 **Configuración de Base de Datos**
 - **[DATABASE_DIAGNOSTICS.md](./guides/DATABASE_DIAGNOSTICS.md)** - Diagnóstico y optimización de conexiones a base de datos

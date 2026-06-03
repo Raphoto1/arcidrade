@@ -7,8 +7,8 @@ import {
   upsertArticlesSectionVisibilityService,
 } from "@/service/Articles.service";
 
-function isVictor(session: any) {
-  return session?.user?.area === "victor";
+function canManageArticles(session: any) {
+  return ["victor", "colab"].includes(session?.user?.area);
 }
 
 export async function GET() {
@@ -19,7 +19,7 @@ export async function GET() {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (!isVictor(session)) {
+    if (!canManageArticles(session)) {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
     }
 
@@ -45,7 +45,7 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (!isVictor(session)) {
+    if (!canManageArticles(session)) {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
     }
 

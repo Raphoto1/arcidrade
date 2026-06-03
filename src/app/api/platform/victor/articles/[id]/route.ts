@@ -7,8 +7,8 @@ import { ensureArticleSlugAvailableService } from "@/service/Articles.service";
 
 const DEFAULT_ARTICLE_IMAGE = "https://images.pexels.com/photos/3183198/pexels-photo-3183198.jpeg";
 
-function isVictor(session: any) {
-  return session?.user?.area === "victor";
+function canManageArticles(session: any) {
+  return ["victor", "colab"].includes(session?.user?.area);
 }
 
 function createSlug(input: string) {
@@ -80,7 +80,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (!isVictor(session)) {
+    if (!canManageArticles(session)) {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
     }
 
@@ -128,7 +128,7 @@ export async function DELETE(request: NextRequest, { params }: { params: Promise
       return NextResponse.json({ error: "No autorizado" }, { status: 401 });
     }
 
-    if (!isVictor(session)) {
+    if (!canManageArticles(session)) {
       return NextResponse.json({ error: "Acceso denegado" }, { status: 403 });
     }
 

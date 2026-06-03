@@ -8,10 +8,19 @@ type DbStatusResponse = {
   totalTime?: string;
 };
 
+type SectionVisibilityResponse = {
+  success?: boolean;
+  payload?: {
+    isActive?: boolean;
+  };
+};
+
 export default function WebAdminHeader() {
   const [isCheckingDb, setIsCheckingDb] = useState(true);
   const [dbConnected, setDbConnected] = useState(false);
   const [dbLatency, setDbLatency] = useState<string | null>(null);
+  const [isCheckingNewsSection, setIsCheckingNewsSection] = useState(true);
+  const [isNewsSectionActive, setIsNewsSectionActive] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -48,6 +57,38 @@ export default function WebAdminHeader() {
     };
   }, []);
 
+  useEffect(() => {
+    let isMounted = true;
+
+    const checkNewsSection = async () => {
+      try {
+        const response = await fetch("/api/public/articles/section", {
+          method: "GET",
+          cache: "no-store",
+        });
+
+        const data = (await response.json()) as SectionVisibilityResponse;
+        const isActive = Boolean(response.ok && data?.success && data?.payload?.isActive);
+
+        if (!isMounted) return;
+        setIsNewsSectionActive(isActive);
+      } catch {
+        if (!isMounted) return;
+        setIsNewsSectionActive(false);
+      } finally {
+        if (isMounted) {
+          setIsCheckingNewsSection(false);
+        }
+      }
+    };
+
+    checkNewsSection();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   const dbStat = useMemo(() => {
     if (isCheckingDb) {
       return {
@@ -69,10 +110,31 @@ export default function WebAdminHeader() {
     };
   }, [dbConnected, dbLatency, isCheckingDb]);
 
+  const newsSectionStat = useMemo(() => {
+    if (isCheckingNewsSection) {
+      return {
+        value: "Verificando...",
+        note: "Consultando estado",
+      };
+    }
+
+    if (isNewsSectionActive) {
+      return {
+        value: "Activa",
+        note: "Visible en navbar y home",
+      };
+    }
+
+    return {
+      value: "Inactiva",
+      note: "Oculta en navbar y home",
+    };
+  }, [isCheckingNewsSection, isNewsSectionActive]);
+
   const stats = [
     { label: "Secciones editables", value: "4", note: "Home · About · Servicios · Artículos", icon: FiLayout },
     { label: "Estado actual de Base de datos", value: dbStat.value, note: dbStat.note, icon: FiMonitor },
-    { label: "Próxima etapa", value: "Blob", note: "assets", icon: FiLayers },
+    { label: "Sección Novedades", value: newsSectionStat.value, note: newsSectionStat.note, icon: FiLayers },
   ];
 
   return (
