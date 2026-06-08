@@ -619,6 +619,11 @@ Este script verifica:
 
 ### **Guías de Configuración** (`guides/`)
 
+- **[START_HERE_IA.md](./START_HERE_IA.md)** - Entrada de 60 segundos para futuras IAs
+- **[AGENTS.md](./AGENTS.md)** - Checklist rápido para futuras IAs/agentes (reglas operativas y de seguridad)
+- **[CONTEXTO_IA.md](./CONTEXTO_IA.md)** - Contexto operativo para futuras IAs (arquitectura, comandos y reglas de seguridad)
+- **[guides/ENV_MATRIX.md](./guides/ENV_MATRIX.md)** - Matriz de variables por entorno (dev/preview/deploy)
+- **[guides/TROUBLESHOOTING_INDEX.md](./guides/TROUBLESHOOTING_INDEX.md)** - Índice de troubleshooting por síntoma
 - **[CAMBIOS_REALIZADOS.txt](./CAMBIOS_REALIZADOS.txt)** - Registro resumido de los cambios implementados y actualizaciones recientes
 
 #### 🧭 **Runbooks Operativos (Versión Corta)**
