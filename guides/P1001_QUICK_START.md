@@ -52,7 +52,7 @@ Debe responder con `"status": "healthy"`
 | Recovery automático | No | Sí |
 
 ## Documentación Completa
-- [CAMBIOS_REALIZADOS.txt](./CAMBIOS_REALIZADOS.txt) - Resumen visual
+- [CAMBIOS_REALIZADOS.txt](../CAMBIOS_REALIZADOS.txt) - Resumen visual
 - [PRISMA_P1001_FIX.md](./PRISMA_P1001_FIX.md) - Técnico detallado
 - [P1001_IMPLEMENTATION_CHECKLIST.md](./P1001_IMPLEMENTATION_CHECKLIST.md) - Checklist
 - [VERCEL_SETUP_GUIDE.md](./VERCEL_SETUP_GUIDE.md) - Step-by-step

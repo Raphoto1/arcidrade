@@ -22,15 +22,15 @@
 **Ubicación:** [src/utils/db.ts](src/utils/db.ts)
 
 **Problema:**
-- Sin `validationQuery` para conexiones reutilizadas
-- Sin detalles en logs de error de pool
-- Sin manejadores de eventos de pool
+- Configuración de pool no alineada para entorno serverless
+- Timeouts de conexión y query no estandarizados
+- Falta de claridad entre `DATABASE_URL` (prod) y `DIRECT_DATABASE_URL` (dev/migrate)
 
 **Solución Implementada:**
 ```typescript
-✅ Agregado: validationQuery: 'SELECT 1'
-✅ Función: setupPoolErrorHandling() con logs detallados
-✅ Eventos: 'connect', 'error', 'remove' con timestamps
+✅ Pool actual: max=10, min=0, idleTimeoutMillis=20000, connectionTimeoutMillis=30000, statement_timeout=30000
+✅ En producción usa `DATABASE_URL` (con soporte Accelerate)
+✅ En desarrollo usa `DIRECT_DATABASE_URL` y singleton global para HMR
 ```
 
 ### 3. ❌ Logs de Autenticación Insuficientes
@@ -92,7 +92,7 @@ npm run test:database
 
 ## 📋 Variables de Entorno Críticas
 
-Creado: `.env.production.example`
+Este repositorio no incluye un `.env.production.example` versionado. Configura variables directamente en tu proveedor de deploy (Vercel).
 
 **Cambios requeridos en Vercel/Deploy:**
 
@@ -114,7 +114,7 @@ DIRECT_DATABASE_URL="postgres://user:pass@host:5432/db?sslmode=require"
 
 ## 🎯 Checklist de Deploy
 
-- [ ] Copiar `.env.production.example` a variables en Vercel
+- [ ] Configurar variables directamente en Vercel (sin `.env.production.example`)
 - [ ] Reemplazar `your-production-domain.com` con dominio real
 - [ ] Verificar que NEXTAUTH_URL coincida exactamente con dominio de deploy
 - [ ] Probar `/api/health` desde navegador de producción
@@ -166,9 +166,9 @@ tail -f logs/production.log | grep AUTH
 | Archivo | Cambio |
 |---------|--------|
 | `src/app/api/health/route.ts` | ✅ Agregado: timeout wrapper, loginSimulation test |
-| `src/utils/db.ts` | ✅ Agregado: validationQuery, setupPoolErrorHandling() |
+| `src/utils/db.ts` | ✅ Pool y estrategia de conexión ajustados para serverless + Accelerate |
 | `src/utils/authOptions.ts` | ✅ Mejorado: logs detallados de error con connectionError flag |
-| `.env.production.example` | ✅ Creado: documentación de env vars |
+| Variables de entorno (Vercel) | ✅ Documentadas para configuración manual en deploy |
 | `scripts/test-database.ts` | ✅ Creado: script de diagnóstico |
 | `package.json` | ✅ Agregado: script `npm run test:database` |
 

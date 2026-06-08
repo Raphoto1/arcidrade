@@ -13,13 +13,13 @@ Los errores P1001 en Prisma generalmente NO son causados por lógica defectuosa,
 ## Soluciones Implementadas
 
 ### 1. ✅ Configuración de Pool Optimizada en `src/utils/db.ts`
-- Reducido `max` de 20 a 15 conexiones (evita agotamiento en Vercel)
-- Reducido `min` de 2 a 1 (menos overhead)
-- Aumentado `connectionTimeoutMillis` de 10s a 20s (permite reconexiones lentas)
-- Reducido `idleTimeoutMillis` de 60s a 30s (descartar conexiones inactivas más rápido)
-- Reducido `statement_timeout` a 30s (fallar rápido en queries lentas)
-- Agregado `idleErrorTimeout: 5000` (detectar conexiones rotas rápido)
-- Agregado event listener para P1001 (logging detallado)
+- Configurado `max: 10` conexiones (más conservador para Vercel)
+- Configurado `min: 0` (permite vaciar pool en serverless)
+- Configurado `connectionTimeoutMillis: 30000` (30s)
+- Configurado `idleTimeoutMillis: 20000` (20s)
+- Configurado `statement_timeout: 30000` (30s)
+- Configurado `allowExitOnIdle: true` para cierre más limpio
+- Selección de URL por entorno: `DATABASE_URL` en producción y `DIRECT_DATABASE_URL` en desarrollo
 
 ### 2. ✅ Retry Logic Automático
 Ya implementado en `src/utils/retryUtils.ts`:
@@ -76,17 +76,15 @@ Respuesta esperada (si está healthy):
 ```json
 {
   "status": "healthy",
-  "timestamp": "2025-12-17T...",
+  "timestamp": "2026-06-08T...",
+  "totalResponseTime": "120ms",
+  "environment": "production",
+  "databaseUrl": "DIRECT_DATABASE_URL (configured)",
   "checks": {
-    "pool": "OK",
-    "basicQuery": "OK",
-    "transactionTest": "OK",
-    "connectionRetry": "OK"
-  },
-  "poolStatus": {
-    "totalCount": 8,
-    "idleCount": 5,
-    "waitingCount": 0
+    "database": { "status": "healthy", "responseTime": 25 },
+    "prismaQuery": { "status": "healthy", "responseTime": 18 },
+    "authCount": { "status": "healthy", "responseTime": 21, "count": 1 },
+    "loginSimulation": { "status": "healthy", "responseTime": 22 }
   }
 }
 ```

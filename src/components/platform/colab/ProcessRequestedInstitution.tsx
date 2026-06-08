@@ -9,7 +9,7 @@ export default function ProcessRequestedInstitution() {
   
   if (isLoading) {
     return (
-      <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-lg p-3 md:p-4 md:justify-center md:h-auto'>
+      <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-lg p-2 md:p-3 md:justify-center md:h-auto'>
         <div className='pb-2'>
           <h1 className='text-lg md:text-xl fontArci text-center'>Procesos Solicitados Instituciones</h1>
         </div>
@@ -41,7 +41,7 @@ export default function ProcessRequestedInstitution() {
           <span className='text-xs md:text-sm font-normal text-gray-600 ml-2'>({filteredCount})</span>
         </h1>
       </div>
-      <div className='max-h-80 md:max-h-96 overflow-auto'>
+      <div className='max-h-72 md:max-h-[28rem] overflow-auto'>
         {processes.length > 0 ? (
           processes.map((process: any, index: number) => <ProcessInstitution process={process} onSuccess={mutate} key={process.id || index} />)
         ) : (

@@ -40,9 +40,12 @@ cd arcidrade
 # Instalar dependencias
 npm install
 
-# Configurar base de datos
-cp .env.example .env
-# Configurar DATABASE_URL en .env
+# Crear archivo .env (manual)
+# Variables mínimas recomendadas:
+# DATABASE_URL=...
+# DIRECT_DATABASE_URL=...
+# NEXTAUTH_SECRET=...
+# NEXTAUTH_URL=http://localhost:3000
 
 # Ejecutar migraciones
 npx prisma migrate dev
@@ -59,7 +62,7 @@ La aplicación estará disponible en [http://localhost:3000](http://localhost:30
 ## 🏗️ **Arquitectura del Sistema**
 
 ### **Stack Tecnológico**
-- **Frontend:** Next.js 15.5.6, React, TypeScript
+- **Frontend:** Next.js 15, React 19, TypeScript
 - **Styling:** DaisyUI, TailwindCSS
 - **Backend:** Next.js API Routes
 - **Base de Datos:** PostgreSQL con Prisma ORM
@@ -238,11 +241,17 @@ enum Sub_area {
 
 ## 🔗 **API Endpoints**
 
+> Nota: esta sección resume rutas principales. El proyecto incluye endpoints adicionales para administración (`/api/platform/victor/*`, `/api/platform/colab/*`) y contenido público (`/api/public/*`).
+
 ### **Autenticación**
 ```
-POST   /api/auth/signup              # Registro de usuarios
-POST   /api/auth/signin              # Inicio de sesión
-GET    /api/auth/session             # Información de sesión
+POST   /api/auth/register                 # Registro por invitación
+POST   /api/auth/register-direct          # Registro directo
+POST   /api/auth/forgot-password          # Solicitar reset de contraseña
+POST   /api/auth/resetPassword/[id]       # Confirmar reset
+POST   /api/auth/resend-invitation        # Reenviar invitación
+GET    /api/auth/general-subareas         # Catálogo de subáreas generales
+GET/POST /api/auth/[...nextauth]          # Login/sesión NextAuth
 ```
 
 ### **Profesionales**
@@ -251,6 +260,9 @@ GET    /api/platform/profesional/                    # Datos del profesional
 POST   /api/platform/profesional/                    # Crear/actualizar perfil
 GET    /api/platform/profesional/all                 # Todos los profesionales
 GET    /api/platform/profesional/paginated           # Profesionales paginados
+GET    /api/platform/profesional/complete            # Perfil profesional completo
+GET    /api/platform/profesional/[id]                # Perfil por ID (protegido)
+GET    /api/platform/profesional-general             # Perfil profesional general
 POST   /api/platform/profesional/speciality/         # Crear especialidad
 GET    /api/platform/profesional/speciality          # Listar especialidades
 PUT    /api/platform/profesional/speciality/[id]     # Actualizar especialidad
@@ -261,6 +273,9 @@ DELETE /api/platform/profesional/speciality/[id]     # Eliminar especialidad
 ```
 GET    /api/platform/institution/                    # Datos institucionales
 POST   /api/platform/institution/                    # Crear/actualizar institución
+GET    /api/platform/institution/all                 # Instituciones
+GET    /api/platform/institution/paginated           # Instituciones paginadas
+GET    /api/platform/institution/complete/[id]       # Perfil institucional completo
 ```
 
 ### **Procesos**
@@ -268,8 +283,12 @@ POST   /api/platform/institution/                    # Crear/actualizar instituc
 GET    /api/platform/process/                        # Listar procesos
 POST   /api/platform/process/                        # Crear proceso
 GET    /api/platform/process/[id]                    # Obtener proceso específico
-PUT    /api/platform/process/update                  # Actualizar proceso
-POST   /api/platform/process/status                  # Cambiar estado de proceso
+GET    /api/platform/process/all/active              # Procesos activos
+GET    /api/platform/process/all/pending             # Procesos pendientes
+GET    /api/platform/process/all/archived            # Procesos archivados
+POST   /api/platform/process/manage/type             # Cambiar tipo de proceso
+POST   /api/platform/process/manage/period           # Extender periodo
+POST   /api/platform/process/manage/status/[status]  # Cambiar estado
 ```
 
 ---
@@ -383,29 +402,30 @@ npx vitest run src/__tests__/service/directProfessionalCrud.test.ts src/__tests_
 src/__tests__/
 ├── setup.ts                    # Configuración global (jest-dom)
 ├── api/
-│   └── profesionalByIdRoute.test.ts # Seguridad de acceso a perfil por ID
+│   ├── profesionalByIdRoute.test.ts
+│   ├── publicArticlesRoute.test.ts
+│   ├── articlesSectionRoute.test.ts
+│   └── uploadMainStudyRoute.test.ts
+├── components/
+│   └── homeArticlesPreview.test.tsx
+├── controller/
+│   ├── userDataHomologation.test.ts
+│   ├── victorInstitutionCrud.test.ts
+│   └── victorProfessionalCrud.test.ts
 ├── service/
-│   ├── directProfessionalCrud.test.ts # Registro directo profesional/profesional_general + Profesional_extra_data
-│   └── directInstitutionCrud.test.ts  # Registro directo institución + Institution_extra_data
+│   ├── directProfessionalCrud.test.ts
+│   └── directInstitutionCrud.test.ts
 └── utils/
-    ├── htmlHelpers.test.ts     # Tests de stripHtml, getHtmlPreview, sanitizeAndStyleHtml
-    ├── retryUtils.test.ts      # Tests de withRetry y withPrismaRetry
-    ├── cookieConsent.test.ts   # Tests de getCookieConsent, hasCookieConsent, resetCookieConsent
-    ├── encrypter.test.ts       # Tests de encrypt y compare (bcrypt)
-    └── quillProcessor.test.ts  # Tests de processQuillHTML
+  ├── htmlHelpers.test.ts
+  ├── retryUtils.test.ts
+  ├── cookieConsent.test.ts
+  ├── encrypter.test.ts
+  └── quillProcessor.test.ts
 ```
 
-### **Cobertura Actual**
+### **Cobertura**
 
-| Archivo | Tests | Funciones cubiertas |
-|---|---|---|
-| `htmlHelpers.test.ts` | 23 | `stripHtml`, `getHtmlPreview`, `sanitizeAndStyleHtml` |
-| `retryUtils.test.ts` | 8 | `withRetry`, `withPrismaRetry` |
-| `cookieConsent.test.ts` | 12 | `getCookieConsent`, `hasCookieConsent`, `resetCookieConsent` |
-| `encrypter.test.ts` | 9 | `encrypt`, `compare` |
-| `quillProcessor.test.ts` | 13 | `processQuillHTML` |
-| `profesionalByIdRoute.test.ts` | 4 | Autorización de `/api/platform/profesional/[id]` |
-| **Total** | **69** | |
+La cobertura se genera con `npm run test:coverage` y se reporta en consola + HTML. Como la suite evoluciona continuamente, evita asumir un número fijo de tests/cobertura en esta documentación.
 
 ### **Configuración**
 
@@ -419,26 +439,30 @@ La configuración de Vitest está en [`vitest.config.ts`](./vitest.config.ts) en
 ## 🔧 **Scripts de Utilidad**
 
 ```bash
-# Base de datos
-npm run db:migrate          # Ejecutar migraciones
-npm run db:generate         # Generar cliente Prisma
-npm run db:studio          # Abrir Prisma Studio
-npm run db:reset           # Resetear base de datos (desarrollo)
+# Prisma / Base de datos
+npx prisma migrate dev      # Crear/aplicar migraciones en desarrollo
+npx prisma migrate deploy   # Aplicar migraciones en deploy
+npx prisma migrate status   # Estado de migraciones
+npx prisma generate         # Generar cliente Prisma
+npx prisma studio           # Abrir Prisma Studio
 
 # Desarrollo
 npm run dev                # Servidor de desarrollo
-npm run build             # Build de producción
-npm run start             # Servidor de producción
-npm run lint              # Linting del código
+npm run build              # Build de producción
+npm run start              # Servidor de producción
+npm run lint               # Linting del código
+npm run clean              # Limpieza en entornos Unix
+npm run clean:win          # Limpieza en Windows
 
 # Tests
 npm test                   # Ejecutar todos los tests
 npm run test:watch         # Tests en modo watch
 npm run test:coverage      # Tests con cobertura
+npm run test:database      # Diagnóstico DB (tsx)
 
 # Backups (scripts personalizados)
-node backup-database.js    # Crear backup de base de datos
-node restore-backup.js     # Restaurar desde backup
+node scripts/backup-database.js    # Crear backup de base de datos
+node scripts/restore-backup.js     # Restaurar desde backup
 ```
 
 ---
@@ -448,18 +472,28 @@ node restore-backup.js     # Restaurar desde backup
 ### **Variables de Entorno**
 ```env
 # Base de datos
-DATABASE_URL="postgresql://user:pass@host:port/db"
+DATABASE_URL="postgresql://user:pass@host:port/db"          # Producción (incluye Accelerate si aplica)
+DIRECT_DATABASE_URL="postgresql://user:pass@host:port/db"   # Conexión directa para prisma migrate
 
 # NextAuth
 NEXTAUTH_SECRET="your-secret-key"
 NEXTAUTH_URL="https://your-domain.com"
 
-# Email (opcional)
-EMAIL_SERVER_USER="your-email@domain.com"
-EMAIL_SERVER_PASSWORD="your-password"
-EMAIL_SERVER_HOST="smtp.your-provider.com"
-EMAIL_SERVER_PORT="587"
-EMAIL_FROM="noreply@your-domain.com"
+# Plataforma / URLs
+NEXT_PUBLIC_SITE_URL="https://your-domain.com"
+PLAT_URL="https://your-domain.com"
+
+# Email (SMTP)
+SMTP_SERVER_HOST="smtp.your-provider.com"
+SMTP_SERVER_USERNAME="your-email@domain.com"
+SMTP_SERVER_PASSWORD="your-password"
+MAIL_PORT="587"
+NO_REPLY_MAIL="noreply@your-domain.com"
+NO_REPLY_MAIL_PASSWORD="password-for-no-reply"
+SITE_MAIL_RECIEVER="admin@your-domain.com"
+
+# Vercel Blob (uploads)
+BLOB_READ_WRITE_TOKEN="vercel_blob_rw_xxx_xxx"
 
 # Google Analytics 4 (opcional)
 NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
@@ -555,12 +589,12 @@ Abre `preview-email-templates.html` en tu navegador para ver todos los templates
 
 Si los emails están siendo rechazados o llegan a spam, consulta:
 
-📋 **[QUICK-FIX-EMAILS.md](./QUICK-FIX-EMAILS.md)** - Solución en 3 pasos (15 min)
+📋 **[QUICK-FIX-EMAILS.md](./guides/QUICK-FIX-EMAILS.md)** - Solución en 3 pasos (15 min)
 - Configuración SPF
 - Configuración DKIM  
 - Configuración DMARC
 
-📖 **[EMAIL-DELIVERY-SETUP.md](./EMAIL-DELIVERY-SETUP.md)** - Guía completa detallada
+📖 **[EMAIL-DELIVERY-SETUP.md](./guides/EMAIL-DELIVERY-SETUP.md)** - Guía completa detallada
 - Configuración DNS completa
 - Mejores prácticas
 - Troubleshooting avanzado
@@ -570,7 +604,7 @@ Si los emails están siendo rechazados o llegan a spam, consulta:
 
 ```bash
 # Ejecutar test de configuración de email
-node test-email-config.js
+node scripts/test-email-config.js
 ```
 
 Este script verifica:
@@ -581,11 +615,14 @@ Este script verifica:
 
 ---
 
-## � **Guías y Documentación**
+## 📚 **Guías y Documentación**
 
 ### **Guías de Configuración** (`guides/`)
 
 - **[CAMBIOS_REALIZADOS.txt](./CAMBIOS_REALIZADOS.txt)** - Registro resumido de los cambios implementados y actualizaciones recientes
+
+#### 🧭 **Runbooks Operativos (Versión Corta)**
+- **[guides/runbooks/README.md](./guides/runbooks/README.md)** - Índice de runbooks cortos para resolución rápida (con enlace a cada guía extensa)
 
 #### 🔧 **Configuración de Base de Datos**
 - **[DATABASE_DIAGNOSTICS.md](./guides/DATABASE_DIAGNOSTICS.md)** - Diagnóstico y optimización de conexiones a base de datos

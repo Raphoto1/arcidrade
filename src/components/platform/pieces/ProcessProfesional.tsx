@@ -28,27 +28,27 @@ export default function ProcessProfesional(props: any) {
   const fullName = useFullName(profesionalPack?.payload?.profesional_data?.name, profesionalPack?.payload?.profesional_data?.last_name);
   return (
     <div>
-      <div className=' bg-gray-50 w-full rounded-sm p-2 grid grid-cols-2 gap-2 shadow-xl mt-2 justify-between items-center'>
-        <div className='w-2/3'>
-          <h2 className='text-(--main-arci) text-bold text-wrap font-bold'>{fullName}</h2>
-          <p className='text-sm text-(--orange-arci) text-wrap w-full'>{institutionPack?.payload?.name || "Institución"}</p>
-          <span className='text-sm text-gray-600 w-100'>{processPack?.payload.position}</span>
-          <p className='font-light'>{formatDateToString(processPack?.payload.created_at)}</p>
+      <div className='bg-gray-50 w-full rounded-sm p-2 grid grid-cols-[minmax(0,1fr)_auto] gap-1 shadow-xl mt-1 justify-between items-start'>
+        <div className='min-w-0 pr-1.5 space-y-0.5'>
+          <h2 className='text-(--main-arci) text-sm font-bold leading-tight break-words'>{fullName}</h2>
+          <p className='text-xs text-(--orange-arci) break-words'>{institutionPack?.payload?.name || "Institución"}</p>
+          <span className='text-xs text-gray-600 break-words'>{processPack?.payload.position}</span>
+          <p className='text-xs font-light'>{formatDateToString(processPack?.payload.created_at)}</p>
         </div>
-        <div className='controles grid gap-2 [&>*>button]:w-full'>
+        <div className='controles grid gap-1 [&>*>button]:w-full'>
           {Boolean(profesionalPack?.payload?.profesional_data?.main_study?.isHomologated) && (
-            <div className='badge badge-success badge-outline w-fit justify-self-center'>Homologado UE</div>
+            <div className='badge badge-success badge-outline badge-xs w-fit justify-self-center'>Homologado UE</div>
           )}
-          <ModalForPreview title='Ver Profesional'>
+          <ModalForPreview title='Ver Profesional' btnClassName='btn btn-xs h-auto w-full min-h-0 px-2 py-1 text-[11px] text-white'>
             <ProfesionalDetailFullById userId={userId} />
           </ModalForPreview>
-          <ModalForPreview title='Ver Proceso'>
+          <ModalForPreview title='Ver Proceso' btnClassName='btn btn-xs h-auto w-full min-h-0 px-2 py-1 text-[11px] text-white'>
             <ProcessDetail processData={processPack?.payload} />
           </ModalForPreview>
-          <ModalForFormsRedBtn title='Rechazar Solicitud'>
+          <ModalForFormsRedBtn title='Rechazar Solicitud' btnClassName='btn btn-xs h-auto w-full min-h-0 px-2 py-1 text-[11px] text-white'>
             <ConfirmDeleteProfesionalToProcessVictorForm ProcessId={processPack?.payload.id} UserID={userId} fullName={fullName} processPosition={processPack?.payload.position} />
           </ModalForFormsRedBtn>
-          <ModalForFormsGreenBtn title='Aceptar Solicitud'>
+          <ModalForFormsGreenBtn title='Aceptar Solicitud' btnClassName='btn btn-xs h-auto w-full min-h-0 px-2 py-1 text-[11px] text-white'>
             <ConfirmAddProfesionalToProcessVictorForm
               ProcessId={processPack?.payload.id}
               UserID={userId}

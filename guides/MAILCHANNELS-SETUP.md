@@ -226,7 +226,7 @@ DMARC: https://mxtoolbox.com/dmarc.aspx?domain=arcidrade.com
 ### 3. Test de Envío
 
 ```powershell
-node test-email-config.js
+node scripts/test-email-config.js
 ```
 
 ---

@@ -65,7 +65,7 @@ TTL: 3600
 3. Ejecuta el script de prueba:
 
 ```powershell
-node test-email-config.js
+node scripts/test-email-config.js
 ```
 
 4. Ingresa el email temporal cuando te lo pida
@@ -75,7 +75,7 @@ node test-email-config.js
 ### Opción 2: Enviar a tu email
 
 ```powershell
-node test-email-config.js
+node scripts/test-email-config.js
 ```
 
 Ingresa tu email personal y verifica:
@@ -127,7 +127,7 @@ Si necesitas enviar emails YA, considera:
 
 Para más detalles, consulta:
 - `EMAIL-DELIVERY-SETUP.md` - Guía completa
-- `test-email-config.js` - Script de prueba
+- `scripts/test-email-config.js` - Script de prueba
 
 ---
 

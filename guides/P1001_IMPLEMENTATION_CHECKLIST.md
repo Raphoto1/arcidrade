@@ -6,18 +6,18 @@
 
 #### 1. ✅ `src/utils/db.ts` - Pool Configuration Optimizada
 - **Cambios:**
-  - `max`: 20 → 15 conexiones (evita agotamiento)
-  - `min`: 2 → 1 conexión (reduce overhead)
-  - `connectionTimeoutMillis`: 10s → 20s (permite reconexiones lentas)
-  - `idleTimeoutMillis`: 60s → 30s (detecta stale connections más rápido)
-  - `statement_timeout`: 60s → 30s (falla rápido en queries lentas)
-  - **Nuevo:** `idleErrorTimeout: 5000` (limpia conexiones con errores)
+  - `max`: 10 conexiones (más conservador para Vercel)
+  - `min`: 0 (permite vaciar pool en serverless)
+  - `connectionTimeoutMillis`: 30000 (30s para cold starts)
+  - `idleTimeoutMillis`: 20000 (libera conexiones más rápido)
+  - `statement_timeout`: 30000 (30s por query)
+  - `allowExitOnIdle: true` (cierres más limpios en serverless)
 
 - **Ventajas:**
   - Menos conexiones en pool = menos contención en Vercel
-  - Mayor timeout de conexión = recuperación de transients lentos
+  - Mayor timeout de conexión = mejor recuperación de transients lentos
   - Menor timeout de queries = detecta problemas más rápido
-  - Validación automática con `SELECT 1`
+  - Selección automática de URL según entorno (`DATABASE_URL` en prod, `DIRECT_DATABASE_URL` en dev)
 
 #### 2. ✅ `src/utils/retryUtils.ts` - P1001 Detection & Smarter Retry Logic
 - **Nuevas Funciones:**
@@ -87,11 +87,15 @@ curl https://tu-dominio.com/api/health
 ```json
 {
   "status": "healthy",
+  "timestamp": "2026-06-08T00:00:00.000Z",
+  "totalResponseTime": "120ms",
+  "environment": "production",
+  "databaseUrl": "DIRECT_DATABASE_URL (configured)",
   "checks": {
-    "pool": "OK",
-    "basicQuery": "OK",
-    "transactionTest": "OK",
-    "connectionRetry": "OK"
+    "database": { "status": "healthy", "responseTime": 25 },
+    "prismaQuery": { "status": "healthy", "responseTime": 18 },
+    "authCount": { "status": "healthy", "responseTime": 21, "count": 1 },
+    "loginSimulation": { "status": "healthy", "responseTime": 22 }
   }
 }
 ```
@@ -194,9 +198,10 @@ Fail → Error Log [P1001]
 
 | Aspecto | Antes | Después |
 |---------|-------|---------|
-| Pool Max Connections | 20 | 15 |
-| Connection Timeout | 10s | 20s |
-| Idle Timeout | 60s | 30s |
+| Pool Max Connections | 20 | 10 |
+| Pool Min Connections | 2 | 0 |
+| Connection Timeout | 10s | 30s |
+| Idle Timeout | 60s | 20s |
 | Statement Timeout | 60s | 30s |
 | Retry Logic | ✅ Implementado | ✅ Mejorado P1001 detection |
 | Endpoints con Retry | 7 | 7 (mejorado) |

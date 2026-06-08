@@ -15,8 +15,8 @@ export default function ModalForPreview({ children, title, btnClassName, btnStyl
   return (
     <div>
       <button
-        className={btnClassName || 'btn h-auto w-auto p-1 min-w-full text-white'}
-        style={btnStyle || (btnClassName ? undefined : { backgroundColor: "var(--main-arci)" })}
+        className={`btn h-auto w-auto p-1 min-w-full text-white ${btnClassName || ""}`}
+        style={btnStyle || { backgroundColor: "var(--main-arci)" }}
         onClick={openModal}
       >
         {(icon || title) ? (

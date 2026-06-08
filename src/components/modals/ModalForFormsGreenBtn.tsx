@@ -6,9 +6,10 @@ import ModalToastContainer from "./ModalToastContainer";
 interface ModalProps {
   title?: string;
   children: React.ReactNode;
+  btnClassName?: string;
 }
 
-export default function ModalForFormsGreenBtn({ children, title }: ModalProps) {
+export default function ModalForFormsGreenBtn({ children, title, btnClassName }: ModalProps) {
   const modalRef = useRef<HTMLDialogElement>(null);
 
   const openModal = () => modalRef.current?.showModal();
@@ -17,7 +18,7 @@ export default function ModalForFormsGreenBtn({ children, title }: ModalProps) {
   return (
     <div>
       {title && (
-        <button className='btn bg-success h-auto p-1 w-full text-white' onClick={openModal}>
+        <button className={`btn bg-success h-auto p-1 w-full text-white ${btnClassName || ""}`} onClick={openModal}>
           {title}
         </button>
       )}

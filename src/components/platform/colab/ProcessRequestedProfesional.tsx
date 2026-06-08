@@ -12,7 +12,7 @@ export default function ProcessRequestedProfesional() {
 
   if (isLoading) {
     return (
-      <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-lg p-3 md:p-4 md:justify-center md:h-auto'>
+      <div className='flex-col justify-start bg-gray-200 w-full align-middle items-center rounded-lg p-2 md:p-3 md:justify-center md:h-auto'>
         <div className='pb-2'>
           <h1 className='text-lg md:text-xl fontArci text-center'>Procesos Solicitados Profesionales</h1>
         </div>
@@ -42,7 +42,7 @@ export default function ProcessRequestedProfesional() {
           <span className='text-xs md:text-sm font-normal text-gray-600 ml-2'>({filteredProfessionals.length})</span>
         </h1>
       </div>
-      <div className='max-h-80 md:max-h-96 overflow-auto'>
+      <div className='max-h-72 md:max-h-112 overflow-auto'>
         {filteredProfessionals.length > 0 ? (
           filteredProfessionals.map((profesional: any) => (
             <ProcessProfesional key={profesional.id} processData={profesional.process_id} userId={profesional.profesional_id} />
