@@ -7,34 +7,21 @@ dotenv.config();
 
 const { Pool } = pg;
 
-const tablesToBackup = [
-  { tableName: 'Auth', outputKey: 'auth' },
-  { tableName: 'Profesional_data', outputKey: 'profesional_data' },
-  { tableName: 'Institution_Data', outputKey: 'institution_data' },
-  { tableName: 'Process', outputKey: 'process' },
-  { tableName: 'Campaign_data', outputKey: 'campaign_data' },
-  { tableName: 'Goals', outputKey: 'goals' },
-  { tableName: 'fail_mail', outputKey: 'fail_mail' },
-  { tableName: 'Main_study', outputKey: 'main_study' },
-  { tableName: 'Study_specialization', outputKey: 'study_specialization' },
-  { tableName: 'Experience', outputKey: 'experience' },
-  { tableName: 'Leads_send', outputKey: 'leads_send' },
-  { tableName: 'Profesional_certifications', outputKey: 'profesional_certifications' },
-  { tableName: 'Institution_Certifications', outputKey: 'institution_certifications' },
-  { tableName: 'Institution_specialization', outputKey: 'institution_specialization' },
-  { tableName: 'Study_speciality_favorite', outputKey: 'study_speciality_favorite' },
-];
-
 const quoteIdentifier = (value) => `"${value.replace(/"/g, '""')}"`;
 
 async function readTable(pool, tableName) {
-  try {
-    const result = await pool.query(`SELECT * FROM ${quoteIdentifier(tableName)}`);
-    return result.rows;
-  } catch (error) {
-    console.warn(`⚠️ No se pudo extraer ${tableName}: ${error.message}`);
-    return [];
-  }
+  const result = await pool.query(`SELECT * FROM ${quoteIdentifier(tableName)}`);
+  return result.rows;
+}
+
+async function listTables(pool) {
+  const result = await pool.query(`
+    SELECT table_name
+    FROM information_schema.tables
+    WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+    ORDER BY table_name
+  `);
+  return result.rows.map(({ table_name }) => table_name);
 }
 
 async function backupDatabase() {
@@ -50,10 +37,11 @@ async function backupDatabase() {
   
   try {
     const backupData = {};
+    const tablesToBackup = await listTables(pool);
 
-    for (const { tableName, outputKey } of tablesToBackup) {
+    for (const tableName of tablesToBackup) {
       console.log(`📦 Extrayendo datos de ${tableName}...`);
-      backupData[outputKey] = await readTable(pool, tableName);
+      backupData[tableName] = await readTable(pool, tableName);
     }
 
     // Crear objeto con todos los datos
